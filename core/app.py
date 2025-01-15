@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, request, url_for, redirect, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from forms import SignupForm, LoginForm
+from core.forms import SignupForm, LoginForm
 
 app = Flask(__name__, template_folder="../ui/templates/")
 app.config["SECRET_KEY"] = "j9573-4952-9029-1034"
@@ -62,6 +62,3 @@ def login():
 
         # Compare with database
     return
-
-if __name__ == '__main__':
-    app.run(debug=True)
