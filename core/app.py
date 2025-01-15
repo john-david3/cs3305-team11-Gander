@@ -4,7 +4,7 @@ from functools import wraps
 from core.forms import SignupForm, LoginForm
 
 app = Flask(__name__, template_folder="../ui/templates/")
-app.config["SECRET_KEY"] = "j9573-4952-9029-1034"
+app.config["SECRET_KEY"] = ""
 
 @app.before_request
 def logged_in_user():
