@@ -8,13 +8,13 @@ There will be 3 layers of access control:
 
 
 
-1. No Access - user not logged in \
-Users who are not logged in will only be able to view live streams. \
+1. No Access - user not logged in
+Users who are not logged in will only be able to view live streams.
 
-2. Regular Access - user logged in (majority of users on the site) \
-Logged-in users will be able to donate to other users who are streaming (possibly via a third party service such as Stripe), comment on a live stream, and perform other features like following different users. Alternatively, a logged-in user may wish to livestream themselves, in which they become a ‘creator’. \
+2. Regular Access - user logged in (majority of users on the site)
+Logged-in users will be able to donate to other users who are streaming (possibly via a third party service such as Stripe), comment on a live stream, and perform other features like following different users. Alternatively, a logged-in user may wish to livestream themselves, in which they become a ‘creator’.
 
-3. Admin Access - admin user logged in \
+3. Admin Access - admin user logged in
 Admin users will have full control over the web app, including being able to do everything the two levels below can do and more, for example banning accounts when necessary.
 
 We will create a group Github repository on which all of our work will be stored.
