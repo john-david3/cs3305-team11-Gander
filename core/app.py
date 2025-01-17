@@ -4,13 +4,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 
 from core.forms import SignupForm, LoginForm
-from core.database import Database
+from database.database import Database
 
 app = Flask(__name__, template_folder="../ui/templates/")
 app.config["SECRET_KEY"] = ""
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.teardown_appcontext(Database.close_connection)
+
 Session(app)
 
 @app.before_request
@@ -58,7 +58,7 @@ def signup():
 
         # Store in database and hash to avoid exposing sensitive information
         db = Database()
-        cursor = db.create_connection("../database/app.db")
+        cursor = db.create_connection()
 
         # Check if user already exists to avoid duplicates
         dup_email = cursor.execute("""SELECT * FROM users
@@ -73,9 +73,9 @@ def signup():
         elif password != password2:
             form.password.errors.append("Passwords must match.")
         else:
-            db.execute("""INSERT INTO users (username, password, email, num_followers, isPartenered, bio)
+            cursor.execute("""INSERT INTO users (username, password, email, num_followers, isPartenered, bio)
                        VALUES (?, ?, ?, ?, ?, ?);""", (username, generate_password_hash(password), email, 0, 0, "This user does not have a Bio."))
-            db.commit()
+            db.commit_data()
             return redirect(url_for("login"))
 
 
@@ -94,7 +94,7 @@ def login():
 
         # Compare with database
         db = Database()
-        cursor = db.create_connection("../database/app.db")
+        cursor = db.create_connection()
 
         # Check if user exists so only users who have signed up can login
         user_exists = cursor.execute("""SELECT * FROM users

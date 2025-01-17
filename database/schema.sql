@@ -5,9 +5,12 @@ CREATE TABLE users
     password VARCHAR(256) NOT NULL,
     email VARCHAR(64) NOT NULL,
     num_followers INTEGER NOT NULL,
-    isPartenered BOOLEAN NOT NULL DEFAULT 0
-    bio TEXT,
+    isPartenered BOOLEAN NOT NULL DEFAULT 0,
+    bio TEXT
 );
+
+SELECT * FROM users;
+
 
 DROP TABLE IF EXISTS streams;
 CREATE TABLE streams

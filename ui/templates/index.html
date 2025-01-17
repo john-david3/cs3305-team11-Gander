@@ -1,20 +1,5 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <h1>Live Stream</h1>
-    <video id="localVideo" autoplay playsinline controls></video>
-    <script>
-        // constant containing the video
-        const videoElement = document.getElementById('localVideo');
-
-        // Request access to the user's camera and microphone
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then((stream) => {
-                // Display the stream locally
-                videoElement.srcObject = stream;
-            })
-            .catch((error) => {
-                console.error('Error accessing media devices.', error);
-            });
-    </script>
+    <h1>Welcome</h1>
 {% endblock %}
