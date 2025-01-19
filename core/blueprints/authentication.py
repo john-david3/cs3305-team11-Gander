@@ -1,52 +1,12 @@
-from flask import Flask, render_template, session, request, url_for, redirect, g
-from flask_session import Session
+from flask import Blueprint, render_template, session, request, url_for, redirect, g
 from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
-
 from core.forms import SignupForm, LoginForm
 from database.database import Database
+from core.blueprints.utils import login_required
 
-app = Flask(__name__, template_folder="../ui/templates/")
-app.config["SECRET_KEY"] = ""
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
+auth_bp = Blueprint("auth", __name__)
 
-Session(app)
-
-@app.before_request
-def logged_in_user():
-    g.user = session.get("username", None)
-    g.admin = session.get("username", None)
-
-def login_required(view):
-    """add at start of routes where users need to be logged in to access"""
-    @wraps(view)
-    def wrapped_view(*args, **kwargs):
-        if g.user is None:
-            return redirect(url_for("login", next=request.url))
-        return view(*args, **kwargs)
-    return wrapped_view
-
-def admin_required(view):
-    """add at start of routes where admins need to be logged in to access"""
-    @wraps(view)
-    def wrapped_view(*args, **kwargs):
-        if g.admin != "admin":
-            return redirect(url_for("login", next=request.url))
-        return view(*args, **kwargs)
-    return wrapped_view
-
-@app.route('/')
-def index():
-    """
-    Home page of the platform
-    
-    Contains a list of some of the streams that are currently live and the most popular categories.
-    """
-
-    return render_template('index.html')
-
-@app.route("/signup", methods=["GET", "POST"])
+@auth_bp.route("/signup", methods=["GET", "POST"])
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
@@ -76,7 +36,7 @@ def signup():
             cursor.execute("""INSERT INTO users (username, password, email, num_followers, isPartenered, bio)
                        VALUES (?, ?, ?, ?, ?, ?);""", (username, generate_password_hash(password), email, 0, 0, "This user does not have a Bio."))
             db.commit_data()
-            return redirect(url_for("login"))
+            return redirect(url_for("auth.login"))
 
 
         # Close connection to prevent data leaks
@@ -84,7 +44,7 @@ def signup():
 
     return render_template("signup.html", form=form)
 
-@app.route("/login", methods=["GET", "POST"])
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -99,14 +59,15 @@ def login():
         # Check if user exists so only users who have signed up can login
         user_exists = cursor.execute("""SELECT * FROM users
                                   WHERE username = ?;""", (username,)).fetchone()
-        db.close_connection()
 
         if not user_exists:
             form.username.errors.append("Incorrect username or password.")
+            db.close_connection()
 
         # Check is hashed passwords match to verify the user logging in
         elif not check_password_hash(user_exists["password"], password):
             form.username.errors.append("Incorrect username or password.")
+            db.close_connection()
 
         else:
             # Create a new session to prevent users from exploiting horizontal access control
@@ -118,12 +79,13 @@ def login():
 
             # Otherwise return home
             if not next_page:
-                next_page = url_for("index")
+                next_page = url_for("app.index")
+            db.close_connection()
             return redirect(next_page)
         
     return render_template("login.html", form=form)
     
-@app.route("/logout")
+@auth_bp.route("/logout")
 @login_required
 def logout():
     session.clear()
