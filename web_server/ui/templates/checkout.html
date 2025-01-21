@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block header_config %}
+<link rel="stylesheet" href="style.css" />
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{{ url_for('static', filename='checkout.js') }}" defer></script>
+
+{% endblock %}
+
+{% block main_content %}
+    <!-- Display a payment form -->
+    <div id="checkout">
+        <!-- Checkout will insert the payment form here -->
+      </div>
+{% endblock %}

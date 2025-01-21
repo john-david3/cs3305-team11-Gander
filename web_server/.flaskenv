@@ -1,0 +1,2 @@
+FLASK_APP=blueprints.__init__
+FLASK_DEBUG=True
