@@ -1,0 +1,178 @@
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+lar--          21/01/2025    17:22                __pycache__
+lar--          21/01/2025    17:31                backend
+lar--          21/01/2025    18:14                flask_session
+l----          21/01/2025    17:09                frontend
+la---          21/01/2025    17:30             55 .flaskenv
+la---          21/01/2025    17:21            435 Dockerfile
+-a---          21/01/2025    18:37              0 project_structure.txt
+la---          20/01/2025    16:53            383 requirements.txt
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\backend
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+lar--          21/01/2025    17:32                __pycache__
+lar--          21/01/2025    17:22                blueprints
+lar--          21/01/2025    17:22                database
+la---          21/01/2025    17:21            749 forms.py
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\backend\blueprints
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+lar--          21/01/2025    18:14                __pycache__
+la---          21/01/2025    18:14            907 __init__.py
+la---          21/01/2025    17:31           3626 authentication.py
+la---          21/01/2025    17:21            325 main.py
+la---          21/01/2025    17:21           1294 stripe.py
+la---          21/01/2025    17:21            844 utils.py
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\backend\blueprints\__pycache__
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          21/01/2025    18:08           1155 __init__.cpython-310.pyc
+la---          21/01/2025    17:21           1673 __init__.cpython-311.pyc
+la---          21/01/2025    18:14           1572 __init__.cpython-312.pyc
+la---          21/01/2025    17:21            562 app.cpython-310.pyc
+la---          21/01/2025    17:21           2594 authentication.cpython-310.pyc
+la---          21/01/2025    17:21           5120 authentication.cpython-311.pyc
+la---          21/01/2025    17:31           4750 authentication.cpython-312.pyc
+la---          21/01/2025    17:21            564 main.cpython-310.pyc
+la---          21/01/2025    17:21            800 main.cpython-311.pyc
+la---          21/01/2025    17:31            767 main.cpython-312.pyc
+la---          21/01/2025    17:21           2457 stripe.cpython-311.pyc
+la---          21/01/2025    17:31           2347 stripe.cpython-312.pyc
+la---          21/01/2025    18:08           1393 utils.cpython-310.pyc
+la---          21/01/2025    17:21           2018 utils.cpython-311.pyc
+la---          21/01/2025    17:30           1892 utils.cpython-312.pyc
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\backend\database
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+lar--          21/01/2025    17:31                __pycache__
+la---          21/01/2025    17:21          28672 app.db
+la---          21/01/2025    17:21            588 database.py
+la---          21/01/2025    17:21              5 requirements.txt
+la---          21/01/2025    17:21            990 schema.sql
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\backend\database\__pycache__
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          21/01/2025    17:21           2082 database.cpython-311.pyc
+la---          21/01/2025    17:31           1936 database.cpython-312.pyc
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\backend\__pycache__
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          21/01/2025    17:31           1418 forms.cpython-312.pyc
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\flask_session
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          21/01/2025    18:14              9 2029240f6d1128be89ddc327294631
+                                                  29
+la---          21/01/2025    17:21             37 bd9d4040a2dcd9c9d4ed85d3dc2d6b
+                                                  a7
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+lar--          20/01/2025    17:44                src
+la---          20/01/2025    17:15            734 eslint.config.js
+la---          21/01/2025    16:58            370 index.html
+la---          20/01/2025    17:21         149648 package-lock.json
+la---          21/01/2025    18:07            837 package.json
+la---          20/01/2025    17:16             80 postcss.config.js
+la---          20/01/2025    17:16            126 tailwind.config.js
+la---          20/01/2025    17:15            665 tsconfig.app.json
+la---          20/01/2025    17:15            119 tsconfig.json
+la---          20/01/2025    17:15            593 tsconfig.node.json
+la---          20/01/2025    17:15            161 vite.config.ts
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+lar--          20/01/2025    17:15                assets
+lar--          20/01/2025    17:46                components
+lar--          21/01/2025    16:29                pages
+la---          20/01/2025    17:15            606 App.css
+la---          21/01/2025    16:30            799 App.tsx
+la---          20/01/2025    17:15           1161 index.css
+la---          20/01/2025    17:15            230 main.tsx
+la---          20/01/2025    17:15             38 vite-env.d.ts
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src\assets
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          20/01/2025    17:15           4126 react.svg
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src\components
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+lar--          20/01/2025    17:47                Auth
+lar--          20/01/2025    17:47                Checkout
+lar--          20/01/2025    17:47                Layout
+lar--          20/01/2025    17:48                Video
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src\components\Auth
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          20/01/2025    17:47             13 LoginForm.tsx
+la---          20/01/2025    17:47             14 SignupForm.tsx
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src\components\Checkout
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          20/01/2025    17:48             16 CheckoutForm.tsx
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src\components\Layout
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          20/01/2025    17:49            533 BaseLayout.tsx
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src\components\Video
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          20/01/2025    17:48            709 VideoPlayer.tsx
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\frontend\src\pages
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          21/01/2025    16:28            139 CheckoutPage.tsx
+la---          21/01/2025    16:27            309 HomePage.tsx
+la---          21/01/2025    16:28            133 LoginPage.tsx
+la---          21/01/2025    16:29            139 NotFoundPage.tsx
+la---          21/01/2025    16:29            135 SignupPage.tsx
+la---          21/01/2025    16:49            153 VideoPage.tsx
+
+    Directory: C:\Users\chris\OneDrive - University College Cork\Documents\School\Year 3\Semester 2\CS3305 - Team Software Project\cs3305-team11\Team-Software-Project\web_server\__pycache__
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          21/01/2025    17:21            551 app.cpython-310.pyc
+la---          21/01/2025    17:21           6641 app.cpython-313.pyc
+la---          21/01/2025    17:21            976 database.cpython-310.pyc
+la---          21/01/2025    17:21           1036 forms.cpython-310.pyc
+la---          21/01/2025    17:21           1727 forms.cpython-311.pyc
+la---          21/01/2025    17:21           1291 forms.cpython-312.pyc
+la---          21/01/2025    17:21           1342 forms.cpython-313.pyc
+
