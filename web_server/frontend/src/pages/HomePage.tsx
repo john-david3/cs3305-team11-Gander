@@ -1,71 +1,57 @@
 import React, { useState, useEffect } from "react";
+import Navbar from "../components/Layout/Navbar";
+import ListRow from "../components/Layout/ListRow";
 // import { data, Link } from "react-router-dom";
-// import { Search, User, LogIn } from "lucide-react";
+
+const handleStreamClick = (streamId: string) => {
+  // Handle navigation to stream page
+  console.log(`Navigating to stream ${streamId}`);
+};
+
+interface StreamItem {
+  id: number;
+  title: string;
+  streamer: string;
+  viewers: number;
+  thumbnail?: string;
+}
 
 const HomePage: React.FC = () => {
-  const [featuredStreams, setFeaturedStreams] = useState([{}]);
+  const [featuredStreams, setFeaturedStreams] = useState<StreamItem[]>([]);
+  const [loggedInStatus, setLoggedInStatus] = useState<boolean>(false);
 
-  //! ↓↓ runs twice when in development mode
+  // ↓↓ runs twice when in development mode
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/get_streams")
+    fetch("http://127.0.0.1:5000/get_loggedin_status")
       .then((response) => response.json())
       .then((data) => {
+        setLoggedInStatus(data);
+        console.log(data);
+      });
+    fetch("http://127.0.0.1:5000/get_streams")
+      .then((response) => response.json())
+      .then((data: StreamItem[]) => {
         setFeaturedStreams(data);
         console.log(data);
       });
   }, []);
 
   return (
-    <div>
-      <nav className="navbar">
-        <div className="logo">
-          <span>G</span>
-          <span>A</span>
-          <span>N</span>
-          <span>D</span>
-          <span>E</span>
-          <span>R</span>
-        </div>
-        <div className="nav-buttons">
-          <button className="nav-button">☰</button>
-          <button className="nav-button">⚙️</button>
-        </div>
-      </nav>
+    <div className="home-page bg-repeat" style={{ backgroundImage: "url(/images/background-pattern.svg)" }}>
+      <Navbar logged_in={loggedInStatus} />
 
-      <div className="tagline">Behold, your next great watch!</div>
-
-      <div className="search-container">
-        {/* <input type="text" className="search-bar" placeholder="🔍 Search..."> */}
-      </div>
-
-      <h2 className="section-title">Live Now</h2>
-      <div className="streams-grid">
-        {featuredStreams.map((stream: any) => (
-          <div className="stream-card">
-            <img
-              src="/assets/images/dance_game.png"
-              alt="Stream thumbnail"
-              className="stream-thumbnail"
-            />
-            <div className="stream-info">
-              <div className="streamer">
-                <span className="streamer-name">{stream.streamer}</span>
-              </div>
-              <div className="stream-title">{stream.title}</div>
-              <div className="viewer-count">{stream.viewers} viewers</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <h2 className="section-title">Trending Categories</h2>
-      <div className="categories-grid">
-        <div className="category-card"></div>
-        <div className="category-card"></div>
-        <div className="category-card"></div>
-        <div className="category-card"></div>
-        <div className="category-card"></div>
-      </div>
+      <ListRow 
+        title="Live Now" 
+        description="Streamers that are currently live"
+        streams={featuredStreams}
+        onStreamClick={handleStreamClick}
+      />
+      <ListRow
+        title="Trending Categories" 
+        description="Categories that have been 'popping off' lately"
+        streams={featuredStreams}
+        onStreamClick={handleStreamClick}
+      />
     </div>
   );
 };

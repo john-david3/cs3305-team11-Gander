@@ -4,7 +4,7 @@ from backend.blueprints.utils import logged_in_user
 from flask_cors import CORS
 
 def create_app():
-    app = Flask(__name__, template_folder="../ui/templates/", static_folder="../ui/static/")
+    app = Flask(__name__, static_folder="../ui/static/")
     app.config["SECRET_KEY"] = ""
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
