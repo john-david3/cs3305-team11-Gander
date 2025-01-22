@@ -14,8 +14,5 @@ COPY . .
 ENV FLASK_APP=backend.blueprints.__init__
 ENV FLASK_DEBUG=True
 
-# Expose Flask's port
-EXPOSE 5000
-
 # Start the Flask app
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "blueprints.__init__:create_app()"]
