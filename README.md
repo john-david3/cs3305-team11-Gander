@@ -1,24 +1,63 @@
-# **Team 11 Project Proposal**
+# **Team 11 - Live Streaming Platform**
 
-## <span style="text-decoration:underline;">Main Idea</span>
+## Overview
 
-Our main idea for this project is to create a live streaming service. This project will involve a front end that users can access to watch live streams and a back end that controls the functionality of the web app.
+Our project is a live streaming service that enables content creators to broadcast to viewers through a web-based platform. The application consists of a React-based frontend that users access to watch streams, and a Flask backend that manages the core functionality and business logic.
 
-There will be 3 layers of access control: 
+## Access Control Levels
+
+The platform implements three-tier access control:
+
+1. **No Access** (Non-authenticated Users)
+   - View live streams
+   - Browse available content
+
+2. **Regular Access** (Authenticated Users)
+   - All features available to non-authenticated users
+   - Ability to donate to streamers through Stripe integration
+   - Interact with streams through comments
+   - Follow other users
+   - Option to become a content creator and start streaming
+
+3. **Admin Access**
+   - Complete platform management capabilities
+   - Content moderation tools
+   - User account management
+   - System configuration controls
+
+## Technical Stack
+
+### Frontend
+- React with TypeScript for type safety
+- Tailwind CSS for styling
+- Video.js for stream playback
+- Stripe integration for payment processing
+
+### Backend
+- Python with Flask web framework
+- SQLite database for data persistence
+- Flask-Session for user session management
+- Nginx RTMP module for stream handling
+
+### Infrastructure
+- Docker for containerization and deployment
+- Docker Compose for multi-container orchestration
+- Nginx for reverse proxy and RTMP streaming server
+
+## Future Development
+
+While our current focus is on the web platform, we've architected the system with potential mobile expansion in mind, particularly through React Native for Android development.
+
+## Development
+
+This project is actively maintained on GitHub with all team members contributing through version control. We follow collaborative development practices with regular code reviews and feature branches.
 
 
-
-1. No Access - user not logged in
-Users who are not logged in will only be able to view live streams.
-
-2. Regular Access - user logged in (majority of users on the site)
-Logged-in users will be able to donate to other users who are streaming (possibly via a third party service such as Stripe), comment on a live stream, and perform other features like following different users. Alternatively, a logged-in user may wish to livestream themselves, in which they become a ‘creator’.
-
-3. Admin Access - admin user logged in
-Admin users will have full control over the web app, including being able to do everything the two levels below can do and more, for example banning accounts when necessary.
-
-We will create a group Github repository on which all of our work will be stored.
-
-## <span style="text-decoration:underline;">Programming Languages</span>
-
-In terms of how we would program this service, we have decided to use HTML, CSS and JavaScript for the front end, so something like React could be used to facilitate ease of creation. Then for the backend, we would use a language like Python that has a web framework like Flask to allow us to create functionality on the web app. Python, we believe, is more suited to this particular project as it has more useful modules and all group members are more familiar with its syntax and behaviour. However, we have also considered using Go. As well as this, a database would be needed to allow us to store user information and metadata. We are planning on using MySQL or PostgreSQL depending on which better meets our needs, when the time comes. We may also use TypeScript either on the web app or for writing documentation.
+# Running the Current Implementation of the Project
+The current implementation can be run, in development mode, using the following method:
+1. With the Docker VSCode extension installed, right click within the editor with the `docker-compose.yaml` file active.
+Select `Compose Up`
+![image](https://github.com/user-attachments/assets/d68dd3b1-f3de-4780-b957-055cb536446b)
+Now the backend is up and running on `http://127.0.0.1:8080`.
+2. Next, having Node.js & Vite installed, `cd` into `web_server/frontend` and execute the command `npm run dev`. This should startup the frontend section of the application. However, this is only a temporary method as a Docker solution is in development for this frontend part of the project.
+3. Navigate to the localhost link given in the terminal upon executing the last command (`http://localhost:5173/`).
