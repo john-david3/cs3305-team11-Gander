@@ -2,6 +2,13 @@ from flask import render_template, Blueprint
 
 main_bp = Blueprint("app", __name__)
 
+## temp, showcasing HLS
+@main_bp.route('/hls1/<stream_id>')
+def hls(stream_id):
+    stream_url = f"http://127.0.0.1:8080/hls/{stream_id}/index.m3u8"
+    return render_template("video.html", video_url=stream_url)
+#--------------------------------------------------------
+
 
 @main_bp.route('/get_loggedin_status')
 def get_loggedin_status():
@@ -11,12 +18,24 @@ def get_loggedin_status():
     """
     return {"logged_in": logged_in}
 
+@main_bp.route('/authenticate_user')
+def authenticate_user():
+    """
+    Authenticates the user
+    """
+    return {"authenticated": True}
+
 
 @main_bp.route('/get_streams')
 def get_sample_streams():
     """
     Returns a list of (sample) streamers live right now
     """
+
+    # top 25, if not logged in
+    # if logged in, show streams that match user's tags
+        # user attains tags from the tags of the streamers they follow, and streamers they've watched
+
     streamers = [
     {
       "id": 1,
