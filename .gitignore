@@ -19,7 +19,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-.env
+*.env
 venv/
 ENV/
 .venv
@@ -56,5 +56,6 @@ Thumbs.db
 hls/
 sockets/
 dev-env/
+project_structure.txt
 *.db
 flask_session/

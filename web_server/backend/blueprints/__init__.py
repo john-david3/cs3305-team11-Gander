@@ -2,10 +2,16 @@ from flask import Flask
 from flask_session import Session
 from backend.blueprints.utils import logged_in_user
 from flask_cors import CORS
+import os
+
+print("Environment variables:")
+print(f"FLASK_SECRET_KEY: {os.getenv('FLASK_SECRET_KEY')}")
+print(f"STRIPE_SECRET_KEY: {os.getenv('STRIPE_SECRET_KEY')}")
+
 
 def create_app():
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = ""
+    app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
     #! ↓↓↓ For development purposes only

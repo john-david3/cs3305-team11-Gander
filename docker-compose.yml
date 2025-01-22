@@ -1,4 +1,4 @@
-version: '3.9'
+
 services:
   nginx:
     build:
@@ -15,10 +15,15 @@ services:
     build:
       context: ./web_server
     ports:
-      - "5000"
+      - "5000:5000"
     networks:
       - app_network
-
+    env_file:
+      - .env
+    environment:
+      - FLASK_APP=backend.blueprints.__init__
+      - FLASK_DEBUG=True
+      
 networks:
   app_network:
     driver: bridge

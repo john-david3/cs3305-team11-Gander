@@ -1,17 +1,21 @@
-import React from 'react'
+import React from "react";
 
 interface ButtonProps {
-	title?: string;
-	alt?: string;
-	onClick?: () => void;
+  title?: string;
+  onClick?: () => void;
 }
 
-const Button = ({ title, alt, onClick }: ButtonProps) => {
+const Button: React.FC<ButtonProps> = ({
+  title = "Submit",
+  onClick,
+}) => {
   return (
-	<div>
-	  
-	</div>
-  )
-}
+    <div>
+      <button onClick={onClick}>
+        {title}
+      </button>
+    </div>
+  );
+};
 
-export default Button
+export default Button;

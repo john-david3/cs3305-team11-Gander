@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import VideoPage from './pages/VideoPage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import CheckoutPage from './pages/CheckoutPage';
-import NotFoundPage from './pages/NotFoundPage';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import VideoPage from "./pages/VideoPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+// import CheckoutPage from "./pages/CheckoutPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -14,7 +14,11 @@ function App() {
         <Route path="/video" element={<VideoPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
+        {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
+
+        {/* <Route path="/checkout" element={<CheckoutForm />} /> */}
+        {/* <Route path="/return" element={<Return />} /> */}
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
