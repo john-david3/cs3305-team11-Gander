@@ -7,13 +7,13 @@ services:
       - "1935:1935"  # RTMP
       - "8080:8080"
     depends_on:
-      - app
+      - web_server
     networks:
       - app_network
 
-  app:
+  web_server:
     build:
-      context: ./app
+      context: ./web_server
     ports:
       - "5000:5000"
     networks:
