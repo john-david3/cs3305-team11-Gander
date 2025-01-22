@@ -7,13 +7,13 @@ services:
       - "1935:1935"  # RTMP
       - "8080:8080"
     depends_on:
-      - flask
+      - app
     networks:
       - app_network
 
-  flask:
+  app:
     build:
-      context: ./web_server
+      context: ./app
     ports:
       - "5000:5000"
     networks:
@@ -21,3 +21,4 @@ services:
 
 networks:
   app_network:
+    driver: bridge
