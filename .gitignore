@@ -57,8 +57,6 @@ hls/
 sockets/
 dev-env/
 project_structure.txt
-*.db
-flask_session/
 
 #Env
 .env
