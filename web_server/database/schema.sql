@@ -43,9 +43,11 @@ CREATE TABLE chat
     message_id INT AUTOINCREMENT,
     chatter_id VARCHAR(50) NOT NULL,
     stream_id INT NOT NULL,
-    message TEXT NOT NULL,
-    time_sent DATETIME NOT NULL,
+    message VARCHAR(256) NOT NULL,
+    time_sent DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (message_id),
     FOREIGN KEY (chatter_id) REFERENCES users(username),
     FOREIGN KEY (stream_id) REFERENCES streams(stream_id) ON DELETE CASCADE
 );
+
+CREATE INDEX chatter_index ON chat(chatter_id);
