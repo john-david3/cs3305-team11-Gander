@@ -28,9 +28,11 @@ services:
     build:
       context: ./frontend
     ports:
-      - "5173:5173"
+      - "5173"
     networks:
       - app_network
+    depends_on:
+      - web_server
       
 networks:
   app_network:
