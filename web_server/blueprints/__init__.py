@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_session import Session
-from backend.blueprints.utils import logged_in_user
+from blueprints.utils import logged_in_user
 from flask_cors import CORS
 import os
 
@@ -21,9 +21,9 @@ def create_app():
     app.before_request(logged_in_user)
 
     with app.app_context():
-        from backend.blueprints.authentication import auth_bp
-        from backend.blueprints.main import main_bp
-        from backend.blueprints.stripe import stripe_bp
+        from blueprints.authentication import auth_bp
+        from blueprints.main import main_bp
+        from blueprints.stripe import stripe_bp
 
         app.register_blueprint(auth_bp)
         app.register_blueprint(main_bp)

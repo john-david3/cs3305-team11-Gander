@@ -15,14 +15,22 @@ services:
     build:
       context: ./web_server
     ports:
-      - "5000:5000"
+      - "5000"
     networks:
       - app_network
     env_file:
       - .env
     environment:
-      - FLASK_APP=backend.blueprints.__init__
+      - FLASK_APP=blueprints.__init__
       - FLASK_DEBUG=True
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - app_network
       
 networks:
   app_network:

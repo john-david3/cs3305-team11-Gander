@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, session, request, url_for, redirect, g
 from werkzeug.security import generate_password_hash, check_password_hash
-from backend.forms import SignupForm, LoginForm
-from backend.database.database import Database
-from backend.blueprints.utils import login_required
+from forms import SignupForm, LoginForm
+from database.database import Database
+from blueprints.utils import login_required
 
 auth_bp = Blueprint("auth", __name__)
 
