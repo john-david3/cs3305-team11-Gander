@@ -57,5 +57,9 @@ hls/
 sockets/
 dev-env/
 project_structure.txt
+*.db
 flask_session/
-*.env.example
+
+#Env
+.env
+web_server/frontend/.env
