@@ -3,7 +3,6 @@ import Navbar from "../components/Layout/Navbar";
 import ListRow from "../components/Layout/ListRow";
 // import { data, Link } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 const handleStreamClick = (streamId: string) => {
   // Handle navigation to stream page
@@ -24,13 +23,13 @@ const HomePage: React.FC = () => {
 
   // ↓↓ runs twice when in development mode
   useEffect(() => {
-    fetch(`${API_URL}/get_loggedin_status`)
+    fetch("/api/get_loggedin_status")
       .then((response) => response.json())
       .then((data) => {
         setLoggedInStatus(data);
         console.log(data);
       });
-    fetch(`${API_URL}/get_streams`)
+    fetch("/api/get_streams")
       .then((response) => response.json())
       .then((data: StreamItem[]) => {
         setFeaturedStreams(data);
