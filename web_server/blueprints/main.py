@@ -10,20 +10,6 @@ def hls(stream_id):
 #--------------------------------------------------------
 
 
-@main_bp.route('/get_login_status')
-def get_login_status():
-    logged_in = False
-    """
-    Returns whether the user is logged in or not
-    """
-    return {"logged_in": logged_in}
-
-@main_bp.route('/authenticate_user')
-def authenticate_user():
-    """
-    Authenticates the user
-    """
-    return {"authenticated": True}
 
 
 

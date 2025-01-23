@@ -24,9 +24,13 @@ def create_app():
         from blueprints.authentication import auth_bp
         from blueprints.main import main_bp
         from blueprints.stripe import stripe_bp
+        from blueprints.user import user_bp
+        from blueprints.streams import stream_bp
 
         app.register_blueprint(auth_bp)
         app.register_blueprint(main_bp)
         app.register_blueprint(stripe_bp)
+        app.register_blueprint(user_bp)
+        app.register_blueprint(stream_bp)
 
     return app
