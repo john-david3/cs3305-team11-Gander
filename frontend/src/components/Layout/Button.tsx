@@ -11,7 +11,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <div>
-      <button onClick={onClick}>
+      <button className="underline bg-blue-600/30 p-4 rounded-[5rem] transition-all hover:text-[3.2rem]" onClick={onClick}>
         {title}
       </button>
     </div>

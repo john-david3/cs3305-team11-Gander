@@ -76,11 +76,10 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
         >
           ✕
         </button>
-        <div className="bg-white p-6 rounded-lg w-full max-w-2xl relative h-full rounded-[2rem]">
+        <div className="bg-white p-6 rounded-lg w-full max-w-2xl relative h-full rounded-[2rem]" style={{ width: "clamp(300px, 60vw, 800px)" }}>
           <div
             id="checkout"
             className="h-full overflow-auto min-w-[30vw]"
-            style={{ width: "clamp(300px, 60vw, 800px)" }}
           >
             <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
               <EmbeddedCheckout />

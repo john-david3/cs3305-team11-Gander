@@ -3,7 +3,6 @@ import Navbar from "../components/Layout/Navbar";
 import ListRow from "../components/Layout/ListRow";
 // import { data, Link } from "react-router-dom";
 
-
 const handleStreamClick = (streamId: string) => {
   // Handle navigation to stream page
   console.log(`Navigating to stream ${streamId}`);
