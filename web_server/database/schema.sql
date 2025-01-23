@@ -48,15 +48,17 @@ CREATE TABLE follows
 DROP TABLE IF EXISTS chat;
 CREATE TABLE chat
 (
-    message_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
+    message_id INTEGER,
+    chatter_id VARCHAR(50) NOT NULL,
     stream_id INTEGER NOT NULL,
-    message TEXT NOT NULL,
-    time_sent DATETIME NOT NULL,
+    message VARCHAR(256) NOT NULL,
+    time_sent DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (message_id, stream_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (chatter_id) REFERENCES users(user_id),
     FOREIGN KEY (stream_id) REFERENCES streams(stream_id) ON DELETE CASCADE
 );
+
+CREATE INDEX chatter_index ON chat(chatter_id);
 
 DROP TABLE IF EXISTS categories;
 CREATE TABLE categories
@@ -81,5 +83,20 @@ CREATE TABLE user_preferences
     user_id INT NOT NULL,
     category_id INT NOT NULL,
     favourability INT NOT NULL DEFAULT 0,
-    PRIMARY KEY(user_id, category_id)
+    PRIMARY KEY(user_id, category_id),
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 )
+
+DROP TABLE IF EXISTS subscribed;
+CREATE TABLE subscribed
+(
+    user_id INTEGER NOT NULL,
+    streamer_id INTEGER NOT NULL,
+    since DATETIME NOT NULL,
+    ends DATETIME NOT NULL,
+    PRIMARY KEY (user_id,streamer_id),
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(streamer_id) REFERENCES streamers(streamer_id) ON DELETE CASCADE   
+)
+
