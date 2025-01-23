@@ -36,13 +36,13 @@ def signup():
             cursor.execute("""INSERT INTO users (username, password, email, num_followers, isPartenered, bio)
                        VALUES (?, ?, ?, ?, ?, ?);""", (username, generate_password_hash(password), email, 0, 0, "This user does not have a Bio."))
             db.commit_data()
-            return redirect(url_for("auth.login"))
+            return {"account_created": True}
 
 
         # Close connection to prevent data leaks
         db.close_connection()
 
-    return render_template("signup.html", form=form)
+    return {"account_created": False}
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -81,12 +81,12 @@ def login():
             if not next_page:
                 next_page = url_for("app.index")
             db.close_connection()
-            return redirect(next_page)
+            return {"logged_in": True}
         
-    return render_template("login.html", form=form)
+    return {"logged_in": False}
     
 @auth_bp.route("/logout")
 @login_required
 def logout():
     session.clear()
-    return redirect(url_for("index"))
+    return {"logged_in": False}
