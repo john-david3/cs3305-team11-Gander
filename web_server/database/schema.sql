@@ -50,7 +50,6 @@ CREATE TABLE chat
 (
     message_id INTEGER,
     chatter_id VARCHAR(50) NOT NULL,
-<<<<<<< HEAD
     stream_id INTEGER NOT NULL,
     message VARCHAR(256) NOT NULL,
     time_sent DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -101,14 +100,3 @@ CREATE TABLE subscribed
     FOREIGN KEY(streamer_id) REFERENCES streamers(streamer_id) ON DELETE CASCADE   
 )
 
-=======
-    stream_id INT NOT NULL,
-    message VARCHAR(256) NOT NULL,
-    time_sent DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (message_id),
-    FOREIGN KEY (chatter_id) REFERENCES users(username),
-    FOREIGN KEY (stream_id) REFERENCES streams(stream_id) ON DELETE CASCADE
-);
-
-CREATE INDEX chatter_index ON chat(chatter_id);
->>>>>>> ab10673a67e42a10ed6cc625c2b4891d6cb653a2
