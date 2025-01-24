@@ -40,6 +40,7 @@ CREATE TABLE follows
 (
     user_id INTEGER NOT NULL,
     streamer_id INTEGER NOT NULL,
+    since DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, streamer_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (streamer_id) REFERENCES streamers(streamer_id) ON DELETE CASCADE
@@ -49,8 +50,8 @@ DROP TABLE IF EXISTS chat;
 CREATE TABLE chat
 (
     message_id INTEGER,
-    chatter_id VARCHAR(50) NOT NULL,
     stream_id INTEGER NOT NULL,
+    chatter_id VARCHAR(50) NOT NULL,
     message VARCHAR(256) NOT NULL,
     time_sent DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (message_id, stream_id),
@@ -72,7 +73,6 @@ CREATE TABLE stream_categories
 (
     stream_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
-    since DATETIME NOT NULL,
     FOREIGN KEY (stream_id) REFERENCES streams(stream_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
@@ -86,10 +86,10 @@ CREATE TABLE user_preferences
     PRIMARY KEY(user_id, category_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE
-)
+);
 
-DROP TABLE IF EXISTS subscribed;
-CREATE TABLE subscribed
+DROP TABLE IF EXISTS subscribes;
+CREATE TABLE subscribes
 (
     user_id INTEGER NOT NULL,
     streamer_id INTEGER NOT NULL,
@@ -98,5 +98,5 @@ CREATE TABLE subscribed
     PRIMARY KEY (user_id,streamer_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(streamer_id) REFERENCES streamers(streamer_id) ON DELETE CASCADE   
-)
+);
 
