@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
 
   // ↓↓ runs twice when in development mode
   useEffect(() => {
-    fetch("/api/get_loggedin_status")
+    fetch("/api/get_login_status")
       .then((response) => response.json())
       .then((data) => {
         setLoggedInStatus(data);

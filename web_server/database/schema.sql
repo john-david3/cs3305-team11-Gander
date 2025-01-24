@@ -94,7 +94,7 @@ CREATE TABLE subscribes
     user_id INTEGER NOT NULL,
     streamer_id INTEGER NOT NULL,
     since DATETIME NOT NULL,
-    ends DATETIME NOT NULL,
+    expires DATETIME NOT NULL,
     PRIMARY KEY (user_id,streamer_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(streamer_id) REFERENCES streamers(streamer_id) ON DELETE CASCADE   

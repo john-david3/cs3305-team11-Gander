@@ -7,6 +7,9 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 @stripe_bp.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
+    """
+    Creates the stripe checkout session
+    """
     print("Creating checkout session")
     try:
         session = stripe.checkout.Session.create(
@@ -29,6 +32,9 @@ def create_checkout_session():
 
 @stripe_bp.route('/session-status', methods=['GET']) # check for payment status
 def session_status():
+  """
+  Used to query payment status
+  """
   session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
 
   return jsonify(status=session.status, customer_email=session.customer_details.email)
