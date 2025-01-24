@@ -11,7 +11,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 // Initialize Stripe once
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-
 export const Return: React.FC = () => {
   const [status, setStatus] = useState<string | null>(null);
   const [customerEmail, setCustomerEmail] = useState("");
@@ -69,18 +68,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   return (
     <>
       <div className="blurring-layer fixed z-10 inset-0 w-screen h-screen backdrop-blur-sm"></div>
-      <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 h-[70vh] m-auto w-fit py-[50px] px-[100px] rounded-[2rem]">
+      <div className="modal-container fixed inset-0 bg-black/30 flex items-center justify-center z-50 h-[70vh] m-auto w-fit py-[50px] px-[100px] rounded-[2rem]">
         <button
           onClick={onClose}
-          className="absolute top-[1rem] right-[3rem] text-[2rem] text-red-600 font-black hover:text-[2.5rem] transition-all"
+          className="absolute top-[1rem] right-[3rem] text-[2rem] text-white hover:text-red-500 font-black hover:text-[2.5rem] transition-all"
         >
           ✕
         </button>
-        <div className="bg-white p-6 rounded-lg w-full max-w-2xl relative h-full rounded-[2rem]" style={{ width: "clamp(300px, 60vw, 800px)" }}>
-          <div
-            id="checkout"
-            className="h-full overflow-auto min-w-[30vw]"
-          >
+        <div
+          className="bg-white p-6 rounded-lg w-full max-w-2xl relative h-full rounded-[2rem]"
+          style={{ width: "clamp(300px, 60vw, 800px)" }}
+        >
+          <div id="checkout" className="h-full overflow-auto min-w-[30vw]">
             <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
               <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>

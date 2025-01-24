@@ -3,23 +3,28 @@ import Input from "../Layout/Input";
 import Button from "../Layout/Button";
 import { useAuth } from "../../context/AuthContext";
 
-interface LoginFormData {
+interface RegisterFormData {
   username: string;
+  email: string;
   password: string;
+  confirmPassword: string;
 }
 
 interface FormErrors {
   username?: string;
+  email?: string;
   password?: string;
-  general?: string; // For general authentication errors
+  confirmPassword?: string;
 }
 
-const LoginForm: React.FC = () => {
+const RegisterForm: React.FC = () => {
   const { setIsLoggedIn } = useAuth();
 
-  const [formData, setFormData] = useState<LoginFormData>({
+  const [formData, setFormData] = useState<RegisterFormData>({
     username: "",
+    email: "",
     password: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -36,10 +41,15 @@ const LoginForm: React.FC = () => {
 
     // Check for empty fields
     Object.keys(formData).forEach((key) => {
-      if (!formData[key as keyof LoginFormData]) {
+      if (!formData[key as keyof RegisterFormData]) {
         newErrors[key as keyof FormErrors] = "This field is required";
       }
     });
+
+    // Check password match
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -50,7 +60,7 @@ const LoginForm: React.FC = () => {
 
     if (validateForm()) {
       try {
-        const response = await fetch("/api/login", {
+        const response = await fetch("/api/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -58,31 +68,33 @@ const LoginForm: React.FC = () => {
           credentials: "include",
           body: JSON.stringify(formData),
         });
-
+        console.log(`sending data: ${JSON.stringify(formData)}`);
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Login failed");
+          throw new Error(
+            data.message || `Registration failed. ${response.body}`
+          );
         }
 
-        if (data.logged_in) {
-          //TODO: Handle successful login (e.g., redirect to home page)
-          console.log("Login successful");
+        if (data.account_created) {
+          //TODO Handle successful registration (e.g., redirect or show success message)
+          console.log("Registration Successful! Account created successfully");
           setIsLoggedIn(true);
           window.location.reload();
         } else {
-          // Handle authentication errors
+          // Handle validation errors from server
+          const serverErrors: FormErrors = {};
           if (data.errors) {
-            setErrors({
-              general: "Invalid username or password",
+            Object.entries(data.errors).forEach(([field, message]) => {
+              serverErrors[field as keyof FormErrors] = message as string;
             });
+            setErrors(serverErrors);
           }
         }
       } catch (error) {
-        console.error("Login error:", error);
-        setErrors({
-          general: "An error occurred during login. Please try again.",
-        });
+        console.error("Registration error:", error);
+        //TODO Show user-friendly error message via Alert component maybe
       }
     }
   };
@@ -90,12 +102,8 @@ const LoginForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="login-form h-[100%] flex flex-col h-full justify-evenly items-center"
+      className="register-form h-[100%] flex flex-col h-full justify-evenly items-center"
     >
-      {errors.general && (
-        <p className="text-red-500 text-sm text-center">{errors.general}</p>
-      )}
-
       {errors.username && (
         <p className="text-red-500 mt-3 text-sm">{errors.username}</p>
       )}
@@ -106,7 +114,17 @@ const LoginForm: React.FC = () => {
         onChange={handleInputChange}
         extraClasses={`${errors.username ? "border-red-500" : ""}`}
       />
-
+      {errors.email && (
+        <p className="text-red-500 mt-3 text-sm">{errors.email}</p>
+      )}
+      <Input
+        name="email"
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleInputChange}
+        extraClasses={`${errors.email ? "border-red-500" : ""}`}
+      />
       {errors.password && (
         <p className="text-red-500 mt-3 text-sm">{errors.password}</p>
       )}
@@ -118,10 +136,20 @@ const LoginForm: React.FC = () => {
         onChange={handleInputChange}
         extraClasses={`${errors.password ? "border-red-500" : ""}`}
       />
-
-      <Button type="submit">Login</Button>
+      {errors.confirmPassword && (
+        <p className="text-red-500 mt-3 text-sm">{errors.confirmPassword}</p>
+      )}
+      <Input
+        name="confirmPassword"
+        type="password"
+        placeholder="Confirm Password"
+        value={formData.confirmPassword}
+        onChange={handleInputChange}
+        extraClasses={`${errors.confirmPassword ? "border-red-500" : ""}`}
+      />
+      <Button type="submit">Register</Button>
     </form>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

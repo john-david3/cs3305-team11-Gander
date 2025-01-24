@@ -17,20 +17,20 @@ interface ListRowProps {
   title: string;
   description: string;
   streams: StreamItem[];
-  onStreamClick?: (streamId: string) => void;
+  onStreamClick?: (streamerId: string) => void;
 }
 
 // Individual stream entry component
 const ListEntry: React.FC<ListEntryProps> = ({ stream, onClick }) => {
   return (
     <div
-      className="flex flex-col bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors"
+      className="flex flex-col bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:bg-gray-700 border border-gray-100 hover:border-purple-500 hover:border-b-4 hover:border-l-4 transition-all"
       onClick={onClick}
     >
       <div className="relative w-full pt-[56.25%]">
         {stream.thumbnail ? (
           <img
-            src={`images/`+stream.thumbnail}
+            src={`images/` + stream.thumbnail}
             alt={stream.title}
             className="absolute top-0 left-0 w-full h-full object-cover"
           />
@@ -55,7 +55,7 @@ const ListRow: React.FC<ListRowProps> = ({
   onStreamClick,
 }) => {
   return (
-    <div className="flex flex-col space-y-4 py-6">
+    <div className="flex flex-col space-y-4 py-6 mx-4">
       <div className="space-y-1">
         <h2 className="text-2xl font-bold">{title}</h2>
         <p className="text-gray-400">{description}</p>
@@ -65,7 +65,7 @@ const ListRow: React.FC<ListRowProps> = ({
           <ListEntry
             key={stream.id}
             stream={stream}
-            onClick={() => onStreamClick?.(stream.id)}
+            onClick={() => onStreamClick?.(stream.streamer)}
           />
         ))}
       </div>

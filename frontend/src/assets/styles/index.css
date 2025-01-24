@@ -20,6 +20,25 @@
   background: #555;
 }
 
+.bg-repeat {
+  animation: moving_bg 200s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-repeat {
+    animation: none;
+  }
+}
+
+@keyframes moving_bg {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+
 /* 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

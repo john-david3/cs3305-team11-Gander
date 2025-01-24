@@ -41,6 +41,7 @@ coverage/
 *.local
 
 # Editor directories and files
+.vscode
 .vscode/*
 !.vscode/extensions.json
 .idea/
@@ -57,7 +58,5 @@ hls/
 sockets/
 dev-env/
 project_structure.txt
-
-#Env
-.env
-web_server/frontend/.env
+*.db
+flask_session/

@@ -1,56 +1,90 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
 import Button from "./Button";
-import { Link } from "react-router-dom";
-import { Search, User, LogIn } from "lucide-react";
+import Sidebar from "./Sidebar";
+import { Sidebar as SidebarIcon } from "lucide-react";
+import {
+  Search as SearchIcon,
+  LogIn as LogInIcon,
+  LogOut as LogOutIcon,
+  Settings as SettingsIcon,
+} from "lucide-react";
+import Input from "./Input";
+import AuthModal from "../Auth/AuthModal";
+import { useAuth } from "../../context/AuthContext";
 
-interface NavbarProps {
-  logged_in: boolean;
-}
+const Navbar: React.FC = () => {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { isLoggedIn } = useAuth();
 
-const Navbar: React.FC<NavbarProps> = ({ logged_in }) => {
+  useEffect(() => {
+    if (showAuthModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showAuthModal]);
+
+  const handleLogout = () => {
+    console.log("Logging out...");
+    fetch("/api/logout")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        window.location.reload();
+      });
+  };
+
   return (
     <div className="flex flex-col justify-around items-center h-[45vh]">
       <Logo />
-      <div className="nav-buttons flex items-center space-x-4">
-        {logged_in ? (
-          <div>
-            <Link
-              to="/logout"
-              className="flex items-center text-gray-700 hover:text-purple-600"
-            >
-              <Button title="" />
-            </Link>
-          </div>
+      <Button
+        extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap"
+        onClick={() => (isLoggedIn ? handleLogout() : setShowAuthModal(true))}
+      >
+        {isLoggedIn ? (
+          <>
+            <LogOutIcon className="h-15 w-15 mr-1" />
+            Logout
+          </>
         ) : (
-          <div>
-            <Link
-              to="/login"
-              className="flex items-center text-gray-700 hover:text-purple-600"
-            >
-              <LogIn className="h-5 w-5 mr-1" />
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="flex items-center text-gray-700 hover:text-purple-600"
-            >
-              <User className="h-5 w-5 mr-1" />
-              Sign Up
-            </Link>
-          </div>
+          <>
+            <LogInIcon className="h-15 w-15 mr-1" />
+            Login / Register
+          </>
         )}
-        <Button title="Quick Settings" />
-      </div>
+      </Button>
 
-      <div className="search-bar relative">
-        <input
+      {isLoggedIn && (
+        <>
+          <Button extraClasses="absolute top-[75px] left-[20px]">
+            <SidebarIcon className="h-15 w-15 mr-1" />
+          </Button>
+          <Sidebar />
+        </>
+      )}
+
+      <Button
+        extraClasses="absolute top-[20px] right-[20px] text-[1rem] flex items-center flex-nowrap"
+        onClick={() => console.log("Settings")}
+      >
+        <SettingsIcon className="h-15 w-15 mr-1" />
+        Quick Settings
+      </Button>
+
+      <div className="search-bar flex items-center">
+        <Input
           type="text"
           placeholder="Search..."
-          className="w-64 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-purple-500"
+          extraClasses="pr-[30px] focus:outline-none focus:border-purple-500 focus:w-[30vw]"
         />
-        <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+        <SearchIcon className="-translate-x-[28px] top-1/2 h-6 w-6 text-white" />
       </div>
+
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 };

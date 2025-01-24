@@ -1,27 +1,46 @@
+import { useState, useEffect } from "react";
+import { AuthContext } from "./context/AuthContext";
+import { StreamsProvider } from "./context/StreamsContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import HomePage, { PersonalisedHomePage } from "./pages/HomePage";
 import VideoPage from "./pages/VideoPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-// import CheckoutPage from "./pages/CheckoutPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/get_login_status")
+      .then((response) => response.json())
+      .then((loggedIn) => {
+        setIsLoggedIn(loggedIn);
+      })
+      .catch((error) => {
+        console.error("Error fetching login status:", error);
+        setIsLoggedIn(false);
+      });
+  }, []);
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/video" element={<VideoPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+      <StreamsProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={isLoggedIn ? <PersonalisedHomePage /> : <HomePage />}
+            />
+            <Route path="/:streamerName" element={<VideoPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
 
-        {/* <Route path="/checkout" element={<CheckoutForm />} /> */}
-        {/* <Route path="/return" element={<Return />} /> */}
-
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </BrowserRouter>
+      </StreamsProvider>
+    </AuthContext.Provider>
   );
 }
 

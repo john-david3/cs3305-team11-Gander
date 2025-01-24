@@ -1,3 +1,6 @@
+-- View all tables in the database
+SELECT name FROM sqlite_master WHERE type='table';
+
 DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (

@@ -1,90 +1,159 @@
-from flask import Blueprint, render_template, session, request, url_for, redirect, g
+from flask import Blueprint, session, request, url_for, redirect, g, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import SignupForm, LoginForm
+from flask_cors import cross_origin
 from database.database import Database
 from blueprints.utils import login_required
 
 auth_bp = Blueprint("auth", __name__)
 
-@auth_bp.route("/signup", methods=["GET", "POST"])
+
+@auth_bp.route("/signup", methods=["POST"])
+@cross_origin(supports_credentials=True)
 def signup():
-    form = SignupForm()
-    if form.validate_on_submit():
-        # Retrieve data from the sign up form
-        username = form.username.data
-        email = form.email.data
-        password = form.password.data
-        password2 = form.password2.data
+    if not request.is_json:
+        return jsonify({"message": "Expected JSON data"}), 400
 
-        # Store in database and hash to avoid exposing sensitive information
-        db = Database()
-        cursor = db.create_connection()
+    data = request.get_json()
 
-        # Check if user already exists to avoid duplicates
-        dup_email = cursor.execute("""SELECT * FROM users
-                                    WHERE email = ?;""", (email,)).fetchone()
-        dup_username = cursor.execute("""SELECT * FROM users
-                                      WHERE username = ?;""", (username,)).fetchone()
+    # Extract data from request
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    # Basic server-side validation
+    if not all([username, email, password]):
+        return jsonify({
+            "account_created": False,
+            "message": "Missing required fields"
+        }), 400
+
+    db = Database()
+    cursor = db.create_connection()
+
+    try:
+        # Check for duplicate email/username
+        dup_email = cursor.execute(
+            "SELECT * FROM users WHERE email = ?",
+            (email,)
+        ).fetchone()
+
+        dup_username = cursor.execute(
+            "SELECT * FROM users WHERE username = ?",
+            (username,)
+        ).fetchone()
 
         if dup_email is not None:
-            form.email.errors.append("Email already taken.")
-        elif dup_username is not None:
-            form.username.errors.append("Username already taken.")
-        elif password != password2:
-            form.password.errors.append("Passwords must match.")
-        else:
-            cursor.execute("""INSERT INTO users (username, password, email, num_followers, isPartenered, bio)
-                       VALUES (?, ?, ?, ?, ?, ?);""", (username, generate_password_hash(password), email, 0, 0, "This user does not have a Bio."))
-            db.commit_data()
-            return {"account_created": True}
+            return jsonify({
+                "account_created": False,
+                "errors": {"email": "Email already taken"}
+            }), 400
 
+        if dup_username is not None:
+            return jsonify({
+                "account_created": False,
+                "errors": {"username": "Username already taken"}
+            }), 400
 
-        # Close connection to prevent data leaks
+        # Create new user
+        cursor.execute(
+            """INSERT INTO users 
+               (username, password, email, num_followers, isPartenered, bio)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (
+                username,
+                generate_password_hash(password),
+                email,
+                0,
+                0,
+                "This user does not have a Bio."
+            )
+        )
+        db.commit_data()
+
+        # Create session for new user
+        session.clear()
+        session["username"] = username
+
+        return jsonify({
+            "account_created": True,
+            "message": "Account created successfully"
+        }), 201
+
+    except Exception as e:
+        print(f"Error during signup: {e}")  # Log the error
+        return jsonify({
+            "account_created": False,
+            "message": "Server error occurred: " + str(e)
+        }), 500
+
+    finally:
         db.close_connection()
 
-    return {"account_created": False}
 
-@auth_bp.route("/login", methods=["GET", "POST"])
+@auth_bp.route("/login", methods=["POST"])
+@cross_origin(supports_credentials=True)
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        # Retrieve data from the login form
-        username = form.username.data
-        password = form.username.data
+    if not request.is_json:
+        return jsonify({"message": "Expected JSON data"}), 400
 
-        # Compare with database
-        db = Database()
-        cursor = db.create_connection()
+    data = request.get_json()
 
-        # Check if user exists so only users who have signed up can login
-        user_exists = cursor.execute("""SELECT * FROM users
-                                  WHERE username = ?;""", (username,)).fetchone()
+    # Extract data from request
+    username = data.get('username')
+    password = data.get('password')
 
-        if not user_exists:
-            form.username.errors.append("Incorrect username or password.")
-            db.close_connection()
+    # Basic server-side validation
+    if not all([username, password]):
+        return jsonify({
+            "logged_in": False,
+            "message": "Missing required fields"
+        }), 400
 
-        # Check is hashed passwords match to verify the user logging in
-        elif not check_password_hash(user_exists["password"], password):
-            form.username.errors.append("Incorrect username or password.")
-            db.close_connection()
+    db = Database()
+    cursor = db.create_connection()
 
-        else:
-            # Create a new session to prevent users from exploiting horizontal access control
-            session.clear()
-            session["username"] = username
+    try:
+        # Check if user exists
+        user = cursor.execute(
+            "SELECT * FROM users WHERE username = ?",
+            (username,)
+        ).fetchone()
 
-            # Return to previous page if applicable
-            next_page = request.args.get("next")
+        if not user:
+            return jsonify({
+                "logged_in": False,
+                "errors": {"general": "Invalid username or password"}
+            }), 401
 
-            # Otherwise return home
-            if not next_page:
-                next_page = url_for("app.index")
-            db.close_connection()
-            return {"logged_in": True}
-        
-    return {"logged_in": False}
-    
+        # Verify password
+        if not check_password_hash(user["password"], password):
+            return jsonify({
+                "logged_in": False,
+                "errors": {"general": "Invalid username or password"}
+            }), 401
+
+        # Set up session
+        session.clear()
+        session["username"] = username
+
+        return jsonify({
+            "logged_in": True,
+            "message": "Login successful",
+            "username": username
+        }), 200
+
+    except Exception as e:
+        print(f"Error during login: {e}")  # Log the error
+        return jsonify({
+            "logged_in": False,
+            "message": "Server error occurred"
+        }), 500
+
+    finally:
+        db.close_connection()
+
+
 @auth_bp.route("/logout")
 @login_required
 def logout():

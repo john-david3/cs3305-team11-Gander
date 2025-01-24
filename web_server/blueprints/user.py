@@ -53,10 +53,7 @@ def get_login_status():
     """
     Returns whether the user is logged in or not
     """
-    username = session.get("username", None)
-    if not username:
-        return {"logged_in": True}
-    return {"logged_in": False}
+    return jsonify(session.get("username") is not None)
 
 @user_bp.route('/authenticate_user')
 def authenticate_user():
