@@ -25,7 +25,7 @@ const VideoPage: React.FC = () => {
     if (streamerName) {
       // Fetch stream data for this streamer
       console.log(`Loading stream for ${streamerName}`);
-      // fetch(`/api/streams/${streamerName}`)
+      // fetch(`/api/get_stream_data/${streamerName}`)
     }
   }, [streamerName]);
 

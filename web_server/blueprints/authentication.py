@@ -1,6 +1,5 @@
-from flask import Blueprint, session, request, url_for, redirect, g, jsonify
+from flask import Blueprint, session, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import SignupForm, LoginForm
 from flask_cors import cross_origin
 from database.database import Database
 from blueprints.utils import login_required

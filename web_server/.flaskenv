@@ -1,2 +1,0 @@
-FLASK_APP=backend.blueprints.__init__
-FLASK_DEBUG=True

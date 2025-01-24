@@ -12,8 +12,4 @@ def hls(stream_id):
 # --------------------------------------------------------
 
 
-
-
-
-
 # TODO Route for saving uploaded thumbnails to database, serving these images to the frontend upon request: →→→ @main_bp.route('/images/<path:filename>') \n def serve_image(filename): ←←←
