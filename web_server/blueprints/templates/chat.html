@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+
+    <script>
+
+        let last_received = "";
+        const stream_id = "{{ stream_id }}";
+
+        function add_to_chat(data){
+            const chat_container = document.getElementById("chat_container");
+
+            data.forEach(element => {
+                const div = document.createElement("div");
+                div.textContent = `${element.time_sent} ${element.chatter_id}: ${element.message}`;
+                chat_container.appendChild(div);
+                last_received = element.time_sent;
+            });
+        }
+
+        function loadPrevChat() {
+            const init_chat_logs = JSON.parse('{{ chat_history | tojson }}');
+            add_to_chat(init_chat_logs);
+            
+        }
+
+        function sendChat(){
+            // Get the chat message sent by user
+            const chat_message = document.getElementById("messageInput").value;
+            document.getElementById("messageInput").value = "";
+
+            // Pass the chat message to python to store in chat log db
+            const data = {"chatter_id": "{{ chatter_id }}", "stream_id": "{{ stream_id }}", "message":chat_message};
+            const json_data = JSON.stringify(data);
+
+            fetch("/send_chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: json_data
+            })
+
+            // Check if message has been sent
+            .then(response => {
+                if (response.ok){
+                    getRecentChats();
+                }
+            })
+        }
+
+        function getRecentChats(){
+            // Let the backend know the most recent chat message the user has
+            fetch(`/recent_chat/${stream_id}?last_received=${last_received}`)
+                .then(response => {
+                    if (!response.ok){
+                        throw new Error(`Failed to fetch chats`)
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    add_to_chat(data);
+            })
+            .catch(error => {
+                console.error("Error fetching recent chats:", error);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', loadPrevChat);
+
+    </script>
+
+</head>
+<body>
+    <h1>Chat for Stream #{{ stream_id }}</h1>
+    <div id="chat_container" style="max-height: 400px; overflow-y: auto;"></div>
+    <input type="text" id="messageInput" placeholder="Type a message" />
+    <button onclick="sendChat()">Send</button>
+</body>
+</html>
