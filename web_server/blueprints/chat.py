@@ -1,11 +1,38 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from blueprints.utils import login_required
 from database.database import Database
+from flask_socketio import SocketIO, emit, join_room, leave_room
+from datetime import datetime
 
 chat_bp = Blueprint("chat", __name__)
+socketio = SocketIO()
 
 # <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
 # TODO: Add a route that deletes all chat logs when the stream is finished
+
+@socketio.on("connect")
+def handle_connection():
+    print("Client Connected")
+
+@socketio.on("join")
+def handle_join(data):
+    """
+    Allow a user to join the chat of the stream they are watching.
+    """
+    stream_id = data.get("stream_id")
+    if stream_id:
+        join_room(stream_id)
+        emit("status", {"message": f"Welcome to the chat, stream_id: {stream_id}"}, room=stream_id)
+
+@socketio.on("leave")
+def handle_leave(data):
+    """
+    Handle what happens when a user leaves the stream they are watching in regards to the chat.
+    """
+    stream_id = data.get("stream_id")
+    if stream_id:
+        leave_room(stream_id)
+        emit("status", {"message": f"user left room {stream_id}"}, room=stream_id)
 
 @chat_bp.route("/chat/<int:stream_id>")
 def get_past_chat(stream_id):
@@ -40,22 +67,21 @@ def get_past_chat(stream_id):
     # Pass the chat history to the proxy
     return jsonify({"chat_history": chat_history}), 200
 
-@chat_bp.route("/send_chat", methods=["POST"])
-@login_required
-def send_chat():
+@socketio.on("send_message")
+def send_chat(data):
     """
-    Works with react, takes the chat entered by a logged in user and stores in database
+    Using WebSockets to send a chat message to the specified chat
     """
 
     # Take the message information from frontend
-    data = request.get_json()
-    chatter_id = data.get("chatter_id")
+    chatter_id = data.get("chatter_id") # Need to change this to get session info
     stream_id = data.get("stream_id")
     message = data.get("message")
 
     # Input validation - chatter is logged in, message is not empty, stream exists
     if not all([chatter_id, message, stream_id]):
-        return jsonify({"chat_sent": False}), 400
+        emit("error", {"error": "Unable to send a chat"}, broadcast=False)
+        return
     
     # Save chat information to database so other users can see
     db = Database()
@@ -66,33 +92,8 @@ def send_chat():
     db.commit_data()
     db.close_connection()
 
-    return jsonify({"chat_sent": True}), 200
-
-
-
-
-@chat_bp.route("/load_new_chat/<int:stream_id>", methods=["GET"])
-def get_recent_chat(stream_id):
-    """
-    Fetch new chat messages on a stream a user has already loaded in to.
-    """
-    # Get the last received chat to avoid repeating old chats
-    last_received = request.args.get("last_received")   # last_received is a time stamp
-    if not last_received:
-        return jsonify({"error": "last_received timestamp required"}), 400
-
-    # Get the most recent chats from the database
-    db = Database()
-    cursor = db.create_connection()
-
-    # fetched in format: [(chatter_id, message, time_sent)]
-    new_chats = cursor.execute("""
-                        SELECT chatter_id, message, time_sent
-                        FROM chat
-                        WHERE stream_id = ?
-                        AND time_sent > ?;""", (stream_id, last_received)).fetchall()
-    db.close_connection()
-
-    # Send the new chats to frontend
-    chat_data = [{"chatter_id": chat[0], "message": chat[1], "time_sent": chat[2]} for chat in new_chats]
-    return jsonify(chat_data), 200
+    emit("new_message", {
+        "chatter_id":chatter_id,
+        "message":message,
+        "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }, room=stream_id)

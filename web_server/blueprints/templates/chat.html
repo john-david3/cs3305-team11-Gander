@@ -5,21 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Interface</title>
 
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
-
-        let last_received = "";
+        // Global constants
+        const socket = io("http://127.0.0.1:5000");     // TODO: Change this
         const stream_id = "{{ stream_id }}";
-
+        const chatter_id = "{{ chatter_id }}";
+        
         function add_to_chat(data){
             const chat_container = document.getElementById("chat_container");
+            console.log(data)
 
-            data.forEach(element => {
+            // Add each chat message to the chat box, one by one
+            data.forEach((element) => {
                 const div = document.createElement("div");
                 div.textContent = `${element.time_sent} ${element.chatter_id}: ${element.message}`;
                 chat_container.appendChild(div);
-                last_received = element.time_sent;
-            });
+            })
+            
+            chat_container.scrollTop = chat_container.scrollHeight; // keeps you at the bottom of the chat
         }
+
+        socket.on("connect", () => {
+            console.log("Socket Connection established!");
+        })
+
+        // Wait for a new message to be sent
+        socket.on("new_message", (data) => {
+            console.log("New message");
+            add_to_chat([data]);
+        });
 
         function loadPrevChat() {
             const init_chat_logs = JSON.parse('{{ chat_history | tojson }}');
@@ -28,48 +43,29 @@
         }
 
         function sendChat(){
-            // Get the chat message sent by user
-            const chat_message = document.getElementById("messageInput").value;
-            document.getElementById("messageInput").value = "";
+            // Get the chat message sent by user, if none, don't
+            const chat_message = document.getElementById("messageInput").value.trim();
+            if (!chat_message) return;
 
-            // Pass the chat message to python to store in chat log db
-            const data = {"chatter_id": "{{ chatter_id }}", "stream_id": "{{ stream_id }}", "message":chat_message};
-            const json_data = JSON.stringify(data);
+            document.getElementById("messageInput").value = ""; // clear the chat box
 
-            fetch("/send_chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: json_data
-            })
-
-            // Check if message has been sent
-            .then(response => {
-                if (response.ok){
-                    getRecentChats();
-                }
-            })
-        }
-
-        function getRecentChats(){
-            // Let the backend know the most recent chat message the user has
-            fetch(`/recent_chat/${stream_id}?last_received=${last_received}`)
-                .then(response => {
-                    if (!response.ok){
-                        throw new Error(`Failed to fetch chats`)
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    add_to_chat(data);
-            })
-            .catch(error => {
-                console.error("Error fetching recent chats:", error);
+            // Send the message using sockets
+            socket.emit("send_message", {
+                chatter_id: chatter_id,
+                stream_id: stream_id,
+                message: chat_message
             });
+
         }
 
-        window.addEventListener('DOMContentLoaded', loadPrevChat);
+        window.addEventListener('DOMContentLoaded', () => {
+            socket.emit("join", {stream_id: stream_id});
+            loadPrevChat();
+        });
+
+        window.addEventListener("beforeunload", () => {
+            socket.emit("leave", {stream_id: stream_id});
+        });
 
     </script>
 

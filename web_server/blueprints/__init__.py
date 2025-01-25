@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_session import Session
 from blueprints.utils import logged_in_user
@@ -30,13 +30,17 @@ def create_app():
         from blueprints.stripe import stripe_bp
         from blueprints.user import user_bp
         from blueprints.streams import stream_bp
-        from blueprints.chat import chat_bp
+        from blueprints.chat import chat_bp, socketio
 
+        # Registering Blueprints
         app.register_blueprint(auth_bp)
         app.register_blueprint(main_bp)
         app.register_blueprint(stripe_bp)
         app.register_blueprint(user_bp)
         app.register_blueprint(stream_bp)
         app.register_blueprint(chat_bp)
+
+        # Tell sockets where the initialisation app is
+        socketio.init_app(app, cors_allowed_origins="*")
 
     return app
