@@ -27,11 +27,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamId }) => {
         controls: true,
         fluid: true,
         responsive: true,
+        // autoplay: true,
+        loop: true,
         aspectRatio: "16:9",
         sources: [
           {
-            src: `/api/hls1/${streamId}`,
-            type: "application/x-mpegURL",
+            src: `/images/sample_game_video.mp4`,
+            // type: "application/x-mpegURL",
+            type: 'video/mp4'
           },
         ],
       });

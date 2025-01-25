@@ -32,7 +32,7 @@ const StreamerRoute: React.FC = () => {
   }, [streamerName]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <div className="h-screen w-screen flex text-6xl items-center justify-center" >Loading...</div>; // Or your loading component
   }
 
   return isLive ? <VideoPage streamId={1} /> : <UserPage />;

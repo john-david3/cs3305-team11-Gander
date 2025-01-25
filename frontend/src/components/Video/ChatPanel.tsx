@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { io, Socket } from "socket.io-client";
 import Input from "../Layout/Input";
 
 interface ChatMessage {
@@ -15,8 +16,37 @@ interface ChatPanelProps {
 const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
-  const lastReceivedRef = useRef<string>("");
+  const [socket, setSocket] = useState<Socket | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Initialize socket connection
+  useEffect(() => {
+    const newSocket = io("/", {
+      path: "/api/socket.io",
+      withCredentials: true
+    }); // Make sure this matches your backend URL
+    setSocket(newSocket);
+
+    newSocket.on("connect", () => {
+      console.log("Socket Connection established!");
+      // Join the stream's chat room
+      newSocket.emit("join", { stream_id: streamId });
+    });
+
+    newSocket.on("new_message", (data: ChatMessage) => {
+      setMessages(prev => [...prev, data]);
+    });
+
+    newSocket.on("error", (error) => {
+      console.error("Socket error:", error);
+    });
+
+    // Cleanup on unmount
+    return () => {
+      newSocket.emit("leave", { stream_id: streamId });
+      newSocket.close();
+    };
+  }, [streamId]);
 
   // Load initial chat history
   useEffect(() => {
@@ -27,10 +57,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
         const data = await response.json();
         if (data.chat_history) {
           setMessages(data.chat_history);
-          if (data.chat_history.length > 0) {
-            lastReceivedRef.current =
-              data.chat_history[data.chat_history.length - 1].time_sent;
-          }
         }
       } catch (error) {
         console.error("Error loading chat history:", error);
@@ -42,61 +68,21 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (chatContainerRef.current)
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
-  // Poll for new messages
-  useEffect(() => {
-    const getRecentChats = async () => {
-      if (!lastReceivedRef.current) return;
+  const sendChat = () => {
+    if (!inputMessage.trim() || !chatterId || !socket) return;
 
-      try {
-        const response = await fetch(
-          `/api/load_new_chat/${streamId}?last_received=${lastReceivedRef.current}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch recent chats");
-        const newMessages = await response.json();
-        if (newMessages && newMessages.length > 0) {
-          setMessages((prev) => [...prev, ...newMessages]);
-          lastReceivedRef.current =
-            newMessages[newMessages.length - 1].time_sent;
-        }
-      } catch (error) {
-        console.error("Error fetching recent chats:", error);
-      }
-    };
+    socket.emit("send_message", {
+      chatter_id: chatterId,
+      stream_id: streamId,
+      message: inputMessage.trim()
+    });
 
-    const pollInterval = setInterval(getRecentChats, 3000); // Poll every 3 seconds
-    return () => clearInterval(pollInterval);
-  }, [streamId]);
-
-  const sendChat = async () => {
-    if (!inputMessage.trim() || !chatterId) return;
-
-    try {
-      const response = await fetch("/api/send_chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chatter_id: chatterId,
-          stream_id: streamId,
-          message: inputMessage,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.chat_sent) {
-          setInputMessage("");
-        }
-      }
-    } catch (error) {
-      console.error("Error sending chat:", error);
-    }
+    setInputMessage("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -105,9 +91,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
       sendChat();
     }
   };
-
+  
   return (
-    <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4" >
+    <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
       <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
 
       <div
