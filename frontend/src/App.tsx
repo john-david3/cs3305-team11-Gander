@@ -3,9 +3,7 @@ import { AuthContext } from "./context/AuthContext";
 import { StreamsProvider } from "./context/StreamsContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage, { PersonalisedHomePage } from "./pages/HomePage";
-import VideoPage from "./pages/VideoPage";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
+import StreamerRoute from "./components/Stream/StreamerRoute";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
@@ -32,9 +30,7 @@ function App() {
               path="/"
               element={isLoggedIn ? <PersonalisedHomePage /> : <HomePage />}
             />
-            <Route path="/:streamerName" element={<VideoPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/:streamerName" element={<StreamerRoute />} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

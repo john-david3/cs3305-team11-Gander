@@ -13,10 +13,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
 
   return (
     <>
-      <div className="blurring-layer fixed z-10 inset-0 w-screen h-screen backdrop-blur-sm group-has-[input:focus]:backdrop-blur-[5px]"></div>
+      <div id="blurring-layer" className="fixed z-10 inset-0 w-screen h-screen backdrop-blur-sm group-has-[input:focus]:backdrop-blur-[5px]"></div>
 
-      <div className="modal-container fixed inset-0 bg-black/30 has-[input:focus]:bg-black/40 flex flex-col items-center justify-around z-50 h-[70vh] m-auto min-w-[40vw] w-fit py-[50px] rounded-[2rem] transition-all">
-        <div className="login-methods w-full flex flex-row items-center justify-evenly">
+      <div id="modal-container" className="fixed inset-0 bg-black/30 has-[input:focus]:bg-black/40 flex flex-col items-center justify-around z-50 h-[70vh] m-auto min-w-[40vw] w-fit py-[50px] rounded-[2rem] transition-all">
+        <div id="login-methods" className="w-full flex flex-row items-center justify-evenly">
           <button
             onClick={onClose}
             className="absolute top-[1rem] right-[2rem] text-[2rem] text-white hover:text-red-500 font-black hover:text-[2.5rem] transition-all"

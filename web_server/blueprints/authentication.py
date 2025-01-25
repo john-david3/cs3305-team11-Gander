@@ -22,8 +22,13 @@ def signup():
 
     # Basic server-side validation
     if not all([username, email, password]):
+        fields = ["username", "email", "password"]
+        for x in fields:
+            if not [username, email, password][fields.index(x)]:
+                fields.remove(x)
         return jsonify({
             "account_created": False,
+            "error_fields": fields,
             "message": "Missing required fields"
         }), 400
 
@@ -45,13 +50,15 @@ def signup():
         if dup_email is not None:
             return jsonify({
                 "account_created": False,
-                "errors": {"email": "Email already taken"}
+                "error_fields": ["email"],
+                "message": "Email already taken"
             }), 400
 
         if dup_username is not None:
             return jsonify({
                 "account_created": False,
-                "errors": {"username": "Username already taken"}
+                "error_fields": ["username"],
+                "message": "Username already taken"
             }), 400
 
         # Create new user
@@ -122,14 +129,16 @@ def login():
         if not user:
             return jsonify({
                 "logged_in": False,
-                "errors": {"general": "Invalid username or password"}
+                "error_fields": ["username", "password"],
+                "message": "Invalid username or password"
             }), 401
 
         # Verify password
         if not check_password_hash(user["password"], password):
             return jsonify({
                 "logged_in": False,
-                "errors": {"general": "Invalid username or password"}
+                "error_fields": ["username", "password"],
+                "message": "Invalid username or password"
             }), 401
 
         # Set up session

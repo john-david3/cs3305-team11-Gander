@@ -7,12 +7,12 @@ interface ThumbnailProps {
 
 const Thumbnail = ({ path, alt }: ThumbnailProps) => {
   return (
-	<div>
+	<div id='stream-thumbnail'>
       <img
         width={300}
               src={path}
               alt={alt}
-              className="stream-thumbnail rounded-md"
+              className="rounded-md"
             />
 	</div>
   )

@@ -1,35 +1,59 @@
-// video.html
+import React, { useEffect, useRef } from "react";
+import videojs from "video.js";
+import type Player from "video.js/dist/types/player";
+import "video.js/dist/video-js.css";
 
-// src/components/Video/VideoPlayer.tsx
-import React, { useEffect } from 'react';
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
+interface VideoPlayerProps {
+  streamId: number;
+}
 
-const VideoPlayer: React.FC = () => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamId }) => {
+  const videoRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<Player | null>(null);
+
   useEffect(() => {
-    const player = videojs('player', {
-      width: 1280,
-      height: 720,
-      controls: true,
-      preload: 'auto',
-      sources: [{
-        src: '/hls/stream.m3u8',
-        type: 'application/x-mpegURL'
-      }]
-    });
+    // Makes sure Video.js player is only initialized once
+    if (!playerRef.current && videoRef.current) {
+      const videoElement = document.createElement("video");
+      videoElement.classList.add(
+        "video-js",
+        "vjs-big-play-centered",
+        "w-full",
+        "h-full"
+      );
+      videoRef.current.appendChild(videoElement);
 
+      playerRef.current = videojs(videoElement, {
+        controls: true,
+        fluid: true,
+        responsive: true,
+        aspectRatio: "16:9",
+        sources: [
+          {
+            src: `/api/hls1/${streamId}`,
+            type: "application/x-mpegURL",
+          },
+        ],
+      });
+    }
+
+    // Dispose the Video.js player when the component unmounts
     return () => {
-      if (player) {
-        player.dispose();
+      if (playerRef.current) {
+        playerRef.current.dispose();
+        playerRef.current = null;
       }
     };
-  }, []);
+  }, [streamId]);
 
   return (
-    <video
-      id="player"
-      className="video-js vjs-default-skin"
-    />
+    <div
+      id="video-container"
+      className="h-full flex items-center bg-gray-900 rounded-lg"
+      style={{ gridArea: "2 / 1 / 3 / 2" }}
+    >
+      <div ref={videoRef} id="video-player" className="w-full" />
+    </div>
   );
 };
 

@@ -17,11 +17,14 @@ interface StreamListRowProps {
   title: string;
   description: string;
   streams: StreamItem[];
-  onStreamClick?: (streamId: string) => void;
+  onStreamClick: (streamId: number, streamerName: string) => void;
 }
 
 // Individual stream entry component
-const StreamListEntry: React.FC<StreamListEntryProps> = ({ stream, onClick }) => {
+const StreamListEntry: React.FC<StreamListEntryProps> = ({
+  stream,
+  onClick,
+}) => {
   return (
     <div
       className="flex flex-col bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors"
@@ -30,7 +33,7 @@ const StreamListEntry: React.FC<StreamListEntryProps> = ({ stream, onClick }) =>
       <div className="relative w-full pt-[56.25%]">
         {stream.thumbnail ? (
           <img
-            src={`images/`+stream.thumbnail}
+            src={`images/` + stream.thumbnail}
             alt={stream.title}
             className="absolute top-0 left-0 w-full h-full object-cover"
           />
@@ -65,7 +68,7 @@ const StreamListRow: React.FC<StreamListRowProps> = ({
           <StreamListEntry
             key={stream.id}
             stream={stream}
-            onClick={() => onStreamClick?.(stream.id)}
+            onClick={() => onStreamClick?.(stream.id, stream.streamer)}
           />
         ))}
       </div>

@@ -15,6 +15,7 @@ interface FormErrors {
   email?: string;
   password?: string;
   confirmPassword?: string;
+  general?: string; // For general authentication errors
 }
 
 const RegisterForm: React.FC = () => {
@@ -68,14 +69,8 @@ const RegisterForm: React.FC = () => {
           credentials: "include",
           body: JSON.stringify(formData),
         });
-        console.log(`sending data: ${JSON.stringify(formData)}`);
-        const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(
-            data.message || `Registration failed. ${response.body}`
-          );
-        }
+        const data = await response.json();
 
         if (data.account_created) {
           //TODO Handle successful registration (e.g., redirect or show success message)
@@ -84,17 +79,24 @@ const RegisterForm: React.FC = () => {
           window.location.reload();
         } else {
           // Handle validation errors from server
-          const serverErrors: FormErrors = {};
-          if (data.errors) {
-            Object.entries(data.errors).forEach(([field, message]) => {
-              serverErrors[field as keyof FormErrors] = message as string;
+          if (data.error_fields) {
+            const newErrors: FormErrors = {};
+            for (const field of data.error_fields) {
+              newErrors[field as keyof FormErrors] = data.message;
+            }
+            setErrors(newErrors);
+          } else {
+            // If no specific fields are indicated, set a general error
+            setErrors({
+              general: data.message || "An error occurred during registration",
             });
-            setErrors(serverErrors);
           }
         }
       } catch (error) {
-        console.error("Registration error:", error);
-        //TODO Show user-friendly error message via Alert component maybe
+        console.error("Error Registering:", error);
+        setErrors({
+          general: "An error occurred during registration",
+        });
       }
     }
   };
@@ -102,8 +104,13 @@ const RegisterForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="register-form h-[100%] flex flex-col h-full justify-evenly items-center"
+      id="register-form"
+      className="h-[100%] flex flex-col h-full justify-evenly items-center"
     >
+      {errors.general && (
+        <p className="text-red-500 text-sm text-center">{errors.general}</p>
+      )}
+      
       {errors.username && (
         <p className="text-red-500 mt-3 text-sm">{errors.username}</p>
       )}

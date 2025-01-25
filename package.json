@@ -1,8 +1,10 @@
 {
   "dependencies": {
+    "@types/video.js": "^7.3.58",
     "axios": "^1.7.9",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "video.js": "^8.21.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.8",

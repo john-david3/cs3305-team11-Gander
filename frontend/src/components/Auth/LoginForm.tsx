@@ -61,27 +61,30 @@ const LoginForm: React.FC = () => {
 
         const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(data.message || "Login failed");
-        }
-
         if (data.logged_in) {
           //TODO: Handle successful login (e.g., redirect to home page)
           console.log("Login successful");
           setIsLoggedIn(true);
           window.location.reload();
         } else {
-          // Handle authentication errors
-          if (data.errors) {
+          // Handle authentication errors from server
+          if (data.error_fields) {
+            const newErrors: FormErrors = {};
+            for (const field of data.error_fields) {
+              newErrors[field as keyof FormErrors] = data.message;
+            }
+            setErrors(newErrors);
+          } else {
+            // If no specific fields are indicated, set a general error
             setErrors({
-              general: "Invalid username or password",
+              general: data.message || "An error occurred during login",
             });
           }
         }
       } catch (error) {
-        console.error("Login error:", error);
+        console.error("Error logging in:", error);
         setErrors({
-          general: "An error occurred during login. Please try again.",
+          general: "An error occurred during login",
         });
       }
     }
@@ -90,7 +93,8 @@ const LoginForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="login-form h-[100%] flex flex-col h-full justify-evenly items-center"
+      id="login-form"
+      className="h-[100%] flex flex-col h-full justify-evenly items-center"
     >
       {errors.general && (
         <p className="text-red-500 text-sm text-center">{errors.general}</p>

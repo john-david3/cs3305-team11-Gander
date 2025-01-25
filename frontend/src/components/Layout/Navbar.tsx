@@ -13,7 +13,11 @@ import Input from "./Input";
 import AuthModal from "../Auth/AuthModal";
 import { useAuth } from "../../context/AuthContext";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  variant?: "home" | "default";
+}
+
+const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isLoggedIn } = useAuth();
 
@@ -39,8 +43,8 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col justify-around items-center h-[45vh]">
-      <Logo />
+    <div id="navbar" className={`flex justify-center items-center ${variant === "home" ? "h-[45vh] flex-col" : "h-[15vh] col-span-2 flex-row"}`}>
+      <Logo variant={variant} />
       <Button
         extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap"
         onClick={() => (isLoggedIn ? handleLogout() : setShowAuthModal(true))}
@@ -69,13 +73,13 @@ const Navbar: React.FC = () => {
 
       <Button
         extraClasses="absolute top-[20px] right-[20px] text-[1rem] flex items-center flex-nowrap"
-        onClick={() => console.log("Settings")}
+        onClick={() => console.log("Settings - TODO")}
       >
         <SettingsIcon className="h-15 w-15 mr-1" />
         Quick Settings
       </Button>
 
-      <div className="search-bar flex items-center">
+      <div id="search-bar" className="flex items-center">
         <Input
           type="text"
           placeholder="Search..."

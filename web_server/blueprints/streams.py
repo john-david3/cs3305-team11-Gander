@@ -139,9 +139,16 @@ def get_streamer(streamer_id):
     """
     return
 
+@stream_bp.route('/streamer/<string:streamerName>/status')
+def get_streamer_status(streamerName):
+    """
+    Returns a streamer's status, if they are live or not
+    """
+    return {"status": "live", "streamId": 1}
 
-@stream_bp.route('/get_stream_data/<int:streamer_id>', methods=['GET'])
-def get_stream(streamer_id):
+
+@stream_bp.route('/get_stream_data/<int:stream_id>', methods=['GET'])
+def get_stream(stream_id):
     """
     Returns a streamer's stream data
     """

@@ -8,16 +8,18 @@ const HomePage: React.FC = () => {
   const { featuredStreams, featuredCategories } = useStreams();
   const navigate = useNavigate();
 
-  const handleStreamClick = (streamerId: string) => {
-    navigate(`/${streamerId}`);
+  const handleStreamClick = (streamId: number, streamerName: string) => {
+    console.log(`Navigating to ${streamId}`);
+    navigate(`/${streamerName}`);
   };
 
   return (
     <div
-      className="home-page bg-repeat"
+      id="home-page"
+      className="bg-repeat"
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
-      <Navbar />
+      <Navbar variant="home" />
 
       <StreamListRow
         title="Live Now"
@@ -39,16 +41,18 @@ export const PersonalisedHomePage: React.FC = () => {
   const { featuredStreams, featuredCategories } = useStreams();
   const navigate = useNavigate();
 
-  const handleStreamClick = (streamerId: string) => {
-    navigate(`/${streamerId}`);
+  const handleStreamClick = (streamId: number, streamerName: string) => {
+    console.log(`Navigating to ${streamId}`);
+    navigate(`/${streamerName}`);
   };
 
   return (
     <div
-      className="home-page bg-repeat"
+      id="personalised-home-page"
+      className="bg-repeat"
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
-      <Navbar />
+      <Navbar variant="home" />
       {/*//TODO Extract StreamListRow away to ListRow so that it makes sense for categories to be there also */}
       <StreamListRow
         title="Live Now - Recommended"
