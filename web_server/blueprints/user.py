@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, session
-from database.database import Database
-from datetime import datetime
+from utils.user_utils import is_subscribed, is_following, subscription_expiration
 
 user_bp = Blueprint("user", __name__)
 
@@ -9,10 +8,7 @@ def user_subscribed(user_id, streamer_id):
     """
     Checks to see if user is subscribed to a streamer
     """
-    db = Database()
-    cursor = db.create_connection()
-    data = cursor.execute("SELECT * FROM subscribes WHERE user_id = ? AND streamer_id = ? AND expires > since", (user_id, streamer_id)).fetchone()
-    if data:
+    if is_subscribed(user_id, streamer_id):
         return jsonify({"subscribed": True})
     return jsonify({"subscribed": False})
 
@@ -21,10 +17,7 @@ def user_following(user_id, streamer_id):
     """
     Checks to see if user is following a streamer
     """
-    db = Database()
-    cursor = db.create_connection()
-    data = cursor.execute("SELECT * FROM follows WHERE user_id = ? AND streamer_id = ?", (user_id, streamer_id)).fetchone()
-    if data:
+    if is_following(user_id, streamer_id):
         return jsonify({"following": True})
     return jsonify({"following": False})       
 
@@ -34,21 +27,11 @@ def user_subscription_expiration(user_id, streamer_id):
     """
     Returns remaining time until subscription expiration
     """
-    db = Database()
-    cursor = db.create_connection()
-    data = cursor.execute("SELECT expires from subscriptions WHERE user_id = ? AND streamer_id = ? AND expires > since", (user_id,streamer_id))
-    if data:
-        expiration_date = data[0]
-
-        ends_datetime = datetime.strptime(expiration_date, '%Y-%m-%d %H:%M:%S')
-
-        remaining_time = ends_datetime - datetime.now()
+    remaining_time = subscription_expiration(user_id, streamer_id)
         
-        return jsonify({"remaining_time": remaining_time.seconds})
+    return jsonify({"remaining_time": remaining_time})
     
-    return jsonify({"remaining_time": 0})
-
-@user_bp.route('/get_login_status')
+@user_bp.route('/get_login_status', methods=['GET'])
 def get_login_status():
     """
     Returns whether the user is logged in or not
@@ -61,3 +44,11 @@ def authenticate_user():
     Authenticates the user
     """
     return {"authenticated": True}
+
+@user_bp.route('/forgot_password', methods=['POST'])
+def forgot_password():
+    """
+    Will send link to email to reset password by looking at the user_id within session to see whos password should be reset
+    Creates a super random number to be used a the link to reset password I guess a random number generator seeded with a secret
+    """
+    return

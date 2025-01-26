@@ -1,5 +1,6 @@
-from flask import Blueprint
-
+from flask import Blueprint, session
+from utils.stream_utils import streamer_data, streamer_id, streamer_live_status, streamer_most_recent_stream, streamer_stream, followed_live_streams
+from utils.user_utils import get_user_id
 stream_bp = Blueprint("stream", __name__)
 
 
@@ -125,6 +126,7 @@ def get_categories():
 def get_followed_categories():
     """
     Queries DB to get a list of followed categories
+    Hmm..
     """
     categories = []
     if categories:
@@ -132,40 +134,76 @@ def get_followed_categories():
     return get_categories()
 
 
-@stream_bp.route('/get_streamer_data/<int:streamer_id>', methods=['GET'])
-def get_streamer(streamer_id):
+@stream_bp.route('/get_streamer_data/<int:streamer_username>', methods=['GET'])
+def get_streamer_data(streamer_username):
     """
-    Returns a streamer's data
+    Returns a given streamer's data
     """
-    return
+    streamers_id = streamer_id(streamer_username)
+    if not streamers_id:
+        return #whatever
+    streamers_data = streamer_data(streamers_id)
+    return streamers_data
 
-@stream_bp.route('/streamer/<string:streamerName>/status')
-def get_streamer_status(streamerName):
+@stream_bp.route('/streamer/<string:streamer_username>/status')
+def get_streamer_status(streamer_username):
     """
-    Returns a streamer's status, if they are live or not
+    Returns a streamer's status, if they are live or not and their most recent stream
     """
     return {"status": "live", "streamId": 1}
+    streamers_id = streamer_id(streamer_username)
+    if not streamers_id:
+        return #whatever
+    streamer_status = streamer_live_status(streamers_id)
+    stream_id = streamer_most_recent_stream(streamers_id)
+    return {"live": streamer_status, "streamerId": streamers_id, "streamId": stream_id}
 
 
-@stream_bp.route('/get_stream_data/<int:stream_id>', methods=['GET'])
-def get_stream(stream_id):
+@stream_bp.route('/get_stream_data/<int:streamer_username>', methods=['GET'])
+def get_stream(streamer_username):
     """
-    Returns a streamer's stream data
+    Returns a streamer's most recent stream data
     """
-    return
+    streamers_id = streamer_id(streamer_username)
+    if not streamers_id:
+        return #whatever
+    most_recent_stream = streamer_most_recent_stream(streamers_id)
+    if most_recent_stream:
+        return most_recent_stream
+    
+    return #Whatever
 
+@stream_bp.route('/get_stream_data/<int:streamer_username>/<int:stream_id>', methods=['GET'])
+def get_specific_stream(streamer_username,stream_id):
+    """
+    Returns a streamer's stream data given stream_id
+    """
+    stream = streamer_stream(streamer_username, stream_id)
+    if stream:
+        return stream
+    
+    return #whatever
 
+#@login_required
+# need to add in a lock to this route for only logged in users since we will be taking from the session
 @stream_bp.route('/get_followed_streams', methods=['GET'])
 def get_followed_streamers():
     """
     Queries DB to get a list of followed streamers
     """
-    return
+    username = session.get('username')
+    user_id = get_user_id(username)
+    live_following_streams = followed_live_streams(user_id)
+    if not followed_live_streams:
+        return #whatever
+    return live_following_streams
 
 
 @stream_bp.route('/save_stream_thumbnail/<int:streamer_id>', methods=['POST'])
 def stream_thumbnail_snapshot(streamer_id):
     """
     Function to be called periodically which saves the current live stream as an img to be used for the thumbnail to be displayed
+    will be asking streamer guy how to get the picture
+    will be saved as a png stream_id.streamer_id.png or similar to create a unique image
     """
     return
