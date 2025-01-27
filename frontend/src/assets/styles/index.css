@@ -39,6 +39,16 @@
   }
 }
 
+.agog-text {
+  background: linear-gradient(to right, #60A5FA, #8B5CF6, #EC4899, #FACC15);
+  background-clip: text;
+}
+
+.agog-text:hover {
+  background: white;
+  transition: ease;
+}
+
 /* 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

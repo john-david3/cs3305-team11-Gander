@@ -3,6 +3,7 @@ import Navbar from "../components/Layout/Navbar";
 import StreamListRow from "../components/Layout/StreamListRow";
 import { useNavigate } from "react-router-dom";
 import { useStreams } from "../context/StreamsContext";
+import Name from "../components/Layout/Name";
 
 const HomePage: React.FC = () => {
   const { featuredStreams, featuredCategories } = useStreams();
@@ -20,6 +21,7 @@ const HomePage: React.FC = () => {
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
       <Navbar variant="home" />
+      <Name></Name>
 
       <StreamListRow
         title="Live Now"
