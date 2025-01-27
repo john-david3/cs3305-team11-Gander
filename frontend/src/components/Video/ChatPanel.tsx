@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import Input from "../Layout/Input";
+import { useAuth } from "../../context/AuthContext";
 
 interface ChatMessage {
   chatter_id: string;
@@ -10,21 +11,21 @@ interface ChatMessage {
 
 interface ChatPanelProps {
   streamId: number;
-  chatterId?: string; // Optional as user might not be logged in
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [socket, setSocket] = useState<Socket | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const { isLoggedIn, username } = useAuth();
 
   // Initialize socket connection
   useEffect(() => {
     const newSocket = io("/", {
       path: "/api/socket.io",
       withCredentials: true
-    }); // Make sure this matches your backend URL
+    });
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
@@ -35,6 +36,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
 
     newSocket.on("new_message", (data: ChatMessage) => {
       setMessages(prev => [...prev, data]);
+    });
+
+    newSocket.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+    });
+  
+    newSocket.on("connect_timeout", () => {
+      console.error("Socket connection timeout");
     });
 
     newSocket.on("error", (error) => {
@@ -74,10 +83,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
   }, [messages]);
 
   const sendChat = () => {
-    if (!inputMessage.trim() || !chatterId || !socket) return;
+    if (!inputMessage.trim() || !socket) {
+      console.log("No message to send or socket not initialized!");
+      return;
+    };
 
     socket.emit("send_message", {
-      chatter_id: chatterId,
       stream_id: streamId,
       message: inputMessage.trim()
     });
@@ -106,7 +117,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
             <span className="text-gray-400 text-sm">
               {new Date(msg.time_sent).toLocaleTimeString()}
             </span>
-            <span className={`font-bold ${msg.chatter_id === chatterId ? "text-blue-400" : "text-green-400"}`}> {msg.chatter_id}: </span>
+            <span className={`font-bold ${msg.chatter_id === username ? "text-blue-400" : "text-green-400"}`}> {msg.chatter_id}: </span>
             <span>{msg.message}</span>
           </div>
         ))}
@@ -118,13 +129,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, chatterId }) => {
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={handleKeyPress}
-          placeholder={chatterId ? "Type a message..." : "Login to chat"}
-          disabled={!chatterId}
+          placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
+          disabled={!isLoggedIn}
           extraClasses="flex-grow disabled:cursor-not-allowed"
         />
         <button
           onClick={sendChat}
-          disabled={!chatterId}
+          disabled={!isLoggedIn}
           className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Send

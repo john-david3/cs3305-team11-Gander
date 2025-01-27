@@ -6,20 +6,27 @@ export default {
   ],
   theme: {
     extend: {
+      
+      animation: {
+        moving_text_colour: "moving_text_colour 6s ease-in-out infinite alternate",
+        moving_bg: 'moving_bg 200s linear infinite'
+      },
+      
+      
+      backgroundImage: {
+        logo: "linear-gradient(45deg, #60A5FA, #8B5CF6, #EC4899, #FACC15,#60A5FA, #8B5CF6, #EC4899, #FACC15)",
+      },
+
       keyframes: {
-        agog: {
+        moving_text_colour: {
           "0%": { backgroundPosition: "0% 50%" },
           "100%": { backgroundPosition: "100% 50%" },
         },
-      },
-
-      animation: {
-        agog: "agog 6s linear infinite",
-      },
-
-      backgroundImage: {
-        agog: "linear-gradient(to right, #60A5FA, #8B5CF6, #EC4899, #FACC15,#60A5FA, #8B5CF6, #EC4899, #FACC15)",
-      },
+        moving_bg: {
+          '0%': { backgroundPosition: '0% 0%' },
+          '100%': { backgroundPosition: '100% 0%' }
+        }
+      }
     },
   },
   plugins: [

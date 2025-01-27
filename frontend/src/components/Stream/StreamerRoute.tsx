@@ -26,7 +26,7 @@ const StreamerRoute: React.FC = () => {
     checkStreamStatus();
 
     // Poll for live status changes
-    const interval = setInterval(checkStreamStatus, 90000); // Check every 90 seconds
+    const interval = setInterval(checkStreamStatus, 1000); // Check every 90 seconds
 
     return () => clearInterval(interval);
   }, [streamerName]);

@@ -45,7 +45,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
         <VideoPlayer streamId={streamId} />
 
         {isLoggedIn ? (
-          <ChatPanel streamId={streamId} chatterId="chatter-man" />
+          <ChatPanel streamId={streamId} />
         ) : (
           <ChatPanel streamId={streamId} />
         )}

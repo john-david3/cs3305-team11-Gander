@@ -9,12 +9,14 @@ socketio = SocketIO()
 # <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
 # TODO: Add a route that deletes all chat logs when the stream is finished
 
+
 @socketio.on("connect")
 def handle_connection() -> None:
     """
     Accept the connection from the frontend.
     """
     print("Client Connected")   # Confirmation connect has been made
+
 
 @socketio.on("join")
 def handle_join(data) -> None:
@@ -26,6 +28,7 @@ def handle_join(data) -> None:
         join_room(stream_id)
         emit("status", {"message": f"Welcome to the chat, stream_id: {stream_id}"}, room=stream_id)
 
+
 @socketio.on("leave")
 def handle_leave(data) -> None:
     """
@@ -36,11 +39,12 @@ def handle_leave(data) -> None:
         leave_room(stream_id)
         emit("status", {"message": f"user left room {stream_id}"}, room=stream_id)
 
+
 @chat_bp.route("/chat/<int:stream_id>")
 def get_past_chat(stream_id: int):
     """
     Returns a JSON object to be passed to the server.
-    
+
     Output structure in the following format: `{chatter_id: message}` for all chats.
 
     Ran once when a user first logs into a stream to get the most recent 50 chat messages.
@@ -49,7 +53,7 @@ def get_past_chat(stream_id: int):
     # Connect to the database
     db = Database()
     cursor = db.create_connection()
-    
+
     # fetched in format: [(chatter_id, message, time_sent)]
     all_chats = cursor.execute("""
                                SELECT *
@@ -62,12 +66,14 @@ def get_past_chat(stream_id: int):
                                )
                                ORDER BY time_sent ASC;""", (stream_id,)).fetchall()
     db.close_connection()
-    
+
     # Create JSON output of chat_history to pass through NGINX proxy
-    chat_history = [{"chatter_id": chat[0], "message": chat[1], "time_sent": chat[2]} for chat in all_chats]
+    chat_history = [{"chatter_id": chat[0], "message": chat[1],
+                     "time_sent": chat[2]} for chat in all_chats]
 
     # Pass the chat history to the proxy
     return jsonify({"chat_history": chat_history}), 200
+
 
 @socketio.on("send_message")
 def send_chat(data) -> None:
@@ -84,7 +90,7 @@ def send_chat(data) -> None:
     if not all([chatter_id, message, stream_id]):
         emit("error", {"error": "Unable to send a chat"}, broadcast=False)
         return
-    
+
     # Save chat information to database so other users can see
     db = Database()
     cursor = db.create_connection()
@@ -96,7 +102,7 @@ def send_chat(data) -> None:
 
     # Send the chat message to the client so it can be displayed
     emit("new_message", {
-        "chatter_id":chatter_id,
-        "message":message,
+        "chatter_id": chatter_id,
+        "message": message,
         "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }, room=stream_id)
+    }, room=stream_id)

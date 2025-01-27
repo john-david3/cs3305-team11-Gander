@@ -3,6 +3,7 @@ from utils.user_utils import is_subscribed, is_following, subscription_expiratio
 
 user_bp = Blueprint("user", __name__)
 
+
 @user_bp.route('/is_subscribed/<int:user_id>/<int:streamer_id>')
 def user_subscribed(user_id: int, streamer_id: int):
     """
@@ -19,7 +20,7 @@ def user_following(user_id: int, streamer_id: int):
     """
     if is_following(user_id, streamer_id):
         return jsonify({"following": True})
-    return jsonify({"following": False})       
+    return jsonify({"following": False})
 
 
 @user_bp.route('/subscription_remaining/<int:user_id>/<int:streamer_id>')
@@ -28,7 +29,7 @@ def user_subscription_expiration(user_id: int, streamer_id: int):
     Returns remaining time until subscription expiration
     """
     remaining_time = subscription_expiration(user_id, streamer_id)
-        
+
     return jsonify({"remaining_time": remaining_time})
     
 @user_bp.route('/get_login_status')
@@ -36,7 +37,9 @@ def get_login_status():
     """
     Returns whether the user is logged in or not
     """
-    return jsonify(session.get("username") is not None)
+    username = session.get("username")
+    return jsonify({'status': username is not None, 'username': username})
+
 
 @user_bp.route('/authenticate_user')
 def authenticate_user() -> dict:
@@ -44,6 +47,7 @@ def authenticate_user() -> dict:
     Authenticates the user
     """
     return {"authenticated": True}
+
 
 @user_bp.route('/forgot_password', methods=['POST'])
 def forgot_password():

@@ -25,13 +25,10 @@ def signup():
 
     # Validation - ensure all fields exist, users cannot have an empty field
     if not all([username, email, password]):
-        fields = ["username", "email", "password"]
-        for x in fields:
-            if not [username, email, password][fields.index(x)]:
-                fields.remove(x)
+        error_fields = get_error_fields([username, email, password]), #!←← find the error_fields, to highlight them in red to the user on the frontend
         return jsonify({
             "account_created": False,
-            "error_fields": fields,
+            "error_fields": error_fields,
             "message": "Missing required fields"
         }), 400
     
@@ -41,9 +38,10 @@ def signup():
         email = sanitizer(email, "email")
         password = sanitizer(password, "password")
     except ValueError as e:
+        error_fields = get_error_fields([username, email, password])
         return jsonify({
             "account_created": False,
-            "error_fields": fields,
+            "error_fields": error_fields,
             "message": "Invalid input received"
         }), 400
 
@@ -204,3 +202,10 @@ def logout() -> dict:
     """
     session.clear()
     return {"logged_in": False}
+
+def get_error_fields(values: list):
+    fields = ["username", "email", "password"]
+    for x in fields:
+        if not values[fields.index(x)]:
+            fields.remove(x)
+    return fields

@@ -15,7 +15,7 @@ services:
     build:
       context: ./web_server
     ports:
-      - "5000"
+      - "5000:5000"
     networks:
       - app_network
     env_file:

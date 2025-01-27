@@ -2,18 +2,20 @@ import { useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { StreamsProvider } from "./context/StreamsContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage, { PersonalisedHomePage } from "./pages/HomePage";
+import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/get_login_status")
       .then((response) => response.json())
-      .then((loggedIn) => {
-        setIsLoggedIn(loggedIn);
+      .then((data) => {
+        setIsLoggedIn(data.status);
+        setUsername(data.username);
       })
       .catch((error) => {
         console.error("Error fetching login status:", error);
@@ -22,13 +24,13 @@ function App() {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, username, setIsLoggedIn, setUsername }}>
       <StreamsProvider>
         <BrowserRouter>
           <Routes>
             <Route
               path="/"
-              element={isLoggedIn ? <PersonalisedHomePage /> : <HomePage />}
+              element={isLoggedIn ? <HomePage variant="personalised" /> : <HomePage />}
             />
             <Route path="/:streamerName" element={<StreamerRoute />} />
 
