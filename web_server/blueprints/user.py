@@ -3,8 +3,8 @@ from utils.user_utils import is_subscribed, is_following, subscription_expiratio
 
 user_bp = Blueprint("user", __name__)
 
-@user_bp.route('/is_subscribed/<int:user_id>/<int:streamer_id>', methods=['GET'])
-def user_subscribed(user_id, streamer_id):
+@user_bp.route('/is_subscribed/<int:user_id>/<int:streamer_id>')
+def user_subscribed(user_id: int, streamer_id: int):
     """
     Checks to see if user is subscribed to a streamer
     """
@@ -12,8 +12,8 @@ def user_subscribed(user_id, streamer_id):
         return jsonify({"subscribed": True})
     return jsonify({"subscribed": False})
 
-@user_bp.route('/is_following/<int:user_id>/<int:streamer_id>', methods=['GET'])
-def user_following(user_id, streamer_id):
+@user_bp.route('/is_following/<int:user_id>/<int:streamer_id>')
+def user_following(user_id: int, streamer_id: int):
     """
     Checks to see if user is following a streamer
     """
@@ -22,8 +22,8 @@ def user_following(user_id, streamer_id):
     return jsonify({"following": False})       
 
 
-@user_bp.route('/subscription_remaining/<int:user_id>/<int:streamer_id>', methods=['GET'])
-def user_subscription_expiration(user_id, streamer_id):
+@user_bp.route('/subscription_remaining/<int:user_id>/<int:streamer_id>')
+def user_subscription_expiration(user_id: int, streamer_id: int):
     """
     Returns remaining time until subscription expiration
     """
@@ -31,7 +31,7 @@ def user_subscription_expiration(user_id, streamer_id):
         
     return jsonify({"remaining_time": remaining_time})
     
-@user_bp.route('/get_login_status', methods=['GET'])
+@user_bp.route('/get_login_status')
 def get_login_status():
     """
     Returns whether the user is logged in or not
@@ -39,7 +39,7 @@ def get_login_status():
     return jsonify(session.get("username") is not None)
 
 @user_bp.route('/authenticate_user')
-def authenticate_user():
+def authenticate_user() -> dict:
     """
     Authenticates the user
     """

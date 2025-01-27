@@ -1,5 +1,4 @@
-from flask import Blueprint, request, jsonify, session
-from blueprints.utils import login_required
+from flask import Blueprint, jsonify, session
 from database.database import Database
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from datetime import datetime
@@ -11,11 +10,14 @@ socketio = SocketIO()
 # TODO: Add a route that deletes all chat logs when the stream is finished
 
 @socketio.on("connect")
-def handle_connection():
-    print("Client Connected")
+def handle_connection() -> None:
+    """
+    Accept the connection from the frontend.
+    """
+    print("Client Connected")   # Confirmation connect has been made
 
 @socketio.on("join")
-def handle_join(data):
+def handle_join(data) -> None:
     """
     Allow a user to join the chat of the stream they are watching.
     """
@@ -25,7 +27,7 @@ def handle_join(data):
         emit("status", {"message": f"Welcome to the chat, stream_id: {stream_id}"}, room=stream_id)
 
 @socketio.on("leave")
-def handle_leave(data):
+def handle_leave(data) -> None:
     """
     Handle what happens when a user leaves the stream they are watching in regards to the chat.
     """
@@ -35,7 +37,7 @@ def handle_leave(data):
         emit("status", {"message": f"user left room {stream_id}"}, room=stream_id)
 
 @chat_bp.route("/chat/<int:stream_id>")
-def get_past_chat(stream_id):
+def get_past_chat(stream_id: int):
     """
     Returns a JSON object to be passed to the server.
     
@@ -56,7 +58,7 @@ def get_past_chat(stream_id):
                                     FROM chat
                                     WHERE stream_id = ?
                                     ORDER BY time_sent DESC
-                                    LIMIT 50
+                                    LIMIT 1
                                )
                                ORDER BY time_sent ASC;""", (stream_id,)).fetchall()
     db.close_connection()
@@ -68,7 +70,7 @@ def get_past_chat(stream_id):
     return jsonify({"chat_history": chat_history}), 200
 
 @socketio.on("send_message")
-def send_chat(data):
+def send_chat(data) -> None:
     """
     Using WebSockets to send a chat message to the specified chat
     """
@@ -92,6 +94,7 @@ def send_chat(data):
     db.commit_data()
     db.close_connection()
 
+    # Send the chat message to the client so it can be displayed
     emit("new_message", {
         "chatter_id":chatter_id,
         "message":message,

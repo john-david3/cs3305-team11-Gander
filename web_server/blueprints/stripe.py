@@ -30,7 +30,7 @@ def create_checkout_session():
 
     return jsonify(clientSecret=session.client_secret)
 
-@stripe_bp.route('/session-status', methods=['GET']) # check for payment status
+@stripe_bp.route('/session-status') # check for payment status
 def session_status():
   """
   Used to query payment status

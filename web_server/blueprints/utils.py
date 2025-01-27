@@ -3,11 +3,16 @@ from functools import wraps
 from re import match
 
 def logged_in_user():
+    """
+    Validator to make sure a user is logged in.
+    """
     g.user = session.get("username", None)
     g.admin = session.get("username", None)
 
 def login_required(view):
-    """add at start of routes where users need to be logged in to access"""
+    """
+    Add at start of routes where users need to be logged in to access.
+    """
     @wraps(view)
     def wrapped_view(*args, **kwargs):
         if g.user is None:
@@ -16,15 +21,15 @@ def login_required(view):
     return wrapped_view
 
 def admin_required(view):
-    """add at start of routes where admins need to be logged in to access"""
+    """
+    Add at start of routes where admins need to be logged in to access.
+    """
     @wraps(view)
     def wrapped_view(*args, **kwargs):
         if g.admin != "admin":
             return redirect(url_for("login", next=request.url))
         return view(*args, **kwargs)
     return wrapped_view
-
-import re
 
 def sanitizer(user_input: str, input_type="username") -> str:
     """
@@ -58,7 +63,7 @@ def sanitizer(user_input: str, input_type="username") -> str:
     r = rules.get(input_type)
     if not r or \
     not (r["min_length"] <= len(sanitised_input) <= r["max_length"]) or \
-    not re.match(r["pattern"], sanitised_input):
+    not match(r["pattern"], sanitised_input):
         raise ValueError("Unaccepted character or length in input")
 
     return sanitised_input

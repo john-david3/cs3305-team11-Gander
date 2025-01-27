@@ -10,17 +10,20 @@ auth_bp = Blueprint("auth", __name__)
 @auth_bp.route("/signup", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def signup():
+    """
+    Route that allows a user to sign up by providing a `username`, `email` and `password`.
+    """
+    # ensure a JSON request is made to contact this route
     if not request.is_json:
         return jsonify({"message": "Expected JSON data"}), 400
 
+    # Extract data from request via JSON
     data = request.get_json()
-
-    # Extract data from request
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
 
-    # Basic server-side validation
+    # Validation - ensure all fields exist, users cannot have an empty field
     if not all([username, email, password]):
         fields = ["username", "email", "password"]
         for x in fields:
@@ -32,7 +35,7 @@ def signup():
             "message": "Missing required fields"
         }), 400
     
-    # Sanitize the inputs
+    # Sanitize the inputs - helps to prevent SQL injection
     try:
         username = sanitizer(username, "username")
         email = sanitizer(email, "email")
@@ -49,7 +52,7 @@ def signup():
     cursor = db.create_connection()
 
     try:
-        # Check for duplicate email/username
+        # Check for duplicate email/username, no two users can have the same
         dup_email = cursor.execute(
             "SELECT * FROM users WHERE email = ?",
             (email,)
@@ -74,7 +77,7 @@ def signup():
                 "message": "Username already taken"
             }), 400
 
-        # Create new user
+        # Create new user once input is validated
         cursor.execute(
             """INSERT INTO users 
                (username, password, email, num_followers, bio)
@@ -89,7 +92,7 @@ def signup():
         )
         db.commit_data()
 
-        # Create session for new user
+        # Create session for new user, to avoid them having unnecessary state info
         session.clear()
         session["username"] = username
 
@@ -112,27 +115,43 @@ def signup():
 @auth_bp.route("/login", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def login():
+    """
+    Login to the web app with existing credentials.
+    """
+
+    # ensure a JSON request is made to contact this route
     if not request.is_json:
         return jsonify({"message": "Expected JSON data"}), 400
 
+    # Extract data from request via JSON
     data = request.get_json()
-
-    # Extract data from request
     username = data.get('username')
     password = data.get('password')
 
-    # Basic server-side validation
+   # Validation - ensure all fields exist, users cannot have an empty field
     if not all([username, password]):
         return jsonify({
             "logged_in": False,
             "message": "Missing required fields"
         }), 400
-
+    
+    # Sanitize the inputs - helps to prevent SQL injection
+    try:
+        username = sanitizer(username, "username")
+        password = sanitizer(password, "password")
+    except ValueError as e:
+        return jsonify({
+            "account_created": False,
+            "error_fields": [username, password],
+            "message": "Invalid input received"
+        }), 400
+    
+    # Create a connection to the database
     db = Database()
     cursor = db.create_connection()
 
     try:
-        # Check if user exists
+        # Check if user exists, only existing users can be logged in
         user = cursor.execute(
             "SELECT * FROM users WHERE username = ?",
             (username,)
@@ -145,7 +164,7 @@ def login():
                 "message": "Invalid username or password"
             }), 401
 
-        # Verify password
+        # Verify password matches the password associated with that user
         if not check_password_hash(user["password"], password):
             return jsonify({
                 "logged_in": False,
@@ -153,10 +172,11 @@ def login():
                 "message": "Invalid username or password"
             }), 401
 
-        # Set up session
+        # Set up session to avoid having unncessary state information
         session.clear()
         session["username"] = username
 
+        # User has been logged in, let frontend know that
         return jsonify({
             "logged_in": True,
             "message": "Login successful",
@@ -176,6 +196,11 @@ def login():
 
 @auth_bp.route("/logout")
 @login_required
-def logout():
+def logout() -> dict:
+    """
+    Log out and clear the users session.
+    
+    Can only be accessed by a logged in user.
+    """
     session.clear()
     return {"logged_in": False}

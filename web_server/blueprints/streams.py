@@ -4,8 +4,8 @@ from utils.user_utils import get_user_id
 stream_bp = Blueprint("stream", __name__)
 
 
-@stream_bp.route('/get_streams', methods=['GET'])
-def get_sample_streams():
+@stream_bp.route('/get_streams')
+def get_sample_streams() -> list[dict]:
     """
     Returns a list of (sample) streams live right now
     """
@@ -55,8 +55,8 @@ def get_sample_streams():
     return streams
 
 
-@stream_bp.route('/get_recommended_streams', methods=['GET'])
-def get_recommended_streams():
+@stream_bp.route('/get_recommended_streams')
+def get_recommended_streams() -> list[dict]:
     """
     Queries DB to get a list of recommended streams using an algorithm
     """
@@ -83,8 +83,8 @@ def get_recommended_streams():
         }]
 
 
-@stream_bp.route('/get_categories', methods=['GET'])
-def get_categories():
+@stream_bp.route('/get_categories')
+def get_categories() -> list[dict]:
     """
     Returns a list of (sample) categories being watched right now
     """
@@ -122,8 +122,8 @@ def get_categories():
     ]
 
 
-@stream_bp.route('/get_followed_categories', methods=['GET'])
-def get_followed_categories():
+@stream_bp.route('/get_followed_categories')
+def get_followed_categories() -> list | list[dict]:
     """
     Queries DB to get a list of followed categories
     Hmm..
@@ -134,7 +134,7 @@ def get_followed_categories():
     return get_categories()
 
 
-@stream_bp.route('/get_streamer_data/<int:streamer_username>', methods=['GET'])
+@stream_bp.route('/get_streamer_data/<int:streamer_username>')
 def get_streamer_data(streamer_username):
     """
     Returns a given streamer's data
