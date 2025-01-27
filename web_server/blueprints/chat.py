@@ -74,7 +74,7 @@ def send_chat(data):
     """
 
     # Take the message information from frontend
-    chatter_id = data.get("chatter_id") # Need to change this to get session info
+    chatter_id = session.get("username")
     stream_id = data.get("stream_id")
     message = data.get("message")
 

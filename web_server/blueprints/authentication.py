@@ -2,7 +2,7 @@ from flask import Blueprint, session, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 from database.database import Database
-from blueprints.utils import login_required
+from blueprints.utils import login_required, sanitizer
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -31,7 +31,20 @@ def signup():
             "error_fields": fields,
             "message": "Missing required fields"
         }), 400
+    
+    # Sanitize the inputs
+    try:
+        username = sanitizer(username, "username")
+        email = sanitizer(email, "email")
+        password = sanitizer(password, "password")
+    except ValueError as e:
+        return jsonify({
+            "account_created": False,
+            "error_fields": fields,
+            "message": "Invalid input received"
+        }), 400
 
+    # Create a connection to the database
     db = Database()
     cursor = db.create_connection()
 
@@ -64,13 +77,12 @@ def signup():
         # Create new user
         cursor.execute(
             """INSERT INTO users 
-               (username, password, email, num_followers, isPartenered, bio)
-               VALUES (?, ?, ?, ?, ?, ?)""",
+               (username, password, email, num_followers, bio)
+               VALUES (?, ?, ?, ?, ?)""",
             (
                 username,
                 generate_password_hash(password),
                 email,
-                0,
                 0,
                 "This user does not have a Bio."
             )

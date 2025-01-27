@@ -7,9 +7,9 @@ CREATE TABLE users
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(50) NOT NULL,
     password VARCHAR(256) NOT NULL,
-    email VARCHAR(64) NOT NULL,
+    email VARCHAR(128) NOT NULL,
     num_followers INTEGER NOT NULL,
-    bio TEXT
+    bio VARCHAR(1024)
 );
 
 SELECT * FROM users;
