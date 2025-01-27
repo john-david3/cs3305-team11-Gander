@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, session
-from utils.user_utils import is_subscribed, is_following, subscription_expiration
+from utils.user_utils import is_subscribed, is_following, subscription_expiration, verify_token, reset_password
 
 user_bp = Blueprint("user", __name__)
 
@@ -50,9 +50,23 @@ def authenticate_user() -> dict:
 
 
 @user_bp.route('/forgot_password', methods=['POST'])
-def forgot_password():
+def user_forgot_password():
     """
     Will send link to email to reset password by looking at the user_id within session to see whos password should be reset
     Creates a super random number to be used a the link to reset password I guess a random number generator seeded with a secret
     """
     return
+
+@user_bp.route('/reset_password/<string:token>/<string:new_password>')
+def user_reset_password(token, new_password):
+    """
+    Given token and new password resets the users password
+    """
+    email = verify_token(token)
+    if email:
+        response = reset_password(new_password, email)
+        if response:
+            return "Success"
+        else:
+            return "Failure"
+    return "Failure"
