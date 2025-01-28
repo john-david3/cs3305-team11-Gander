@@ -17,12 +17,11 @@ CREATE TABLE stream_tags
 DROP TABLE IF EXISTS chat;
 CREATE TABLE chat
 (
-    message_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    message_id INTEGER PRIMARY KEY AUTOINCREMENT  ,
     stream_id INTEGER NOT NULL,
     chatter_id VARCHAR(50) NOT NULL,
     message VARCHAR(256) NOT NULL,
     time_sent DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (message_id, stream_id),
     FOREIGN KEY (chatter_id) REFERENCES users(user_id),
     FOREIGN KEY (stream_id) REFERENCES streams(stream_id) ON DELETE CASCADE
 );
@@ -59,5 +58,6 @@ CREATE TABLE streamers
     streamer_id INTEGER NOT NULL,
     since DATETIME,
     isPartnered BOOLEAN NOT NULL DEFAULT 0,
+    stream_key VARCHAR(60) NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
