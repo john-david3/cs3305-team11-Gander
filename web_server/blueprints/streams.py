@@ -1,7 +1,7 @@
-from flask import Blueprint, session
-from utils.stream_utils import streamer_data, streamer_id, streamer_live_status, streamer_most_recent_stream, streamer_stream, followed_live_streams
+from flask import Blueprint, session, jsonify
+from utils.stream_utils import streamer_live_status, streamer_most_recent_stream, user_stream, followed_live_streams
 from utils.user_utils import get_user_id
-from database.database import Database 
+from database.database import Database
 stream_bp = Blueprint("stream", __name__)
 
 
@@ -24,7 +24,9 @@ def get_sample_streams() -> list[dict]:
     streams = cursor.execute("""SELECT * FROM streams 
                              ORDER BY num_viewers DESC
                              LIMIT 25; """).fetchall()
-    return streams
+    return jsonify({
+        "streams": streams
+    })
 
 
 @stream_bp.route('/get_recommended_streams')
@@ -60,7 +62,7 @@ def get_categories() -> list[dict]:
     """
     Returns a list of (sample) categories being watched right now
     """
-    
+
     db = Database()
     cursor = db.create_connection()
 
@@ -70,8 +72,7 @@ def get_categories() -> list[dict]:
                                 GROUP BY category_name
                                 ORDER BY SUM(num_viewers) DESC
                                 LIMIT 25; """).fetchall()
-    return categories
-
+    return jsonify({'categories': categories})
 
 
 @stream_bp.route('/get_followed_categories')
@@ -91,11 +92,8 @@ def get_streamer_data(streamer_username):
     """
     Returns a given streamer's data
     """
-    streamers_id = streamer_id(streamer_username)
-    if not streamers_id:
-        return #whatever
-    streamers_data = streamer_data(streamers_id)
-    return streamers_data
+    return
+
 
 @stream_bp.route('/streamer/<string:streamer_username>/status')
 def get_streamer_status(streamer_username):
@@ -105,7 +103,7 @@ def get_streamer_status(streamer_username):
     return {"status": "live", "streamId": 1}
     streamers_id = streamer_id(streamer_username)
     if not streamers_id:
-        return #whatever
+        return  # whatever
     streamer_status = streamer_live_status(streamers_id)
     stream_id = streamer_most_recent_stream(streamers_id)
     return {"live": streamer_status, "streamerId": streamers_id, "streamId": stream_id}
@@ -116,28 +114,24 @@ def get_stream(streamer_username):
     """
     Returns a streamer's most recent stream data
     """
-    streamers_id = streamer_id(streamer_username)
-    if not streamers_id:
-        return #whatever
-    most_recent_stream = streamer_most_recent_stream(streamers_id)
-    if most_recent_stream:
-        return most_recent_stream
-    
-    return #Whatever
+    return  # Whatever
+
 
 @stream_bp.route('/get_stream_data/<int:streamer_username>/<int:stream_id>', methods=['GET'])
-def get_specific_stream(streamer_username,stream_id):
+def get_specific_stream(streamer_username, stream_id):
     """
     Returns a streamer's stream data given stream_id
     """
-    stream = streamer_stream(streamer_username, stream_id)
+    stream = user_stream(streamer_username, stream_id)
     if stream:
         return stream
-    
-    return #whatever
 
-#@login_required
+    return  # whatever
+
+# @login_required
 # need to add in a lock to this route for only logged in users since we will be taking from the session
+
+
 @stream_bp.route('/get_followed_streams', methods=['GET'])
 def get_followed_streamers():
     """
@@ -147,7 +141,7 @@ def get_followed_streamers():
     user_id = get_user_id(username)
     live_following_streams = followed_live_streams(user_id)
     if not followed_live_streams:
-        return #whatever
+        return  # whatever
     return live_following_streams
 
 

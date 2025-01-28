@@ -78,12 +78,14 @@ def signup():
         # Create new user once input is validated
         cursor.execute(
             """INSERT INTO users 
-               (username, password, email, num_followers, bio)
-               VALUES (?, ?, ?, ?, ?)""",
+               (username, password, email, num_followers, stream_key, is_partnered, bio)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
             (
                 username,
                 generate_password_hash(password),
                 email,
+                0,
+                '1',
                 0,
                 "This user does not have a Bio."
             )

@@ -38,15 +38,14 @@ CREATE TABLE categories
 DROP TABLE IF EXISTS streams;
 CREATE TABLE streams
 (
+    stream_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    stream_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     start_time DATETIME NOT NULL,
     num_viewers INTEGER NOT NULL DEFAULT 0,
     isLive BOOLEAN NOT NULL DEFAULT 0,
     vod_id INTEGER,
     category_id NOT NULL,
-    PRIMARY KEY (user_id, stream_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

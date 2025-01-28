@@ -2,7 +2,7 @@ from database.database import Database
 from typing import Optional
 
 
-def user_live_status(user_id: int) -> bool:
+def streamer_live_status(user_id: int) -> bool:
     """
     Returns whether the given streamer is live
     """
@@ -27,7 +27,7 @@ def followed_live_streams(user_id: int):
 
     return live_streams
 
-def user_most_recent_stream(user_id: int):
+def streamer_most_recent_stream(user_id: int):
     """
     Returns data of the most recent stream by a streamer
     """

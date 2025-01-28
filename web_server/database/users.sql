@@ -22,7 +22,7 @@ CREATE TABLE follows
     user_id INTEGER NOT NULL,
     followed_id INTEGER NOT NULL,   
     since DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, streamer_id),
+    PRIMARY KEY (user_id, followed_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (followed_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
@@ -45,7 +45,7 @@ CREATE TABLE subscribes
     subscribed_id INTEGER NOT NULL,
     since DATETIME NOT NULL,
     expires DATETIME NOT NULL,
-    PRIMARY KEY (user_id,streamer_id),
+    PRIMARY KEY (user_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(subscribed_id) REFERENCES users(user_id) ON DELETE CASCADE   
 );
