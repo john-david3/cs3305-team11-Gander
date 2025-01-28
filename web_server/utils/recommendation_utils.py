@@ -22,5 +22,5 @@ def recommendations_based_on_category(category_id: int) -> Optional[List[Tuple[i
     cursor = db.create_connection()
 
     data = cursor.execute(
-        "SELECT streamer_id, stream_id, title, num_viewers FROM streams WHERE category_id = ? ORDER BY num_viwers DESC LIMIT 10", (category_id,)).fetchall()
+        "SELECT user_id, stream_id, title, num_viewers FROM streams WHERE category_id = ? ORDER BY num_viwers DESC LIMIT 10", (category_id,)).fetchall()
     return data

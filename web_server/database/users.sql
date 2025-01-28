@@ -9,6 +9,8 @@ CREATE TABLE users
     password VARCHAR(256) NOT NULL,
     email VARCHAR(128) NOT NULL,
     num_followers INTEGER NOT NULL,
+    stream_key VARCHAR(60) NOT NULL,
+    is_partnered BOOLEAN NOT NULL DEFAULT 0,
     bio VARCHAR(1024)
 );
 
@@ -18,11 +20,11 @@ DROP TABLE IF EXISTS follows;
 CREATE TABLE follows
 (
     user_id INTEGER NOT NULL,
-    streamer_id INTEGER NOT NULL,   
+    followed_id INTEGER NOT NULL,   
     since DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, streamer_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (streamer_id) REFERENCES streamers(streamer_id) ON DELETE CASCADE
+    FOREIGN KEY (followed_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS user_preferences;
@@ -40,11 +42,11 @@ DROP TABLE IF EXISTS subscribes;
 CREATE TABLE subscribes
 (
     user_id INTEGER NOT NULL,
-    streamer_id INTEGER NOT NULL,
+    subscribed_id INTEGER NOT NULL,
     since DATETIME NOT NULL,
     expires DATETIME NOT NULL,
     PRIMARY KEY (user_id,streamer_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY(streamer_id) REFERENCES streamers(streamer_id) ON DELETE CASCADE   
+    FOREIGN KEY(subscribed_id) REFERENCES users(user_id) ON DELETE CASCADE   
 );
 

@@ -38,7 +38,7 @@ CREATE TABLE categories
 DROP TABLE IF EXISTS streams;
 CREATE TABLE streams
 (
-    streamer_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
     stream_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     start_time DATETIME NOT NULL,
@@ -46,18 +46,7 @@ CREATE TABLE streams
     isLive BOOLEAN NOT NULL DEFAULT 0,
     vod_id INTEGER,
     category_id NOT NULL,
-    PRIMARY KEY (streamer_id, stream_id),
+    PRIMARY KEY (user_id, stream_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE,
-    FOREIGN KEY (streamer_id) REFERENCES streamers(user_id) ON DELETE CASCADE
-);
-
-DROP TABLE IF EXISTS streamers;
-CREATE TABLE streamers
-(
-    user_id INTEGER PRIMARY KEY NOT NULL,
-    streamer_id INTEGER NOT NULL,
-    since DATETIME,
-    isPartnered BOOLEAN NOT NULL DEFAULT 0,
-    stream_key VARCHAR(60) NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

@@ -42,6 +42,23 @@ def get_username(user_id: str) -> Optional[str]:
     except Exception as e:
         print(f"Error: {e}")
         return None
+    
+def is_user_partner(user_id: int) -> bool:
+    """
+    Returns True if user is a partner, else False
+    """
+    db = Database()
+    cursor = db.create_connection()
+
+    try:
+        data = cursor.execute(
+            "SELECT is_partnered FROM users WHERE user_id = ?", 
+            (user_id,)
+        ).fetchone()
+        return bool(data)
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
 
 def is_subscribed(user_id: int, streamer_id: int) -> bool:
     """
@@ -60,21 +77,21 @@ def is_subscribed(user_id: int, streamer_id: int) -> bool:
         print(f"Error: {e}")
         return False
 
-def is_following(user_id: int, streamer_id: int) -> bool:
+def is_following(user_id: int, followed_id: int) -> bool:
     db = Database()
     cursor = db.create_connection()
     
     try:
         result = cursor.execute(
-            "SELECT 1 FROM follows WHERE user_id = ? AND streamer_id = ?", 
-            (user_id, streamer_id)
+            "SELECT 1 FROM follows WHERE user_id = ? AND followed_id = ?", 
+            (user_id, followed_id)
         ).fetchone()
         return bool(result)
     except Exception as e:
         print(f"Error: {e}")
         return False
 
-def subscription_expiration(user_id: int, streamer_id: int) -> int:
+def subscription_expiration(user_id: int, subscribed_id: int) -> int:
     """
     Returns the amount of time left until user subscription to a streamer ends
     """
@@ -83,7 +100,7 @@ def subscription_expiration(user_id: int, streamer_id: int) -> int:
     remaining_time = 0
     try:
         data = cursor.execute(
-            "SELECT expires from subscriptions WHERE user_id = ? AND streamer_id = ? AND expires > since", (user_id,streamer_id)).fetchone()
+            "SELECT expires from subscriptions WHERE user_id = ? AND subscribed_id = ? AND expires > since", (user_id,subscribed_id)).fetchone()
         if data:
             expiration_date = data[0]
 

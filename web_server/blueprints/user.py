@@ -4,21 +4,21 @@ from utils.user_utils import is_subscribed, is_following, subscription_expiratio
 user_bp = Blueprint("user", __name__)
 
 
-@user_bp.route('/is_subscribed/<int:user_id>/<int:streamer_id>')
-def user_subscribed(user_id: int, streamer_id: int):
+@user_bp.route('/is_subscribed/<int:user_id>/<int:subscribed_id>')
+def user_subscribed(user_id: int, subscribed_id: int):
     """
-    Checks to see if user is subscribed to a streamer
+    Checks to see if user is subscribed to another user
     """
-    if is_subscribed(user_id, streamer_id):
+    if is_subscribed(user_id, subscribed_id):
         return jsonify({"subscribed": True})
     return jsonify({"subscribed": False})
 
-@user_bp.route('/is_following/<int:user_id>/<int:streamer_id>')
-def user_following(user_id: int, streamer_id: int):
+@user_bp.route('/is_following/<int:user_id>/<int:subscribed_id>')
+def user_following(user_id: int, subscribed_id: int):
     """
     Checks to see if user is following a streamer
     """
-    if is_following(user_id, streamer_id):
+    if is_following(user_id, subscribed_id):
         return jsonify({"following": True})
     return jsonify({"following": False})
 
