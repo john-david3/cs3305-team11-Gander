@@ -1,7 +1,8 @@
-from flask import Blueprint, session, jsonify
+from flask import Blueprint, session, jsonify, g
 from utils.stream_utils import streamer_live_status, streamer_most_recent_stream, user_stream, followed_live_streams
 from utils.user_utils import get_user_id
-from database.database import Database
+from utils import login_required
+from database.database import Database, fetch_data_as_list
 stream_bp = Blueprint("stream", __name__)
 
 
@@ -21,9 +22,13 @@ def get_sample_streams() -> list[dict]:
 
     # fetch top 25 most viewed live streams if not logged in
     # TODO Add a check to see if user is logged in, if they are, find streams that match categories they follow
-    streams = cursor.execute("""SELECT * FROM streams 
-                             ORDER BY num_viewers DESC
-                             LIMIT 25; """).fetchall()
+    query = """SELECT * FROM streams 
+               ORDER BY num_viewers DESC
+               LIMIT 25; """
+    
+    streams = fetch_data_as_list(cursor, query)
+
+
     return jsonify({
         "streams": streams
     })
@@ -67,25 +72,27 @@ def get_categories() -> list[dict]:
     cursor = db.create_connection()
 
     # fetch top categories by number of viewers
-    categories = cursor.execute("""SELECT category_name, SUM(num_viewers) FROM categories, streams
+    query = """SELECT categories.category_id, category_name, SUM(num_viewers) as num_viewers FROM categories, streams
                                 WHERE categories.category_id = streams.category_id
                                 GROUP BY category_name
                                 ORDER BY SUM(num_viewers) DESC
-                                LIMIT 25; """).fetchall()
+                                LIMIT 25; """
+    
+    categories = fetch_data_as_list(cursor, query)
     return jsonify({'categories': categories})
 
-
+@login_required
 @stream_bp.route('/get_followed_categories')
 def get_followed_categories() -> list | list[dict]:
     """
     Queries DB to get a list of followed categories
-    Hmm..
-    """
-    categories = []
-    if categories:
-        return categories
-    return get_categories()
 
+    """
+    db = Database()
+    cursor = db.create_connection()
+
+    # fetch categories that the user follows
+    
 
 @stream_bp.route('/get_streamer_data/<int:streamer_username>')
 def get_streamer_data(streamer_username):

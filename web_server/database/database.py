@@ -20,3 +20,16 @@ class Database:
 
     def close_connection(self) -> None:
         self._conn.close()
+
+def fetch_data_as_list(cursor, query, params=None):
+    # Execute the query with parameters (if any)
+    cursor.execute(query, params or [])
+    
+    # Get the column names from the cursor
+    columns = [description[0] for description in cursor.description]
+    
+    # Convert rows to dictionaries
+    rows = cursor.fetchall()
+    result = [dict(zip(columns, row)) for row in rows]
+    
+    return result

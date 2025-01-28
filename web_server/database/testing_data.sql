@@ -8,11 +8,11 @@ INSERT INTO categories (category_name) VALUES
 
 -- Sample data for users
 INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
-('GamerDude', 'password123', 'gamerdude@example.com', 500, '1', 0, 'Streaming my gaming adventures!'),
-('MusicLover', 'music4life', 'musiclover@example.com', 1200, '1', 0, 'I share my favorite tunes.'),
-('ArtFan', 'artistic123', 'artfan@example.com', 300, '1', 0, 'Exploring the world of art.'),
-('EduGuru', 'learn123', 'eduguru@example.com', 800, '1', 0, 'Teaching everything I know.'),
-('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '1', 0, 'Join me for live sports updates!');
+('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!'),
+('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.'),
+('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.'),
+('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.'),
+('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!');
 
 -- Sample data for streams
 INSERT INTO streams (user_id, title, start_time, num_viewers, isLive, vod_id, category_id) VALUES 
@@ -52,3 +52,8 @@ SELECT * FROM follows;
 SELECT * FROM user_preferences;
 SELECT * FROM subscribes;
 SELECT * FROM categories;
+
+INSERT INTO streams (user_id, title, start_time, num_viewers, isLive, vod_id, category_id) VALUES 
+(6, 'Epic Gaming Session 2', '2025-01-26 18:00:00', 800, 1, NULL, 1);
+INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
+('GamerDude2', 'password123', 'gamerdude2@gmail.com', 3200, '6789', 0, 'Streaming my gaming adventures!');
