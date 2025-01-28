@@ -18,7 +18,7 @@ def get_user_id(username: str) -> Optional[int]:
 
     try:
         data = cursor.execute(
-            "SELECT user_id FROM user WHERE username = ?", 
+            "SELECT user_id FROM users WHERE username = ?", 
             (username,)
         ).fetchone()
         return data[0] if data else None

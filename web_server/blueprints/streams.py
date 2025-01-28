@@ -1,8 +1,8 @@
 from flask import Blueprint, session, jsonify, g
-from utils.stream_utils import streamer_live_status, streamer_most_recent_stream, user_stream, followed_live_streams
+from utils.stream_utils import streamer_live_status, streamer_most_recent_stream, user_stream, followed_live_streams, followed_streamers
 from utils.user_utils import get_user_id
-from utils import login_required
-from database.database import Database, fetch_data_as_list
+from blueprints.utils import login_required
+from database.database import Database
 stream_bp = Blueprint("stream", __name__)
 
 
@@ -11,24 +11,12 @@ def get_sample_streams() -> list[dict]:
     """
     Returns a list of (sample) streams live right now
     """
-
-    # top 25, if not logged in
-    # if logged in, show streams that match user's tags
-    # user attains tags from the tags of the streamers they follow, and streamers they've watched
-
-    # TODO Add a category field to the stream object
-    db = Database()
-    cursor = db.create_connection()
-
-    # fetch top 25 most viewed live streams if not logged in
     # TODO Add a check to see if user is logged in, if they are, find streams that match categories they follow
-    query = """SELECT * FROM streams 
-               ORDER BY num_viewers DESC
-               LIMIT 25; """
-    
-    streams = fetch_data_as_list(cursor, query)
-
-
+    db = Database()
+    db.create_connection()
+    streams = db.fetchall("""SELECT * FROM streams 
+                            ORDER BY num_viewers DESC
+                            LIMIT 25; """)
     return jsonify({
         "streams": streams
     })
@@ -69,30 +57,34 @@ def get_categories() -> list[dict]:
     """
 
     db = Database()
-    cursor = db.create_connection()
-
-    # fetch top categories by number of viewers
-    query = """SELECT categories.category_id, category_name, SUM(num_viewers) as num_viewers FROM categories, streams
+    db.create_connection()
+    categories = db.fetchall("""SELECT categories.category_id, category_name, SUM(num_viewers) as num_viewers FROM categories, streams
                                 WHERE categories.category_id = streams.category_id
                                 GROUP BY category_name
                                 ORDER BY SUM(num_viewers) DESC
-                                LIMIT 25; """
+                                LIMIT 25; """)
     
-    categories = fetch_data_as_list(cursor, query)
     return jsonify({'categories': categories})
 
 @login_required
-@stream_bp.route('/get_followed_categories')
-def get_followed_categories() -> list | list[dict]:
+@stream_bp.route('/get_recommended_categories')
+def get_recommended_categories() -> list | list[dict]:
     """
-    Queries DB to get a list of followed categories
+    Queries DB to get a list of recommended categories for the user
 
     """
+    username = session.get('username')
+    user_id = get_user_id(username)
+
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
+    categories = db.fetchall("""SELECT categories.category_id, categories.category_name, favourability
+                                FROM categories, user_preferences
+                                WHERE user_id = ? AND categories.category_id = user_preferences.category_id,
+                                ORDER BY favourability DESC""", (user_id,))
 
-    # fetch categories that the user follows
-    
+    return jsonify({'categories': categories})
+
 
 @stream_bp.route('/get_streamer_data/<int:streamer_username>')
 def get_streamer_data(streamer_username):
@@ -107,48 +99,65 @@ def get_streamer_status(streamer_username):
     """
     Returns a streamer's status, if they are live or not and their most recent stream
     """
-    return {"status": "live", "streamId": 1}
-    streamers_id = streamer_id(streamer_username)
-    if not streamers_id:
-        return  # whatever
-    streamer_status = streamer_live_status(streamers_id)
-    stream_id = streamer_most_recent_stream(streamers_id)
-    return {"live": streamer_status, "streamerId": streamers_id, "streamId": stream_id}
+    user_id = get_user_id(streamer_username)
 
+    if not user_id:
+        return jsonify({
+            "error": "User not found"
+        })
+    
+    is_live = streamer_live_status(user_id)
+    most_recent_stream = streamer_most_recent_stream(user_id)
 
-@stream_bp.route('/get_stream_data/<int:streamer_username>', methods=['GET'])
+    if not most_recent_stream:
+        most_recent_stream = {'stream_id': None}
+
+    return jsonify({
+        "is_live": is_live,
+        "most_recent_stream": most_recent_stream['stream_id']
+    })
+    
+
+@stream_bp.route('/get_stream_data/<string:streamer_username>', methods=['GET'])
 def get_stream(streamer_username):
     """
     Returns a streamer's most recent stream data
     """
-    return  # Whatever
+    user_id = get_user_id(streamer_username)
+    if not user_id:
+        return jsonify({
+            "error": "User not found"
+        })
+    
+    return jsonify(streamer_most_recent_stream(user_id))
 
 
-@stream_bp.route('/get_stream_data/<int:streamer_username>/<int:stream_id>', methods=['GET'])
+@stream_bp.route('/get_stream_data/<string:streamer_username>/<int:stream_id>', methods=['GET'])
 def get_specific_stream(streamer_username, stream_id):
     """
     Returns a streamer's stream data given stream_id
     """
-    stream = user_stream(streamer_username, stream_id)
+    user_id = get_user_id(streamer_username)
+    stream = user_stream(user_id, stream_id)
     if stream:
-        return stream
+        return jsonify(stream)
 
-    return  # whatever
+    return jsonify({
+        "error": "Stream not found"
+    })
 
 # @login_required
-# need to add in a lock to this route for only logged in users since we will be taking from the session
 
-
-@stream_bp.route('/get_followed_streams', methods=['GET'])
+@login_required
+@stream_bp.route('/get_followed_streamers', methods=['GET'])
 def get_followed_streamers():
     """
     Queries DB to get a list of followed streamers
     """
     username = session.get('username')
     user_id = get_user_id(username)
-    live_following_streams = followed_live_streams(user_id)
-    if not followed_live_streams:
-        return  # whatever
+
+    live_following_streams = followed_streamers(user_id)
     return live_following_streams
 
 
@@ -156,7 +165,8 @@ def get_followed_streamers():
 def stream_thumbnail_snapshot(streamer_id):
     """
     Function to be called periodically which saves the current live stream as an img to be used for the thumbnail to be displayed
-    will be asking streamer guy how to get the picture
+    will be asking streamer guy how to get the picture 
+        will also be asking myself how to do this - Dylan
     will be saved as a png stream_id.streamer_id.png or similar to create a unique image
     """
     return
