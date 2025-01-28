@@ -1,4 +1,4 @@
-from flask import Blueprint, session, jsonify, g
+from flask import Blueprint, session, jsonify, g, request, redirect
 from utils.stream_utils import streamer_live_status, streamer_most_recent_stream, user_stream, followed_live_streams, followed_streamers
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
@@ -170,3 +170,22 @@ def stream_thumbnail_snapshot(streamer_id):
     will be saved as a png stream_id.streamer_id.png or similar to create a unique image
     """
     return
+
+@stream_bp.route("/publish_stream", methods=["POST"])
+def publish_stream():
+    """
+    Authenticates stream from streamer and publishes it to the site
+    """
+    stream_key = request.form.get("name")
+
+    # Check if stream key is valid
+    db = Database()
+    db.create_connection()
+    stream = db.fetchone("SELECT username FROM users WHERE stream_key = ?", (stream_key,))
+
+    ## TODO: Add stream to database
+
+    if not stream:
+        return "Unauthorized", 403
+    
+    return redirect(f"/{stream['username']}")
