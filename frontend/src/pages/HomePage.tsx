@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../components/Layout/Navbar";
-import StreamListRow from "../components/Layout/StreamListRow";
+import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
 import { useStreams } from "../context/StreamsContext";
 
@@ -20,24 +20,24 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   return (
     <div
       id="home-page"
-      className="animate-moving_bg"
+      className="animate-moving_bg h-full"
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
       <Navbar variant="home" />
 
-      {/*//TODO Extract StreamListRow away, to ListRow so that it makes sense for categories to be there also */}
-
-      <StreamListRow
+      <ListRow
+        type="stream"
         title={"Live Now" + (variant === "personalised" ? " - Recommended" : "")}
         description={variant === "personalised" ? "We think you might like these streams - Streamers recommended for you" : "Streamers that are currently live"}
-        streams={featuredStreams}
-        onStreamClick={handleStreamClick}
+        items={featuredStreams}
+        onClick={handleStreamClick}
       />
-      <StreamListRow
+      <ListRow
+        type="category"
         title={variant === "personalised" ? "Followed Categories" : "Trending Categories"}
         description={variant === "personalised" ? "Current streams from your followed categories" : "Categories that have been 'popping off' lately"}
-        streams={featuredCategories}
-        onStreamClick={() => {}} //TODO
+        items={featuredCategories}
+        onClick={() => {}} //TODO
       />
 
     </div>

@@ -46,12 +46,19 @@ INSERT INTO subscribes (user_id, subscribed_id, since, expires) VALUES
 (4, 104, '2024-09-12', '2025-01-12'),
 (5, 105, '2024-08-30', '2025-02-28');
 
+INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
+('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!');
+
 SELECT * FROM users;
-SELECT * FROM streams;
 SELECT * FROM follows;
 SELECT * FROM user_preferences;
 SELECT * FROM subscribes;
 SELECT * FROM categories;
+SELECT * FROM streams;
+SELECT * FROM chat;
+SELECT * FROM tags;
+SELECT * FROM stream_tags;
 
-INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
-('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!');
+-- To see all tables in the database
+SELECT name FROM sqlite_master WHERE type='table';
+

@@ -26,7 +26,7 @@ const StreamerRoute: React.FC = () => {
     checkStreamStatus();
 
     // Poll for live status changes
-    const interval = setInterval(checkStreamStatus, 30000); // Check every 90 seconds
+    const interval = setInterval(checkStreamStatus, 20000); // Check every 20 seconds
 
     return () => clearInterval(interval);
   }, [streamerName]);
@@ -35,7 +35,8 @@ const StreamerRoute: React.FC = () => {
     return <div className="h-screen w-screen flex text-6xl items-center justify-center" >Loading...</div>; // Or your loading component
   }
 
-  return isLive ? <VideoPage streamId={1} /> : <UserPage />;
+  // streamId=0 is a special case for the streamer's latest stream
+  return isLive ? <VideoPage streamId={0} /> : <UserPage profile={streamerName} />;
 };
 
 export default StreamerRoute;

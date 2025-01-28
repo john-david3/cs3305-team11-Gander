@@ -68,7 +68,8 @@ def get_recommended_categories() -> list | list[dict]:
 
     return jsonify({'categories': categories})
 
-@stream_bp.route('/get_streamer_data/<int:streamer_username>')
+
+@stream_bp.route('/get_streamer_data/<string:streamer_username>')
 def get_streamer_data(streamer_username):
     """
     Returns a given streamer's data
@@ -98,7 +99,7 @@ def get_streamer_status(streamer_username):
     })
     
 
-@stream_bp.route('/get_stream_data/<string:streamer_username>', methods=['GET'])
+@stream_bp.route('/get_stream_data/<string:streamer_username>')
 def get_stream(streamer_username):
     """
     Returns a streamer's most recent stream data
@@ -119,7 +120,7 @@ def get_following_categories_streams():
     return jsonify(streams)
 
 
-@stream_bp.route('/get_stream_data/<string:streamer_username>/<int:stream_id>', methods=['GET'])
+@stream_bp.route('/get_stream_data/<string:streamer_username>/<int:stream_id>')
 def get_specific_stream(streamer_username, stream_id):
     """
     Returns a streamer's stream data given stream_id
@@ -132,7 +133,7 @@ def get_specific_stream(streamer_username, stream_id):
     abort(404)
 
 @login_required
-@stream_bp.route('/get_followed_streamers', methods=['GET'])
+@stream_bp.route('/get_followed_streamers')
 def get_followed_streamers():
     """
     Queries DB to get a list of followed streamers

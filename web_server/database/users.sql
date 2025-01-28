@@ -36,9 +36,9 @@ CREATE TABLE user_preferences
     user_id INT NOT NULL,
     category_id INT NOT NULL,
     favourability INT NOT NULL DEFAULT 0,
-    PRIMARY KEY(user_id, category_id),
-    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+    PRIMARY KEY (user_id, category_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS subscribes;
@@ -49,8 +49,8 @@ CREATE TABLE subscribes
     since DATETIME NOT NULL,
     expires DATETIME NOT NULL,
     PRIMARY KEY (user_id),
-    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY(subscribed_id) REFERENCES users(user_id) ON DELETE CASCADE   
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (subscribed_id) REFERENCES users(user_id) ON DELETE CASCADE   
 );
 
 DROP TABLE IF EXISTS followed_categories;
