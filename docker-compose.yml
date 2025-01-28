@@ -22,7 +22,7 @@ services:
       - .env
     environment:
       - FLASK_APP=blueprints.__init__
-      - FLASK_DEBUG=True
+      - FLASK_ENV=production
 
   frontend:
     build:

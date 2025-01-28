@@ -2,20 +2,19 @@ from flask import Blueprint, jsonify, session
 from database.database import Database
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from datetime import datetime
+from flask_socketio import SocketIO
 
 chat_bp = Blueprint("chat", __name__)
-socketio = SocketIO()
+socketio = SocketIO(cors_allowed_origins="*")
 
 # <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
-# TODO: Add a route that deletes all chat logs when the stream is finished
-
 
 @socketio.on("connect")
 def handle_connection() -> None:
     """
     Accept the connection from the frontend.
     """
-    print("Client Connected")   # Confirmation connect has been made
+    print("Client Connected")  # Confirmation connect has been made
 
 
 @socketio.on("join")
@@ -62,14 +61,13 @@ def get_past_chat(stream_id: int):
                                     FROM chat
                                     WHERE stream_id = ?
                                     ORDER BY time_sent DESC
-                                    LIMIT 1
+                                    LIMIT 50
                                )
                                ORDER BY time_sent ASC;""", (stream_id,)).fetchall()
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
-    chat_history = [{"chatter_id": chat[0], "message": chat[1],
-                     "time_sent": chat[2]} for chat in all_chats]
+    chat_history = [{"chatter_id": chat[0], "message": chat[1], "time_sent": chat[2]} for chat in all_chats]
 
     # Pass the chat history to the proxy
     return jsonify({"chat_history": chat_history}), 200
@@ -91,7 +89,19 @@ def send_chat(data) -> None:
         emit("error", {"error": "Unable to send a chat"}, broadcast=False)
         return
 
-    # Save chat information to database so other users can see
+    # Send the chat message to the client so it can be displayed
+    emit("new_message", {
+        "chatter_id": chatter_id,
+        "message": message,
+        "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }, room=stream_id)
+
+    # Asynchronously save the chat
+    save_chat(chatter_id, stream_id, message)
+
+
+def save_chat(chatter_id, stream_id, message):
+    """Save the chat to the database"""
     db = Database()
     cursor = db.create_connection()
     cursor.execute("""
@@ -99,10 +109,3 @@ def send_chat(data) -> None:
                     VALUES (?, ?, ?);""", (chatter_id, stream_id, message))
     db.commit_data()
     db.close_connection()
-
-    # Send the chat message to the client so it can be displayed
-    emit("new_message", {
-        "chatter_id": chatter_id,
-        "message": message,
-        "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }, room=stream_id)
