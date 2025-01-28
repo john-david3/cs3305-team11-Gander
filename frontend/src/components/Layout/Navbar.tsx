@@ -13,6 +13,7 @@ import Input from "./Input";
 import AuthModal from "../Auth/AuthModal";
 import { useAuth } from "../../context/AuthContext";
 
+
 interface NavbarProps {
   variant?: "home" | "default";
 }
@@ -87,6 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         />
         <SearchIcon className="-translate-x-[28px] top-1/2 h-6 w-6 text-white" />
       </div>
+
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>

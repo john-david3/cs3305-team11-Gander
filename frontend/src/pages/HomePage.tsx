@@ -39,6 +39,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         streams={featuredCategories}
         onStreamClick={() => {}} //TODO
       />
+
     </div>
   );
 };
