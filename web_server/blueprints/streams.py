@@ -1,6 +1,7 @@
 from flask import Blueprint, session
 from utils.stream_utils import streamer_data, streamer_id, streamer_live_status, streamer_most_recent_stream, streamer_stream, followed_live_streams
 from utils.user_utils import get_user_id
+from database.database import Database 
 stream_bp = Blueprint("stream", __name__)
 
 
@@ -15,43 +16,14 @@ def get_sample_streams() -> list[dict]:
     # user attains tags from the tags of the streamers they follow, and streamers they've watched
 
     # TODO Add a category field to the stream object
-    streams = [
-        {
-            "id": 1,
-            "title": "Gaming Stream",
-            "streamer": "Gamer123",
-            "viewers": 1500,
-            "thumbnail": "dance_game.png",
-        },
-        {
-            "id": 2,
-            "title": "Art Stream",
-            "streamer": "Artist456",
-            "viewers": 800,
-            "thumbnail": "surface.jpeg",
-        },
-        {
-            "id": 3,
-            "title": "Music Stream",
-            "streamer": "Musician789",
-            "viewers": 2000,
-            "thumbnail": "monkey.png",
-        },
-        {
-            "id": 4,
-            "title": "Just Chatting",
-            "streamer": "Chatty101",
-            "viewers": 1200,
-            "thumbnail": "chatting_category.jpg",
-        },
-        {
-            "id": 5,
-            "title": "Cooking Stream",
-            "streamer": "Chef202",
-            "viewers": 1000,
-            "thumbnail": "cooking_category.jpg",
-        }
-    ]
+    db = Database()
+    cursor = db.create_connection()
+
+    # fetch top 25 most viewed live streams if not logged in
+    # TODO Add a check to see if user is logged in, if they are, find streams that match categories they follow
+    streams = cursor.execute("""SELECT * FROM streams 
+                             ORDER BY num_viewers DESC
+                             LIMIT 25; """).fetchall()
     return streams
 
 
@@ -88,38 +60,18 @@ def get_categories() -> list[dict]:
     """
     Returns a list of (sample) categories being watched right now
     """
-    return [
-        {
-            "id": 1,
-            "title": "Gaming",
-            "viewers": 220058,
-            "thumbnail": "gaming_category.jpg",
-        },
-        {
-            "id": 2,
-            "title": "Music",
-            "viewers": 150060,
-            "thumbnail": "music_category.webp",
-        },
-        {
-            "id": 3,
-            "title": "Art",
-            "viewers": 10200,
-            "thumbnail": "art_category.jpg",
-        },
-        {
-            "id": 4,
-            "title": "Cooking",
-            "viewers": 8000,
-            "thumbnail": "cooking_category.jpg",
-        },
-        {
-            "id": 5,
-            "title": "Just Chatting",
-            "viewers": 83900,
-            "thumbnail": "chatting_category.jpg",
-        }
-    ]
+    
+    db = Database()
+    cursor = db.create_connection()
+
+    # fetch top categories by number of viewers
+    categories = cursor.execute("""SELECT category_name, SUM(num_viewers) FROM categories, streams
+                                WHERE categories.category_id = streams.category_id
+                                GROUP BY category_name
+                                ORDER BY SUM(num_viewers) DESC
+                                LIMIT 25; """).fetchall()
+    return categories
+
 
 
 @stream_bp.route('/get_followed_categories')
