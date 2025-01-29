@@ -19,7 +19,7 @@ interface FormErrors {
 }
 
 interface SubmitProps {
-  onSubmit: () => void; // Add the prop for the callback
+  onSubmit: () => void; 
 }
 
 const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
@@ -110,7 +110,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
     <form
       onSubmit={handleSubmit}
       id="register-form"
-      className="h-[100%] flex flex-col h-full justify-evenly items-center"
+      className="h-[100%] flex flex-col justify-evenly items-center"
     >
       {errors.general && (
         <p className="text-red-500 text-sm text-center">{errors.general}</p>

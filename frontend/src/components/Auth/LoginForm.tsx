@@ -14,7 +14,12 @@ interface FormErrors {
   general?: string; // For general authentication errors
 }
 
-const LoginForm: React.FC = () => {
+//Speed up border animation
+interface SubmitProps {
+  onSubmit: () => void; 
+}
+
+const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   const { setIsLoggedIn } = useAuth();
 
   const [formData, setFormData] = useState<LoginFormData>({
@@ -46,6 +51,7 @@ const LoginForm: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    onSubmit();
     e.preventDefault();
 
     if (validateForm()) {
@@ -94,7 +100,7 @@ const LoginForm: React.FC = () => {
     <form
       onSubmit={handleSubmit}
       id="login-form"
-      className="h-[100%] flex flex-col h-full justify-evenly items-center"
+      className="h-[100%] flex flex-col justify-evenly items-center"
     >
       {errors.general && (
         <p className="text-red-500 text-sm text-center">{errors.general}</p>

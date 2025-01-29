@@ -22,6 +22,7 @@
     width: 200%;
     height: 200%;
     animation: border-spin var(--spin-duration) linear infinite;
+    
   }
 
   .front-content {

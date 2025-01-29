@@ -19,7 +19,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
 
     setTimeout(() => {
       setSpinDuration("7s");
-    }, 5000);
+    }, 3500);
   };
 
   return (
@@ -63,7 +63,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
               Register
             </ToggleButton>
           </div>
-          {selectedTab === "Login" ? <LoginForm /> : <RegisterForm onSubmit={handleSubmit}/>}
+          {selectedTab === "Login" ? <LoginForm onSubmit={handleSubmit} /> : <RegisterForm onSubmit={handleSubmit}/>}
         </div>
       </div>
     </>
