@@ -180,7 +180,6 @@ def publish_stream():
                                            1,
                                            datetime.now(),
                                            1))
-    db.commit_data()
     
     return redirect(f"/{user_info['username']}")
 
@@ -198,6 +197,5 @@ def end_stream():
     
     # Set stream to not live
     db.execute("""UPDATE streams SET isLive = 0 WHERE user_id = ? AND isLive = 1""", (user_info["user_id"],))
-    db.commit_data()
 
     return "Stream ended", 200

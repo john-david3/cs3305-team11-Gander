@@ -93,7 +93,6 @@ def signup():
                 None
             )
         )
-        db.commit_data()
 
         # Create session for new user, to avoid them having unnecessary state info
         session.clear()

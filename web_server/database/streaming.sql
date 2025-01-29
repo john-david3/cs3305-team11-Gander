@@ -17,7 +17,7 @@ CREATE TABLE stream_tags
 DROP TABLE IF EXISTS chat;
 CREATE TABLE chat
 (
-    message_id INTEGER PRIMARY KEY AUTOINCREMENT  ,
+    message_id INTEGER PRIMARY KEY AUTOINCREMENT,
     stream_id INTEGER NOT NULL,
     chatter_id VARCHAR(50) NOT NULL,
     message VARCHAR(256) NOT NULL,

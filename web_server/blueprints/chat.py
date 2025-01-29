@@ -107,5 +107,4 @@ def save_chat(chatter_id, stream_id, message):
     db.execute("""
                     INSERT INTO chat (chatter_id, stream_id, message)
                     VALUES (?, ?, ?);""", (chatter_id, stream_id, message))
-    db.commit_data()
     db.close_connection()

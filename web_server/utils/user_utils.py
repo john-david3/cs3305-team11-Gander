@@ -130,7 +130,6 @@ def reset_password(new_password: str, email: str):
 
     try:
         db.execute("UPDATE users SET password = ? WHERE email = ?", (generate_password_hash(new_password), email))
-        db.commit_data()
         return True
     except Exception as e:
         print(f"Error: {e}")
