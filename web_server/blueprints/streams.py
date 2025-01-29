@@ -3,6 +3,7 @@ from utils.stream_utils import streamer_live_status, streamer_most_recent_stream
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
 from database.database import Database
+from datetime import datetime
 stream_bp = Blueprint("stream", __name__)
 
 
@@ -171,6 +172,8 @@ def stream_thumbnail_snapshot(streamer_id):
     """
     return
 
+
+## RTMP Server Routes
 @stream_bp.route("/publish_stream", methods=["POST"])
 def publish_stream():
     """
@@ -181,12 +184,21 @@ def publish_stream():
     # Check if stream key is valid
     db = Database()
     db.create_connection()
-    user_info = db.fetchone("""SELECT user_id, username 
+    user_info = db.fetchone("""SELECT user_id, username, current_stream_title, current_selected_category_id 
                                FROM users 
                                WHERE stream_key = ?""", (stream_key,))
 
     if not user_info:
         return "Unauthorized", 403
+    
+    # Insert stream into database
+    db.execute("""INSERT INTO streams (user_id, title, category_id, start_time, isLive)
+                  VALUES (?, ?, ?, ?, ?)""", (user_info["user_id"], 
+                                           user_info["current_stream_title"],
+                                           1,
+                                           datetime.now(),
+                                           1))
+
     
     return redirect(f"/{user_info['username']}")
 
@@ -195,4 +207,14 @@ def end_stream():
     """
     Ends a stream
     """
-    return
+    db = Database()
+    db.create_connection()
+    user_info = db.fetchone("""SELECT user_id FROM users WHERE stream_key = ?""", (request.form.get("name"),))
+
+    if not user_info:
+        return "Unauthorized", 403
+    
+    # Set stream to not live
+    db.execute("""UPDATE streams SET isLive = 0 WHERE user_id = ? AND isLive = 1""", (user_info["user_id"],))
+
+    return "Stream ended", 200

@@ -30,7 +30,21 @@ class Database:
 
         result = self.cursor.fetchone()
         return self.convert_to_list_dict(result)
-    
+
+    def execute(self, query: str, parameters=None) -> None:
+        """
+        Executes a command (e.g., INSERT, UPDATE, DELETE) and commits the changes.
+        """
+        try:
+            if parameters:
+                self.cursor.execute(query, parameters)
+            else:
+                self.cursor.execute(query)
+            self.commit_data()
+        except Exception as e:
+            print(f"Error executing command: {e}")
+            raise
+
     def convert_to_list_dict(self, result):
         """
         Converts a query result to a list of dictionaries
@@ -47,7 +61,7 @@ class Database:
         else:
             # for fetchall or fetchmany
             return [dict(zip(columns, row)) for row in result]
-    
+
     def commit_data(self):
         try:
             self._conn.commit()
