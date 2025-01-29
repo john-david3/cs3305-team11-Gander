@@ -35,7 +35,7 @@ const StreamerRoute: React.FC = () => {
   }
 
   // streamId=0 is a special case for the streamer's latest stream
-  return isLive ? <VideoPage streamId={0} /> : (streamerName ? <UserPage username={streamerName} /> : <div>Error: Streamer not found</div>);
+  return isLive ? <VideoPage streamId={1} /> : (streamerName ? <UserPage username={streamerName} /> : <div>Error: Streamer not found</div>);
 };
 
 export default StreamerRoute;
