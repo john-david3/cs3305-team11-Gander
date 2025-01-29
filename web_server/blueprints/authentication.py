@@ -48,7 +48,6 @@ def signup():
 
     # Create a connection to the database
     db = Database()
-    db.create_connection()
 
     try:
         # Check for duplicate email/username, no two users can have the same
@@ -150,7 +149,6 @@ def login():
     
     # Create a connection to the database
     db = Database()
-    db.create_connection()
 
     try:
         # Check if user exists, only existing users can be logged in

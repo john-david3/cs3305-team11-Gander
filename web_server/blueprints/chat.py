@@ -51,7 +51,6 @@ def get_past_chat(stream_id: int):
 
     # Connect to the database
     db = Database()
-    db.create_connection()
 
     # fetched in format: [(chatter_id, message, time_sent)]
     all_chats = db.fetchall("""
@@ -103,7 +102,6 @@ def send_chat(data) -> None:
 def save_chat(chatter_id, stream_id, message):
     """Save the chat to the database"""
     db = Database()
-    db.create_connection()
     db.execute("""
                     INSERT INTO chat (chatter_id, stream_id, message)
                     VALUES (?, ?, ?);""", (chatter_id, stream_id, message))

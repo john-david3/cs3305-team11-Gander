@@ -1,5 +1,4 @@
 from flask import Blueprint, session
-from database.db_context import get_db
 import smtplib
 from email.mime.text import MIMEText
 from os import getenv
@@ -20,7 +19,6 @@ def send_email() -> None:
 
     # Get the users email address
     db = get_db()
-    db.create_connection()
     user_email = db.fetchone("""
                 SELECT email
                 FROM users

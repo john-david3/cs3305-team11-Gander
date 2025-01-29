@@ -6,6 +6,15 @@ class Database:
         self._db = os.path.join(os.path.abspath(os.path.dirname(__file__)), "app.db")
         self._conn = None
         self.cursor = None
+        self.create_connection()
+
+    def __enter__(self):
+        """Returns db on using with clause"""
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Closes db connection after with clause"""
+        self.close_connection()
 
     def create_connection(self) -> None:
         """Create a database connection if not already established."""

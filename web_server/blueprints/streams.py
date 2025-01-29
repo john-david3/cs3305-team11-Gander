@@ -8,7 +8,13 @@ from utils.stream_utils import (
 )
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
-from utils.recommendation_utils import default_recommendations, recommendations_based_on_category, user_recommendation_category, followed_categories_recommendations
+from utils.recommendation_utils import (
+    default_recommendations, 
+    recommendations_based_on_category, 
+    user_recommendation_category, 
+    followed_categories_recommendations, 
+    category_recommendations
+)
 from utils.utils import most_popular_category
 from database.database import Database
 from datetime import datetime
@@ -42,12 +48,11 @@ def get_recommended_streams() -> list[dict]:
 @stream_bp.route('/get_categories')
 def get_categories() -> list[dict]:
     """
-    Returns a list of most watched categories
+    Returns a list of top 5 most popular categories
     """
 
-    category_data = most_popular_category()
-    streams = recommendations_based_on_category(category_data['category_id'])
-    return jsonify(streams)
+    category_data = category_recommendations()
+    return jsonify(category_data)
 
 @login_required 
 @stream_bp.route('/get_recommended_categories')
@@ -60,7 +65,6 @@ def get_recommended_categories() -> list | list[dict]:
     user_id = get_user_id(username)
 
     db = Database()
-    db.create_connection()
     categories = db.fetchall("""SELECT categories.category_id, categories.category_name, favourability
                                 FROM categories, user_preferences
                                 WHERE user_id = ? AND categories.category_id = user_preferences.category_id,
@@ -166,7 +170,6 @@ def publish_stream():
 
     # Check if stream key is valid
     db = Database()
-    db.create_connection()
     user_info = db.fetchone("""SELECT user_id, username, current_stream_title, current_selected_category_id 
                                FROM users 
                                WHERE stream_key = ?""", (stream_key,))
@@ -190,7 +193,6 @@ def end_stream():
     Ends a stream
     """
     db = Database()
-    db.create_connection()
     user_info = db.fetchone("""SELECT user_id FROM users WHERE stream_key = ?""", (request.form.get("name"),))
 
     if not user_info:
