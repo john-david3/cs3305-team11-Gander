@@ -53,3 +53,13 @@ CREATE TABLE subscribes
     FOREIGN KEY(subscribed_id) REFERENCES users(user_id) ON DELETE CASCADE   
 );
 
+DROP TABLE IF EXISTS followed_categories;
+CREATE TABLE followed_categories
+(
+    user_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, category_id),
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+);
+
