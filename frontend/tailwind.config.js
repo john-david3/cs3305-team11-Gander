@@ -12,7 +12,7 @@ export default {
       animation: {
         moving_text_colour: "moving_text_colour 6s ease-in-out infinite alternate",
         moving_bg: 'moving_bg 200s linear infinite',
-        'border-spin': 'border-spin 7s linear infinite',
+        'border-spin': 'border-spin linear infinite', // No duration here
       },
 
 
@@ -24,16 +24,11 @@ export default {
         moving_text_colour: {
           "0%": { backgroundPosition: "0% 50%" },
           "100%": { backgroundPosition: "100% 50%" },
-        
+
           moving_bg: {
             '0%': { backgroundPosition: '0% 0%' },
             '100%': { backgroundPosition: '100% 0%' },
           }
-        },
-        'border-spin': {
-          '100%': {
-            transform: 'rotate(360deg)',
-          },
         },
       },
     },

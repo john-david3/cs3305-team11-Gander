@@ -3,24 +3,37 @@
 @tailwind utilities;
 
 @layer utilities {
-  /* Act as a border */
-  .card-wrapper {
+
+  .container {
     @apply absolute overflow-hidden rounded-2xl ;
   }
 
-  /* Gradient */
-  .card-wrapper::before {     
+  .container::before {     
     background-image: conic-gradient(
         from 200deg at 50% 50%,
         transparent 70%,
         #55e28b 85%, 
         #3b82f6 90%,
         #BF40BF 95%);
-    @apply absolute left-[-50%] top-[-50%] h-[200%] w-[200%] animate-border-spin content-[''];
+      
+    content: '';
+    position: absolute;
+
+    width: 200%;
+    height: 200%;
+    animation: border-spin var(--spin-duration) linear infinite;
   }
 
-  /* Body */
-  .card-content {
+  .front-content {
     @apply absolute left-[1px] top-[1px] h-[calc(100%-4px)] w-[calc(100%-4px)] rounded-2xl ;
+  }
+}
+
+@keyframes border-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
