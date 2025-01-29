@@ -7,12 +7,12 @@ INSERT INTO categories (category_name) VALUES
 ('Sports');
 
 -- Sample data for users
-INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
-('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!'),
-('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.'),
-('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.'),
-('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.'),
-('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!');
+INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, current_stream_title, current_selected_category_id) VALUES 
+('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 'Epic Gaming Session', 1),
+('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.', 'Live Music Jam', 2),
+('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.', 'Sketching Live', 3),
+('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.', 'Math Made Easy', 4),
+('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!', 'Sports Highlights', 5);
 
 -- Sample data for streams
 INSERT INTO streams (user_id, title, start_time, num_viewers, isLive, vod_id, category_id) VALUES 

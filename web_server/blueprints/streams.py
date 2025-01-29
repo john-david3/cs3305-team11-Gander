@@ -181,11 +181,18 @@ def publish_stream():
     # Check if stream key is valid
     db = Database()
     db.create_connection()
-    stream = db.fetchone("SELECT username FROM users WHERE stream_key = ?", (stream_key,))
+    user_info = db.fetchone("""SELECT user_id, username 
+                               FROM users 
+                               WHERE stream_key = ?""", (stream_key,))
 
-    ## TODO: Add stream to database
-
-    if not stream:
+    if not user_info:
         return "Unauthorized", 403
     
-    return redirect(f"/{stream['username']}")
+    return redirect(f"/{user_info['username']}")
+
+@stream_bp.route("/end_stream", methods=["POST"])
+def end_stream():
+    """
+    Ends a stream
+    """
+    return

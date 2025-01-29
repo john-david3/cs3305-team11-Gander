@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 from database.database import Database
 from blueprints.utils import login_required, sanitizer
+from secrets import token_hex
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -78,16 +79,18 @@ def signup():
         # Create new user once input is validated
         cursor.execute(
             """INSERT INTO users 
-               (username, password, email, num_followers, stream_key, is_partnered, bio)
-               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+               (username, password, email, num_followers, stream_key, is_partnered, bio, current_stream_title, current_selected_category_id)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 username,
                 generate_password_hash(password),
                 email,
                 0,
-                '1',
+                token_hex(32),
                 0,
-                "This user does not have a Bio."
+                "This user does not have a Bio.",
+                "My Stream",
+                None
             )
         )
         db.commit_data()
