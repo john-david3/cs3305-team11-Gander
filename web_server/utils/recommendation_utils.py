@@ -6,10 +6,10 @@ def user_recommendation_category(user_id: int) -> Optional[int]:
     Queries user_preferences database to find users favourite streaming category and returns the category
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
-    data = cursor.execute(
-        "SELECT category_id FROM user_preferences WHERE user_id = ? ORDER BY favourability DESC LIMIT 1", (user_id,)).fetchone()
+    data = db.fetchone(
+        "SELECT category_id FROM user_preferences WHERE user_id = ? ORDER BY favourability DESC LIMIT 1", (user_id,))
     return data[0]
 
 def followed_categories_recommendations(user_id: int):

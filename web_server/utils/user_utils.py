@@ -14,13 +14,13 @@ def get_user_id(username: str) -> Optional[int]:
     Returns user_id associated with given username
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     try:
-        data = cursor.execute(
+        data = db.fetchone(
             "SELECT user_id FROM users WHERE username = ?", 
             (username,)
-        ).fetchone()
+        )
         return data[0] if data else None
     except Exception as e:
         print(f"Error: {e}")
@@ -31,13 +31,13 @@ def get_username(user_id: str) -> Optional[str]:
     Returns username associated with given user_id
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     try:
-        data = cursor.execute(
+        data = db.fetchone(
             "SELECT username FROM user WHERE user_id = ?", 
             (user_id,)
-        ).fetchone()
+        )
         return data[0] if data else None
     except Exception as e:
         print(f"Error: {e}")
@@ -48,13 +48,13 @@ def is_user_partner(user_id: int) -> bool:
     Returns True if user is a partner, else False
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     try:
-        data = cursor.execute(
+        data = db.fetchone(
             "SELECT is_partnered FROM users WHERE user_id = ?", 
             (user_id,)
-        ).fetchone()
+        )
         return bool(data)
     except Exception as e:
         print(f"Error: {e}")
@@ -65,13 +65,13 @@ def is_subscribed(user_id: int, streamer_id: int) -> bool:
     Returns True if user is subscribed to a streamer, else False
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     try:
-        result = cursor.execute(
+        result = db.fetchone(
             "SELECT 1 FROM subscribes WHERE user_id = ? AND streamer_id = ? AND expires > ?", 
             (user_id, streamer_id, datetime.now())
-        ).fetchone()
+        )
         return bool(result)
     except Exception as e:
         print(f"Error: {e}")
@@ -79,13 +79,13 @@ def is_subscribed(user_id: int, streamer_id: int) -> bool:
 
 def is_following(user_id: int, followed_id: int) -> bool:
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
     
     try:
-        result = cursor.execute(
+        result = db.fetchone(
             "SELECT 1 FROM follows WHERE user_id = ? AND followed_id = ?", 
             (user_id, followed_id)
-        ).fetchone()
+        )
         return bool(result)
     except Exception as e:
         print(f"Error: {e}")
@@ -96,11 +96,11 @@ def subscription_expiration(user_id: int, subscribed_id: int) -> int:
     Returns the amount of time left until user subscription to a streamer ends
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
     remaining_time = 0
     try:
-        data = cursor.execute(
-            "SELECT expires from subscriptions WHERE user_id = ? AND subscribed_id = ? AND expires > since", (user_id,subscribed_id)).fetchone()
+        data = db.fetchone(
+            "SELECT expires from subscriptions WHERE user_id = ? AND subscribed_id = ? AND expires > since", (user_id,subscribed_id))
         if data:
             expiration_date = data[0]
 
@@ -130,7 +130,7 @@ def reset_password(new_password: str, email: str):
 
     try:
         db.execute("UPDATE users SET password = ? WHERE email = ?", (generate_password_hash(new_password), email))
-        db.commit()
+        db.commit_data()
         return True
     except Exception as e:
         print(f"Error: {e}")

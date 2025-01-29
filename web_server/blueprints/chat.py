@@ -51,10 +51,10 @@ def get_past_chat(stream_id: int):
 
     # Connect to the database
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     # fetched in format: [(chatter_id, message, time_sent)]
-    all_chats = cursor.execute("""
+    all_chats = db.fetchall("""
                                SELECT *
                                FROM (
                                     SELECT chatter_id, message, time_sent
@@ -63,7 +63,7 @@ def get_past_chat(stream_id: int):
                                     ORDER BY time_sent DESC
                                     LIMIT 50
                                )
-                               ORDER BY time_sent ASC;""", (stream_id,)).fetchall()
+                               ORDER BY time_sent ASC;""", (stream_id,))
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
@@ -103,8 +103,8 @@ def send_chat(data) -> None:
 def save_chat(chatter_id, stream_id, message):
     """Save the chat to the database"""
     db = Database()
-    cursor = db.create_connection()
-    cursor.execute("""
+    db.create_connection()
+    db.execute("""
                     INSERT INTO chat (chatter_id, stream_id, message)
                     VALUES (?, ?, ?);""", (chatter_id, stream_id, message))
     db.commit_data()

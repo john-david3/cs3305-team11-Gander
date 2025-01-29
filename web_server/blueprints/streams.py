@@ -34,7 +34,7 @@ def get_recommended_streams() -> list[dict]:
     Queries DB to get a list of recommended streams using an algorithm
     """
 
-    user_id = session.get("user_id")
+    user_id = session.get("username")
     category = user_recommendation_category(user_id)
     streams = recommendations_based_on_category(category)
     return jsonify(streams)
@@ -180,7 +180,7 @@ def publish_stream():
                                            1,
                                            datetime.now(),
                                            1))
-
+    db.commit_data()
     
     return redirect(f"/{user_info['username']}")
 
@@ -198,5 +198,6 @@ def end_stream():
     
     # Set stream to not live
     db.execute("""UPDATE streams SET isLive = 0 WHERE user_id = ? AND isLive = 1""", (user_info["user_id"],))
+    db.commit_data()
 
     return "Stream ended", 200

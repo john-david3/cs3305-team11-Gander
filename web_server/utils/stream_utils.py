@@ -8,15 +8,15 @@ def streamer_live_status(user_id: int) -> bool:
     Returns boolean on whether the given streamer is live
     """
     db = Database()
-    cursor = db.create_connection()
-    return bool(cursor.execute("SELECT 1 FROM streams WHERE user_id = ? AND isLive = 1 ORDER BY stream_id DESC", (user_id,)).fetchone())
+    db.create_connection()
+    return bool(db.fetchone("SELECT 1 FROM streams WHERE user_id = ? AND isLive = 1 ORDER BY stream_id DESC", (user_id,)))
 
 def followed_live_streams(user_id: int) -> list[dict]:
     """
     Searches for streamers who the user followed which are currently live
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     live_streams = db.fetchall("""
         SELECT user_id, stream_id, title, num_viewers
@@ -60,7 +60,7 @@ def user_stream(user_id: int, stream_id: int) -> dict:
     Returns data of a streamers selected stream
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
     stream = db.fetchone("SELECT * FROM streams WHERE user_id = ? AND stream_id = ?", (user_id,stream_id))
 
     return stream

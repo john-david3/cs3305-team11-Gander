@@ -26,7 +26,7 @@ def signup():
 
     # Validation - ensure all fields exist, users cannot have an empty field
     if not all([username, email, password]):
-        error_fields = get_error_fields([username, email, password]), #!←← find the error_fields, to highlight them in red to the user on the frontend
+        error_fields = get_error_fields([username, email, password]) #!←← find the error_fields, to highlight them in red to the user on the frontend
         return jsonify({
             "account_created": False,
             "error_fields": error_fields,
@@ -48,25 +48,25 @@ def signup():
 
     # Create a connection to the database
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     try:
         # Check for duplicate email/username, no two users can have the same
-        dup_email = cursor.execute(
+        dup_email = db.fetchone(
             "SELECT * FROM users WHERE email = ?",
             (email,)
-        ).fetchone()
+        )
 
-        dup_username = cursor.execute(
+        dup_username = db.fetchone(
             "SELECT * FROM users WHERE username = ?",
             (username,)
-        ).fetchone()
+        )
 
         if dup_email is not None:
             return jsonify({
                 "account_created": False,
                 "error_fields": ["email"],
-                "message": "Email already taken"
+                "message": f"Email already taken: {email}"
             }), 400
 
         if dup_username is not None:
@@ -77,7 +77,7 @@ def signup():
             }), 400
 
         # Create new user once input is validated
-        cursor.execute(
+        db.execute(
             """INSERT INTO users 
                (username, password, email, num_followers, stream_key, is_partnered, bio, current_stream_title, current_selected_category_id)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
@@ -151,14 +151,14 @@ def login():
     
     # Create a connection to the database
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     try:
         # Check if user exists, only existing users can be logged in
-        user = cursor.execute(
+        user = db.fetchone(
             "SELECT * FROM users WHERE username = ?",
             (username,)
-        ).fetchone()
+        )
 
         if not user:
             return jsonify({
@@ -210,7 +210,4 @@ def logout() -> dict:
 
 def get_error_fields(values: list):
     fields = ["username", "email", "password"]
-    for x in fields:
-        if not values[fields.index(x)]:
-            fields.remove(x)
-    return fields
+    return [fields[i] for i, v in enumerate(values) if not v]

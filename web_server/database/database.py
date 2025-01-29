@@ -4,69 +4,50 @@ import os
 class Database:
     def __init__(self) -> None:
         self._db = os.path.join(os.path.abspath(os.path.dirname(__file__)), "app.db")
+        self._conn = None
         self.cursor = None
 
-    def create_connection(self) -> sqlite3.Cursor:
-        conn = sqlite3.connect(self._db)
-        conn.row_factory = sqlite3.Row
-        self._conn = conn
-        self.cursor = conn.cursor()
-        return self.cursor
-    
-    def fetchall(self, query: str, parameters=None) -> list[dict]:
-        if parameters:
-            self.cursor.execute(query, parameters)
-        else:
-            self.cursor.execute(query)
+    def create_connection(self) -> None:
+        """Create a database connection if not already established."""
+        if self._conn is None:
+            self._conn = sqlite3.connect(self._db)
+            self._conn.row_factory = sqlite3.Row
+            self.cursor = self._conn.cursor()
 
+    def close_connection(self) -> None:
+        """Close the database connection."""
+        if self._conn:
+            self._conn.close()
+            self._conn = None
+            self.cursor = None
+
+    def fetchall(self, query: str, parameters=None) -> list[dict]:
+        """Fetch all records from the database."""
+        self.create_connection()
+        self.cursor.execute(query, parameters or ())
         result = self.cursor.fetchall()
         return self.convert_to_list_dict(result)
-    
-    def fetchone(self, query: str, parameters=None) -> list[dict]:
-        if parameters:
-            self.cursor.execute(query, parameters)
-        else:
-            self.cursor.execute(query)
 
+    def fetchone(self, query: str, parameters=None) -> dict | None:
+        """Fetch one record from the database."""
+        self.create_connection()
+        self.cursor.execute(query, parameters or ())
         result = self.cursor.fetchone()
-        return self.convert_to_list_dict(result)
+        return self.convert_to_list_dict(result) if result else None
 
     def execute(self, query: str, parameters=None) -> None:
-        """
-        Executes a command (e.g., INSERT, UPDATE, DELETE) and commits the changes.
-        """
+        """Execute an INSERT, UPDATE, or DELETE command and commit changes."""
+        self.create_connection()
         try:
-            if parameters:
-                self.cursor.execute(query, parameters)
-            else:
-                self.cursor.execute(query)
-            self.commit_data()
-        except Exception as e:
-            print(f"Error executing command: {e}")
+            self.cursor.execute(query, parameters or ())
+            self._conn.commit()
+        except sqlite3.DatabaseError as e:
+            print(f"Database error: {e}")
             raise
 
     def convert_to_list_dict(self, result):
-        """
-        Converts a query result to a list of dictionaries
-        """
-        # Get the column names from the cursor
-        columns = [description[0] for description in self.cursor.description]
-
+        """Convert query result to a list of dictionaries."""
         if not result:
-            # for empty result
             return []
-        elif isinstance(result, sqlite3.Row):
-            # for fetchone
-            return dict(zip(columns, result))
-        else:
-            # for fetchall or fetchmany
-            return [dict(zip(columns, row)) for row in result]
-
-    def commit_data(self):
-        try:
-            self._conn.commit()
-        except Exception as e:
-            print(e)
-
-    def close_connection(self) -> None:
-        self._conn.close()
+        columns = [desc[0] for desc in self.cursor.description]
+        return [dict(zip(columns, row)) for row in result] if isinstance(result, list) else dict(zip(columns, result))
