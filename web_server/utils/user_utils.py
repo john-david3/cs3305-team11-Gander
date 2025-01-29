@@ -126,10 +126,10 @@ def reset_password(new_password: str, email: str):
     Given email and new password reset the password for a given user
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
     try:
-        cursor.execute("UPDATE users SET password = ? WHERE email = ?", (generate_password_hash(new_password), email))
+        db.execute("UPDATE users SET password = ? WHERE email = ?", (generate_password_hash(new_password), email))
         db.commit()
         return True
     except Exception as e:

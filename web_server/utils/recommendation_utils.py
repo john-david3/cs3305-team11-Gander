@@ -1,26 +1,64 @@
 from database.database import Database
-from user_utils import get_user_id
 from typing import Optional, List, Tuple
 
-def user_recommendation_category(username: str) -> Optional[int]:
+def user_recommendation_category(user_id: int) -> Optional[int]:
     """
     Queries user_preferences database to find users favourite streaming category and returns the category
     """
     db = Database()
     cursor = db.create_connection()
-    user_id = get_user_id(username)
 
     data = cursor.execute(
         "SELECT category_id FROM user_preferences WHERE user_id = ? ORDER BY favourability DESC LIMIT 1", (user_id,)).fetchone()
     return data[0]
 
-def recommendations_based_on_category(category_id: int) -> Optional[List[Tuple[int, str, int]]]:
+def followed_categories_recommendations(user_id: int):
     """
-    Queries stream database to get top 10 most viewed streams based on given category and returns (stream_id, title, num_viewers)
+    Returns top 25 streams given a users category following
     """
     db = Database()
-    cursor = db.create_connection()
+    db.create_connection()
 
-    data = cursor.execute(
-        "SELECT user_id, stream_id, title, num_viewers FROM streams WHERE category_id = ? ORDER BY num_viwers DESC LIMIT 10", (category_id,)).fetchall()
+    categories = db.fetchall("""
+                             SELECT users.user_id, title, username, num_viewers, category_name 
+                             FROM streams 
+                             WHERE category_id IN (SELECT category_id FROM categories WHERE user_id = ?)
+                             ORDER BY num_viewers DESC
+                             LIMIT 25;  """, (user_id,))
+    return categories
+
+def recommendations_based_on_category(category_id: int) -> Optional[List[Tuple[int, str, int]]]:
+    """
+    Queries stream database to get top 25 most viewed streams based on given category and returns 
+    (user_id, title, username, num_viewers, category_name)
+    """
+    db = Database()
+    db.create_connection()
+
+    data = db.fetchall("""
+        SELECT users.user_id, title, username, num_viewers, category_name
+        FROM streams 
+        JOIN users ON users.user_id = streams.user_id
+        JOIN categories ON streams.category_id = categories.category_id
+        WHERE categories.category_id = ? 
+        ORDER BY num_viewers DESC 
+        LIMIT 25""", (category_id,))
     return data
+
+def default_recommendations():
+    """
+    Return a list of 25 recommended live streams by number of viewers
+    (user_id, title, username, num_viewers, category_name)
+    """
+    db = Database()
+    db.create_connection()
+    data = db.fetchall("""
+        SELECT users.user_id, title, username, num_viewers, category_name
+        FROM streams 
+        JOIN users ON users.user_id = streams.user_id 
+        JOIN categories ON streams.category_id = categories.category_id
+        ORDER BY num_viewers DESC 
+        LIMIT 25
+    """)
+    return data
+
