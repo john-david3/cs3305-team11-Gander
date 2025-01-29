@@ -42,11 +42,11 @@ def get_recommended_streams() -> list[dict]:
 @stream_bp.route('/get_categories')
 def get_categories() -> list[dict]:
     """
-    Returns a list of streams in the most popular category
+    Returns a list of most watched categories
     """
 
     category_data = most_popular_category()
-    streams = recommendations_based_on_category(category_data["category_id"])
+    streams = recommendations_based_on_category(category_data['category_id'])
     return jsonify(streams)
 
 @login_required 

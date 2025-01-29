@@ -13,8 +13,7 @@ const StreamerRoute: React.FC = () => {
       try {
         const response = await fetch(`/api/streamer/${streamerName}/status`);
         const data = await response.json();
-        console.log("Stream status:", data);
-        setIsLive(data.status === "live");
+        setIsLive(data.is_live);
       } catch (error) {
         console.error("Error checking stream status:", error);
         setIsLive(false);
@@ -36,7 +35,7 @@ const StreamerRoute: React.FC = () => {
   }
 
   // streamId=0 is a special case for the streamer's latest stream
-  return isLive ? <VideoPage streamId={0} /> : <UserPage profile={streamerName} />;
+  return isLive ? <VideoPage streamId={0} /> : (streamerName ? <UserPage username={streamerName} /> : <div>Error: Streamer not found</div>);
 };
 
 export default StreamerRoute;

@@ -61,7 +61,7 @@ def default_recommendations():
         JOIN users ON users.user_id = streams.user_id 
         JOIN categories ON streams.category_id = categories.category_id
         ORDER BY num_viewers DESC 
-        LIMIT 25
+        LIMIT 25;
     """)
     db.close_connection()
     return data

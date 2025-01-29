@@ -49,3 +49,11 @@ CREATE TABLE streams
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+
+SELECT users.user_id, title, username, num_viewers, category_name
+        FROM streams 
+        JOIN users ON users.user_id = streams.user_id 
+        JOIN categories ON streams.category_id = categories.category_id
+        ORDER BY num_viewers DESC 
+        LIMIT 25;

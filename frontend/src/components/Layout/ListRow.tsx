@@ -27,6 +27,7 @@ const ListItem: React.FC<ListItemProps> = ({
   thumbnail,
   onItemClick,
 }) => {
+  console.log(title, "thumbnail", thumbnail);
   return (
     <div
       className="flex flex-col bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors"
@@ -35,7 +36,7 @@ const ListItem: React.FC<ListItemProps> = ({
       <div className="relative w-full pt-[56.25%]">
         {thumbnail ? (
           <img
-            src={`images/` + thumbnail}
+            src={thumbnail}
             alt={title}
             className="absolute top-0 left-0 w-full h-full object-cover"
           />
@@ -74,6 +75,7 @@ const ListRow: React.FC<ListRowProps> = ({
             title={item.title}
             streamer={item.type === "stream" ? (item.streamer) : undefined}
             viewers={item.viewers}
+            thumbnail={item.thumbnail}
             onItemClick={() =>
               onClick?.(item.id, item.streamer || item.title)
             }

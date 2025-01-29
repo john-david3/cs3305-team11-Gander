@@ -52,7 +52,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
         console.error("Failed to load stream data:", res.statusText);
       }
       res.json().then((data) => {
-        if (!data.validStream) navigate(`/`);
+        // if (!data.validStream) navigate(`/`);
         console.log(`Loading stream data for ${streamerName}`);
         setStreamData({
           streamId: data.streamId,
