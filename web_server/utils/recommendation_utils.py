@@ -10,7 +10,8 @@ def user_recommendation_category(user_id: int) -> Optional[int]:
 
     data = db.fetchone(
         "SELECT category_id FROM user_preferences WHERE user_id = ? ORDER BY favourability DESC LIMIT 1", (user_id,))
-    return data[0]
+    db.close_connection()
+    return data
 
 def followed_categories_recommendations(user_id: int):
     """
@@ -25,6 +26,7 @@ def followed_categories_recommendations(user_id: int):
                              WHERE category_id IN (SELECT category_id FROM categories WHERE user_id = ?)
                              ORDER BY num_viewers DESC
                              LIMIT 25;  """, (user_id,))
+    db.close_connection()
     return categories
 
 def recommendations_based_on_category(category_id: int) -> Optional[List[Tuple[int, str, int]]]:
@@ -43,6 +45,7 @@ def recommendations_based_on_category(category_id: int) -> Optional[List[Tuple[i
         WHERE categories.category_id = ? 
         ORDER BY num_viewers DESC 
         LIMIT 25""", (category_id,))
+    db.close_connection()
     return data
 
 def default_recommendations():
@@ -60,5 +63,6 @@ def default_recommendations():
         ORDER BY num_viewers DESC 
         LIMIT 25
     """)
+    db.close_connection()
     return data
 

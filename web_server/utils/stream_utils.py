@@ -9,7 +9,9 @@ def streamer_live_status(user_id: int) -> bool:
     """
     db = Database()
     db.create_connection()
-    return bool(db.fetchone("SELECT 1 FROM streams WHERE user_id = ? AND isLive = 1 ORDER BY stream_id DESC", (user_id,)))
+    is_live = bool(db.fetchone("SELECT 1 FROM streams WHERE user_id = ? AND isLive = 1 ORDER BY stream_id DESC", (user_id,)))
+    db.close_connection()
+    return is_live
 
 def followed_live_streams(user_id: int) -> list[dict]:
     """
@@ -25,6 +27,7 @@ def followed_live_streams(user_id: int) -> list[dict]:
         AND stream_id = (SELECT MAX(stream_id) FROM streams WHERE user_id = streams.user_id)
         AND isLive = 1;
         """, (user_id,))
+    db.close_connection()
 
     return live_streams
 
@@ -41,6 +44,7 @@ def followed_streamers(user_id: int) -> list[dict]:
         WHERE user_id IN (SELECT followed_id FROM follows WHERE user_id = ?);
         """, (user_id,))
 
+    db.close_connection()
     return followed_streamers
 
 def streamer_most_recent_stream(user_id: int) -> dict:
@@ -53,6 +57,7 @@ def streamer_most_recent_stream(user_id: int) -> dict:
                                         user_id = ? AND 
                                         stream_id = (SELECT MAX(stream_id) FROM
                                         streams WHERE user_id = ?)""", (user_id, user_id))
+    db.close_connection()
     return most_recent_stream
 
 def user_stream(user_id: int, stream_id: int) -> dict:
@@ -62,5 +67,6 @@ def user_stream(user_id: int, stream_id: int) -> dict:
     db = Database()
     db.create_connection()
     stream = db.fetchone("SELECT * FROM streams WHERE user_id = ? AND stream_id = ?", (user_id,stream_id))
+    db.close_connection()
 
     return stream

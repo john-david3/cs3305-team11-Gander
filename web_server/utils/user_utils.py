@@ -25,6 +25,8 @@ def get_user_id(username: str) -> Optional[int]:
     except Exception as e:
         print(f"Error: {e}")
         return None
+    finally:
+        db.close_connection()
 
 def get_username(user_id: str) -> Optional[str]:
     """
@@ -42,6 +44,8 @@ def get_username(user_id: str) -> Optional[str]:
     except Exception as e:
         print(f"Error: {e}")
         return None
+    finally:
+        db.close_connection()
     
 def is_user_partner(user_id: int) -> bool:
     """
@@ -59,6 +63,8 @@ def is_user_partner(user_id: int) -> bool:
     except Exception as e:
         print(f"Error: {e}")
         return False
+    finally:
+        db.close_connection()
 
 def is_subscribed(user_id: int, streamer_id: int) -> bool:
     """
@@ -76,6 +82,8 @@ def is_subscribed(user_id: int, streamer_id: int) -> bool:
     except Exception as e:
         print(f"Error: {e}")
         return False
+    finally:
+        db.close_connection()
 
 def is_following(user_id: int, followed_id: int) -> bool:
     db = Database()
@@ -90,6 +98,8 @@ def is_following(user_id: int, followed_id: int) -> bool:
     except Exception as e:
         print(f"Error: {e}")
         return False
+    finally:
+        db.close_connection()
 
 def subscription_expiration(user_id: int, subscribed_id: int) -> int:
     """
@@ -102,11 +112,13 @@ def subscription_expiration(user_id: int, subscribed_id: int) -> int:
         data = db.fetchone(
             "SELECT expires from subscriptions WHERE user_id = ? AND subscribed_id = ? AND expires > since", (user_id,subscribed_id))
         if data:
-            expiration_date = data[0]
+            expiration_date = data["expires"]
 
             remaining_time = (expiration_date - datetime.now()).seconds
     except Exception as e:
         print(f"Error: {e}")
+    finally:
+        db.close_connection()
 
     return remaining_time
 
@@ -134,3 +146,5 @@ def reset_password(new_password: str, email: str):
     except Exception as e:
         print(f"Error: {e}")
         return False
+    finally:
+        db.close_connection()
