@@ -9,7 +9,7 @@ def streamer_live_status(user_id: int) -> bool:
     """
     db = Database()
     db.create_connection()
-    is_live = bool(db.fetchone("SELECT 1 FROM streams WHERE user_id = ? AND isLive = 1 ORDER BY stream_id DESC", (user_id,)))
+    is_live = db.fetchone("""SELECT isLive FROM streams WHERE user_id = ?""", (user_id,))
     db.close_connection()
     return is_live
 
@@ -66,7 +66,7 @@ def user_stream(user_id: int, stream_id: int) -> dict:
     """
     db = Database()
     db.create_connection()
-    stream = db.fetchone("SELECT * FROM streams WHERE user_id = ? AND stream_id = ?", (user_id,stream_id))
+    stream = db.fetchone("SELECT * FROM streams WHERE user_id = ? AND stream_id = ?", (user_id, stream_id))
     db.close_connection()
 
     return stream

@@ -9,7 +9,7 @@ load_dotenv()
 
 serializer = URLSafeTimedSerializer(getenv("AUTH_SECRET_KEY"))
 
-def get_user_id(username: str) -> Optional[int]:
+def get_user_id(username: str) -> int:
     """
     Returns user_id associated with given username
     """
@@ -21,7 +21,7 @@ def get_user_id(username: str) -> Optional[int]:
             "SELECT user_id FROM users WHERE username = ?", 
             (username,)
         )
-        return data[0] if data else None
+        return data['user_id'] if data else None
     except Exception as e:
         print(f"Error: {e}")
         return None

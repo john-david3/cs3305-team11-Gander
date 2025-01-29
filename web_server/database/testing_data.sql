@@ -62,3 +62,5 @@ SELECT * FROM stream_tags;
 -- To see all tables in the database
 SELECT name FROM sqlite_master WHERE type='table';
 
+
+SELECT isLive FROM streams WHERE user_id = '5';

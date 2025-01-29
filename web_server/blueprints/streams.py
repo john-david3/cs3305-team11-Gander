@@ -85,7 +85,7 @@ def get_streamer_status(streamer_username):
     user_id = get_user_id(streamer_username)
 
     if not user_id:
-            abort(404)
+        abort(404)
 
     is_live = streamer_live_status(user_id)
     most_recent_stream = streamer_most_recent_stream(user_id)
