@@ -134,7 +134,7 @@ def get_specific_stream(streamer_username, stream_id):
     if stream:
         return jsonify(stream)
 
-    abort(404)
+    return jsonify({'error': 'Stream not found'}), 404
 
 @login_required
 @stream_bp.route('/get_followed_streamers')

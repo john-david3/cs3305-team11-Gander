@@ -27,7 +27,6 @@ const ListItem: React.FC<ListItemProps> = ({
   thumbnail,
   onItemClick,
 }) => {
-  console.log(title, "thumbnail", thumbnail);
   return (
     <div
       className="flex flex-col bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors"

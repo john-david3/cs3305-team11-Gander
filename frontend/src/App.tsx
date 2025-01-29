@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { StreamsProvider } from "./context/StreamsContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SocketProvider } from "./context/SocketContext";
 import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -25,19 +26,20 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, username, setIsLoggedIn, setUsername }}>
-      <StreamsProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={isLoggedIn ? <HomePage variant="personalised" /> : <HomePage />}
-            />
-            <Route path="/:streamerName" element={<StreamerRoute />} />
-
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </BrowserRouter>
-      </StreamsProvider>
+      <SocketProvider>
+        <StreamsProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={isLoggedIn ? <HomePage variant="personalised" /> : <HomePage />}
+              />
+              <Route path="/:streamerName" element={<StreamerRoute />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </BrowserRouter>
+        </StreamsProvider>
+      </SocketProvider>
     </AuthContext.Provider>
   );
 }
