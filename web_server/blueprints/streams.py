@@ -46,7 +46,7 @@ def get_categories() -> list[dict]:
     """
 
     category_data = most_popular_category()
-    streams = recommendations_based_on_category(category_data[0])
+    streams = recommendations_based_on_category(category_data["category_id"])
     return jsonify(streams)
 
 @login_required 
