@@ -21,7 +21,7 @@ const Input: React.FC<InputProps> = ({
       value={value}
       onChange={onChange}
       {...props}
-      className={`${extraClasses} p-2 rounded-[1rem] w-[20vw] focus:w-[120%] bg-black/40 border border-gray-300 focus:border-purple-500 focus:outline-purple-500 text-center text-white text-xl transition-all`}
+      className={`${extraClasses} p-2 rounded-[1rem] w-[20vw] focus:w-[30vw] bg-black/40 border border-gray-300 focus:border-purple-500 focus:outline-purple-500 text-center text-white text-xl transition-all`}
     />
   );
 };
