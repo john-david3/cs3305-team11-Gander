@@ -2,6 +2,7 @@ from flask import Flask
 from flask_session import Session
 from flask_cors import CORS
 from blueprints.utils import logged_in_user
+from blueprints.errorhandlers import register_error_handlers
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 from blueprints.authentication import auth_bp
@@ -30,6 +31,9 @@ def create_app():
 
     Session(app)
     app.before_request(logged_in_user)
+
+    # adds in error handlers
+    register_error_handlers(app)
 
     # @app.route('/csrf-token')
     # def get_csrf_token():
