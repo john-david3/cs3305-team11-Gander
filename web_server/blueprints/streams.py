@@ -1,7 +1,15 @@
-from flask import Blueprint, session, jsonify, g, request, redirect
-from utils.stream_utils import streamer_live_status, streamer_most_recent_stream, user_stream, followed_live_streams, followed_streamers
+from flask import Blueprint, session, jsonify, g, request, redirect, abort
+from utils.stream_utils import (
+    streamer_live_status,
+    streamer_most_recent_stream,
+    user_stream,
+    followed_live_streams,
+    followed_streamers,
+)
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
+from utils.recommendation_utils import default_recommendations, recommendations_based_on_category, user_recommendation_category, followed_categories_recommendations
+from utils.utils import most_popular_category
 from database.database import Database
 from datetime import datetime
 stream_bp = Blueprint("stream", __name__)
@@ -10,64 +18,38 @@ stream_bp = Blueprint("stream", __name__)
 @stream_bp.route('/get_streams')
 def get_sample_streams() -> list[dict]:
     """
-    Returns a list of (sample) streams live right now
+    Returns a list of streams live now with the highest viewers
     """
-    # TODO Add a check to see if user is logged in, if they are, find streams that match categories they follow
-    db = Database()
-    db.create_connection()
-    streams = db.fetchall("""SELECT * FROM streams 
-                            ORDER BY num_viewers DESC
-                            LIMIT 25; """)
-    return jsonify({
-        "streams": streams
-    })
+
+    # shows default recommended streams for non-logged in users based on highest viewers
+    streams = default_recommendations()
 
 
+    return jsonify(streams)
+
+@login_required 
 @stream_bp.route('/get_recommended_streams')
 def get_recommended_streams() -> list[dict]:
     """
     Queries DB to get a list of recommended streams using an algorithm
     """
-    return [
-        {
-            "id": 1,
-            "title": "Fake Game Showcase w/ Devs",
-            "streamer": "Gamer_boy9000",
-            "viewers": 15458,
-            "thumbnail": "game1.jpg",
-        }, {
-            "id": 2,
-            "title": "Game OSTs I like!",
-            "streamer": "GéMusicLover",
-            "viewers": 52911,
-            "thumbnail": "game_music1.jpg",
-        },
-        {
-            "id": 3,
-            "title": "Chill Stream - Cooking with Chef Ramsay",
-            "streamer": "HarrietDgoat",
-            "viewers": 120283,
-            # Intentionally left out thumbnail to showcase placeholder image
-        }]
 
+    user_id = session.get("user_id")
+    category = user_recommendation_category(user_id)
+    streams = recommendations_based_on_category(category)
+    return jsonify(streams)
 
 @stream_bp.route('/get_categories')
 def get_categories() -> list[dict]:
     """
-    Returns a list of (sample) categories being watched right now
+    Returns a list of streams in the most popular category
     """
 
-    db = Database()
-    db.create_connection()
-    categories = db.fetchall("""SELECT categories.category_id, category_name, SUM(num_viewers) as num_viewers FROM categories, streams
-                                WHERE categories.category_id = streams.category_id
-                                GROUP BY category_name
-                                ORDER BY SUM(num_viewers) DESC
-                                LIMIT 25; """)
-    
-    return jsonify({'categories': categories})
+    category_data = most_popular_category()
+    streams = recommendations_based_on_category(category_data[0])
+    return jsonify(streams)
 
-@login_required
+@login_required 
 @stream_bp.route('/get_recommended_categories')
 def get_recommended_categories() -> list | list[dict]:
     """
@@ -86,7 +68,6 @@ def get_recommended_categories() -> list | list[dict]:
 
     return jsonify({'categories': categories})
 
-
 @stream_bp.route('/get_streamer_data/<int:streamer_username>')
 def get_streamer_data(streamer_username):
     """
@@ -103,10 +84,8 @@ def get_streamer_status(streamer_username):
     user_id = get_user_id(streamer_username)
 
     if not user_id:
-        return jsonify({
-            "error": "User not found"
-        })
-    
+            abort(404)
+
     is_live = streamer_live_status(user_id)
     most_recent_stream = streamer_most_recent_stream(user_id)
 
@@ -126,11 +105,18 @@ def get_stream(streamer_username):
     """
     user_id = get_user_id(streamer_username)
     if not user_id:
-        return jsonify({
-            "error": "User not found"
-        })
+        abort(404)
     
     return jsonify(streamer_most_recent_stream(user_id))
+
+@login_required
+@stream_bp.route('/get_followed_categories')
+def get_following_categories_streams():
+    """
+    Returns popular streams in categories which the user followed
+    """
+    streams = followed_categories_recommendations()
+    return jsonify(streams)
 
 
 @stream_bp.route('/get_stream_data/<string:streamer_username>/<int:stream_id>', methods=['GET'])
@@ -143,11 +129,7 @@ def get_specific_stream(streamer_username, stream_id):
     if stream:
         return jsonify(stream)
 
-    return jsonify({
-        "error": "Stream not found"
-    })
-
-# @login_required
+    abort(404)
 
 @login_required
 @stream_bp.route('/get_followed_streamers', methods=['GET'])
@@ -161,7 +143,7 @@ def get_followed_streamers():
     live_following_streams = followed_streamers(user_id)
     return live_following_streams
 
-
+#admin priveledges its probably better to not have this as a route instead just an internal function
 @stream_bp.route('/save_stream_thumbnail/<int:streamer_id>', methods=['POST'])
 def stream_thumbnail_snapshot(streamer_id):
     """

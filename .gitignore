@@ -52,6 +52,7 @@ coverage/
 *.sln
 *.sw?
 Thumbs.db
+**/test.sql
 
 # Project specific
 hls/
