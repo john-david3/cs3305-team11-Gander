@@ -25,10 +25,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   return (
     <>
       {/*Background Blur*/}
-      <div id="blurring-layer" className="fixed z-10 inset-0 w-screen h-screen backdrop-blur-sm group-has-[input:focus]:backdrop-blur-[5px]"></div>
+      <div id="blurring-layer" className="fixed z-50 inset-0 w-screen h-screen backdrop-blur-sm group-has-[input:focus]:backdrop-blur-[5px]"></div>
       {/*Container*/}
       <div
-        className="container fixed inset-0 flex flex-col items-center justify-around z-50 
+        className="container fixed inset-0 flex flex-col items-center justify-around z-[9999] 
         h-[75vh] m-auto min-w-[45vw] w-fit py-[50px] rounded-[5rem] transition-all animate-floating"
         style={{ "--spin-duration": spinDuration } as React.CSSProperties}
       >

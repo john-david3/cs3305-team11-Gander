@@ -30,6 +30,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   const navigate = useNavigate();
 
   const [isChatVisible, setIsChatVisible] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const toggleChat = () => {
     setIsChatVisible((prev) => !prev);
@@ -72,6 +73,14 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
     });
   }, [streamId, streamerName]);
 
+  useEffect(() => {
+    document.body.style.overflow = showAuthModal ? "hidden" : "unset";
+
+    return () => {
+      document.body.style.overflow = "unset";  // Cleanup
+    };
+  }, [showAuthModal]);
+
   return (
     <div id="videoPage" className="w-full">
       <Navbar />
@@ -83,7 +92,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
         <ToggleButton
           onClick={toggleChat}
           toggled={isChatVisible}
-          extraClasses="absolute top-10 left-4 z-20"
+          extraClasses="absolute top-10 left-4 z-5"
         >
           {isChatVisible ? "Hide Chat" : "Show Chat"}
         </ToggleButton>
