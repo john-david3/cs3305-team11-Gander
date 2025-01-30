@@ -2,6 +2,11 @@ FROM python:3.10
 
 WORKDIR /web_server
 
+# Install system dependencies for FFmpeg
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 ARG FLASK_SECRET_KEY
 ARG STRIPE_SECRET_KEY
 
