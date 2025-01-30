@@ -29,7 +29,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       {/*Container*/}
       <div
         className="container fixed inset-0 flex flex-col items-center justify-around z-50 
-        h-[75vh] m-auto min-w-[45vw] w-fit py-[50px] rounded-[5rem] transition-all"
+        h-[75vh] m-auto min-w-[45vw] w-fit py-[50px] rounded-[5rem] transition-all animate-floating"
         style={{ "--spin-duration": spinDuration } as React.CSSProperties}
       >
 
