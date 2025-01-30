@@ -5,7 +5,7 @@ from datetime import datetime
 from flask_socketio import SocketIO
 
 chat_bp = Blueprint("chat", __name__)
-socketio = SocketIO(cors_allowed_origins="*")
+socketio = SocketIO()
 
 # <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
 
@@ -13,7 +13,7 @@ socketio = SocketIO(cors_allowed_origins="*")
 def handle_connection() -> None:
     """
     Accept the connection from the frontend.
-    """
+    """ 
     print("Client Connected")  # Confirmation connect has been made
 
 
@@ -63,10 +63,13 @@ def get_past_chat(stream_id: int):
                                     LIMIT 50
                                )
                                ORDER BY time_sent ASC;""", (stream_id,))
+
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
-    chat_history = [{"chatter_id": chat[0], "message": chat[1], "time_sent": chat[2]} for chat in all_chats]
+    print(f"Bollocks: {all_chats}", flush=True)
+    chat_history = [{"chatter_id": chat["chatter_id"], "message": chat["message"], "time_sent": chat["time_sent"]} for chat in all_chats]
+    print(f"chat history: {chat_history}", flush=True)
 
     # Pass the chat history to the proxy
     return jsonify({"chat_history": chat_history}), 200

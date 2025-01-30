@@ -18,7 +18,11 @@ interface FormErrors {
   general?: string; // For general authentication errors
 }
 
-const RegisterForm: React.FC = () => {
+interface SubmitProps {
+  onSubmit: () => void; 
+}
+
+const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   const { setIsLoggedIn } = useAuth();
 
   const [formData, setFormData] = useState<RegisterFormData>({
@@ -58,6 +62,7 @@ const RegisterForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    onSubmit();
 
     if (validateForm()) {
       try {
@@ -105,7 +110,7 @@ const RegisterForm: React.FC = () => {
     <form
       onSubmit={handleSubmit}
       id="register-form"
-      className="h-[100%] flex flex-col h-full justify-evenly items-center"
+      className="h-[100%] flex flex-col justify-evenly items-center"
     >
       {errors.general && (
         <p className="text-red-500 text-sm text-center">{errors.general}</p>

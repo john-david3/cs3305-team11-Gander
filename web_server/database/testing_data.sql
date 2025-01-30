@@ -49,6 +49,11 @@ INSERT INTO subscribes (user_id, subscribed_id, since, expires) VALUES
 INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
 ('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!');
 
+INSERT INTO chat (stream_id, chatter_id, message) VALUES
+(1, 'Susan', 'Hey Every, loving the stream'),
+(1, 'Susan', 'This stream is crazy man'),
+(1, 'JohnnyHash', 'Woah, cannot believe that');
+
 SELECT * FROM users;
 SELECT * FROM follows;
 SELECT * FROM user_preferences;
@@ -64,3 +69,15 @@ SELECT name FROM sqlite_master WHERE type='table';
 
 
 SELECT isLive FROM streams WHERE user_id = '5';
+
+
+
+SELECT *
+FROM (
+    SELECT chatter_id, message, time_sent
+    FROM chat
+    WHERE stream_id = 1
+    ORDER BY time_sent DESC
+    LIMIT 50
+)
+ORDER BY time_sent ASC
