@@ -27,10 +27,11 @@ def followed_categories_recommendations(user_id : int):
                         FROM streams AS s
                         JOIN users AS u ON u.user_id = s.user_id
                         JOIN categories AS c ON s.category_id = c.category_id
-                        JOIN followed_categories AS f ON s.category_id = f.category_id
+                        JOIN followed_categories AS f ON s.category_id = c.category_id
                         WHERE f.user_id = ?
                         ORDER BY s.num_viewers DESC
                         LIMIT 25;
+
                     """, (user_id,))
     return categories
 
