@@ -1,11 +1,10 @@
 from flask import Blueprint, jsonify, session
 from database.database import Database
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from .socket import socketio
+from flask_socketio import emit, join_room, leave_room
 from datetime import datetime
-from flask_socketio import SocketIO
 
 chat_bp = Blueprint("chat", __name__)
-socketio = SocketIO()
 
 # <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
 

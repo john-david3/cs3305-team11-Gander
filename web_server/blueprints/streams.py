@@ -120,7 +120,7 @@ def get_following_categories_streams():
     """
     Returns popular streams in categories which the user followed
     """
-    streams = followed_categories_recommendations()
+    streams = followed_categories_recommendations(get_user_id(session.get('username')))
     return jsonify(streams)
 
 

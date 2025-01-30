@@ -16,4 +16,4 @@ COPY . .
 ENV FLASK_APP=blueprints.__init__
 ENV FLASK_DEBUG=True
 
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "blueprints.__init__:create_app()"]
+CMD ["python", "-c", "from blueprints.socket import socketio; from blueprints.__init__ import create_app; app = create_app(); socketio.run(app, host='0.0.0.0', port=5000, debug=True)"]

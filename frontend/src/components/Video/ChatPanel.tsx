@@ -23,7 +23,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
   // Join chat room when component mounts
   useEffect(() => {
     if (socket && isConnected) {
+      // Join chat room
       socket.emit("join", { stream_id: streamId });
+
+      // Handle beforeunload event
+      const handleBeforeUnload = () => {
+        socket.emit("leave", { stream_id: streamId });
+        socket.disconnect();
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
 
       // Load initial chat history
       fetch(`/api/chat/${streamId}`)
@@ -45,9 +54,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
         setMessages((prev) => [...prev, data]);
       });
 
-      // Cleanup
+      // Cleanup function
       return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
         socket.emit("leave", { stream_id: streamId });
+        socket.disconnect();
         socket.off("new_message");
       };
     }

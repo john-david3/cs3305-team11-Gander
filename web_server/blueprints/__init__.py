@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_session import Session
 from flask_cors import CORS
-from blueprints.utils import logged_in_user
+from blueprints.utils import logged_in_user, record_time
 from blueprints.errorhandlers import register_error_handlers
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 
@@ -9,7 +9,8 @@ from blueprints.authentication import auth_bp
 from blueprints.stripe import stripe_bp
 from blueprints.user import user_bp
 from blueprints.streams import stream_bp
-from blueprints.chat import chat_bp, socketio
+from blueprints.chat import chat_bp
+from blueprints.socket import socketio
 
 from os import getenv
 
@@ -29,8 +30,11 @@ def create_app():
     CORS(app, supports_credentials=True)
     # csrf.init_app(app)
 
+    socketio.init_app(app)
+    
     Session(app)
     app.before_request(logged_in_user)
+    app.after_request(record_time)
 
     # adds in error handlers
     register_error_handlers(app)
@@ -48,7 +52,6 @@ def create_app():
         app.register_blueprint(stream_bp)
         app.register_blueprint(chat_bp)
 
-        # Tell sockets where the initialisation app is
-        socketio.init_app(app, cors_allowed_origins="*")
+        socketio.init_app(app)
 
     return app

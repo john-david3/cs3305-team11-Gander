@@ -48,8 +48,15 @@ export function StreamsProvider({ children }: { children: React.ReactNode }) {
           title: stream.title,
           streamer: stream.username,
           viewers: stream.num_viewers,
-          thumbnail: stream.thumbnail,
+          thumbnail:
+            stream.thumbnail ||
+            `/images/thumbnails/categories/${stream.category_name
+              .toLowerCase()
+              .replace(/ /g, "_")}.webp`,
+          category: stream.category_name,
         }));
+
+        console.log(extractedData);
         setFeaturedStreams(extractedData);
       });
 
@@ -57,15 +64,15 @@ export function StreamsProvider({ children }: { children: React.ReactNode }) {
     fetch(fetch_url[1])
       .then((response) => response.json())
       .then((data: CategoryItem[]) => {
-        const extractedData: CategoryItem[] = data.map(
-          (category: any) => ({
-            type: "category",
-            id: category.category_id,
-            title: category.category_name,
-            viewers: category.num_viewers,
-            thumbnail: `/images/thumbnails/categories/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`
-          })
-        );
+        const extractedData: CategoryItem[] = data.map((category: any) => ({
+          type: "category",
+          id: category.category_id,
+          title: category.category_name,
+          viewers: category.num_viewers,
+          thumbnail: `/images/thumbnails/categories/${category.category_name
+            .toLowerCase()
+            .replace(/ /g, "_")}.webp`,
+        }));
         console.log(extractedData);
         setFeaturedCategories(extractedData);
       });

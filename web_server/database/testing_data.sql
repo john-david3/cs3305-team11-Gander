@@ -47,7 +47,8 @@ INSERT INTO subscribes (user_id, subscribed_id, since, expires) VALUES
 (5, 105, '2024-08-30', '2025-02-28');
 
 INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
-('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!');
+('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!'),
+('dev', 'scrypt:32768:8:1$avr94c5cplosNUDc$f2ba0738080facada51a1ed370bf869199e121e547fe64a7094ef0330b5db2ab7fff87700898729977f4cd24f17c17b9e8c0c93e7241dcdf9aa522d5d1732626', 'dev@gmail.com', 1, '8080', 0, 'A test account to save that tedious signup each time!');
 
 INSERT INTO chat (stream_id, chatter_id, message) VALUES
 (1, 'Susan', 'Hey Every, loving the stream'),
@@ -67,17 +68,4 @@ SELECT * FROM stream_tags;
 -- To see all tables in the database
 SELECT name FROM sqlite_master WHERE type='table';
 
-
-SELECT isLive FROM streams WHERE user_id = '5';
-
-
-
-SELECT *
-FROM (
-    SELECT chatter_id, message, time_sent
-    FROM chat
-    WHERE stream_id = 1
-    ORDER BY time_sent DESC
-    LIMIT 50
-)
-ORDER BY time_sent ASC
+INSERT INTO users 
