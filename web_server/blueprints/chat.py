@@ -51,22 +51,20 @@ def get_past_chat(stream_id: int):
     # Connect to the database
     db = Database()
 
-    # fetched in format: [(chatter_id, message, time_sent)]
+    # fetched in format: [(username, message, time_sent)]
     all_chats = db.fetchall("""
-                               SELECT *
-                               FROM (
-                                    SELECT chatter_id, message, time_sent
-                                    FROM chat
-                                    WHERE stream_id = ?
-                                    ORDER BY time_sent DESC
-                                    LIMIT 50
-                               )
-                               ORDER BY time_sent ASC;""", (stream_id,))
+                            SELECT username, message, time_sent
+                            FROM chat
+                            JOIN users ON chat.chatter_id = users.user_id
+                            WHERE stream_id = ?
+                            ORDER BY time_sent DESC
+                            LIMIT 50;
+                            """, (stream_id,))
 
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
-    chat_history = [{"chatter_id": chat["chatter_id"], "message": chat["message"], "time_sent": chat["time_sent"]} for chat in all_chats]
+    chat_history = [{"chatter_username": chat["username"], "message": chat["message"], "time_sent": chat["time_sent"]} for chat in all_chats]
 
     # Pass the chat history to the proxy
     return jsonify({"chat_history": chat_history}), 200
@@ -85,7 +83,7 @@ def send_chat(data) -> None:
 
     # Input validation - chatter is logged in, message is not empty, stream exists
     if not all([chatter_id, message, stream_id]):
-        emit("error", {"error": "Unable to send a chat"}, broadcast=False)
+        emit("error", {"error": f"Unable to send a chat. The following info was given: chatter_id={chatter_id}, message={message}, stream_id={stream_id}"}, broadcast=False)
         return
 
     # Send the chat message to the client so it can be displayed

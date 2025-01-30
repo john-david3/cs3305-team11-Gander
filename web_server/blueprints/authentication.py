@@ -175,6 +175,7 @@ def login():
         # Set up session to avoid having unncessary state information
         session.clear()
         session["username"] = username
+        print(f"Logged in as {username}. session: {session.get('username')}", flush=True)
 
         # User has been logged in, let frontend know that
         return jsonify({

@@ -9,6 +9,7 @@ def logged_in_user():
     """
     g.start_time = time()
     g.user = session.get("username", None)
+    print(f"Path: {request.path}, session username: {g.user}", flush=True)
     g.admin = session.get("username", None)
 
 def record_time(response):

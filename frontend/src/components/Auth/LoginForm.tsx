@@ -69,7 +69,7 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {
 
         if (data.logged_in) {
           //TODO: Handle successful login (e.g., redirect to home page)
-          console.log("Login successful");
+          console.log("Login successful! Details: ", data);
           setIsLoggedIn(true);
           window.location.reload();
         } else {

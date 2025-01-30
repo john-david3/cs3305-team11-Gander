@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
 
 interface ChatMessage {
-  chatter_id: string;
+  chatter_username: string;
   message: string;
   time_sent: string;
 }
@@ -112,11 +112,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
             </span>
             <span
               className={`font-bold ${
-                msg.chatter_id === username ? "text-blue-400" : "text-green-400"
+                msg.chatter_username === username ? "text-blue-400" : "text-green-400"
               }`}
             >
               {" "}
-              {msg.chatter_id}:{" "}
+              {msg.chatter_username}:{" "}
             </span>
             <span>{msg.message}</span>
           </div>

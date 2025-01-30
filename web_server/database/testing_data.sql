@@ -77,6 +77,18 @@ INSERT INTO chat (stream_id, chatter_id, message) VALUES
 (1, 1, 'This stream is crazy man'),
 (1, 2, 'Woah, cannot believe that');
 
+
+SELECT * FROM users;
+SELECT * FROM follows;
+SELECT * FROM user_preferences;
+SELECT * FROM subscribes;
+SELECT * FROM categories;
+SELECT * FROM streams;
+SELECT * FROM chat;
+SELECT * FROM tags;
+SELECT * FROM stream_tags;
+
+-- To see all tables in the database
 SELECT name FROM sqlite_master WHERE type='table';
 
 
@@ -88,3 +100,10 @@ JOIN followed_categories AS f ON s.category_id = c.category_id
 WHERE f.user_id = 1
 ORDER BY s.num_viewers DESC
 LIMIT 25;
+
+SELECT username, message, time_sent
+FROM chat
+JOIN users ON chat.chatter_id = users.user_id
+WHERE stream_id = 1
+ORDER BY time_sent DESC
+LIMIT 50;
