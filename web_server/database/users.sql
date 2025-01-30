@@ -60,3 +60,11 @@ CREATE TABLE followed_categories
     FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
 
+SELECT s.stream_id, s.title, u.username, s.num_viewers, c.category_name
+FROM streams AS s
+JOIN users AS u ON u.user_id = s.user_id
+JOIN categories AS c ON s.category_id = c.category_id
+JOIN followed_categories AS f ON s.category_id = c.category_id
+WHERE f.user_id = ?
+ORDER BY s.num_viewers DESC
+LIMIT 25;

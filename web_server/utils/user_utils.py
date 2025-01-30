@@ -13,11 +13,11 @@ def get_user_id(username: str) -> int:
     """
     Returns user_id associated with given username
     """
-    with Database() as db:
-        data = db.fetchone("""
+    db = Database()
+    data = db.fetchone("""
             SELECT user_id 
             FROM users 
-            WHERE username = ?
+            WHERE username = ?;
         """, (username,))
     return data['user_id'] if data else None
 
@@ -25,8 +25,8 @@ def get_username(user_id: str) -> Optional[str]:
     """
     Returns username associated with given user_id
     """
-    with Database() as db:
-        data = db.fetchone("""
+    db = Database()
+    data = db.fetchone("""
             SELECT username 
             FROM user 
             WHERE user_id = ?
@@ -37,8 +37,8 @@ def is_user_partner(user_id: int) -> bool:
     """
     Returns True if user is a partner, else False
     """
-    with Database() as db:
-        data = db.fetchone("""
+    db = Database()
+    data = db.fetchone("""
             SELECT is_partnered 
             FROM users 
             WHERE user_id = ?
@@ -49,8 +49,8 @@ def is_subscribed(user_id: int, streamer_id: int) -> bool:
     """
     Returns True if user is subscribed to a streamer, else False
     """
-    with Database() as db:
-        result = db.fetchone("""
+    db = Database()
+    result = db.fetchone("""
             SELECT 1 
             FROM subscribes 
             WHERE user_id = ? 
@@ -63,8 +63,8 @@ def is_following(user_id: int, followed_id: int) -> bool:
     """
     Returns where a user is following another
     """
-    with Database() as db:
-        result = db.fetchone("""
+    db = Database()
+    result = db.fetchone("""
             SELECT 1 
             FROM follows 
             WHERE user_id = ? 
@@ -76,8 +76,8 @@ def subscription_expiration(user_id: int, subscribed_id: int) -> int:
     """
     Returns the amount of time left until user subscription to a streamer ends
     """
-    with Database() as db:
-        data = db.fetchone("""
+    db = Database()
+    data = db.fetchone("""
             SELECT expires 
             FROM subscriptions 
             WHERE user_id = ? 
@@ -103,8 +103,8 @@ def reset_password(new_password: str, email: str):
     """
     Given email and new password reset the password for a given user
     """
-    with Database() as db:
-        db.execute("""
+    db = Database()
+    db.execute("""
             UPDATE users 
             SET password = ? 
             WHERE email = ?

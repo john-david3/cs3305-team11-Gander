@@ -66,9 +66,7 @@ def get_past_chat(stream_id: int):
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
-    print(f"Bollocks: {all_chats}", flush=True)
     chat_history = [{"chatter_id": chat["chatter_id"], "message": chat["message"], "time_sent": chat["time_sent"]} for chat in all_chats]
-    print(f"chat history: {chat_history}", flush=True)
 
     # Pass the chat history to the proxy
     return jsonify({"chat_history": chat_history}), 200
