@@ -10,7 +10,7 @@ CREATE TABLE stream_tags
 (
     stream_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
-    FOREIGN KEY (stream_id) REFERENCES streams(stream_id),
+    FOREIGN KEY (stream_id) REFERENCES streams(stream_id) ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id) ON DELETE CASCADE
 );
 

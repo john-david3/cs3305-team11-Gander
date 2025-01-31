@@ -9,15 +9,15 @@ load_dotenv()
 
 serializer = URLSafeTimedSerializer(getenv("AUTH_SECRET_KEY"))
 
-def get_user_id(username: str) -> int:
+def get_user_id(username: str) -> Optional[int]:
     """
     Returns user_id associated with given username
     """
-    db = Database()
-    data = db.fetchone("""
+    with Database() as db:
+        data = db.fetchone("""
             SELECT user_id 
             FROM users 
-            WHERE username = ?;
+            WHERE username = ?
         """, (username,))
     return data['user_id'] if data else None
 
@@ -25,8 +25,8 @@ def get_username(user_id: str) -> Optional[str]:
     """
     Returns username associated with given user_id
     """
-    db = Database()
-    data = db.fetchone("""
+    with Database() as db:
+        data = db.fetchone("""
             SELECT username 
             FROM user 
             WHERE user_id = ?
@@ -37,8 +37,8 @@ def is_user_partner(user_id: int) -> bool:
     """
     Returns True if user is a partner, else False
     """
-    db = Database()
-    data = db.fetchone("""
+    with Database() as db:
+        data = db.fetchone("""
             SELECT is_partnered 
             FROM users 
             WHERE user_id = ?
@@ -49,8 +49,8 @@ def is_subscribed(user_id: int, streamer_id: int) -> bool:
     """
     Returns True if user is subscribed to a streamer, else False
     """
-    db = Database()
-    result = db.fetchone("""
+    with Database() as db:
+        result = db.fetchone("""
             SELECT 1 
             FROM subscribes 
             WHERE user_id = ? 
@@ -63,8 +63,8 @@ def is_following(user_id: int, followed_id: int) -> bool:
     """
     Returns where a user is following another
     """
-    db = Database()
-    result = db.fetchone("""
+    with Database() as db:
+        result = db.fetchone("""
             SELECT 1 
             FROM follows 
             WHERE user_id = ? 
@@ -72,12 +72,25 @@ def is_following(user_id: int, followed_id: int) -> bool:
         """, (user_id, followed_id))
     return bool(result)
 
+def unfollow(user_id: int, followed_id: int) -> bool:
+    """
+    Unfollows follow_id user from user_id user
+    """
+    with Database() as db:
+        db.execute("""
+            DELETE FROM follows
+            WHERE user_id = ?
+            AND followed_id = ?
+        """, (user_id, followed_id))
+        return True
+    return False
+
 def subscription_expiration(user_id: int, subscribed_id: int) -> int:
     """
     Returns the amount of time left until user subscription to a streamer ends
     """
-    db = Database()
-    data = db.fetchone("""
+    with Database() as db:
+        data = db.fetchone("""
             SELECT expires 
             FROM subscriptions 
             WHERE user_id = ? 
@@ -92,19 +105,19 @@ def subscription_expiration(user_id: int, subscribed_id: int) -> int:
 
     return 0
 
-def verify_token(token: str):
+def verify_token(token: str) -> Optional[str]:
     """
     Given a token verifies token and decodes the token into an email
     """
     email = serializer.loads(token, salt='1', max_age=3600)
     return email if email else False
 
-def reset_password(new_password: str, email: str):
+def reset_password(new_password: str, email: str) -> bool:
     """
     Given email and new password reset the password for a given user
     """
-    db = Database()
-    db.execute("""
+    with Database() as db:
+        db.execute("""
             UPDATE users 
             SET password = ? 
             WHERE email = ?

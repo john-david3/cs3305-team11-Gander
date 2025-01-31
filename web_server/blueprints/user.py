@@ -1,14 +1,16 @@
 from flask import Blueprint, jsonify, session
-from utils.user_utils import is_subscribed, is_following, subscription_expiration, verify_token, reset_password
+from utils.user_utils import is_subscribed, is_following, subscription_expiration, verify_token, reset_password, get_user_id, unfollow
+from blueprints.utils import login_required
 
 user_bp = Blueprint("user", __name__)
 
-
-@user_bp.route('/is_subscribed/<int:user_id>/<int:subscribed_id>')
-def user_subscribed(user_id: int, subscribed_id: int):
+@login_required
+@user_bp.route('/is_subscribed/<int:subscribed_id>')
+def user_subscribed(subscribed_id: int):
     """
     Checks to see if user is subscribed to another user
     """
+    user_id = session.get("user_id")
     if is_subscribed(user_id, subscribed_id):
         return jsonify({"subscribed": True})
     return jsonify({"subscribed": False})
@@ -22,12 +24,27 @@ def user_following(user_id: int, subscribed_id: int):
         return jsonify({"following": True})
     return jsonify({"following": False})
 
+@login_required
+@user_bp.route('/unfollow/<int:username>')
+def user_unfollow(followed_username):
+    """
+    Unfollows a user
+    """
+    user_id = session.get("user_id")
+    followed_id = get_user_id(followed_username)
+    response = unfollow(user_id, followed_id)
 
-@user_bp.route('/subscription_remaining/<int:user_id>/<int:streamer_id>')
-def user_subscription_expiration(user_id: int, streamer_id: int):
+    status = True if response else False
+    return jsonify({"status": status})
+
+@login_required
+@user_bp.route('/subscription_remaining/<int:streamer_id>')
+def user_subscription_expiration(streamer_id: int):
     """
     Returns remaining time until subscription expiration
     """
+
+    user_id = session.get("user_id")
     remaining_time = subscription_expiration(user_id, streamer_id)
 
     return jsonify({"remaining_time": remaining_time})

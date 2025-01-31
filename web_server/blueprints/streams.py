@@ -4,7 +4,8 @@ from utils.stream_utils import (
     streamer_most_recent_stream,
     user_stream,
     followed_live_streams,
-    followed_streamers
+    followed_streamers,
+    stream_tags
 )
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
@@ -34,7 +35,8 @@ def get_sample_streams() -> list[dict]:
 
     # shows default recommended streams for non-logged in users based on highest viewers
     streams = default_recommendations()
-
+    for stream in streams:
+        stream['tags'] = stream_tags(stream["stream_id"])
 
     return jsonify(streams)
 
@@ -48,6 +50,8 @@ def get_recommended_streams() -> list[dict]:
     user_id = session.get("username")
     category = user_recommendation_category(user_id)
     streams = recommendations_based_on_category(category)
+    for stream in streams:
+        stream['tags'] = stream_tags(stream["stream_id"])
     return jsonify(streams)
 
 @stream_bp.route('/get_categories')
@@ -120,12 +124,16 @@ def get_stream(streamer_username):
     return jsonify(streamer_most_recent_stream(user_id))
 
 @login_required
-@stream_bp.route('/get_followed_categories')
+@stream_bp.route('/get_followed_category_streams')
 def get_following_categories_streams():
     """
     Returns popular streams in categories which the user followed
     """
+
     streams = followed_categories_recommendations(get_user_id(session.get('username')))
+
+    for stream in streams:
+        stream['tags'] = stream_tags(stream["stream_id"])
     return jsonify(streams)
 
 

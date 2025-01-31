@@ -2,13 +2,14 @@ from database.database import Database
 from typing import Optional
 import sqlite3, os, subprocess
 from time import sleep
+from typing import Optional, List
 
 def streamer_live_status(user_id: int) -> dict:
     """
     Returns boolean on whether the given streamer is live
     """
-    db = Database()
-    is_live = db.fetchone("""
+    with Database() as db:
+        is_live = db.fetchone("""
             SELECT isLive 
             FROM streams 
             WHERE user_id = ?
@@ -18,12 +19,12 @@ def streamer_live_status(user_id: int) -> dict:
 
     return is_live
 
-def followed_live_streams(user_id: int) -> list[dict]:
+def followed_live_streams(user_id: int) -> Optional[List[dict]]:
     """
     Searches for streamers who the user followed which are currently live
     """
-    db = Database()
-    live_streams = db.fetchall("""
+    with Database() as db:
+        live_streams = db.fetchall("""
             SELECT user_id, stream_id, title, num_viewers
             FROM streams 
             WHERE user_id IN (SELECT followed_id FROM follows WHERE user_id = ?)
@@ -32,12 +33,12 @@ def followed_live_streams(user_id: int) -> list[dict]:
         """, (user_id,))
     return live_streams
 
-def followed_streamers(user_id: int) -> list[dict]:
+def followed_streamers(user_id: int) -> Optional[List[dict]]:
     """
     Returns a list of streamers who the user follows
     """
-    db = Database()
-    followed_streamers = db.fetchall("""
+    with Database() as db:
+        followed_streamers = db.fetchall("""
             SELECT user_id, username
             FROM users
             WHERE user_id IN (SELECT followed_id FROM follows WHERE user_id = ?);
@@ -48,8 +49,8 @@ def streamer_most_recent_stream(user_id: int) -> dict:
     """
     Returns data of the most recent stream by a streamer
     """
-    db = Database()
-    most_recent_stream = db.fetchone("""
+    with Database() as db:
+        most_recent_stream = db.fetchone("""
             SELECT * FROM streams 
             WHERE user_id = ? 
             AND stream_id = (SELECT MAX(stream_id) FROM streams WHERE user_id = ?)
@@ -60,8 +61,8 @@ def user_stream(user_id: int, stream_id: int) -> dict:
     """
     Returns data of a streamers selected stream
     """
-    db = Database()
-    stream = db.fetchone("""
+    with Database() as db:
+        stream = db.fetchone("""
             SELECT * FROM streams 
             WHERE user_id = ? 
             AND stream_id = ?
@@ -97,3 +98,16 @@ def generate_thumbnail(user_id: int) -> None:
     ]
 
     subprocess.run(thumbnail_command)
+def stream_tags(stream_id: int) -> Optional[List[str]]:
+    """
+    Given a stream return tags associated with the stream
+    """
+    with Database() as db:
+        tags = db.fetchall("""
+            SELECT tag_name 
+            FROM tags
+            JOIN stream_tags ON tags.tag_id = stream_tags.tag_id
+            WHERE stream_id = ?       
+        """, (stream_id,))
+        tags = [tag['tag_name'] for tag in tags] if tags else None
+    return tags

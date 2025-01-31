@@ -1,29 +1,30 @@
 from database.database import Database
+from typing import Optional, List
 
-def categories():
+def categories() -> Optional[List[dict]]:
     """
     Returns all possible streaming categories
     """
-    db = Database()
-    all_categories = db.fetchall("SELECT * FROM categories")
+    with Database() as db:
+        all_categories = db.fetchall("SELECT * FROM categories")
     
     return all_categories
 
-def tags():
+def tags() -> Optional[List[dict]]:
     """
     Returns all possible streaming tags
     """
-    db = Database()
-    all_tags = db.fetchall("SELECT * FROM tags")
+    with Database() as db:
+        all_tags = db.fetchall("SELECT * FROM tags")
     
     return all_tags
 
-def most_popular_category():
+def most_popular_category() -> Optional[List[dict]]:
     """
     Returns the most popular category based on live stream viewers
     """
-    db = Database()
-    category = db.fetchone("""
+    with Database() as db:
+        category = db.fetchone("""
             SELECT categories.category_id, categories.category_name
             FROM streams
             JOIN categories ON streams.category_id = categories.category_id
@@ -34,4 +35,3 @@ def most_popular_category():
         """)
     
     return category
-
