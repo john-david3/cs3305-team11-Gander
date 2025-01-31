@@ -24,5 +24,6 @@ WTForms==3.2.1
 Gunicorn==20.1.0
 gevent>=22.10.2
 gevent-websocket
+flask-oauthlib==0.9.6
 celery==5.2.3
 redis==5.2.1

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Input from "../Layout/Input";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
+import Button from "../Layout/Button";
+import AuthModal from "../Auth/AuthModal";
 
 interface ChatMessage {
   chatter_username: string;
@@ -93,7 +95,22 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
     }
   };
 
+  //added to show login/reg if not
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => {
+    if (showAuthModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showAuthModal]);
+
   return (
+    <>
     <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
       <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
 
@@ -124,24 +141,40 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
       </div>
 
       <div className="flex justify-center gap-2">
+        {isLoggedIn &&
+        <>
         <Input
-          type="text"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
-          disabled={!isLoggedIn}
-          extraClasses="flex-grow disabled:cursor-not-allowed"
-        />
-        <button
-          onClick={sendChat}
-          disabled={!isLoggedIn}
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Send
-        </button>
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
+              disabled={!isLoggedIn}
+              extraClasses="flex-grow"
+              onClick={() => (!isLoggedIn && setShowAuthModal(true))} />
+              <button
+                onClick={sendChat}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+              >
+                Send
+              </button>
+              </>
+        }
+        
+        {!isLoggedIn && 
+              <Button
+              extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap z-[999]"
+              onClick={() => (setShowAuthModal(true))}></Button>
+        }
+
       </div>
-    </div>
+      {showAuthModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          <AuthModal onClose={() => setShowAuthModal(false)} />
+        </div>
+      )}
+      </div>
+    </>
   );
 };
 

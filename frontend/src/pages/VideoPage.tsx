@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Layout/Navbar";
-import Button from "../components/Layout/Button";
+import Button, { ToggleButton } from "../components/Layout/Button";
 import ChatPanel from "../components/Video/ChatPanel";
 import CheckoutForm, { Return } from "../components/Checkout/CheckoutForm";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,6 +29,13 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   const [streamData, setStreamData] = useState<StreamDataProps>();
   const navigate = useNavigate();
 
+  const [isChatVisible, setIsChatVisible] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const toggleChat = () => {
+    setIsChatVisible((prev) => !prev);
+  }
+
   // useEffect(() => {
   //   // Prevent scrolling when checkout is open
   //   if (showCheckout) {
@@ -44,8 +51,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   useEffect(() => {
     // Fetch stream data for this streamer
     fetch(
-      `/api/get_stream_data/${streamerName}${
-        streamId == 0 ? "" : `/${streamId}`
+      `/api/get_stream_data/${streamerName}${streamId == 0 ? "" : `/${streamId}`
       }`
     ).then((res) => {
       if (!res.ok) {
@@ -67,14 +73,34 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
     });
   }, [streamId, streamerName]);
 
+  useEffect(() => {
+    document.body.style.overflow = showAuthModal ? "hidden" : "unset";
+
+    return () => {
+      document.body.style.overflow = "unset";  // Cleanup
+    };
+  }, [showAuthModal]);
+
   return (
     <div id="videoPage" className="w-full">
       <Navbar />
 
       <div id="container" className="bg-gray-900">
+
         <VideoPlayer streamId={streamId} />
 
-        <ChatPanel streamId={streamId} />
+        <ToggleButton
+          onClick={toggleChat}
+          toggled={isChatVisible}
+          extraClasses="absolute top-10 left-4 z-5"
+        >
+          {isChatVisible ? "Hide Chat" : "Show Chat"}
+        </ToggleButton>
+
+        {isChatVisible &&
+        <div id="chat" className="relative top-0 right-0 bg-gray-800 bg-opacity-75 text-white p-4 w-1/3 h-full z-10 overflow-y-auto">
+          <ChatPanel streamId={streamId} />
+        </div> }
 
         <div
           id="stream-info"
