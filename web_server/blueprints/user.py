@@ -32,9 +32,9 @@ def user_unfollow(followed_username):
     """
     user_id = session.get("user_id")
     followed_id = get_user_id(followed_username)
-    response = unfollow(user_id, followed_id)
+    status = unfollow(user_id, followed_id)
 
-    status = True if response else False
+    status = True if status else False
     return jsonify({"status": status})
 
 @login_required

@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 from database.database import Database
 from blueprints.utils import login_required, sanitizer
+from utils.user_utils import get_user_id
 from secrets import token_hex
 
 auth_bp = Blueprint("auth", __name__)
@@ -96,6 +97,8 @@ def signup():
         # Create session for new user, to avoid them having unnecessary state info
         session.clear()
         session["username"] = username
+        session["user_id"] = get_user_id(username)
+        print(f"Logged in as {username}. session: {session.get('username')}. user_id: {session.get('user_id')}", flush=True)
 
         return jsonify({
             "account_created": True,
@@ -175,7 +178,8 @@ def login():
         # Set up session to avoid having unncessary state information
         session.clear()
         session["username"] = username
-        print(f"Logged in as {username}. session: {session.get('username')}", flush=True)
+        session["user_id"] = get_user_id(username)
+        print(f"Logged in as {username}. session: {session.get('username')}. user_id: {session.get('user_id')}", flush=True)
 
         # User has been logged in, let frontend know that
         return jsonify({
