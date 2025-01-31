@@ -10,6 +10,8 @@ services:
       - web_server
     networks:
       - app_network
+    volumes:
+      - stream_data:/stream_data
 
   web_server:
     build:
@@ -23,6 +25,8 @@ services:
     environment:
       - FLASK_APP=blueprints.__init__
       - FLASK_ENV=production
+    volumes:
+      - stream_data:/web_server/stream_data
 
   frontend:
     build:
@@ -33,7 +37,29 @@ services:
       - app_network
     depends_on:
       - web_server
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+  celery:
+    build:
+      context: ./web_server
+    command: celery -A celery_tasks.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+      - stream_data:/web_server/stream_data
+    networks:
+      - app_network
       
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  stream_data:

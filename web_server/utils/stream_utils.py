@@ -1,9 +1,9 @@
 from database.database import Database
 from typing import Optional
-import sqlite3
+import sqlite3, os, subprocess
+from time import sleep
 
-
-def streamer_live_status(user_id: int) -> bool:
+def streamer_live_status(user_id: int) -> dict:
     """
     Returns boolean on whether the given streamer is live
     """
@@ -12,7 +12,10 @@ def streamer_live_status(user_id: int) -> bool:
             SELECT isLive 
             FROM streams 
             WHERE user_id = ?
+            ORDER BY stream_id DESC
+            LIMIT 1;
         """, (user_id,))
+
     return is_live
 
 def followed_live_streams(user_id: int) -> list[dict]:
@@ -64,3 +67,33 @@ def user_stream(user_id: int, stream_id: int) -> dict:
             AND stream_id = ?
         """, (user_id, stream_id))
     return stream
+
+def generate_thumbnail(user_id: int) -> None:
+    """
+    Returns the thumbnail of a stream
+    """
+    db = Database()
+    username = db.fetchone("""SELECT * FROM users WHERE user_id = ?""", (user_id,))
+    db.close_connection()
+
+    if not username:
+        return None
+    
+    if not os.path.exists(f"stream_data/thumbnails/"):
+        os.makedirs(f"stream_data/thumbnails/")
+
+    subprocess.Popen(["ls", "-lR"])
+    
+    thumbnail_command = [
+        "ffmpeg",
+        "-y",
+        "-i",
+        f"stream_data/hls/{username['username']}/index.m3u8",
+        "-vframes",
+        "1",
+        "-q:v",
+        "2",
+        f"stream_data/thumbnails/{username['username']}.jpg"
+    ]
+
+    subprocess.run(thumbnail_command)

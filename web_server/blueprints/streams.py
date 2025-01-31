@@ -1,10 +1,10 @@
-from flask import Blueprint, session, jsonify, g, request, redirect, abort
+from flask import Blueprint, session, jsonify, g, request, redirect, abort, send_from_directory
 from utils.stream_utils import (
     streamer_live_status,
     streamer_most_recent_stream,
     user_stream,
     followed_live_streams,
-    followed_streamers,
+    followed_streamers
 )
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
@@ -18,8 +18,13 @@ from utils.recommendation_utils import (
 from utils.utils import most_popular_category
 from database.database import Database
 from datetime import datetime
+
+from celery_tasks import update_thumbnail
+
 stream_bp = Blueprint("stream", __name__)
 
+# Constants
+THUMBNAIL_GENERATION_INTERVAL = 180
 
 @stream_bp.route('/get_streams')
 def get_sample_streams() -> list[dict]:
@@ -185,6 +190,8 @@ def publish_stream():
                                            datetime.now(),
                                            1))
     
+    update_thumbnail.delay(user_info["user_id"])
+
     return redirect(f"/{user_info['username']}")
 
 @stream_bp.route("/end_stream", methods=["POST"])

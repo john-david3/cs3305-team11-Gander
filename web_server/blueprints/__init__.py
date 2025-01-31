@@ -11,6 +11,8 @@ from blueprints.user import user_bp
 from blueprints.streams import stream_bp
 from blueprints.chat import chat_bp
 from blueprints.socket import socketio
+from celery import Celery
+from celery_tasks import celery_init_app
 
 from os import getenv
 
@@ -26,6 +28,17 @@ def create_app():
     app.config["SECRET_KEY"] = getenv("FLASK_SECRET_KEY")
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
+
+    app.config.from_mapping(
+    CELERY=dict(
+        broker_url="redis://redis:6379/0",
+        result_backend="redis://redis:6379/0",
+        task_ignore_result=True,
+        ),
+    )
+    app.config.from_prefixed_env()
+    celery = celery_init_app(app)
+
     #! ↓↓↓ For development purposes only - Allow cross-origin requests for the frontend
     CORS(app, supports_credentials=True)
     # csrf.init_app(app)
