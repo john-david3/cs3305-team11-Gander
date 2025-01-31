@@ -15,7 +15,7 @@ def celery_init_app(app) -> Celery:
     return celery_app
 
 @shared_task
-def update_thumbnail(user_id, sleep_time=10) -> None:
+def update_thumbnail(user_id, sleep_time=180) -> None:
     """
     Updates the thumbnail of a stream periodically
     """
