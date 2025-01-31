@@ -45,7 +45,7 @@ def followed_streamers(user_id: int) -> Optional[List[dict]]:
         """, (user_id,))
     return followed_streamers
 
-def streamer_most_recent_stream(user_id: int) -> dict:
+def streamer_most_recent_stream(user_id: int) -> Optional[dict]:
     """
     Returns data of the most recent stream by a streamer
     """
@@ -56,6 +56,17 @@ def streamer_most_recent_stream(user_id: int) -> dict:
             AND stream_id = (SELECT MAX(stream_id) FROM streams WHERE user_id = ?)
         """, (user_id, user_id))
     return most_recent_stream
+
+def streamer_data(streamer_id: int) -> Optional[dict]:
+    """
+    Returns information about the streamer
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT username, num_followering, isPartnered FROM users
+            WHERE user_id = ?
+        """, (streamer_id))
+    return data
 
 def user_stream(user_id: int, stream_id: int) -> dict:
     """

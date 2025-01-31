@@ -5,7 +5,8 @@ from utils.stream_utils import (
     user_stream,
     followed_live_streams,
     followed_streamers,
-    stream_tags
+    stream_tags,
+    streamer_data
 )
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
@@ -14,7 +15,8 @@ from utils.recommendation_utils import (
     recommendations_based_on_category, 
     user_recommendation_category, 
     followed_categories_recommendations, 
-    category_recommendations
+    category_recommendations,
+    user_category_recommendations
 )
 from utils.utils import most_popular_category
 from database.database import Database
@@ -70,16 +72,9 @@ def get_recommended_categories() -> list | list[dict]:
     Queries DB to get a list of recommended categories for the user
 
     """
-    username = session.get('username')
-    user_id = get_user_id(username)
-
-    db = Database()
-    categories = db.fetchall("""SELECT categories.category_id, categories.category_name, favourability
-                                FROM categories, user_preferences
-                                WHERE user_id = ? AND categories.category_id = user_preferences.category_id,
-                                ORDER BY favourability DESC""", (user_id,))
-
-    return jsonify({'categories': categories})
+    user_id = session.get("user_id")
+    categories = user_category_recommendations(user_id)
+    return categories
 
 
 @stream_bp.route('/get_streamer_data/<string:streamer_username>')
@@ -87,7 +82,11 @@ def get_streamer_data(streamer_username):
     """
     Returns a given streamer's data
     """
-    return
+    streamer_id = get_user_id(streamer_username)
+    if not streamer_id:
+        abort(404)
+    data = streamer_data(streamer_id)
+    return data
 
 
 @stream_bp.route('/streamer/<string:streamer_username>/status')

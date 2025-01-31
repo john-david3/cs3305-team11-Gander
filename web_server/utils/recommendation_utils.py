@@ -6,14 +6,14 @@ def user_recommendation_category(user_id: int) -> Optional[int]:
     Queries user_preferences database to find users favourite streaming category and returns the category
     """
     with Database() as db:
-        data = db.fetchone("""
+        category = db.fetchone("""
             SELECT category_id 
             FROM user_preferences 
             WHERE user_id = ? 
             ORDER BY favourability DESC 
             LIMIT 1
         """, (user_id,))
-    return data
+    return category["category_id"] if category else None
 
 def followed_categories_recommendations(user_id : int) -> Optional[List[dict]]:
     """
@@ -77,4 +77,19 @@ def category_recommendations() -> Optional[List[dict]]:
             ORDER BY SUM(streams.num_viewers) DESC
             LIMIT 5;
         """)
+    return categories
+
+def user_category_recommendations(user_id: int) -> Optional[List[dict]]:
+    """
+    Queries user_preferences database to find users top 5 favourite streaming category and returns the category
+    """
+    with Database() as db:
+        categories = db.fetchall("""
+            SELECT categories.category_id, categories.category_name
+            FROM categories 
+            JOIN user_preferences ON categories.category_id = user_preferences.category_id
+            WHERE user_id = ? 
+            ORDER BY favourability DESC 
+            LIMIT 5
+        """, (user_id,))
     return categories
