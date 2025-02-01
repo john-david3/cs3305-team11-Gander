@@ -123,7 +123,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
       <ToggleButton
         onClick={toggleChat}
         toggled={isChatVisible}
-        extraClasses="z-5"
+        extraClasses="cursor-pointer"
       >
         {isChatVisible ? "Hide Chat" : "Show Chat"}
       </ToggleButton>
@@ -139,11 +139,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className="grid grid-cols-[8%_minmax(15%,_100px)_1fr] items-center bg-gray-700 rounded p-2 text-white"
+                className="grid grid-cols-[minmax(15%,_100px)_1fr] group h-fit items-center bg-gray-700 rounded p-2 text-white"
               >
-                <span className="text-gray-400 text-sm">
-                  {new Date(msg.time_sent).toLocaleTimeString()}
-                </span>
                 <span
                   className={`font-bold ${
                     msg.chatter_username === username
@@ -154,13 +151,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
                   {" "}
                   {msg.chatter_username}:{" "}
                 </span>
-                <span>{msg.message}</span>
+                <span className="text-center" >{msg.message}</span>
+                <span className="text-gray-400 text-sm scale-0 group-hover:scale-100 h-[0px] group-hover:h-[10px] transition-all delay-1000 group-hover:delay-200">
+                  {new Date(msg.time_sent).toLocaleTimeString()}
+                </span>
               </div>
             ))}
           </div>
 
           <div className="flex justify-center gap-2">
-            {isLoggedIn && (
+            {isLoggedIn ? (
               <>
                 <Input
                   type="text"
@@ -181,13 +181,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
                   Send
                 </button>
               </>
-            )}
-
-            {!isLoggedIn && (
+            ) : (
               <Button
-                extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap z-[999]"
+                extraClasses="text-[1rem] flex items-center flex-nowrap z-[999]"
                 onClick={() => setShowAuthModal(true)}
-              ></Button>
+                >
+                Login to Chat
+              </Button>
             )}
           </div>
           {showAuthModal && (

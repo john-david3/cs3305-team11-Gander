@@ -77,18 +77,19 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
     <SocketProvider>
       <div id="videoPage" className="w-full">
         <Navbar />
-        <div id="container" className="bg-gray-900">
+        <div id="container" className="grid grid-rows-[auto_1fr] grid-cols-[3fr_1fr] bg-gray-900">
           <VideoPlayer streamId={streamId} />
           <div
             id="chat"
-            className="relative top-0 right-0 bg-gray-800 bg-opacity-75 text-white p-4 w-1/3 h-full z-10 overflow-y-auto"
+            className="relative top-0 right-0 w-full h-full bg-gray-800 bg-opacity-75 text-white p-4 w-1/3 z-10"
+            style={{ gridArea: "1 / 2 / 3 / 3" }}
           >
             <ChatPanel streamId={streamId} />
           </div>
           <div
             id="stream-info"
             className="flex flex-col gap-2 p-4 text-white"
-            style={{ gridArea: "3 / 1 / 4 / 2" }}
+            style={{ gridArea: "2 / 1 / 3 / 2" }}
           >
             <h1 className="text-2xl font-bold">
               {streamData ? streamData.streamTitle : "Loading..."}

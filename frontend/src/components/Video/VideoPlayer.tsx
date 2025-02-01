@@ -53,7 +53,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamId }) => {
     <div
       id="video-container"
       className="h-full flex items-center bg-gray-900 rounded-lg"
-      style={{ gridArea: "2 / 1 / 3 / 2" }}
+      style={{ gridArea: "1 / 1 / 2 / 2" }}
     >
       <div ref={videoRef} id="video-player" className="w-full" />
     </div>
