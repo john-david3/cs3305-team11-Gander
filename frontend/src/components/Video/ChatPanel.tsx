@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Input from "../Layout/Input";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
-import Button from "../Layout/Button";
+import Button, { ToggleButton } from "../Layout/Button";
 import AuthModal from "../Auth/AuthModal";
 
 interface ChatMessage {
@@ -21,6 +21,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
   const [inputMessage, setInputMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { isLoggedIn, username } = useAuth();
+  const [isChatVisible, setIsChatVisible] = useState(false);
 
   // Join chat room when component mounts
   useEffect(() => {
@@ -92,6 +93,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
     setInputMessage("");
   };
 
+  const toggleChat = () => {
+    setIsChatVisible((prev) => !prev);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -115,72 +120,83 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
 
   return (
     <>
-      <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
-        <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
+      <ToggleButton
+        onClick={toggleChat}
+        toggled={isChatVisible}
+        extraClasses="z-5"
+      >
+        {isChatVisible ? "Hide Chat" : "Show Chat"}
+      </ToggleButton>
+      {isChatVisible && (
+        <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
+          <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
 
-        <div
-          ref={chatContainerRef}
-          id="chat-message-list"
-          className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2"
-        >
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-[8%_minmax(15%,_100px)_1fr] items-center bg-gray-700 rounded p-2 text-white"
-            >
-              <span className="text-gray-400 text-sm">
-                {new Date(msg.time_sent).toLocaleTimeString()}
-              </span>
-              <span
-                className={`font-bold ${
-                  msg.chatter_username === username
-                    ? "text-blue-400"
-                    : "text-green-400"
-                }`}
+          <div
+            ref={chatContainerRef}
+            id="chat-message-list"
+            className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2"
+          >
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-[8%_minmax(15%,_100px)_1fr] items-center bg-gray-700 rounded p-2 text-white"
               >
-                {" "}
-                {msg.chatter_username}:{" "}
-              </span>
-              <span>{msg.message}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-center gap-2">
-          {isLoggedIn && (
-            <>
-              <Input
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
-                disabled={!isLoggedIn}
-                extraClasses="flex-grow"
-                onClick={() => !isLoggedIn && setShowAuthModal(true)}
-              />
-              <button
-                onClick={sendChat}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-              >
-                Send
-              </button>
-            </>
-          )}
-
-          {!isLoggedIn && (
-            <Button
-              extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap z-[999]"
-              onClick={() => setShowAuthModal(true)}
-            ></Button>
-          )}
-        </div>
-        {showAuthModal && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-            <AuthModal onClose={() => setShowAuthModal(false)} />
+                <span className="text-gray-400 text-sm">
+                  {new Date(msg.time_sent).toLocaleTimeString()}
+                </span>
+                <span
+                  className={`font-bold ${
+                    msg.chatter_username === username
+                      ? "text-blue-400"
+                      : "text-green-400"
+                  }`}
+                >
+                  {" "}
+                  {msg.chatter_username}:{" "}
+                </span>
+                <span>{msg.message}</span>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+
+          <div className="flex justify-center gap-2">
+            {isLoggedIn && (
+              <>
+                <Input
+                  type="text"
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder={
+                    isLoggedIn ? "Type a message..." : "Login to chat"
+                  }
+                  disabled={!isLoggedIn}
+                  extraClasses="flex-grow"
+                  onClick={() => !isLoggedIn && setShowAuthModal(true)}
+                />
+                <button
+                  onClick={sendChat}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                >
+                  Send
+                </button>
+              </>
+            )}
+
+            {!isLoggedIn && (
+              <Button
+                extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap z-[999]"
+                onClick={() => setShowAuthModal(true)}
+              ></Button>
+            )}
+          </div>
+          {showAuthModal && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+              <AuthModal onClose={() => setShowAuthModal(false)} />
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };

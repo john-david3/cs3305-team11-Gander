@@ -74,9 +74,12 @@ def user_stream(user_id: int, stream_id: int) -> dict:
     """
     with Database() as db:
         stream = db.fetchone("""
-            SELECT * FROM streams 
-            WHERE user_id = ? 
-            AND stream_id = ?
+            SELECT u.username, s.user_id, s.title, s.start_time, s.num_viewers, c.category_name
+            FROM streams AS s
+            JOIN categories AS c ON s.category_id = c.category_id
+            JOIN users AS u ON s.user_id = u.user_id
+            WHERE u.user_id = ?
+            AND s.stream_id = ?
         """, (user_id, stream_id))
     return stream
 

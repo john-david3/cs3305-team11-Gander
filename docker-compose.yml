@@ -7,6 +7,7 @@ services:
       - "1935:1935"  # RTMP
       - "8080:8080"
     depends_on:
+      - frontend
       - web_server
     networks:
       - app_network
@@ -35,6 +36,8 @@ services:
       - "5173"
     networks:
       - app_network
+    environment:
+      - VITE_API_URL=/api
     depends_on:
       - web_server
 

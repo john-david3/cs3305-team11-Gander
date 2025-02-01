@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { io, Socket } from "socket.io-client";
 
 interface SocketContextType {
@@ -26,19 +32,21 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     console.log("Creating new socket connection");
-    const newSocket = io('http://localhost:8080', {
-      path: '/socket.io/',
-      transports: ['websocket'],
+    const newSocket = io("http://localhost:8080", {
+      path: "/socket.io/",
+      transports: ["websocket"],
       withCredentials: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: 5,
-      timeout: 5000
+      timeout: 5000,
+      autoConnect: true,
+      forceNew: true,
     });
-    
+
     socketRef.current = newSocket;
     setSocket(newSocket);
-    
+
     newSocket.on("connect", () => {
       console.log("Socket connected!");
       setIsConnected(true);
@@ -65,15 +73,11 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Socket connection error:", error);
       setIsLoading(false);
       if (newSocket) newSocket.disconnect();
-      newSocket.connect();
     });
 
     newSocket.on("disconnect", (reason) => {
-      console.log(
-        "Socket disconnected! Reason: " + reason + " -  Attempting reconnect..."
-      );
+      console.log("Socket disconnected! Reason: " + reason);
       setIsConnected(false);
-      newSocket.connect();
     });
 
     return () => {

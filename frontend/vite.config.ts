@@ -12,6 +12,12 @@ export default defineConfig({
         target: 'http://web_server:5000',
         changeOrigin: true,
       }
+    },
+    hmr: {
+      protocol: 'ws',
+      host: '127.0.0.1',
+      clientPort: 8080,
+      port: 5173
     }
-  },
+  }
 })
