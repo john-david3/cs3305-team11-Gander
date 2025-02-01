@@ -124,3 +124,13 @@ def reset_password(new_password: str, email: str) -> bool:
         """, (generate_password_hash(new_password), email))
     
     return True
+
+def get_email(user_id: int) -> Optional[str]:
+    with Database() as db:
+        email = db.fetchone("""
+            SELECT email
+            FROM users
+            WHERE user_id = ?
+        """, (user_id,))
+    
+    return email["email"] if email else None
