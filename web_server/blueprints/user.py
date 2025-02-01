@@ -57,15 +57,6 @@ def get_login_status():
     username = session.get("username")
     return jsonify({'status': username is not None, 'username': username})
 
-
-@user_bp.route('/authenticate_user')
-def authenticate_user() -> dict:
-    """
-    Authenticates the user
-    """
-    return {"authenticated": True}
-
-
 @user_bp.route('/forgot_password', methods=['POST'])
 def user_forgot_password():
     """

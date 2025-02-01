@@ -160,18 +160,6 @@ def get_followed_streamers():
     live_following_streams = followed_streamers(user_id)
     return live_following_streams
 
-#admin priveledges its probably better to not have this as a route instead just an internal function
-@stream_bp.route('/save_stream_thumbnail/<int:streamer_id>', methods=['POST'])
-def stream_thumbnail_snapshot(streamer_id):
-    """
-    Function to be called periodically which saves the current live stream as an img to be used for the thumbnail to be displayed
-    will be asking streamer guy how to get the picture 
-        will also be asking myself how to do this - Dylan
-    will be saved as a png stream_id.streamer_id.png or similar to create a unique image
-    """
-    return
-
-
 ## RTMP Server Routes
 @stream_bp.route("/publish_stream", methods=["POST"])
 def publish_stream():
