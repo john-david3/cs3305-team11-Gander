@@ -3,6 +3,7 @@ from database.database import Database
 from .socket import socketio
 from flask_socketio import emit, join_room, leave_room
 from datetime import datetime
+from utils.user_utils import get_user_id
 
 chat_bp = Blueprint("chat", __name__)
 
@@ -12,8 +13,8 @@ chat_bp = Blueprint("chat", __name__)
 def handle_connection() -> None:
     """
     Accept the connection from the frontend.
-    """ 
-    print("Client Connected")  # Confirmation connect has been made
+    """
+    print("\nClient Connected to Chat\n")  # Confirmation connect has been made
 
 
 @socketio.on("join")
@@ -77,28 +78,29 @@ def send_chat(data) -> None:
     """
 
     # Take the message information from frontend
-    chatter_id = session.get("username")
+    chatter_name = data.get("username")
     stream_id = data.get("stream_id")
     message = data.get("message")
 
     # Input validation - chatter is logged in, message is not empty, stream exists
-    if not all([chatter_id, message, stream_id]):
-        emit("error", {"error": f"Unable to send a chat. The following info was given: chatter_id={chatter_id}, message={message}, stream_id={stream_id}"}, broadcast=False)
+    if not all([chatter_name, message, stream_id]):
+        emit("error", {"error": f"Unable to send a chat. The following info was given: chatter_name={chatter_name}, message={message}, stream_id={stream_id}"}, broadcast=False)
         return
 
     # Send the chat message to the client so it can be displayed
     emit("new_message", {
-        "chatter_id": chatter_id,
+        "chatter_username": chatter_name,
         "message": message,
         "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }, room=stream_id)
 
     # Asynchronously save the chat
-    save_chat(chatter_id, stream_id, message)
+    save_chat(get_user_id(chatter_name), stream_id, message)
 
 
 def save_chat(chatter_id, stream_id, message):
     """Save the chat to the database"""
+    print(f"Saving to database: {chatter_id}, {stream_id}, {message}")
     db = Database()
     db.execute("""
                     INSERT INTO chat (chatter_id, stream_id, message)

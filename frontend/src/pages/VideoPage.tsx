@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Layout/Navbar";
 import Button, { ToggleButton } from "../components/Layout/Button";
 import ChatPanel from "../components/Video/ChatPanel";
-import CheckoutForm, { Return } from "../components/Checkout/CheckoutForm";
+// import CheckoutForm, { Return } from "../components/Checkout/CheckoutForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import VideoPlayer from "../components/Video/VideoPlayer";
+import { SocketProvider } from "../context/SocketContext";
 
 interface VideoPageProps {
   streamId: number;
@@ -23,18 +24,16 @@ interface StreamDataProps {
 
 const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   const { isLoggedIn } = useAuth();
-  // const [showCheckout, setShowCheckout] = useState(false);
-  const showReturn = window.location.search.includes("session_id");
   const { streamerName } = useParams<{ streamerName: string }>();
   const [streamData, setStreamData] = useState<StreamDataProps>();
-  const navigate = useNavigate();
-
+  // const [showCheckout, setShowCheckout] = useState(false);
+  // const showReturn = window.location.search.includes("session_id");
+  // const navigate = useNavigate();
   const [isChatVisible, setIsChatVisible] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const toggleChat = () => {
     setIsChatVisible((prev) => !prev);
-  }
+  };
 
   // useEffect(() => {
   //   // Prevent scrolling when checkout is open
@@ -51,7 +50,8 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   useEffect(() => {
     // Fetch stream data for this streamer
     fetch(
-      `/api/get_stream_data/${streamerName}${streamId == 0 ? "" : `/${streamId}`
+      `/api/get_stream_data/${streamerName}${
+        streamId == 0 ? "" : `/${streamId}`
       }`
     ).then((res) => {
       if (!res.ok) {
@@ -73,54 +73,48 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
     });
   }, [streamId, streamerName]);
 
-  useEffect(() => {
-    document.body.style.overflow = showAuthModal ? "hidden" : "unset";
-
-    return () => {
-      document.body.style.overflow = "unset";  // Cleanup
-    };
-  }, [showAuthModal]);
-
   return (
-    <div id="videoPage" className="w-full">
-      <Navbar />
-
-      <div id="container" className="bg-gray-900">
-
-        <VideoPlayer streamId={streamId} />
-
-        <ToggleButton
-          onClick={toggleChat}
-          toggled={isChatVisible}
-          extraClasses="absolute top-10 left-4 z-5"
-        >
-          {isChatVisible ? "Hide Chat" : "Show Chat"}
-        </ToggleButton>
-
-        {isChatVisible &&
-        <div id="chat" className="relative top-0 right-0 bg-gray-800 bg-opacity-75 text-white p-4 w-1/3 h-full z-10 overflow-y-auto">
-          <ChatPanel streamId={streamId} />
-        </div> }
-
-        <div
-          id="stream-info"
-          className="flex"
-          style={{ gridArea: "3 / 1 / 4 / 2" }}
-        >
-          {isLoggedIn && (
-            <Button
-              // onClick={() => setShowCheckout(true)}
-              extraClasses="mx-auto mb-4"
+    <SocketProvider>
+      <div id="videoPage" className="w-full">
+        <Navbar />
+        <div id="container" className="bg-gray-900">
+          <VideoPlayer streamId={streamId} />
+          <ToggleButton
+            onClick={toggleChat}
+            toggled={isChatVisible}
+            extraClasses="z-5"
+          >
+            {isChatVisible ? "Hide Chat" : "Show Chat"}
+          </ToggleButton>
+          {isChatVisible && (
+            <div
+              id="chat"
+              className="relative top-0 right-0 bg-gray-800 bg-opacity-75 text-white p-4 w-1/3 h-full z-10 overflow-y-auto"
             >
-              Payment Screen Test
-            </Button>
+              <ChatPanel streamId={streamId} />
+            </div>
           )}
+          <div
+            id="stream-info"
+            className="flex"
+            style={{ gridArea: "3 / 1 / 4 / 2" }}
+          >
+            <h1>{streamData?.streamTitle}</h1>
+            <h2>{streamData?.streamerName}</h2>
+            {isLoggedIn && (
+              <Button
+                // onClick={() => setShowCheckout(true)}
+                extraClasses="mx-auto mb-4"
+              >
+                Payment Screen Test
+              </Button>
+            )}
+          </div>
         </div>
+        {/* {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} />} */}
+        {/* {showReturn && <Return />} */}
       </div>
-
-      {/* {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} />} */}
-      {/* {showReturn && <Return />} */}
-    </div>
+    </SocketProvider>
   );
 };
 

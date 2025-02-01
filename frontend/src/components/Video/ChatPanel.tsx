@@ -16,17 +16,20 @@ interface ChatPanelProps {
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
+  const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { isLoggedIn, username } = useAuth();
-  const { socket, isConnected } = useSocket();
 
   // Join chat room when component mounts
   useEffect(() => {
     if (socket && isConnected) {
-      // Join chat room
-      socket.emit("join", { stream_id: streamId });
+      // Add username check
+      socket.emit("join", {
+        username: username ? username : "Guest",
+        stream_id: streamId,
+      });
 
       // Handle beforeunload event
       const handleBeforeUnload = () => {
@@ -53,6 +56,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
 
       // Handle incoming messages
       socket.on("new_message", (data: ChatMessage) => {
+        console.log("New message:", data);
         setMessages((prev) => [...prev, data]);
       });
 
@@ -61,10 +65,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
         window.removeEventListener("beforeunload", handleBeforeUnload);
         socket.emit("leave", { stream_id: streamId });
         socket.disconnect();
-        socket.off("new_message");
       };
     }
-  }, [socket, isConnected, streamId]);
+  }, [socket, isConnected, username, streamId]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -81,6 +84,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
     }
 
     socket.emit("send_message", {
+      username: username,
       stream_id: streamId,
       message: inputMessage.trim(),
     });
@@ -111,68 +115,71 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
 
   return (
     <>
-    <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
-      <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
+      <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
+        <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
 
-      <div
-        ref={chatContainerRef}
-        id="chat-message-list"
-        className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2"
-      >
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-[8%_minmax(15%,_100px)_1fr] items-center bg-gray-700 rounded p-2 text-white"
-          >
-            <span className="text-gray-400 text-sm">
-              {new Date(msg.time_sent).toLocaleTimeString()}
-            </span>
-            <span
-              className={`font-bold ${
-                msg.chatter_username === username ? "text-blue-400" : "text-green-400"
-              }`}
+        <div
+          ref={chatContainerRef}
+          id="chat-message-list"
+          className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2"
+        >
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-[8%_minmax(15%,_100px)_1fr] items-center bg-gray-700 rounded p-2 text-white"
             >
-              {" "}
-              {msg.chatter_username}:{" "}
-            </span>
-            <span>{msg.message}</span>
-          </div>
-        ))}
-      </div>
+              <span className="text-gray-400 text-sm">
+                {new Date(msg.time_sent).toLocaleTimeString()}
+              </span>
+              <span
+                className={`font-bold ${
+                  msg.chatter_username === username
+                    ? "text-blue-400"
+                    : "text-green-400"
+                }`}
+              >
+                {" "}
+                {msg.chatter_username}:{" "}
+              </span>
+              <span>{msg.message}</span>
+            </div>
+          ))}
+        </div>
 
-      <div className="flex justify-center gap-2">
-        {isLoggedIn &&
-        <>
-        <Input
-              type="text"
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
-              disabled={!isLoggedIn}
-              extraClasses="flex-grow"
-              onClick={() => (!isLoggedIn && setShowAuthModal(true))} />
+        <div className="flex justify-center gap-2">
+          {isLoggedIn && (
+            <>
+              <Input
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
+                disabled={!isLoggedIn}
+                extraClasses="flex-grow"
+                onClick={() => !isLoggedIn && setShowAuthModal(true)}
+              />
               <button
                 onClick={sendChat}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
               >
                 Send
               </button>
-              </>
-        }
-        
-        {!isLoggedIn && 
-              <Button
-              extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap z-[999]"
-              onClick={() => (setShowAuthModal(true))}></Button>
-        }
+            </>
+          )}
 
-      </div>
-      {showAuthModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-          <AuthModal onClose={() => setShowAuthModal(false)} />
+          {!isLoggedIn && (
+            <Button
+              extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap z-[999]"
+              onClick={() => setShowAuthModal(true)}
+            ></Button>
+          )}
         </div>
-      )}
+        {showAuthModal && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+            <AuthModal onClose={() => setShowAuthModal(false)} />
+          </div>
+        )}
       </div>
     </>
   );

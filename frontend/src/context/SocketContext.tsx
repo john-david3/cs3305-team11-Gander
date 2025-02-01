@@ -12,9 +12,9 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     console.log("Start of useEffect");
@@ -28,7 +28,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log("Creating new socket connection");
     const newSocket = io('http://localhost:8080', {
       path: '/socket.io/',
-      transports: ['websocket', 'polling'],
+      transports: ['websocket'],
       withCredentials: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,

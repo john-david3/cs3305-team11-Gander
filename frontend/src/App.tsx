@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { StreamsProvider } from "./context/StreamsContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SocketProvider } from "./context/SocketContext";
 import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -26,7 +25,6 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, username, setIsLoggedIn, setUsername }}>
-      <SocketProvider>
         <StreamsProvider>
           <BrowserRouter>
             <Routes>
@@ -39,7 +37,6 @@ function App() {
             </Routes>
           </BrowserRouter>
         </StreamsProvider>
-      </SocketProvider>
     </AuthContext.Provider>
   );
 }
