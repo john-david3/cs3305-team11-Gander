@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
-import Button from "./Button";
+import Button, {ToggleButton} from "./Button";
 import Sidebar from "./Sidebar";
 import { Sidebar as SidebarIcon } from "lucide-react";
 import {
@@ -16,11 +16,14 @@ import { useAuth } from "../../context/AuthContext";
 
 interface NavbarProps {
   variant?: "home" | "default";
+  isChatOpen: boolean;
+  toggleChat: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
+const Navbar: React.FC<NavbarProps> = ({ variant = "default", isChatOpen, toggleChat }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isLoggedIn } = useAuth();
+  const isVideoPage = location.pathname.includes("/EduGuru");
 
   useEffect(() => {
     if (showAuthModal) {
@@ -79,6 +82,13 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         <SettingsIcon className="h-15 w-15 mr-1" />
         Quick Settings
       </Button>
+      {isVideoPage && (
+      <ToggleButton onClick={toggleChat} toggled={isChatOpen}
+              extraClasses="absolute top-[80px] right-[20px] text-[1rem] flex items-center flex-nowrap"
+              >
+                {isChatOpen ? "Hide Chat" : "Show Chat"}
+      </ToggleButton>
+      )}
 
       <div id="search-bar" className="flex items-center">
         <Input

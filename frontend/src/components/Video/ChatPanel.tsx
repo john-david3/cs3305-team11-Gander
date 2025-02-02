@@ -21,7 +21,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
   const [inputMessage, setInputMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { isLoggedIn, username } = useAuth();
-  const [isChatVisible, setIsChatVisible] = useState(false);
 
   // Join chat room when component mounts
   useEffect(() => {
@@ -93,10 +92,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
     setInputMessage("");
   };
 
-  const toggleChat = () => {
-    setIsChatVisible((prev) => !prev);
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -120,83 +115,73 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
 
   return (
     <>
-      <ToggleButton
-        onClick={toggleChat}
-        toggled={isChatVisible}
-        extraClasses="cursor-pointer"
-      >
-        {isChatVisible ? "Hide Chat" : "Show Chat"}
-      </ToggleButton>
-      {isChatVisible && (
-        <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
-          <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
+      <div id="chat-panel" className="h-full flex flex-col rounded-lg p-4">
+        <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
 
-          <div
-            ref={chatContainerRef}
-            id="chat-message-list"
-            className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2"
-          >
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-[minmax(15%,_100px)_1fr] group h-fit items-center bg-gray-700 rounded p-2 text-white"
-              >
-                <span
-                  className={`font-bold ${
-                    msg.chatter_username === username
-                      ? "text-blue-400"
-                      : "text-green-400"
+        <div
+          ref={chatContainerRef}
+          id="chat-message-list"
+          className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2"
+        >
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-[minmax(15%,_100px)_1fr] group h-fit items-center bg-gray-700 rounded p-2 text-white"
+            >
+              <span
+                className={`font-bold ${msg.chatter_username === username
+                    ? "text-blue-400"
+                    : "text-green-400"
                   }`}
-                >
-                  {" "}
-                  {msg.chatter_username}:{" "}
-                </span>
-                <span className="text-center" >{msg.message}</span>
-                <span className="text-gray-400 text-sm scale-0 group-hover:scale-100 h-[0px] group-hover:h-[10px] transition-all delay-1000 group-hover:delay-200">
-                  {new Date(msg.time_sent).toLocaleTimeString()}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-center gap-2">
-            {isLoggedIn ? (
-              <>
-                <Input
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder={
-                    isLoggedIn ? "Type a message..." : "Login to chat"
-                  }
-                  disabled={!isLoggedIn}
-                  extraClasses="flex-grow"
-                  onClick={() => !isLoggedIn && setShowAuthModal(true)}
-                />
-                <button
-                  onClick={sendChat}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-                >
-                  Send
-                </button>
-              </>
-            ) : (
-              <Button
-                extraClasses="text-[1rem] flex items-center flex-nowrap z-[999]"
-                onClick={() => setShowAuthModal(true)}
-                >
-                Login to Chat
-              </Button>
-            )}
-          </div>
-          {showAuthModal && (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-              <AuthModal onClose={() => setShowAuthModal(false)} />
+              >
+                {" "}
+                {msg.chatter_username}:{" "}
+              </span>
+              <span className="text-center" >{msg.message}</span>
+              <span className="text-gray-400 text-sm scale-0 group-hover:scale-100 h-[0px] group-hover:h-[10px] transition-all delay-1000 group-hover:delay-200">
+                {new Date(msg.time_sent).toLocaleTimeString()}
+              </span>
             </div>
+          ))}
+        </div>
+
+        <div className="flex justify-center gap-2">
+          {isLoggedIn ? (
+            <>
+              <Input
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder={
+                  isLoggedIn ? "Type a message..." : "Login to chat"
+                }
+                disabled={!isLoggedIn}
+                extraClasses="flex-grow"
+                onClick={() => !isLoggedIn && setShowAuthModal(true)}
+              />
+              <button
+                onClick={sendChat}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+              >
+                Send
+              </button>
+            </>
+          ) : (
+            <Button
+              extraClasses="text-[1rem] flex items-center flex-nowrap z-[999]"
+              onClick={() => setShowAuthModal(true)}
+            >
+              Login to Chat
+            </Button>
           )}
         </div>
-      )}
+        {showAuthModal && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+            <AuthModal onClose={() => setShowAuthModal(false)} />
+          </div>
+        )}
+      </div>
     </>
   );
 };
