@@ -22,12 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isLoggedIn } = useAuth();
-<<<<<<< HEAD
-  const isVideoPage = location.pathname.includes("/EduGuru");
   const [showSideBar, setShowSideBar] = useState(false);
-=======
->>>>>>> 595190b0a004153d7253d5a44ae09e5d892a1bef
-
   useEffect(() => {
     if (showAuthModal) {
       document.body.style.overflow = "hidden";
