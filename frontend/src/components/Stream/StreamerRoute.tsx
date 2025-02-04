@@ -5,9 +5,9 @@ import UserPage from "../../pages/UserPage";
 
 const StreamerRoute: React.FC = () => {
   const { streamerName } = useParams<{ streamerName: string }>();
-  const [isLive, setIsLive] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  let streamId: number = 0;
+  const [isLive, setIsLive] = useState<boolean>(false);
+  const [streamId, setStreamId] = useState<number>(0);
 
   useEffect(() => {
     const checkStreamStatus = async () => {
@@ -15,6 +15,7 @@ const StreamerRoute: React.FC = () => {
         const response = await fetch(`/api/streamer/${streamerName}/status`);
         const data = await response.json();
         setIsLive(Boolean(data.is_live));
+        setStreamId(data.most_recent_stream);
       } catch (error) {
         console.error("Error checking stream status:", error);
         setIsLive(false);

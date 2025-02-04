@@ -121,7 +121,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
         <div
           ref={chatContainerRef}
           id="chat-message-list"
-          className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2 rounded-[67px]"
+          className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2 rounded-md"
         >
           {messages.map((msg, index) => (
             <div
@@ -156,7 +156,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
                 onKeyDown={handleKeyPress}
                 placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
                 disabled={!isLoggedIn}
-                extraClasses="flex-grow"
+                extraClasses="flex-grow focus:w-[20vw]"
                 onClick={() => !isLoggedIn && setShowAuthModal(true)}
               />
 
