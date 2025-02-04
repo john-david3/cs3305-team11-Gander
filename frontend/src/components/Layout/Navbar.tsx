@@ -27,6 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isLoggedIn } = useAuth();
   const isVideoPage = location.pathname.includes("/EduGuru");
+  const [showSideBar, setShowSideBar] = useState(false);
 
   useEffect(() => {
     if (showAuthModal) {
@@ -48,6 +49,10 @@ const Navbar: React.FC<NavbarProps> = ({
         window.location.reload();
       });
   };
+
+  const handleSideBar = () => {
+    setShowSideBar(!showSideBar);
+  }
 
   return (
     <div
@@ -74,12 +79,20 @@ const Navbar: React.FC<NavbarProps> = ({
 
       {isLoggedIn && (
         <>
-          <Button extraClasses="absolute top-[75px] left-[20px]">
+          <Button onClick={() => handleSideBar()}
+          extraClasses={`absolute ${
+          showSideBar ? `top-[20px] left-[20px] p-2 text-[1.5rem] text-white hover:text-white
+          bg-black/30 hover:bg-purple-500/80 rounded-md border border-gray-300 hover:border-white h
+          over:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all ` : 
+          "top-[75px] left-[20px]"
+        } transition-all duration-300 z-[99]`}
+      >              
             <SidebarIcon className="h-15 w-15 mr-1" />
           </Button>
-          <Sidebar />
+          {showSideBar && <Sidebar extraClasses="h-screen"/>}
         </>
       )}
+
 
       <Button
         extraClasses="absolute top-[20px] right-[20px] text-[1rem] flex items-center flex-nowrap"
