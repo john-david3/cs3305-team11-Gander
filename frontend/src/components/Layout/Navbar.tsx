@@ -73,17 +73,17 @@ const Navbar: React.FC<NavbarProps> = ({
 
       {isLoggedIn && (
         <>
-          <Button onClick={() => handleSideBar()}
+          <Button onClick={() => handleSideBar()} 
           extraClasses={`absolute ${
-          showSideBar ? `top-[20px] left-[20px] p-2 text-[1.5rem] text-white hover:text-white
+          showSideBar ? `fixed top-[20px] left-[20px] p-2 text-[1.5rem] text-white hover:text-white
           bg-black/30 hover:bg-purple-500/80 rounded-md border border-gray-300 hover:border-white h
           over:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all ` : 
-          "top-[75px] left-[20px]"
+          "top-[75px] left-[20px]"  
         } transition-all duration-300 z-[99]`}
       >              
-            <SidebarIcon className="h-15 w-15 mr-1" />
+            <SidebarIcon className="h-15 w-15 mr-1 z-[90]" />
           </Button>
-          {showSideBar && <Sidebar extraClasses="h-screen"/>}
+          {showSideBar && <Sidebar scrollActiveSideBar={showSideBar} />}
         </>
       )}
 
