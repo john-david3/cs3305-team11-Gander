@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Layout/Navbar";
-import Button from "../components/Layout/Button";
+import Button, { ToggleButton } from "../components/Layout/Button";
 import ChatPanel from "../components/Video/ChatPanel";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -45,7 +45,9 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   useEffect(() => {
     // Fetch stream data for this streamer
     fetch(
-      `/api/get_stream_data/${streamerName}${streamId == 0 ? "" : `/${streamId}`}`,
+      `/api/get_stream_data/${streamerName}${
+        streamId == 0 ? "" : `/${streamId}`
+      }`
     ).then((res) => {
       if (!res.ok) {
         console.error("Failed to load stream data:", res.statusText);
@@ -78,23 +80,27 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   return (
     <SocketProvider>
       <div id="videoPage" className="w-full">
-        <Navbar isChatOpen={isChatOpen} toggleChat={toggleChat} />
+        <Navbar />
 
         <div
           id="container"
-          className={`grid grid-rows-[auto_1fr] bg-gray-900 h-full ${isChatOpen ? "grid-cols-[3fr_1fr]" : "grid-cols-1"}`}
+          className={`grid ${
+            isChatOpen ? "w-[100vw]" : "w-[125vw]"
+          } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
         >
           <div className="relative">
             <VideoPlayer streamId={streamId} />
           </div>
-          <div
-            id="chat"
-            className={`relative w-full h-full bg-gray-800 bg-opacity-75 text-white p-4 z-10 ${
-              isChatOpen ? "block" : "hidden"
-            }`}
+
+          <ToggleButton
+            onClick={toggleChat}
+            toggled={isChatOpen}
+            extraClasses="absolute top-[70px] right-[20px] text-[1rem] flex items-center flex-nowrap"
           >
-            <ChatPanel streamId={streamId} />
-          </div>
+            {isChatOpen ? "Hide Chat" : "Show Chat"}
+          </ToggleButton>
+
+          <ChatPanel streamId={streamId} />
 
           <div
             id="stream-info"
@@ -105,8 +111,16 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
               {streamData ? streamData.streamTitle : "Loading..."}
             </h1>
             <div className="flex flex-col gap-2">
-              <div id="streamer" className="flex items-center gap-2 cursor-pointer" onClick={() => navigate(`/user/${streamerName}`)} >
-                <img src="/images/monkey.png" alt="streamer" className="w-10 h-10 bg-indigo-500 rounded-full" />
+              <div
+                id="streamer"
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => navigate(`/user/${streamerName}`)}
+              >
+                <img
+                  src="/images/monkey.png"
+                  alt="streamer"
+                  className="w-10 h-10 bg-indigo-500 rounded-full"
+                />
                 <span>
                   {streamData ? streamData.streamerName : "Loading..."}
                 </span>
