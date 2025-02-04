@@ -58,7 +58,7 @@ def get_past_chat(stream_id: int):
                             FROM chat
                             JOIN users ON chat.chatter_id = users.user_id
                             WHERE stream_id = ?
-                            ORDER BY time_sent DESC
+                            ORDER BY time_sent ASC
                             LIMIT 50;
                             """, (stream_id,))
 
