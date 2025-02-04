@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Layout/Navbar";
-import Button, { ToggleButton } from "../components/Layout/Button";
+import Button from "../components/Layout/Button";
 import ChatPanel from "../components/Video/ChatPanel";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import VideoPlayer from "../components/Video/VideoPlayer";
 import { SocketProvider } from "../context/SocketContext";
@@ -28,7 +28,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   const [isChatOpen, setIsChatOpen] = useState(true);
   // const [showCheckout, setShowCheckout] = useState(false);
   // const showReturn = window.location.search.includes("session_id");
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   // Prevent scrolling when checkout is open
@@ -45,8 +45,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   useEffect(() => {
     // Fetch stream data for this streamer
     fetch(
-      `/api/get_stream_data/${streamerName}${streamId == 0 ? "" : `/${streamId}`
-      }`
+      `/api/get_stream_data/${streamerName}${streamId == 0 ? "" : `/${streamId}`}`,
     ).then((res) => {
       if (!res.ok) {
         console.error("Failed to load stream data:", res.statusText);
@@ -80,7 +79,10 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
     <SocketProvider>
       <div id="videoPage" className="w-full">
         <Navbar isChatOpen={isChatOpen} toggleChat={toggleChat} />
-        <div id="container" className={`grid grid-rows-[auto_1fr] bg-gray-900 h-full ${isChatOpen ? "grid-cols-[3fr_1fr]" : "grid-cols-1"}`}
+
+        <div
+          id="container"
+          className={`grid grid-rows-[auto_1fr] bg-gray-900 h-full ${isChatOpen ? "grid-cols-[3fr_1fr]" : "grid-cols-1"}`}
         >
           <div className="relative">
             <VideoPlayer streamId={streamId} />
@@ -103,8 +105,8 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
               {streamData ? streamData.streamTitle : "Loading..."}
             </h1>
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">Streamer:</span>
+              <div id="streamer" className="flex items-center gap-2 cursor-pointer" onClick={() => navigate(`/user/${streamerName}`)} >
+                <img src="/images/monkey.png" alt="streamer" className="w-10 h-10 bg-indigo-500 rounded-full" />
                 <span>
                   {streamData ? streamData.streamerName : "Loading..."}
                 </span>

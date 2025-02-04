@@ -67,8 +67,14 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
 
   return (
     <>
-      <div id="blurring-layer" className="fixed z-10 inset-0 w-screen h-screen backdrop-blur-sm"></div>
-      <div id="modal-container" className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 h-[70vh] m-auto w-fit py-[50px] px-[100px] rounded-[2rem]">
+      <div
+        id="blurring-layer"
+        className="fixed z-10 inset-0 w-screen h-screen backdrop-blur-sm"
+      ></div>
+      <div
+        id="modal-container"
+        className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 h-[70vh] m-auto w-fit py-[50px] px-[100px] rounded-[2rem]"
+      >
         <button
           onClick={onClose}
           className="absolute top-[1rem] right-[3rem] text-[2rem] text-white hover:text-red-500 font-black hover:text-[2.5rem] transition-all"

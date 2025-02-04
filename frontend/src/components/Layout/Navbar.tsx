@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
-import Button, {ToggleButton} from "./Button";
+import Button, { ToggleButton } from "./Button";
 import Sidebar from "./Sidebar";
 import { Sidebar as SidebarIcon } from "lucide-react";
 import {
@@ -13,14 +13,17 @@ import Input from "./Input";
 import AuthModal from "../Auth/AuthModal";
 import { useAuth } from "../../context/AuthContext";
 
-
 interface NavbarProps {
   variant?: "home" | "default";
-  isChatOpen: boolean;
-  toggleChat: () => void;
+  isChatOpen?: boolean;
+  toggleChat?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ variant = "default", isChatOpen, toggleChat }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  variant = "default",
+  isChatOpen,
+  toggleChat,
+}) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isLoggedIn } = useAuth();
   const isVideoPage = location.pathname.includes("/EduGuru");
@@ -47,7 +50,10 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default", isChatOpen, toggle
   };
 
   return (
-    <div id="navbar" className={`flex justify-center items-center ${variant === "home" ? "h-[45vh] flex-col" : "h-[15vh] col-span-2 flex-row"}`}>
+    <div
+      id="navbar"
+      className={`flex justify-center items-center ${variant === "home" ? "h-[45vh] flex-col" : "h-[15vh] col-span-2 flex-row"}`}
+    >
       <Logo variant={variant} />
       <Button
         extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap"
@@ -83,11 +89,13 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default", isChatOpen, toggle
         Quick Settings
       </Button>
       {isVideoPage && (
-      <ToggleButton onClick={toggleChat} toggled={isChatOpen}
-              extraClasses="absolute top-[80px] right-[20px] text-[1rem] flex items-center flex-nowrap"
-              >
-                {isChatOpen ? "Hide Chat" : "Show Chat"}
-      </ToggleButton>
+        <ToggleButton
+          onClick={toggleChat}
+          toggled={isChatOpen}
+          extraClasses="absolute top-[80px] right-[20px] text-[1rem] flex items-center flex-nowrap"
+        >
+          {isChatOpen ? "Hide Chat" : "Show Chat"}
+        </ToggleButton>
       )}
 
       <div id="search-bar" className="flex items-center">
@@ -96,9 +104,9 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default", isChatOpen, toggle
           placeholder="Search..."
           extraClasses="pr-[30px] focus:outline-none focus:border-purple-500 focus:w-[30vw]"
         />
+
         <SearchIcon className="-translate-x-[28px] top-1/2 h-6 w-6 text-white" />
       </div>
-
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>

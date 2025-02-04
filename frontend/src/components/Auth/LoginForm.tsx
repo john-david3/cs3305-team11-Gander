@@ -16,7 +16,7 @@ interface FormErrors {
 
 //Speed up border animation
 interface SubmitProps {
-  onSubmit: () => void; 
+  onSubmit: () => void;
 }
 
 const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {

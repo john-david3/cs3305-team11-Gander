@@ -1,6 +1,7 @@
 from database.database import Database
 from typing import Optional, List
 
+
 def user_recommendation_category(user_id: int) -> Optional[int]:
     """
     Queries user_preferences database to find users favourite streaming category and returns the category
@@ -15,7 +16,8 @@ def user_recommendation_category(user_id: int) -> Optional[int]:
         """, (user_id,))
     return category["category_id"] if category else None
 
-def followed_categories_recommendations(user_id : int) -> Optional[List[dict]]:
+
+def followed_categories_recommendations(user_id: int) -> Optional[List[dict]]:
     """
     Returns top 25 streams given a users category following
     """
@@ -30,6 +32,7 @@ def followed_categories_recommendations(user_id : int) -> Optional[List[dict]]:
             LIMIT 25;
         """, (user_id,))
     return streams
+
 
 def recommendations_based_on_category(category_id: int) -> Optional[List[dict]]:
     """
@@ -58,10 +61,12 @@ def default_recommendations() -> Optional[List[dict]]:
             FROM streams 
             JOIN users ON users.user_id = streams.user_id 
             JOIN categories ON streams.category_id = categories.category_id
+            WHERE isLive = 1
             ORDER BY num_viewers DESC 
             LIMIT 25;
         """)
         return data
+
 
 def category_recommendations() -> Optional[List[dict]]:
     """
@@ -78,6 +83,7 @@ def category_recommendations() -> Optional[List[dict]]:
             LIMIT 5;
         """)
     return categories
+
 
 def user_category_recommendations(user_id: int) -> Optional[List[dict]]:
     """

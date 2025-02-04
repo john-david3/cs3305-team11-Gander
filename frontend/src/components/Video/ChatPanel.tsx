@@ -121,7 +121,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
         <div
           ref={chatContainerRef}
           id="chat-message-list"
-          className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2"
+          className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2 rounded-[67px]"
         >
           {messages.map((msg, index) => (
             <div
@@ -129,15 +129,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
               className="grid grid-cols-[minmax(15%,_100px)_1fr] group h-fit items-center bg-gray-700 rounded p-2 text-white"
             >
               <span
-                className={`font-bold ${msg.chatter_username === username
+                className={`font-bold ${
+                  msg.chatter_username === username
                     ? "text-blue-400"
                     : "text-green-400"
-                  }`}
+                }`}
               >
                 {" "}
                 {msg.chatter_username}:{" "}
               </span>
-              <span className="text-center" >{msg.message}</span>
+              <span className="text-center">{msg.message}</span>
               <span className="text-gray-400 text-sm scale-0 group-hover:scale-100 h-[0px] group-hover:h-[10px] transition-all delay-1000 group-hover:delay-200">
                 {new Date(msg.time_sent).toLocaleTimeString()}
               </span>
@@ -153,13 +154,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder={
-                  isLoggedIn ? "Type a message..." : "Login to chat"
-                }
+                placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
                 disabled={!isLoggedIn}
                 extraClasses="flex-grow"
                 onClick={() => !isLoggedIn && setShowAuthModal(true)}
               />
+
               <button
                 onClick={sendChat}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"

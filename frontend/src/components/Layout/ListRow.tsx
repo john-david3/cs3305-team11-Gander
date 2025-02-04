@@ -72,12 +72,10 @@ const ListRow: React.FC<ListRowProps> = ({
             id={item.id}
             type={item.type}
             title={item.title}
-            streamer={item.type === "stream" ? (item.streamer) : undefined}
+            streamer={item.type === "stream" ? item.streamer : undefined}
             viewers={item.viewers}
             thumbnail={item.thumbnail}
-            onItemClick={() =>
-              onClick?.(item.id, item.streamer || item.title)
-            }
+            onItemClick={() => onClick?.(item.id, item.streamer || item.title)}
           />
         ))}
       </div>

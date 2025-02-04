@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
 import NotFoundPage from "./pages/NotFoundPage";
+import UserPage from "./pages/UserPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,19 +25,26 @@ function App() {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, username, setIsLoggedIn, setUsername }}>
-        <StreamsProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route
-                path="/"
-                element={isLoggedIn ? <HomePage variant="personalised" /> : <HomePage />}
-              />
-              <Route path="/:streamerName" element={<StreamerRoute />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </BrowserRouter>
-        </StreamsProvider>
+    <AuthContext.Provider
+      value={{ isLoggedIn, username, setIsLoggedIn, setUsername }}
+    >
+      <StreamsProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                isLoggedIn ? <HomePage variant="personalised" /> : <HomePage />
+              }
+            />
+
+            <Route path="/:streamerName" element={<StreamerRoute />} />
+            <Route path="/user/:username" element={<UserPage />} />
+
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </BrowserRouter>
+      </StreamsProvider>
     </AuthContext.Provider>
   );
 }

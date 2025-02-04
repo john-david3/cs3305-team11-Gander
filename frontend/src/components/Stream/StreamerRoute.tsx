@@ -7,13 +7,14 @@ const StreamerRoute: React.FC = () => {
   const { streamerName } = useParams<{ streamerName: string }>();
   const [isLive, setIsLive] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  let streamId: number = 0;
 
   useEffect(() => {
     const checkStreamStatus = async () => {
       try {
         const response = await fetch(`/api/streamer/${streamerName}/status`);
         const data = await response.json();
-        setIsLive(data.is_live);
+        setIsLive(Boolean(data.is_live));
       } catch (error) {
         console.error("Error checking stream status:", error);
         setIsLive(false);
@@ -31,11 +32,23 @@ const StreamerRoute: React.FC = () => {
   }, [streamerName]);
 
   if (isLoading) {
-    return <div className="h-screen w-screen flex text-6xl items-center justify-center" >Loading...</div>; // Or your loading component
+    return (
+      <div className="h-screen w-screen flex text-6xl items-center justify-center">
+        Loading...
+      </div>
+    );
+
+    // Or your loading component
   }
 
   // streamId=0 is a special case for the streamer's latest stream
-  return isLive ? <VideoPage streamId={1} /> : (streamerName ? <UserPage username={streamerName} /> : <div>Error: Streamer not found</div>);
+  return isLive ? (
+    <VideoPage streamId={streamId} />
+  ) : streamerName ? (
+    <UserPage />
+  ) : (
+    <div>Error: Streamer not found</div>
+  );
 };
 
 export default StreamerRoute;

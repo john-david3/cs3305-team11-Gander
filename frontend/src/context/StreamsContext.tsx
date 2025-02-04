@@ -29,7 +29,7 @@ const StreamsContext = createContext<StreamsContextType | undefined>(undefined);
 export function StreamsProvider({ children }: { children: React.ReactNode }) {
   const [featuredStreams, setFeaturedStreams] = useState<StreamItem[]>([]);
   const [featuredCategories, setFeaturedCategories] = useState<CategoryItem[]>(
-    []
+    [],
   );
   const { isLoggedIn } = useAuth();
 

@@ -92,22 +92,22 @@ def get_streamer_data(streamer_username):
 @stream_bp.route('/streamer/<string:streamer_username>/status')
 def get_streamer_status(streamer_username):
     """
-    Returns a streamer's status, if they are live or not and their most recent stream
+    Returns a streamer's status, if they are live or not and their most recent stream (their current stream if live)
     """
     user_id = get_user_id(streamer_username)
 
     if not user_id:
         abort(404)
 
-    is_live = streamer_live_status(user_id)
-    most_recent_stream = streamer_most_recent_stream(user_id)
+    is_live = True if streamer_live_status(user_id)['isLive'] else False
+    most_recent_stream = streamer_most_recent_stream(user_id)['stream_id']
 
     if not most_recent_stream:
-        most_recent_stream = {'stream_id': None}
+        most_recent_stream = None
 
     return jsonify({
         "is_live": is_live,
-        "most_recent_stream": most_recent_stream['stream_id']
+        "most_recent_stream": most_recent_stream
     })
     
 
@@ -122,6 +122,20 @@ def get_stream(streamer_username):
     
     return jsonify(streamer_most_recent_stream(user_id))
 
+
+@stream_bp.route('/get_stream_data/<string:streamer_username>/<int:stream_id>')
+def get_specific_stream(streamer_username, stream_id):
+    """
+    Returns a streamer's stream data given stream_id
+    """
+    user_id = get_user_id(streamer_username)
+    stream = user_stream(user_id, stream_id)
+    if stream:
+        return jsonify(stream)
+
+    return jsonify({'error': 'Stream not found'}), 404
+
+
 @login_required
 @stream_bp.route('/get_followed_category_streams')
 def get_following_categories_streams():
@@ -135,18 +149,6 @@ def get_following_categories_streams():
         stream['tags'] = stream_tags(stream["stream_id"])
     return jsonify(streams)
 
-
-@stream_bp.route('/get_stream_data/<string:streamer_username>/<int:stream_id>')
-def get_specific_stream(streamer_username, stream_id):
-    """
-    Returns a streamer's stream data given stream_id
-    """
-    user_id = get_user_id(streamer_username)
-    stream = user_stream(user_id, stream_id)
-    if stream:
-        return jsonify(stream)
-
-    return jsonify({'error': 'Stream not found'}), 404
 
 @login_required
 @stream_bp.route('/get_followed_streamers')

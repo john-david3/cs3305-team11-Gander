@@ -19,7 +19,7 @@ interface FormErrors {
 }
 
 interface SubmitProps {
-  onSubmit: () => void; 
+  onSubmit: () => void;
 }
 
 const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
@@ -115,7 +115,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
       {errors.general && (
         <p className="text-red-500 text-sm text-center">{errors.general}</p>
       )}
-      
+
       {errors.username && (
         <p className="text-red-500 mt-3 text-sm">{errors.username}</p>
       )}
@@ -126,6 +126,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
         onChange={handleInputChange}
         extraClasses={`${errors.username ? "border-red-500" : ""}`}
       />
+
       {errors.email && (
         <p className="text-red-500 mt-3 text-sm">{errors.email}</p>
       )}
@@ -137,6 +138,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
         onChange={handleInputChange}
         extraClasses={`${errors.email ? "border-red-500" : ""}`}
       />
+
       {errors.password && (
         <p className="text-red-500 mt-3 text-sm">{errors.password}</p>
       )}
@@ -148,6 +150,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
         onChange={handleInputChange}
         extraClasses={`${errors.password ? "border-red-500" : ""}`}
       />
+
       {errors.confirmPassword && (
         <p className="text-red-500 mt-3 text-sm">{errors.confirmPassword}</p>
       )}
@@ -159,6 +162,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
         onChange={handleInputChange}
         extraClasses={`${errors.confirmPassword ? "border-red-500" : ""}`}
       />
+
       <Button type="submit">Register</Button>
     </form>
   );

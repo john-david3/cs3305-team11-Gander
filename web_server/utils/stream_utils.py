@@ -45,29 +45,6 @@ def followed_streamers(user_id: int) -> Optional[List[dict]]:
         """, (user_id,))
     return followed_streamers
 
-def streamer_most_recent_stream(user_id: int) -> Optional[dict]:
-    """
-    Returns data of the most recent stream by a streamer
-    """
-    with Database() as db:
-        most_recent_stream = db.fetchone("""
-            SELECT * FROM streams 
-            WHERE user_id = ? 
-            AND stream_id = (SELECT MAX(stream_id) FROM streams WHERE user_id = ?)
-        """, (user_id, user_id))
-    return most_recent_stream
-
-def streamer_data(streamer_id: int) -> Optional[dict]:
-    """
-    Returns information about the streamer
-    """
-    with Database() as db:
-        data = db.fetchone("""
-            SELECT username, num_followering, isPartnered FROM users
-            WHERE user_id = ?
-        """, (streamer_id))
-    return data
-
 def user_stream(user_id: int, stream_id: int) -> dict:
     """
     Returns data of a streamers selected stream
@@ -82,6 +59,32 @@ def user_stream(user_id: int, stream_id: int) -> dict:
             AND s.stream_id = ?
         """, (user_id, stream_id))
     return stream
+
+def streamer_most_recent_stream(user_id: int) -> Optional[dict]:
+    """
+    Returns data of the most recent stream by a streamer
+    """
+    with Database() as db:
+        most_recent_stream = db.fetchone("""
+            SELECT s.stream_id, u.username, s.user_id, s.title, s.start_time, s.num_viewers, c.category_name
+            FROM streams AS s
+            JOIN categories AS c ON s.category_id = c.category_id
+            JOIN users AS u ON s.user_id = u.user_id
+            WHERE u.user_id = ?
+            AND s.stream_id = (SELECT MAX(stream_id) FROM streams WHERE user_id = ?)
+        """, (user_id, user_id))
+    return most_recent_stream
+
+def streamer_data(streamer_id: int) -> Optional[dict]:
+    """
+    Returns information about the streamer
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT username, bio, num_followers, is_partnered FROM users
+            WHERE user_id = ?
+        """, (streamer_id,))
+    return data
 
 def generate_thumbnail(user_id: int) -> None:
     """

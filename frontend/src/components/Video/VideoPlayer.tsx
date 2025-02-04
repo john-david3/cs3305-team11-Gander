@@ -19,7 +19,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamId }) => {
         "video-js",
         "vjs-big-play-centered",
         "w-full",
-        "h-full"
+        "h-full",
       );
       videoRef.current.appendChild(videoElement);
 
@@ -34,7 +34,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamId }) => {
           {
             src: `/images/sample_game_video.mp4`,
             // type: "application/x-mpegURL",
-            type: 'video/mp4'
+            type: "video/mp4",
           },
         ],
       });
