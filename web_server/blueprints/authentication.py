@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 from database.database import Database
 from blueprints.utils import login_required, sanitizer
+from blueprints.email import send_email
 from utils.user_utils import get_user_id
 from secrets import token_hex
 
@@ -99,6 +100,7 @@ def signup():
         session["username"] = username
         session["user_id"] = get_user_id(username)
         print(f"Logged in as {username}. session: {session.get('username')}. user_id: {session.get('user_id')}", flush=True)
+        # send_email(username)
 
         return jsonify({
             "account_created": True,
@@ -114,6 +116,7 @@ def signup():
 
     finally:
         db.close_connection()
+        
 
 
 @auth_bp.route("/login", methods=["POST"])
