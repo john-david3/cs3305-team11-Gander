@@ -2,7 +2,7 @@ from database.database import Database
 from typing import Optional, List
 
 
-def user_recommendation_category(user_id: int) -> Optional[int]:
+def get_user_preferred_category(user_id: int) -> Optional[int]:
     """
     Queries user_preferences database to find users favourite streaming category and returns the category
     """
@@ -23,9 +23,9 @@ def followed_categories_recommendations(user_id: int) -> Optional[List[dict]]:
     """
     with Database() as db:
         streams = db.fetchall("""
-            SELECT stream_id, title, username, num_viewers, category_name 
+            SELECT u.user_id, title, u.username, num_viewers, category_name 
             FROM streams 
-            JOIN users ON users.user_id = streams.user_id
+            JOIN users u ON streams.user_id = u.user_id
             JOIN categories ON streams.category_id = categories.category_id
             WHERE categories.category_id IN (SELECT category_id FROM followed_categories WHERE user_id = ?)
             ORDER BY num_viewers DESC
@@ -34,15 +34,15 @@ def followed_categories_recommendations(user_id: int) -> Optional[List[dict]]:
     return streams
 
 
-def recommendations_based_on_category(category_id: int) -> Optional[List[dict]]:
+def get_streams_based_on_category(category_id: int) -> Optional[List[dict]]:
     """
     Queries stream database to get top 25 most viewed streams based on given category
     """
     with Database() as db:
         streams = db.fetchall("""
-            SELECT streams.stream_id, title, username, num_viewers, category_name
+            SELECT u.user_id, title, username, num_viewers, category_name
             FROM streams 
-            JOIN users ON users.user_id = streams.user_id
+            JOIN users u ON streams.user_id = u.user_id
             JOIN categories ON streams.category_id = categories.category_id
             WHERE categories.category_id = ? 
             ORDER BY num_viewers DESC 
@@ -51,41 +51,37 @@ def recommendations_based_on_category(category_id: int) -> Optional[List[dict]]:
     return streams
 
 
-def default_recommendations() -> Optional[List[dict]]:
+def get_highest_view_streams(no_streams: int) -> Optional[List[dict]]:
     """
-    Return a list of 25 recommended live streams by number of viewers
+    Return a list of live streams by number of viewers
     """
     with Database() as db:
         data = db.fetchall("""
-            SELECT streams.stream_id, title, username, num_viewers, category_name
+            SELECT u.user_id, username, title, num_viewers, category_name
             FROM streams 
-            JOIN users ON users.user_id = streams.user_id 
+            JOIN users u ON streams.user_id = u.user_id
             JOIN categories ON streams.category_id = categories.category_id
-            WHERE isLive = 1
             ORDER BY num_viewers DESC 
-            LIMIT 25;
-        """)
+            LIMIT ?;
+        """, (no_streams,))
         return data
 
-
-def category_recommendations() -> Optional[List[dict]]:
+def get_highest_view_categories(no_categories: int) -> Optional[List[dict]]:
     """
-    Returns a list of the top 5 most popular live categories
+    Returns a list of top 5 most popular categories
     """
     with Database() as db:
         categories = db.fetchall("""
-            SELECT categories.category_id, categories.category_name
+            SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS total_viewers
             FROM streams
             JOIN categories ON streams.category_id = categories.category_id
-            WHERE streams.isLive = 1
             GROUP BY categories.category_name
             ORDER BY SUM(streams.num_viewers) DESC
-            LIMIT 5;
-        """)
+            LIMIT ?;
+        """, (no_categories,))
     return categories
 
-
-def user_category_recommendations(user_id: int) -> Optional[List[dict]]:
+def get_user_category_recommendations(user_id: int) -> Optional[List[dict]]:
     """
     Queries user_preferences database to find users top 5 favourite streaming category and returns the category
     """

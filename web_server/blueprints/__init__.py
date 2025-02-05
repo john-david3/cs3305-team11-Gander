@@ -28,6 +28,7 @@ def create_app():
     app.config["SECRET_KEY"] = getenv("FLASK_SECRET_KEY")
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
+    app.config["PROPAGATE_EXCEPTIONS"] = True
 
     app.config.from_mapping(
     CELERY=dict(

@@ -1,23 +1,8 @@
 from flask import Blueprint, session, jsonify, g, request, redirect, abort, send_from_directory
-from utils.stream_utils import (
-    streamer_live_status,
-    streamer_most_recent_stream,
-    user_stream,
-    followed_live_streams,
-    followed_streamers,
-    stream_tags,
-    streamer_data
-)
+from utils.stream_utils import *
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
-from utils.recommendation_utils import (
-    default_recommendations, 
-    recommendations_based_on_category, 
-    user_recommendation_category, 
-    followed_categories_recommendations, 
-    category_recommendations,
-    user_category_recommendations
-)
+from utils.recommendation_utils import *
 from utils.utils import most_popular_category
 from database.database import Database
 from datetime import datetime
@@ -29,137 +14,128 @@ stream_bp = Blueprint("stream", __name__)
 # Constants
 THUMBNAIL_GENERATION_INTERVAL = 180
 
-@stream_bp.route('/get_streams')
-def get_sample_streams() -> list[dict]:
+@stream_bp.route('/streams/popular/<int:no_streams>')
+def get_popular_streams(no_streams) -> list[dict]:
     """
     Returns a list of streams live now with the highest viewers
     """
 
-    # shows default recommended streams for non-logged in users based on highest viewers
-    streams = default_recommendations()
-    for stream in streams:
-        stream['tags'] = stream_tags(stream["stream_id"])
+    # Limit the number of streams to MAX_STREAMS
+    MAX_STREAMS = 100
+    if no_streams < 1:
+        return jsonify([])
+    elif no_streams > MAX_STREAMS:
+        no_streams = MAX_STREAMS
 
+    # Get the highest viewed streams
+    streams = get_highest_view_streams(no_streams)
     return jsonify(streams)
 
+
 @login_required 
-@stream_bp.route('/get_recommended_streams')
+@stream_bp.route('/streams/recommended')
 def get_recommended_streams() -> list[dict]:
     """
     Queries DB to get a list of recommended streams using an algorithm
     """
 
-    user_id = session.get("username")
-    category = user_recommendation_category(user_id)
-    streams = recommendations_based_on_category(category)
-    for stream in streams:
-        stream['tags'] = stream_tags(stream["stream_id"])
-    return jsonify(streams)
+    user_id = session.get("user_id")
 
-@stream_bp.route('/get_categories')
-def get_categories() -> list[dict]:
-    """
-    Returns a list of top 5 most popular categories
-    """
+    # Get the user's most popular categories
+    category = get_user_preferred_category(user_id)
+    streams = get_streams_based_on_category(category)
+    return streams
 
-    category_data = category_recommendations()
+@stream_bp.route('/categories/popular/<int:no_categories>')
+def get_popular_categories(no_categories) -> list[dict]:
+    """
+    Returns a list of most popular categories
+    """
+    # Limit the number of categories to 100
+    if no_categories < 1:
+        return jsonify([])
+    elif no_categories > 100:
+        no_categories = 100
+
+    category_data = get_highest_view_categories(no_categories)
     return jsonify(category_data)
 
 @login_required 
-@stream_bp.route('/get_recommended_categories')
+@stream_bp.route('/categories/recommended')
 def get_recommended_categories() -> list | list[dict]:
     """
     Queries DB to get a list of recommended categories for the user
 
     """
     user_id = session.get("user_id")
-    categories = user_category_recommendations(user_id)
-    return categories
+    categories = get_user_category_recommendations(user_id)
+    return jsonify(categories)
 
 
-@stream_bp.route('/get_streamer_data/<string:streamer_username>')
-def get_streamer_data(streamer_username):
+@stream_bp.route('/user/<string:username>')
+def get_user_data(username):
     """
-    Returns a given streamer's data
+    Returns a given user's data
     """
-    streamer_id = get_user_id(streamer_username)
-    if not streamer_id:
+    user_id = get_user_id(username)
+    if not user_id:
         abort(404)
-    data = streamer_data(streamer_id)
-    return data
+    data = get_streamer_data(user_id)
+    return jsonify(data)
 
 
-@stream_bp.route('/streamer/<string:streamer_username>/status')
-def get_streamer_status(streamer_username):
+@stream_bp.route('/user/<string:streamer_username>/status')
+def get_user_live_status(streamer_username):
     """
     Returns a streamer's status, if they are live or not and their most recent stream (their current stream if live)
     """
     user_id = get_user_id(streamer_username)
 
-    if not user_id:
-        abort(404)
+    is_live = True if get_streamer_live_status(user_id)['is_live'] else False
+    
+    most_recent_vod = get_latest_vod(user_id)
 
-    is_live = True if streamer_live_status(user_id)['isLive'] else False
-    most_recent_stream = streamer_most_recent_stream(user_id)['stream_id']
-
-    if not most_recent_stream:
-        most_recent_stream = None
+    if not most_recent_vod:
+        most_recent_vod = None
+    else:
+        most_recent_vod = most_recent_vod['vod_id']
 
     return jsonify({
         "is_live": is_live,
-        "most_recent_stream": most_recent_stream
+        "most_recent_stream": most_recent_vod
     })
     
 
-@stream_bp.route('/get_stream_data/<string:streamer_username>')
-def get_stream(streamer_username):
+@stream_bp.route('/user/<string:streamer_username>/vods')
+def get_vods(streamer_username):
     """
-    Returns a streamer's most recent stream data
-    """
-    user_id = get_user_id(streamer_username)
-    if not user_id:
-        abort(404)
-    
-    return jsonify(streamer_most_recent_stream(user_id))
-
-
-@stream_bp.route('/get_stream_data/<string:streamer_username>/<int:stream_id>')
-def get_specific_stream(streamer_username, stream_id):
-    """
-    Returns a streamer's stream data given stream_id
+    Returns a JSON of all the vods of a streamer
     """
     user_id = get_user_id(streamer_username)
-    stream = user_stream(user_id, stream_id)
-    if stream:
-        return jsonify(stream)
-
-    return jsonify({'error': 'Stream not found'}), 404
+    vods = get_user_vods(user_id)
+    return jsonify(vods)
 
 
 @login_required
-@stream_bp.route('/get_followed_category_streams')
+@stream_bp.route('/categories/following')
 def get_following_categories_streams():
     """
     Returns popular streams in categories which the user followed
     """
 
-    streams = followed_categories_recommendations(get_user_id(session.get('username')))
-
-    for stream in streams:
-        stream['tags'] = stream_tags(stream["stream_id"])
+    streams = followed_categories_recommendations(session.get('user_id'))
     return jsonify(streams)
 
 
 @login_required
-@stream_bp.route('/get_followed_streamers')
-def get_followed_streamers():
+@stream_bp.route('/users/following')
+def get_followed_streamers_():
     """
     Queries DB to get a list of followed streamers
     """
-    username = session.get('username')
-    user_id = get_user_id(username)
+    user_id = session.get('user_id')
 
-    live_following_streams = followed_streamers(user_id)
+    live_following_streams = get_followed_streamers(user_id)
     return live_following_streams
 
 ## RTMP Server Routes
@@ -197,12 +173,17 @@ def end_stream():
     Ends a stream
     """
     db = Database()
+
+    # get stream key
     user_info = db.fetchone("""SELECT user_id FROM users WHERE stream_key = ?""", (request.form.get("name"),))
+    stream_info = db.fetchone("""SELECT stream_id FROM streams WHERE user_id = ?""", (user_info["user_id"],))
 
     if not user_info:
         return "Unauthorized", 403
     
-    # Set stream to not live
-    db.execute("""UPDATE streams SET isLive = 0 WHERE user_id = ? AND isLive = 1""", (user_info["user_id"],))
+    # Remove stream from database
+    db.execute("""DELETE FROM streams WHERE user_id = ?""", (user_info["user_id"],))
+
+    #
 
     return "Stream ended", 200

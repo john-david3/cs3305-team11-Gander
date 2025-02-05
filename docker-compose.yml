@@ -13,7 +13,6 @@ services:
       - app_network
     volumes:
       - stream_data:/stream_data
-
   web_server:
     build:
       context: ./web_server

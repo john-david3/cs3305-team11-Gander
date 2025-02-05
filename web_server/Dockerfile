@@ -21,4 +21,4 @@ COPY . .
 ENV FLASK_APP=blueprints.__init__
 ENV FLASK_DEBUG=True
 
-CMD ["python", "-c", "from blueprints.socket import socketio; from blueprints.__init__ import create_app; app = create_app(); socketio.run(app, host='0.0.0.0', port=5000, debug=True)"]
+CMD ["python", "-c", "from blueprints.socket import socketio; from blueprints.__init__ import create_app; app = create_app(); app.debug = True; socketio.run(app, host='0.0.0.0', port=5000, debug=True)"]

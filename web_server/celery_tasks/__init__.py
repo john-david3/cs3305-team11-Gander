@@ -1,5 +1,5 @@
 from celery import Celery, shared_task, Task
-from utils.stream_utils import generate_thumbnail, streamer_live_status
+from utils.stream_utils import generate_thumbnail, get_streamer_live_status
 from time import sleep
 
 def celery_init_app(app) -> Celery:
@@ -22,7 +22,7 @@ def update_thumbnail(user_id, sleep_time=180) -> None:
     ffmpeg_wait_time = 5
 
     # check if user is streaming
-    while streamer_live_status(user_id)['isLive']:
+    while get_streamer_live_status(user_id)['isLive']:
         sleep(ffmpeg_wait_time)
         generate_thumbnail(user_id)
         sleep(sleep_time - ffmpeg_wait_time)
