@@ -72,7 +72,24 @@ def is_following(user_id: int, followed_id: int) -> bool:
         """, (user_id, followed_id))
     return bool(result)
 
-def unfollow(user_id: int, followed_id: int) -> bool:
+def follow(user_id: int, following_id: int):
+    """
+    Follows following_id user from user_id user
+    """
+    with Database() as db:
+        data = db.execute("""
+            SELECT * FROM follows
+            WHERE user_id = ?
+            AND followed_id = ?                            
+        """, (user_id, following_id))
+        
+        if not data:
+            db.execute("""
+            INSERT INTO follows (user_id, followed_id)
+            VALUES(?,?)
+        """, (user_id, following_id))
+
+def unfollow(user_id: int, followed_id: int):
     """
     Unfollows follow_id user from user_id user
     """
@@ -82,8 +99,7 @@ def unfollow(user_id: int, followed_id: int) -> bool:
             WHERE user_id = ?
             AND followed_id = ?
         """, (user_id, followed_id))
-        return True
-    return False
+
 
 def subscription_expiration(user_id: int, subscribed_id: int) -> int:
     """
