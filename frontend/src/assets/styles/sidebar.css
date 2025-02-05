@@ -4,10 +4,10 @@
 
 :root{
 
-    --sideNav-LightBG: white;
-    --sideNav-LightText: black;
+    --sideBar-LightBG: white;
+    --sideBar-LightText: black;
     
-    --sideNav-DarkBG: black;
-    --sideNav-DarkText: white;
+    --sideBar-DarkBG: black;
+    --sideBar-DarkText: white;
   }
   
