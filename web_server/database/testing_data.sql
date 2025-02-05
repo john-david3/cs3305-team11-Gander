@@ -51,12 +51,20 @@ INSERT INTO categories (category_name) VALUES
 ('Sports');
 
 -- Sample Data for streams
-INSERT INTO streams (user_id, title, start_time, num_viewers, isLive, vod_id, category_id) VALUES 
-(1, 'Epic Gaming Session', '2025-01-25 18:00:00', 150, 1, NULL, 1),
-(2, 'Live Music Jam', '2025-01-25 20:00:00', 350, 1, NULL, 2),
-(3, 'Sketching Live', '2025-01-24 15:00:00', 80, 0, 201, 3),
-(4, 'Math Made Easy', '2025-01-23 10:00:00', 400, 0, 202, 4),
-(5, 'Sports Highlights', '2025-01-25 12:00:00', 500, 1, NULL, 5);
+INSERT INTO streams (user_id, title, datetime, num_viewers, category_id) VALUES 
+(1, 'Epic Gaming Session', '2025-01-25 18:00:00', 150, 1),
+(2, 'Live Music Jam', '2025-01-25 20:00:00', 350, 2),
+(3, 'Sketching Live', '2025-01-24 15:00:00', 80, 3),
+(4, 'Math Made Easy', '2025-01-23 10:00:00', 400, 4),
+(5, 'Sports Highlights', '2025-01-25 12:00:00', 500, 5);
+
+-- Sample Data for vods
+INSERT INTO vods (user_id, title, datetime, category_id, length, views) VALUES 
+(1, 'Epic Gaming Session', '2025-01-23 18:00:00', 1, 120, 500),
+(2, 'Live Music Jam', '2025-01-21 20:00:00', 2, 180, 800),
+(3, 'Sketching Live', '2025-01-22 15:00:00', 3, 90, 300),
+(4, 'Math Made Easy', '2025-01-21 10:00:00', 4, 150, 600),
+(5, 'Sports Highlights', '2025-01-19 12:00:00', 5, 210, 700);
 
 -- Sample Data for tags
 INSERT INTO tags(tag_name) VALUES

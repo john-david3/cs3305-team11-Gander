@@ -8,6 +8,7 @@ CREATE TABLE users
     num_followers INTEGER NOT NULL,
     stream_key VARCHAR(60) NOT NULL,
     is_partnered BOOLEAN NOT NULL DEFAULT 0,
+    is_live BOOLEAN NOT NULL DEFAULT 0,
     bio VARCHAR(1024),
 
     current_stream_title VARCHAR(100),

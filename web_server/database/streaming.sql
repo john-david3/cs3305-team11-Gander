@@ -41,11 +41,24 @@ CREATE TABLE streams
     stream_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     title TEXT NOT NULL,
-    start_time DATETIME NOT NULL,
+    datetime DATETIME NOT NULL,
     num_viewers INTEGER NOT NULL DEFAULT 0,
-    isLive BOOLEAN NOT NULL DEFAULT 0,
-    vod_id INTEGER,
-    category_id NOT NULL,
+    category_id INTEGER NOT NULL,
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS vods;
+CREATE TABLE vods
+(
+    vod_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    datetime DATETIME NOT NULL,
+    category_id INTEGER,
+    length INTEGER NOT NULL,
+    views INTEGER NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
