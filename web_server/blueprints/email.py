@@ -31,7 +31,7 @@ def send_email(username) -> None:
     <html>
         <head></head>
         <body>
-            <b>Thank you for choosing Gander</b>
+            <h1>Thank you for choosing Gander</h1>
             <p>Your Gander login code is: {login_code}</p>
         </body>
     </html>
