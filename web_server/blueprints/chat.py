@@ -25,7 +25,13 @@ def handle_join(data) -> None:
     stream_id = data.get("stream_id")
     if stream_id:
         join_room(stream_id)
-        emit("status", {"message": f"Welcome to the chat, stream_id: {stream_id}"}, room=stream_id)
+        num_viewers = len(list(socketio.server.manager.get_participants("/", stream_id)))
+        emit("status", 
+            {
+                "message": f"Welcome to the chat, stream_id: {stream_id}",
+                "num_viewers": num_viewers
+            },
+            room=stream_id)
 
 
 @socketio.on("leave")
@@ -36,7 +42,13 @@ def handle_leave(data) -> None:
     stream_id = data.get("stream_id")
     if stream_id:
         leave_room(stream_id)
-        emit("status", {"message": f"user left room {stream_id}"}, room=stream_id)
+        num_viewers = len(list(socketio.server.manager.get_participants("/", stream_id)))
+        emit("status", 
+            {
+                "message": f"Welcome to the chat, stream_id: {stream_id}",
+                "num_viewers": num_viewers
+            },
+            room=stream_id)
 
 
 @chat_bp.route("/chat/<int:stream_id>")

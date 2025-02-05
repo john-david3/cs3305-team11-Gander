@@ -61,6 +61,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
         setMessages((prev) => [...prev, data]);
       });
 
+      // Handle live viewership
+      socket.on("status", (data: ChatMessage) => {
+        console.log("Live viewership: ", data)  // returns dictionary {message: message, num_viewers: num_viewers}
+      })
+
       // Cleanup function
       return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload);
