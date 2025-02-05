@@ -49,6 +49,11 @@ export default {
           '100%': { transform: 'translate(0px, -5px) rotateX(0deg) rotateY(0deg)' }, 
         },
       },
+
+      colors: {
+        "sideBar-bg": "var(--sideBar-LightBG)",
+        "sideBar-text": "var(--sideBar-LightText)"
+      }
     },
     plugins: [
       require('tailwind-scrollbar-hide')
