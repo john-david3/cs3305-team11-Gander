@@ -13,7 +13,8 @@ export default {
         moving_text_colour: "moving_text_colour 6s ease-in-out infinite alternate",
         moving_bg: 'moving_bg 200s linear infinite',
         'border-spin': 'border-spin linear infinite', 
-        floating: "floating 30s linear infinite"
+        floating: "floating 30s linear infinite",
+        burnIn: 'burnIn 1s ease-out',
       },
 
 
@@ -47,6 +48,12 @@ export default {
           '60%': { transform: 'translate(10px, 7px) rotateX(2.5deg) rotateY(1.5deg)' },   /* Bottom-right tilt */
           '80%': { transform: 'translate(10px, -7px) rotateX(-2.5deg) rotateY(1.5deg)' }, /* Top-right tilt */
           '100%': { transform: 'translate(0px, -5px) rotateX(0deg) rotateY(0deg)' }, 
+        },
+        
+        burnIn: {
+          '0%' : { opacity: '0'},
+          '50%' : { opacity: '0.8'},
+          '100%' : { opacity: '1'},
         },
       },
     },
