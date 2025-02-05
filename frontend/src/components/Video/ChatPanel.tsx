@@ -13,9 +13,10 @@ interface ChatMessage {
 
 interface ChatPanelProps {
   streamId: number;
+  onViewerCountChange?: (count: number) => void;
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) => {
   const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -47,7 +48,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
         })
         .then((data) => {
           if (data.chat_history) {
-            console.log("Chat history:", data.chat_history);
             setMessages(data.chat_history);
           }
         })
@@ -62,8 +62,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId }) => {
       });
 
       // Handle live viewership
-      socket.on("status", (data: ChatMessage) => {
+      socket.on("status", (data: any) => {
         console.log("Live viewership: ", data)  // returns dictionary {message: message, num_viewers: num_viewers}
+        if (onViewerCountChange && data.num_viewers) {
+          onViewerCountChange(data.num_viewers);
+        }
       })
 
       // Cleanup function

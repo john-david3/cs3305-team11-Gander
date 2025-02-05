@@ -56,7 +56,6 @@ export function StreamsProvider({ children }: { children: React.ReactNode }) {
           category: stream.category_name,
         }));
 
-        console.log(extractedData);
         setFeaturedStreams(extractedData);
       });
 
