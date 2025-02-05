@@ -17,7 +17,6 @@ interface StreamDataProps {
   streamerName: string;
   streamerId: number;
   startTime: string;
-  viewerCount: number;
   categoryName: string;
 }
 
@@ -25,6 +24,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   const { isLoggedIn } = useAuth();
   const { streamerName } = useParams<{ streamerName: string }>();
   const [streamData, setStreamData] = useState<StreamDataProps>();
+  const [viewerCount, setViewerCount] = useState(1000000);
   const [isChatOpen, setIsChatOpen] = useState(true);
   // const [showCheckout, setShowCheckout] = useState(false);
   // const showReturn = window.location.search.includes("session_id");
@@ -62,7 +62,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
             streamerId: data.user_id,
             streamTitle: data.title,
             startTime: data.start_time,
-            viewerCount: data.num_viewers,
             categoryName: data.category_name,
           };
           setStreamData(transformedData);
@@ -100,7 +99,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
             {isChatOpen ? "Hide Chat" : "Show Chat"}
           </ToggleButton>
 
-          <ChatPanel streamId={streamId} />
+          <ChatPanel streamId={streamId} onViewerCountChange={(count: number) => setViewerCount(count)} />
 
           <div
             id="stream-info"
@@ -127,7 +126,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-semibold">Viewer Count:</span>
-                <span>{streamData ? streamData.viewerCount : "0"}</span>
+                <span>{viewerCount}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-semibold">Started At:</span>
