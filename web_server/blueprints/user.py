@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, session
 from utils.user_utils import is_subscribed, is_following, subscription_expiration, verify_token, reset_password, get_user_id, unfollow
 from blueprints.utils import login_required
-from utils.user_utils import get_email
 
 user_bp = Blueprint("user", __name__)
 
@@ -26,17 +25,25 @@ def user_following(user_id: int, subscribed_id: int):
     return jsonify({"following": False})
 
 @login_required
-@user_bp.route('/unfollow/<int:username>')
+@user_bp.route('/follow/<string:username>')
+def follow(username):
+    """
+    Follows a user
+    """
+    user_id = session.get("user_id")
+    following_id = get_user_id(username)
+    follow(user_id, following_id)
+
+
+@login_required
+@user_bp.route('/unfollow/<string:username>')
 def user_unfollow(followed_username):
     """
     Unfollows a user
     """
     user_id = session.get("user_id")
     followed_id = get_user_id(followed_username)
-    status = unfollow(user_id, followed_id)
-
-    status = True if status else False
-    return jsonify({"status": status})
+    unfollow(user_id, followed_id)
 
 @login_required
 @user_bp.route('/subscription_remaining/<int:streamer_id>')
@@ -58,16 +65,13 @@ def get_login_status():
     username = session.get("username")
     return jsonify({'status': username is not None, 'username': username})
 
-@user_bp.route('/forgot_password/', defaults={'email': None}, methods=['POST'])
 @user_bp.route('/forgot_password/<string:email>', methods=['POST'])
 def user_forgot_password(email):
     """
     Will send link to email to reset password by looking at the user_id within session to see whos password should be reset
     Creates a super random number to be used a the link to reset password I guess a random number generator seeded with a secret
     """
-    user_id = session.get("user_id")
-    if user_id != None:
-        email = get_email(user_id)
+
     return
 
 @user_bp.route('/reset_password/<string:token>/<string:new_password>')

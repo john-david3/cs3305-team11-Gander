@@ -17,6 +17,11 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
     navigate(`/${streamerName}`);
   };
 
+  const handleCategoryClick = (categoryID: number, categoryName: string) => {
+    console.log(`Navigating to category ${categoryID}`);
+    navigate(`category/${categoryName}`);
+  };
+
   return (
     <div
       id="home-page"
@@ -54,7 +59,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
             : "Categories that have been 'popping off' lately"
         }
         items={featuredCategories}
-        onClick={() => {}} //TODO
+        onClick={handleCategoryClick}
       />
     </div>
   );

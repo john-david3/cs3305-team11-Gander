@@ -1,6 +1,3 @@
-from flask import Blueprint, session
-from database.database import Database
-
 import smtplib
 from email.mime.text import MIMEText
 
@@ -10,9 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-email_bp = Blueprint("email", __name__)
-
-def send_email(username) -> None:
+def send_email(email) -> None:
     """
     Send a verification email to the user.
     """
@@ -22,8 +17,6 @@ def send_email(username) -> None:
     SMTP_PORT = 587
     SMTP_EMAIL = getenv("EMAIL")
     SMTP_PASSWORD = getenv("EMAIL_PASSWORD")
-
-    user_email = get_user_email(username)
 
     # Setup up the receiver details
     login_code = randrange(100000, 1000000)
@@ -39,7 +32,7 @@ def send_email(username) -> None:
     msg = MIMEText(body, "html")
     msg["Subject"] = "Reset Gander Login"
     msg["From"] = SMTP_EMAIL
-    msg["To"] = user_email
+    msg["To"] = email
 
     # Send the email using smtplib
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as smtp:
@@ -54,19 +47,3 @@ def send_email(username) -> None:
 
         except Exception as e:
             print("Error: ", e)
-
-def get_user_email(username):
-    """
-    Get the users email address.
-    """
-
-    db = Database()
-    db.create_connection()
-
-    user_email = db.fetchone("""SELECT email
-                                FROM users
-                                WHERE username = ?;""",
-                                (username,))
-    email = user_email["email"]
-    db.close_connection()
-    return email
