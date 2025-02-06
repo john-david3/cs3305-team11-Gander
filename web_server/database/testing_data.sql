@@ -124,9 +124,7 @@ LIMIT 10;
 INSERT INTO follows (user_id, followed_id, since) VALUES 
 (7, 1, '2024-08-30'),
 (7, 2, '2024-08-30'),
-(7, 3, '2024-08-30'),
-(7, 4, '2024-08-30'),
-(7, 5, '2024-08-30');
+(7, 3, '2024-08-30');
 
 INSERT INTO followed_categories (user_id, category_id) VALUES
 (7, 1),
@@ -134,5 +132,5 @@ INSERT INTO followed_categories (user_id, category_id) VALUES
 (7, 3);
 
 INSERT INTO subscribes (user_id, subscribed_id, since, expires) VALUES 
-(7, 1, '2024-08-30', '2025-02-28'),
+(7, 1, '2024-08-30', '2025-02-28 12:00:00'),
 (7, 2, '2024-08-30', '2025-02-15');

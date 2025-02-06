@@ -27,3 +27,4 @@ gevent-websocket
 flask-oauthlib==0.9.6
 celery==5.2.3
 redis==5.2.1
+python-dateutil

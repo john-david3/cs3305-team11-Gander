@@ -56,23 +56,28 @@ def user_following(user_id: int, followed_id: int):
 
 @login_required
 @user_bp.route('/user/follow/<string:username>')
-def follow(username):
+def follow_user(username):
     """
     Follows a user
     """
     user_id = session.get("user_id")
     following_id = get_user_id(username)
-    follow(user_id, following_id)
+    if follow(user_id, following_id):
+        return jsonify({"success": True,
+                        "already_following": False})
+    return jsonify({"success": True,
+                    "already_following": True})
 
 @login_required
 @user_bp.route('/user/unfollow/<string:username>')
-def user_unfollow(followed_username):
+def unfollow_user(username):
     """
     Unfollows a user
     """
     user_id = session.get("user_id")
-    followed_id = get_user_id(followed_username)
+    followed_id = get_user_id(username)
     unfollow(user_id, followed_id)
+    return jsonify({"success": True})
 
 @login_required
 @user_bp.route('/user/following')
@@ -92,7 +97,10 @@ def get_login_status():
     Returns whether the user is logged in or not
     """
     username = session.get("username")
-    return jsonify({'status': username is not None, 'username': username})
+    user_id = session.get("user_id")
+    return jsonify({'status': username is not None, 
+                    'username': username,
+                    'user_id': user_id})
 
 @user_bp.route('/user/forgot_password/<string:email>', methods=['GET','POST'])
 def user_forgot_password(email):

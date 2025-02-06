@@ -15,6 +15,7 @@ interface ListRowProps {
   title: string;
   description: string;
   items: ListItemProps[];
+  extraClasses?: string;
   onClick: (itemId: number, itemName: string) => void;
 }
 
@@ -43,10 +44,10 @@ const ListItem: React.FC<ListItemProps> = ({
           <div className="absolute top-0 left-0 w-full h-full bg-gray-600" />
         )}
       </div>
-      <div className="p-3">
+      <div className="p-3 bg-white">
         <h3 className="font-semibold text-lg">{title}</h3>
-        {type === "stream" && <p className="text-gray-400">{streamer}</p>}
-        <p className="text-sm text-gray-500">{viewers} viewers</p>
+        {type === "stream" && <p className="text-red-600">{streamer}</p>}
+        <p className="text-sm text-white">{viewers} viewers</p>
       </div>
     </div>
   );
@@ -58,12 +59,13 @@ const ListRow: React.FC<ListRowProps> = ({
   description,
   items,
   onClick,
+  extraClasses="",
 }) => {
   return (
-    <div className="flex flex-col space-y-4 py-6">
+    <div className={`flex flex-col space-y-4 py-6 px-5 mx-2 mt-5 rounded-md ${extraClasses}`}>
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold">{title}</h2>
-        <p className="text-gray-400">{description}</p>
+        <h2 className="text-2xl font-bold text-white">{title}</h2>
+        <p className="text-white">{description}</p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {items.map((item) => (
