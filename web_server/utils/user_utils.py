@@ -4,6 +4,7 @@ from datetime import datetime
 from itsdangerous import URLSafeTimedSerializer
 from os import getenv
 from werkzeug.security import generate_password_hash, check_password_hash
+from dateutil import parser
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -91,29 +92,28 @@ def follow(user_id: int, following_id: int):
     """
     Follows following_id user from user_id user
     """
-    with Database() as db:
-        data = db.execute("""
-            SELECT * FROM follows
-            WHERE user_id = ?
-            AND followed_id = ?                            
-        """, (user_id, following_id))
-        
-        if not data:
+    if not is_following(user_id, following_id):
+        with Database() as db:
             db.execute("""
             INSERT INTO follows (user_id, followed_id)
-            VALUES(?,?)
+            VALUES(?,?);
         """, (user_id, following_id))
+        return True
+    return False
 
 def unfollow(user_id: int, followed_id: int):
     """
     Unfollows follow_id user from user_id user
     """
-    with Database() as db:
-        db.execute("""
-            DELETE FROM follows
-            WHERE user_id = ?
-            AND followed_id = ?
-        """, (user_id, followed_id))
+    if is_following(user_id, followed_id):
+        with Database() as db:
+            db.execute("""
+                DELETE FROM follows
+                WHERE user_id = ?
+                AND followed_id = ?
+            """, (user_id, followed_id))
+        return True
+    return False
 
 
 def subscription_expiration(user_id: int, subscribed_id: int) -> int:
@@ -131,7 +131,7 @@ def subscription_expiration(user_id: int, subscribed_id: int) -> int:
 
     if data:
         expiration_date = data["expires"]
-        remaining_time = (expiration_date - datetime.now()).seconds
+        remaining_time = (parser.parse(expiration_date) - datetime.now()).seconds
         return remaining_time
 
     return 0
