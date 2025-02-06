@@ -15,9 +15,10 @@ interface ResetPasswordErrors {
 
 interface SubmitProps {
     onSubmit: () => void;
+    token: string;
 }
 
-const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit }) => {
+const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
 
     const [errors, setErrors] = useState<ResetPasswordErrors>({});
 
@@ -63,7 +64,7 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit }) => {
 
         if (validateResetForm()) {
             try {
-                const response = await fetch("/user/reset_password/<string:token>/<string:confirmNewPassword>", {
+                const response = await fetch("/user/reset_password/<string:${token}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
