@@ -84,17 +84,6 @@ def get_following_categories_streams():
 
 
 ## User Routes
-@stream_bp.route('/user/<string:username>')
-def get_user_data(username):
-    """
-    Returns a given user's data
-    """
-    user_id = get_user_id(username)
-    if not user_id:
-        abort(404)
-    data = get_streamer_data(user_id)
-    return jsonify(data)
-
 @stream_bp.route('/user/<string:username>/status')
 def get_user_live_status(username):
     """
@@ -116,17 +105,6 @@ def get_user_live_status(username):
         "is_live": is_live,
         "most_recent_stream": most_recent_vod
     })
-
-@login_required
-@stream_bp.route('/user/following')
-def get_followed_streamers_():
-    """
-    Queries DB to get a list of followed streamers
-    """
-    user_id = session.get('user_id')
-
-    live_following_streams = get_followed_streamers(user_id)
-    return live_following_streams
 
 
 ## VOD Routes

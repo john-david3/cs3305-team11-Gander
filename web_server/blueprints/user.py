@@ -1,11 +1,23 @@
-from flask import Blueprint, jsonify, session
-from utils.user_utils import is_subscribed, is_following, subscription_expiration, verify_token, reset_password, get_user_id, unfollow
+from flask import Blueprint, jsonify, session, abort
+from utils.user_utils import *
 from blueprints.utils import login_required
 
 user_bp = Blueprint("user", __name__)
 
+@user_bp.route('/user/<string:username>')
+def get_user_data_(username):
+    """
+    Returns a given user's data
+    """
+    user_id = get_user_id(username)
+    if not user_id:
+        abort(404)
+    data = get_user_data(user_id)
+    return jsonify(data)
+
+## Subscription Routes
 @login_required
-@user_bp.route('/is_subscribed/<int:subscribed_id>')
+@user_bp.route('/user/subscription/<int:subscribed_id>')
 def user_subscribed(subscribed_id: int):
     """
     Checks to see if user is subscribed to another user
@@ -15,17 +27,30 @@ def user_subscribed(subscribed_id: int):
         return jsonify({"subscribed": True})
     return jsonify({"subscribed": False})
 
-@user_bp.route('/is_following/<int:user_id>/<int:subscribed_id>')
-def user_following(user_id: int, subscribed_id: int):
+@login_required
+@user_bp.route('/user/subscription/<int:subscribed_id>/expiration')
+def user_subscription_expiration(subscribed_id: int):
+    """
+    Returns remaining time until subscription expiration
+    """
+
+    user_id = session.get("user_id")
+    remaining_time = subscription_expiration(user_id, subscribed_id)
+
+    return jsonify({"remaining_time": remaining_time})
+
+## Follow Routes
+@user_bp.route('/user/<int:user_id>/follows/<int:followed_id>')
+def user_following(user_id: int, followed_id: int):
     """
     Checks to see if user is following a streamer
     """
-    if is_following(user_id, subscribed_id):
+    if is_following(user_id, followed_id):
         return jsonify({"following": True})
     return jsonify({"following": False})
 
 @login_required
-@user_bp.route('/follow/<string:username>')
+@user_bp.route('/user/follow/<string:username>')
 def follow(username):
     """
     Follows a user
@@ -34,9 +59,8 @@ def follow(username):
     following_id = get_user_id(username)
     follow(user_id, following_id)
 
-
 @login_required
-@user_bp.route('/unfollow/<string:username>')
+@user_bp.route('/user/unfollow/<string:username>')
 def user_unfollow(followed_username):
     """
     Unfollows a user
@@ -46,18 +70,18 @@ def user_unfollow(followed_username):
     unfollow(user_id, followed_id)
 
 @login_required
-@user_bp.route('/subscription_remaining/<int:streamer_id>')
-def user_subscription_expiration(streamer_id: int):
+@user_bp.route('/user/following')
+def get_followed_streamers_():
     """
-    Returns remaining time until subscription expiration
+    Queries DB to get a list of followed streamers
     """
+    user_id = session.get('user_id')
 
-    user_id = session.get("user_id")
-    remaining_time = subscription_expiration(user_id, streamer_id)
+    live_following_streams = get_followed_streamers(user_id)
+    return live_following_streams
 
-    return jsonify({"remaining_time": remaining_time})
-    
-@user_bp.route('/get_login_status')
+## Login Routes
+@user_bp.route('/user/login_status')
 def get_login_status():
     """
     Returns whether the user is logged in or not
@@ -65,7 +89,7 @@ def get_login_status():
     username = session.get("username")
     return jsonify({'status': username is not None, 'username': username})
 
-@user_bp.route('/forgot_password/<string:email>', methods=['POST'])
+@user_bp.route('/user/forgot_password/<string:email>', methods=['POST'])
 def user_forgot_password(email):
     """
     Will send link to email to reset password by looking at the user_id within session to see whos password should be reset
@@ -74,7 +98,7 @@ def user_forgot_password(email):
 
     return
 
-@user_bp.route('/reset_password/<string:token>/<string:new_password>')
+@user_bp.route('/user/reset_password/<string:token>/<string:new_password>')
 def user_reset_password(token, new_password):
     """
     Given token and new password resets the users password

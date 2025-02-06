@@ -1,5 +1,5 @@
 from database.database import Database
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from itsdangerous import URLSafeTimedSerializer
 from os import getenv
@@ -45,19 +45,22 @@ def is_user_partner(user_id: int) -> bool:
         """, (user_id,))
     return bool(data)
 
-def is_subscribed(user_id: int, streamer_id: int) -> bool:
+def is_subscribed(user_id: int, subscribed_to_id: int) -> bool:
     """
     Returns True if user is subscribed to a streamer, else False
     """
     with Database() as db:
         result = db.fetchone("""
-            SELECT 1 
+            SELECT *
             FROM subscribes 
             WHERE user_id = ? 
-            AND streamer_id = ? 
-            AND expires > ?
-        """, (user_id, streamer_id, datetime.now()))
-    return bool(result)
+            AND subscribed_id = ?
+            AND expires > ?;
+        """, (user_id, subscribed_to_id, datetime.now()))
+    print(result)
+    if result:
+        return True
+    return False
 
 def is_following(user_id: int, followed_id: int) -> bool:
     """
@@ -108,7 +111,7 @@ def subscription_expiration(user_id: int, subscribed_id: int) -> int:
     with Database() as db:
         data = db.fetchone("""
             SELECT expires 
-            FROM subscriptions 
+            FROM subscribes 
             WHERE user_id = ? 
             AND subscribed_id = ? 
             AND expires > ?
@@ -150,3 +153,26 @@ def get_email(user_id: int) -> Optional[str]:
         """, (user_id,))
     
     return email["email"] if email else None
+
+def get_followed_streamers(user_id: int) -> Optional[List[dict]]:
+    """
+    Returns a list of streamers who the user follows
+    """
+    with Database() as db:
+        followed_streamers = db.fetchall("""
+            SELECT user_id, username
+            FROM users
+            WHERE user_id IN (SELECT followed_id FROM follows WHERE user_id = ?);
+        """, (user_id,))
+    return followed_streamers
+
+def get_user_data(user_id: int) -> Optional[dict]:
+    """
+    Returns username, bio, number of followers, and if user is partnered from user_id
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT username, bio, num_followers, is_partnered FROM users
+            WHERE user_id = ?;
+        """, (user_id,))
+    return data
