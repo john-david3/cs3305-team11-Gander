@@ -1,12 +1,10 @@
 from flask import Blueprint, session, jsonify, g, request, redirect, abort, send_from_directory
 from utils.stream_utils import *
+from utils.recommendation_utils import *
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
-from utils.recommendation_utils import *
-from utils.utils import most_popular_category
 from database.database import Database
 from datetime import datetime
-
 from celery_tasks import update_thumbnail
 
 stream_bp = Blueprint("stream", __name__)
@@ -14,6 +12,8 @@ stream_bp = Blueprint("stream", __name__)
 # Constants
 THUMBNAIL_GENERATION_INTERVAL = 180
 
+
+## Stream Routes
 @stream_bp.route('/streams/popular/<int:no_streams>')
 def get_popular_streams(no_streams) -> list[dict]:
     """
@@ -31,7 +31,6 @@ def get_popular_streams(no_streams) -> list[dict]:
     streams = get_highest_view_streams(no_streams)
     return jsonify(streams)
 
-
 @login_required 
 @stream_bp.route('/streams/recommended')
 def get_recommended_streams() -> list[dict]:
@@ -46,6 +45,8 @@ def get_recommended_streams() -> list[dict]:
     streams = get_streams_based_on_category(category)
     return streams
 
+
+## Category Routes
 @stream_bp.route('/categories/popular/<int:no_categories>')
 def get_popular_categories(no_categories) -> list[dict]:
     """
@@ -71,51 +72,6 @@ def get_recommended_categories() -> list | list[dict]:
     categories = get_user_category_recommendations(user_id)
     return jsonify(categories)
 
-
-@stream_bp.route('/user/<string:username>')
-def get_user_data(username):
-    """
-    Returns a given user's data
-    """
-    user_id = get_user_id(username)
-    if not user_id:
-        abort(404)
-    data = get_streamer_data(user_id)
-    return jsonify(data)
-
-
-@stream_bp.route('/user/<string:streamer_username>/status')
-def get_user_live_status(streamer_username):
-    """
-    Returns a streamer's status, if they are live or not and their most recent stream (their current stream if live)
-    """
-    user_id = get_user_id(streamer_username)
-
-    is_live = True if get_streamer_live_status(user_id)['is_live'] else False
-    
-    most_recent_vod = get_latest_vod(user_id)
-
-    if not most_recent_vod:
-        most_recent_vod = None
-    else:
-        most_recent_vod = most_recent_vod['vod_id']
-
-    return jsonify({
-        "is_live": is_live,
-        "most_recent_stream": most_recent_vod
-    })
-    
-
-@stream_bp.route('/user/<string:streamer_username>/vods')
-def get_vods(streamer_username):
-    """
-    Returns a JSON of all the vods of a streamer
-    """
-    user_id = get_user_id(streamer_username)
-    vods = get_user_vods(user_id)
-    return jsonify(vods)
-
-
 @login_required
 @stream_bp.route('/categories/following')
 def get_following_categories_streams():
@@ -127,8 +83,42 @@ def get_following_categories_streams():
     return jsonify(streams)
 
 
+## User Routes
+@stream_bp.route('/user/<string:username>')
+def get_user_data(username):
+    """
+    Returns a given user's data
+    """
+    user_id = get_user_id(username)
+    if not user_id:
+        abort(404)
+    data = get_streamer_data(user_id)
+    return jsonify(data)
+
+@stream_bp.route('/user/<string:username>/status')
+def get_user_live_status(username):
+    """
+    Returns a streamer's status, if they are live or not and their most recent stream (their current stream if live)
+    """
+    user_id = get_user_id(username)
+
+    # Check if streamer is live and get their most recent vod
+    is_live = True if get_streamer_live_status(user_id)['is_live'] else False
+    most_recent_vod = get_latest_vod(user_id)
+
+    # If there is no most recent vod, set it to None
+    if not most_recent_vod:
+        most_recent_vod = None
+    else:
+        most_recent_vod = most_recent_vod['vod_id']
+
+    return jsonify({
+        "is_live": is_live,
+        "most_recent_stream": most_recent_vod
+    })
+
 @login_required
-@stream_bp.route('/users/following')
+@stream_bp.route('/user/following')
 def get_followed_streamers_():
     """
     Queries DB to get a list of followed streamers
@@ -137,6 +127,18 @@ def get_followed_streamers_():
 
     live_following_streams = get_followed_streamers(user_id)
     return live_following_streams
+
+
+## VOD Routes
+@stream_bp.route('/vods/<string:username>')
+def get_vods(username):
+    """
+    Returns a JSON of all the vods of a streamer
+    """
+    user_id = get_user_id(username)
+    vods = get_user_vods(user_id)
+    return jsonify(vods)
+
 
 ## RTMP Server Routes
 @stream_bp.route("/publish_stream", methods=["POST"])
@@ -183,7 +185,5 @@ def end_stream():
     
     # Remove stream from database
     db.execute("""DELETE FROM streams WHERE user_id = ?""", (user_info["user_id"],))
-
-    #
 
     return "Stream ended", 200
