@@ -34,18 +34,6 @@ def get_followed_live_streams(user_id: int) -> Optional[List[dict]]:
                                 """, (user_id,))
     return live_streams
 
-def get_followed_streamers(user_id: int) -> Optional[List[dict]]:
-    """
-    Returns a list of streamers who the user follows
-    """
-    with Database() as db:
-        followed_streamers = db.fetchall("""
-            SELECT user_id, username
-            FROM users
-            WHERE user_id IN (SELECT followed_id FROM follows WHERE user_id = ?);
-        """, (user_id,))
-    return followed_streamers
-
 def get_vod(vod_id: int) -> dict:
     """
     Returns data of a streamers vod
@@ -70,17 +58,6 @@ def get_user_vods(user_id: int):
         vods = db.fetchall("""SELECT * FROM vods WHERE user_id = ?;""", (user_id,))
     return vods
 
-
-def get_streamer_data(user_id: int) -> Optional[dict]:
-    """
-    Returns information about the streamer
-    """
-    with Database() as db:
-        data = db.fetchone("""
-            SELECT username, bio, num_followers, is_partnered FROM users
-            WHERE user_id = ?;
-        """, (user_id,))
-    return data
 
 def generate_thumbnail(user_id: int) -> None:
     """

@@ -46,7 +46,7 @@ CREATE TABLE subscribes
     subscribed_id INTEGER NOT NULL,
     since DATETIME NOT NULL,
     expires DATETIME NOT NULL,
-    PRIMARY KEY (user_id),
+    PRIMARY KEY (user_id, subscribed_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (subscribed_id) REFERENCES users(user_id) ON DELETE CASCADE   
 );

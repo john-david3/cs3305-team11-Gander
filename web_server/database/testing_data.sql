@@ -132,3 +132,7 @@ INSERT INTO followed_categories (user_id, category_id) VALUES
 (7, 1),
 (7, 2),
 (7, 3);
+
+INSERT INTO subscribes (user_id, subscribed_id, since, expires) VALUES 
+(7, 1, '2024-08-30', '2025-02-28'),
+(7, 2, '2024-08-30', '2025-02-15');
