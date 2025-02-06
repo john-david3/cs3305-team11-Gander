@@ -42,7 +42,7 @@ function App() {
 
             <Route path="/:streamerName" element={<StreamerRoute />} />
             <Route path="/user/:username" element={<UserPage />} />
-            <Route path="/reset_password/:token" element={<ForgotPasswordPage />}></Route>
+            <Route path="/reset_password" element={<ForgotPasswordPage />}></Route>
             <Route path="/category/:category_name" element={<CategoryPage />}></Route>
 
             <Route path="*" element={<NotFoundPage />} />
