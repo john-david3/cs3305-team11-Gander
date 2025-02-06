@@ -48,7 +48,9 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
                 newErrors[key as keyof ResetPasswordErrors] = "Confirm your password";
             }
         });
-
+        if (resetData.newPassword.length < 8) {
+            newErrors.newPasswordError = "Password must be at least 8 characters long";
+        }
         if (resetData.newPassword !== resetData.confirmNewPassword) {
             newErrors.confirmNewPasswordError = "Passwords do not match";
         }
@@ -64,7 +66,7 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
 
         if (validateResetForm()) {
             try {
-                const response = await fetch("/user/reset_password/<string:${token}", {
+                const response = await fetch(`/user/reset_password/${token}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -76,6 +78,8 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
                 if (!response.ok) {
                     const data = await response.json();
                     throw new Error(data.message || "An error has occurred while resetting");
+                } else {
+                    confirmPasswordReset();
                 }
             } catch (error: any) {
                 console.error("Password reset error:", error.message);
@@ -84,7 +88,6 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
                     general: error.message || "An unexpected error occurred.",
                     
                 }));
-            confirmPasswordReset();
         }
     }
 };
