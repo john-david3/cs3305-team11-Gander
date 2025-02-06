@@ -1,5 +1,6 @@
 from authlib.integrations.flask_client import OAuth, OAuthError
 from flask import Blueprint, url_for, jsonify, session
+from utils.user_utils import get_session_info_email
 
 oauth_bp = Blueprint("oauth", __name__)
 def init_oauth(app):
@@ -34,10 +35,11 @@ def init_oauth(app):
             
             # check if email exists else create a database entry
             user_email = user.get("email")
+            user_data = get_session_info_email(user_email)
 
             session.clear()
-            session["username"] = "a"
-            session["user_id"] = 1
+            session["username"] = user_data["username"]
+            session["user_id"] = user_data["user_id"]
 
             return jsonify({
                 'message': 'User authenticated successfully',

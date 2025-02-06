@@ -32,6 +32,18 @@ def get_username(user_id: str) -> Optional[str]:
             WHERE user_id = ?
         """, (user_id,))
     return data['username'] if data else None
+
+def get_session_info_email(email: str) -> dict:
+    """
+    Returns username and user_id given email
+    """
+    with Database as db:
+        session_info = db.fetchone("""
+            SELECT user_id, username
+            FROM user
+            WHERE email = ?
+        """, (email,))
+        return session_info
     
 def is_user_partner(user_id: int) -> bool:
     """
