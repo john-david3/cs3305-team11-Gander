@@ -18,7 +18,7 @@ def search_results(query: str):
     # 3 categories
     categories = db.fetchall("""
                 SELECT bm25(category_fts), rank, f.category_id, f.category_name
-                FROM categorys AS c
+                FROM categories AS c
                 INNER JOIN category_fts AS f ON c.category_id = f.category_id
                 WHERE category_fts MATCH ?
                 LIMIT 3;
@@ -38,7 +38,7 @@ def search_results(query: str):
                 SELECT bm25(stream_fts), rank, f.user_id, f.title, f.num_viewers, f.category_id
                 FROM streams s
                 INNER JOIN stream_fts f ON s.user_id = f.user_id
-                WHERE user_fts MATCH ?
+                WHERE stream_fts MATCH ?
                 LIMIT 3;
         """, (query,))
 
@@ -54,7 +54,7 @@ def search_categories(query: str):
 
     categories = db.fetchall("""
                 SELECT bm25(category_fts), rank, f.category_id, f.category_name
-                FROM categorys AS c
+                FROM categories AS c
                 INNER JOIN category_fts AS f ON c.category_id = f.category_id
                 WHERE category_fts MATCH ?;
         """, (query,))
@@ -91,7 +91,7 @@ def search_streams(query: str):
                 SELECT bm25(stream_fts), rank, f.user_id, f.title, f.num_viewers, f.category_id
                 FROM streams s
                 INNER JOIN stream_fts f ON s.user_id = f.user_id
-                WHERE user_fts MATCH ?;
+                WHERE stream_fts MATCH ?;
         """, (query,))
 
     db.close_connection()
