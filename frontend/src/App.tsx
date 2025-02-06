@@ -14,7 +14,7 @@ function App() {
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/get_login_status")
+    fetch("/api/user/login_status")
       .then((response) => response.json())
       .then((data) => {
         setIsLoggedIn(data.status);

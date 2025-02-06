@@ -35,7 +35,7 @@ export function StreamsProvider({ children }: { children: React.ReactNode }) {
 
   const fetch_url = isLoggedIn
     ? ["/api/get_recommended_streams", "/api/get_followed_category_streams"]
-    : ["/api/get_streams", "/api/get_categories"];
+    : ["/api/streams/popular/4", "/api/categories/popular/4"];
 
   useEffect(() => {
     // Streams
