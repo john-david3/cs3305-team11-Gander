@@ -45,6 +45,16 @@ def get_recommended_streams() -> list[dict]:
     streams = get_streams_based_on_category(category)
     return streams
 
+@stream_bp.route('/streams/<string:streamer_username>/data')
+def get_stream(streamer_username):
+    """
+    Returns a streamer's most recent stream data
+    """
+
+    user_id = get_user_id(streamer_username)
+    
+    return jsonify(get_most_recent_stream(user_id))
+
 
 ## Category Routes
 @stream_bp.route('/categories/popular/<int:no_categories>')

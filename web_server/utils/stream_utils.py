@@ -34,6 +34,20 @@ def get_followed_live_streams(user_id: int) -> Optional[List[dict]]:
                                 """, (user_id,))
     return live_streams
 
+def get_most_recent_stream(user_id: int) -> Optional[dict]:
+    """
+    Returns data of the most recent stream by a streamer
+    """
+    with Database() as db:
+        most_recent_stream = db.fetchone("""
+            SELECT s.user_id, u.username, s.title, s.start_time, s.num_viewers, c.category_name
+            FROM streams AS s
+            JOIN categories AS c ON s.category_id = c.category_id
+            JOIN users AS u ON s.user_id = u.user_id
+            WHERE u.user_id = ?
+        """, (user_id,))
+    return most_recent_stream
+
 def get_vod(vod_id: int) -> dict:
     """
     Returns data of a streamers vod

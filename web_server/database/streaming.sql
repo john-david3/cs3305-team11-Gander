@@ -49,7 +49,7 @@ CREATE TABLE streams
 (
     user_id INTEGER NOT NULL PRIMARY KEY,
     title TEXT NOT NULL,
-    datetime DATETIME NOT NULL,
+    start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     num_viewers INTEGER NOT NULL DEFAULT 0,
     category_id INTEGER NOT NULL,
     FOREIGN KEY (category_id) REFERENCES categories(category_id),

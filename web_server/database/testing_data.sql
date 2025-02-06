@@ -53,7 +53,7 @@ INSERT INTO categories (category_name) VALUES
 ('Sports');
 
 -- Sample Data for streams
-INSERT INTO streams (user_id, title, datetime, num_viewers, category_id) VALUES 
+INSERT INTO streams (user_id, title, start_time, num_viewers, category_id) VALUES 
 (1, 'Epic Gaming Session', '2025-01-25 18:00:00', 150, 1),
 (2, 'Live Music Jam', '2025-01-25 20:00:00', 350, 2),
 (3, 'Sketching Live', '2025-01-24 15:00:00', 80, 3),
