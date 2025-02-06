@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify, session, abort
+from flask import Blueprint, jsonify, session, abort, abort
 from utils.user_utils import *
 from blueprints.utils import login_required
+from blueprints.email import send_email, forgot_password_body
 
 user_bp = Blueprint("user", __name__)
 
@@ -89,14 +90,15 @@ def get_login_status():
     username = session.get("username")
     return jsonify({'status': username is not None, 'username': username})
 
-@user_bp.route('/user/forgot_password/<string:email>', methods=['POST'])
+@user_bp.route('/user/forgot_password/<string:email>', methods=['GET','POST'])
 def user_forgot_password(email):
     """
     Will send link to email to reset password by looking at the user_id within session to see whos password should be reset
     Creates a super random number to be used a the link to reset password I guess a random number generator seeded with a secret
     """
+    send_email(email, lambda: forgot_password_body(email))
+    return email
 
-    return
 
 @user_bp.route('/user/reset_password/<string:token>/<string:new_password>')
 def user_reset_password(token, new_password):
@@ -107,7 +109,7 @@ def user_reset_password(token, new_password):
     if email:
         response = reset_password(new_password, email)
         if response:
-            return "Success"
+            return 200
         else:
-            return "Failure"
-    return "Failure"
+            abort(500)
+    return abort(500)

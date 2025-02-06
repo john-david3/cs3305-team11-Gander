@@ -124,11 +124,18 @@ def subscription_expiration(user_id: int, subscribed_id: int) -> int:
 
     return 0
 
-def verify_token(token: str) -> Optional[str]:
+def generate_token(email, salt_value) -> str:
+    """
+    Creates a token for password reset
+    """
+    token = serializer.dumps(email, salt=salt_value)
+    return token
+
+def verify_token(token: str, salt_value) -> Optional[str]:
     """
     Given a token verifies token and decodes the token into an email
     """
-    email = serializer.loads(token, salt='1', max_age=3600)
+    email = serializer.loads(token, salt=salt_value, max_age=3600)
     return email if email else False
 
 def reset_password(new_password: str, email: str) -> bool:
