@@ -52,7 +52,7 @@ const Sidebar: React.FC<SideBarProps> = () => {
   const shownCategory = Object.entries(testCategory).map(([dummyCategory, {dummyLink, dummyImage}]) => {
     return (
       <li key={dummyCategory} className="flex items-center border border-7 border-black space-x-3 rounded-md p-0 text-center
-      hover:bg-[#800020] hover:scale-110 hover:shadow-[-1px_1.5px_10px_white] transition-all duration-250">
+      hover:bg-[#800020] hover:scale-110 hover:shadow-[-1px_1.5px_10px_white] transition-all duration-250 m-[0.25em]">
         <img src={dummyImage} alt={dummyCategory} className="w-[2em] h-[2em] bg-white ml-[0.25em]"/>
         <a href={dummyLink} className="pr-[7.5em] pt-[0.75em] pb-[0.75em]">{dummyCategory}</a>
       </li>
@@ -66,11 +66,11 @@ const Sidebar: React.FC<SideBarProps> = () => {
         className={`fixed top-0 left-0 w-[250px] ${thisTheme
           ? " bg-[var(--sideBar-LightBG)] text-[var(--sideBar-LightText)]"
           : " bg-[var(--sideBar-DarkBG)] text-[var(--sideBar-DarkText)]"
-          } p-4 z-[90] h-screen overflow-y-auto 
+          } py-4 px-3 z-[90] h-screen overflow-y-auto 
     transition-transform duration-500 ease-in-out animate-burnIn`}
         onMouseLeave={() => setIsCursorOnSidebar(false)}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <Theme onClick={handleTheme} />
+        <Theme isMode={thisTheme} onClick={handleTheme} />
 
         <h1 className="style"> Followed </h1>
         <ul>
