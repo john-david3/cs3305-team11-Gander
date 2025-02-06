@@ -6,7 +6,10 @@ from random import randrange
 from dotenv import load_dotenv
 from utils.user_utils import generate_token
 from secrets import token_hex
+import redis
 
+redis_url = "redis://redis:6379/1"
+r = redis.from_url(redis_url, decode_responses=True)
 
 load_dotenv()
 
@@ -24,7 +27,7 @@ def send_email(email, func) -> None:
     # Setup up the receiver details
     login_code = randrange(100000, 1000000)
     body = func()
-    print(body, flush=True)
+
     msg = MIMEText(body, "html")
     msg["Subject"] = "Reset Gander Login"
     msg["From"] = SMTP_EMAIL
@@ -45,8 +48,14 @@ def send_email(email, func) -> None:
             print("Error: ", e, flush=True)
 
 def forgot_password_body(email):
-    token = generate_token(email, token_hex(32))
+    """
+    Handles the creation of the email body for resetting password
+    """
+    salt = token_hex(32)
+
+    token = generate_token(email, salt)
     url = getenv("VITE_API_URL")
+    r.setex(token, 3600, salt)
 
     full_url = url + "/reset_password/" + token
     content = f"""

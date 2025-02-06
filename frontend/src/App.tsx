@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
 import NotFoundPage from "./pages/NotFoundPage";
 import UserPage from "./pages/UserPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CategoryPage from "./pages/CategoryPage";
 
 function App() {
@@ -42,7 +42,7 @@ function App() {
 
             <Route path="/:streamerName" element={<StreamerRoute />} />
             <Route path="/user/:username" element={<UserPage />} />
-            <Route path="/reset_password" element={<ForgotPasswordPage />}></Route>
+            <Route path="/reset_password/:token" element={<ResetPasswordPage />}></Route>
             <Route path="/category/:category_name" element={<CategoryPage />}></Route>
 
             <Route path="*" element={<NotFoundPage />} />

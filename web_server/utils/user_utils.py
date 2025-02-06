@@ -1,7 +1,7 @@
 from database.database import Database
 from typing import Optional, List
 from datetime import datetime
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from os import getenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -145,10 +145,20 @@ def generate_token(email, salt_value) -> str:
 
 def verify_token(token: str, salt_value) -> Optional[str]:
     """
-    Given a token verifies token and decodes the token into an email
+    Given a token, verifies and decodes it into an email
     """
-    email = serializer.loads(token, salt=salt_value, max_age=3600)
-    return email if email else False
+    
+    try:
+        email = serializer.loads(token, salt=salt_value, max_age=3600)
+        return email
+    except SignatureExpired:
+        # Token expired
+        print("Token has expired", flush=True)
+        return None
+    except BadSignature:
+        # Invalid token
+        print("Token is invalid", flush=True)
+        return None
 
 def reset_password(new_password: str, email: str) -> bool:
     """

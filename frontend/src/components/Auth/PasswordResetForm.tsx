@@ -28,7 +28,7 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
     });
 
     const confirmPasswordReset = () => {
-        alert('Password reset successfully!');
+        alert(`${resetData.newPassword} - ${token}`);
         // You can replace this with navigation or API success handling logic
       };
 
@@ -64,7 +64,7 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
 
         if (validateResetForm()) {
             try {
-                const response = await fetch("/user/reset_password/<string:${token}", {
+                const response = await fetch(`/api/user/reset_password/${token}/${resetData.newPassword}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
