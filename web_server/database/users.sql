@@ -60,3 +60,11 @@ CREATE TABLE followed_categories
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
+
+DROP TABLE IF EXISTS salt_recorder;
+CREATE TABLE salt_recorder
+(
+    token VARCHAR(128),
+    salt_value VARCHAR(64),
+    PRIMARY KEY(token, salt_value)
+);
