@@ -72,7 +72,7 @@ def get_highest_view_categories(no_categories: int) -> Optional[List[dict]]:
     """
     with Database() as db:
         categories = db.fetchall("""
-            SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS total_viewers
+            SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS num_viewers
             FROM streams
             JOIN categories ON streams.category_id = categories.category_id
             GROUP BY categories.category_name
