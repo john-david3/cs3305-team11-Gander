@@ -11,7 +11,7 @@ export default {
 
       animation: {
         moving_text_colour: "moving_text_colour 6s ease-in-out infinite alternate",
-        moving_bg: 'moving_bg 200s linear infinite',
+        moving_bg: 'moving_bg 50s linear infinite',
         'border-spin': 'border-spin linear infinite', 
         floating: "floating 30s linear infinite",
         burnIn: 'burnIn 1s ease-out',
@@ -26,13 +26,13 @@ export default {
         moving_text_colour: {
           "0%": { backgroundPosition: "0% 50%" },
           "100%": { backgroundPosition: "100% 50%" },
-
-          moving_bg: {
-            '0%': { backgroundPosition: '0% 0%' },
-            '100%': { backgroundPosition: '100% 0%' },
-          }
         },
 
+        moving_bg: {
+          '0%': { backgroundPosition: '0% 0%' },
+          '100%': { backgroundPosition: '-1280px 1280px' },
+        },
+        
         floating: {
           '0%': { transform: 'translate(0px, -5px) rotateX(0deg) rotateY(0deg)' },
           '5%': { transform: 'translate(-3px, -5.5px) rotateX(-0.35deg) rotateY(-0.55deg)' },

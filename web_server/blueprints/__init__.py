@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_session import Session
 from flask_cors import CORS
-from blueprints.utils import logged_in_user, record_time
+from blueprints.utils import logged_in_user
 from blueprints.errorhandlers import register_error_handlers
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 
@@ -48,7 +48,6 @@ def create_app():
     
     Session(app)
     app.before_request(logged_in_user)
-    app.after_request(record_time)
 
     # adds in error handlers
     register_error_handlers(app)

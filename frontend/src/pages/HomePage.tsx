@@ -12,8 +12,8 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   const { featuredStreams, featuredCategories } = useStreams();
   const navigate = useNavigate();
 
-  const handleStreamClick = (streamId: number, streamerName: string) => {
-    console.log(`Navigating to stream ${streamId}`);
+  const handleStreamClick = (streamerId: number, streamerName: string) => {
+    console.log(`Navigating to stream by user ${streamerId}`);
     navigate(`/${streamerName}`);
   };
 
@@ -43,7 +43,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         }
         items={featuredStreams}
         onClick={handleStreamClick}
-        extraClasses="border border-gray-700 bg-[#FF7F50]/80"
+        extraClasses="bg-red-950/60"
       />
 
       {/* If Personalised_HomePage, display Categories the logged-in user follows. Else, trending categories. */}
@@ -61,7 +61,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         }
         items={featuredCategories}
         onClick={handleCategoryClick}
-        extraClasses="border border-gray-700 bg-[#5AFF75]/80"
+        extraClasses="bg-green-950/60"
 
       />
     </div>

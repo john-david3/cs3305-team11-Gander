@@ -1,4 +1,4 @@
-from flask import Blueprint, session, jsonify, request, redirect, abort
+from flask import Blueprint, session, jsonify, request, redirect
 from utils.stream_utils import *
 from utils.recommendation_utils import *
 from utils.user_utils import get_user_id
@@ -45,15 +45,13 @@ def get_recommended_streams() -> list[dict]:
     streams = get_streams_based_on_category(category)
     return streams
 
-@stream_bp.route('/streams/<string:streamer_username>/data')
-def get_stream(streamer_username):
+@stream_bp.route('/streams/<int:streamer_id>/data')
+def get_stream_data(streamer_id):
     """
-    Returns a streamer's most recent stream data
+    Returns a streamer's current stream data
     """
-
-    user_id = get_user_id(streamer_username)
     
-    return jsonify(get_most_recent_stream(user_id))
+    return jsonify(get_current_stream_data(streamer_id))
 
 
 ## Category Routes

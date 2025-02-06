@@ -34,7 +34,7 @@ export function StreamsProvider({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
 
   const fetch_url = isLoggedIn
-    ? ["/api/streams/recommended", "/api/categories/following"]
+    ? ["/api/streams/recommended", "/api/categories/recommended"]
     : ["/api/streams/popular/4", "/api/categories/popular/4"];
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export function StreamsProvider({ children }: { children: React.ReactNode }) {
       .then((data: StreamItem[]) => {
         const extractedData: StreamItem[] = data.map((stream: any) => ({
           type: "stream",
-          id: stream.stream_id,
+          id: stream.user_id,
           title: stream.title,
           streamer: stream.username,
           viewers: stream.num_viewers,

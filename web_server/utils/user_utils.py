@@ -195,7 +195,7 @@ def get_followed_streamers(user_id: int) -> Optional[List[dict]]:
         """, (user_id,))
     return followed_streamers
 
-def get_user_data(user_id: int) -> Optional[dict]:
+def get_user(user_id: int) -> Optional[dict]:
     """
     Returns username, bio, number of followers, and if user is partnered from user_id
     """

@@ -34,7 +34,7 @@ def get_followed_live_streams(user_id: int) -> Optional[List[dict]]:
                                 """, (user_id,))
     return live_streams
 
-def get_most_recent_stream(user_id: int) -> Optional[dict]:
+def get_current_stream_data(user_id: int) -> Optional[dict]:
     """
     Returns data of the most recent stream by a streamer
     """

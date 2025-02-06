@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, session, abort, abort
+from flask import Blueprint, jsonify, session
 from utils.user_utils import *
 from blueprints.utils import login_required
 from blueprints.email import send_email, forgot_password_body
@@ -10,14 +10,14 @@ r = redis.from_url(redis_url, decode_responses=True)
 user_bp = Blueprint("user", __name__)
 
 @user_bp.route('/user/<string:username>')
-def get_user_data_(username):
+def get_user_data(username):
     """
     Returns a given user's data
     """
     user_id = get_user_id(username)
     if not user_id:
-        abort(404)
-    data = get_user_data(user_id)
+        jsonify({"error": "User not found from username"}), 404
+    data = get_user(user_id)
     return jsonify(data)
 
 ## Subscription Routes
@@ -127,5 +127,5 @@ def user_reset_password(token, new_password):
         if response:
             return 200
         else:
-            abort(500)
-    return abort(404)
+            return jsonify({"error": "Failed to reset password"}), 500
+    return jsonify({"error": "Invalid token"}), 400

@@ -1,24 +1,13 @@
 from flask import redirect, url_for, request, g, session
 from functools import wraps
 from re import match
-from time import time
 
 def logged_in_user():
     """
     Validator to make sure a user is logged in.
     """
-    g.start_time = time()
     g.user = session.get("username", None)
-    print(f"Path: {request.path}, session username: {g.user}", flush=True)
     g.admin = session.get("username", None)
-
-def record_time(response):
-    if hasattr(g, 'start_time'):
-            time_taken = time() - g.start_time
-            print(f"Request to {request.endpoint} took {time_taken:.4f} seconds", flush=True)
-    else:
-        print("No start time found", flush=True)
-    return response
 
 def login_required(view):
     """

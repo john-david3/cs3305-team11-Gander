@@ -8,23 +8,21 @@ import VideoPlayer from "../components/Video/VideoPlayer";
 import { SocketProvider } from "../context/SocketContext";
 
 interface VideoPageProps {
-  streamId: number;
+  streamerId: number;
 }
 
 interface StreamDataProps {
-  streamId: number;
   streamTitle: string;
   streamerName: string;
-  streamerId: number;
   startTime: string;
   categoryName: string;
 }
 
-const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
+const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const { isLoggedIn } = useAuth();
   const { streamerName } = useParams<{ streamerName: string }>();
   const [streamData, setStreamData] = useState<StreamDataProps>();
-  const [viewerCount, setViewerCount] = useState(1000000);
+  const [viewerCount, setViewerCount] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(true);
   // const [showCheckout, setShowCheckout] = useState(false);
   // const showReturn = window.location.search.includes("session_id");
@@ -44,11 +42,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
   // }, [showCheckout]);
   useEffect(() => {
     // Fetch stream data for this streamer
-    fetch(
-      `/api/get_stream_data/${streamerName}${
-        streamId == 0 ? "" : `/${streamId}`
-      }`
-    ).then((res) => {
+    fetch(`/api/streams/${streamerId}/data`).then((res) => {
       if (!res.ok) {
         console.error("Failed to load stream data:", res.statusText);
       }
@@ -57,9 +51,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
         .then((data) => {
           // Transform snake_case to camelCase
           const transformedData: StreamDataProps = {
-            streamId: streamId,
             streamerName: data.username,
-            streamerId: data.user_id,
             streamTitle: data.title,
             startTime: data.start_time,
             categoryName: data.category_name,
@@ -70,7 +62,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
           console.error("Error fetching stream data:", error);
         });
     });
-  }, [streamId, streamerName]);
+  }, [streamerId]);
 
   const toggleChat = () => {
     setIsChatOpen((prev) => !prev);
@@ -88,7 +80,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
           } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
         >
           <div className="relative">
-            <VideoPlayer streamId={streamId} />
+            <VideoPlayer streamId={streamerId} />
           </div>
 
           <ToggleButton
@@ -99,7 +91,10 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamId }) => {
             {isChatOpen ? "Hide Chat" : "Show Chat"}
           </ToggleButton>
 
-          <ChatPanel streamId={streamId} onViewerCountChange={(count: number) => setViewerCount(count)} />
+          <ChatPanel
+            streamId={streamerId}
+            onViewerCountChange={(count: number) => setViewerCount(count)}
+          />
 
           <div
             id="stream-info"

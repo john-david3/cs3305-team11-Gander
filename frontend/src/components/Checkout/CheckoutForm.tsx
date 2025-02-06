@@ -21,7 +21,7 @@ export const Return: React.FC = () => {
     const sessionId = urlParams.get("session_id");
 
     if (sessionId) {
-      fetch(`${API_URL}/session-status?session_id=${sessionId}`)
+      fetch(`/api/session-status?session_id=${sessionId}`)
         .then((res) => res.json())
         .then((data) => {
           setStatus(data.status);
@@ -56,7 +56,7 @@ interface CheckoutFormProps {
 
 const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
   const fetchClientSecret = () => {
-    return fetch(`${API_URL}/create-checkout-session`, {
+    return fetch(`/api/create-checkout-session`, {
       method: "POST",
     })
       .then((res) => res.json())

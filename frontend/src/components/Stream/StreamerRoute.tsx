@@ -12,7 +12,7 @@ const StreamerRoute: React.FC = () => {
   useEffect(() => {
     const checkStreamStatus = async () => {
       try {
-        const response = await fetch(`/api/streamer/${streamerName}/status`);
+        const response = await fetch(`/api/user/${streamerName}/status`);
         const data = await response.json();
         setIsLive(Boolean(data.is_live));
         setStreamId(data.most_recent_stream);
@@ -44,7 +44,7 @@ const StreamerRoute: React.FC = () => {
 
   // streamId=0 is a special case for the streamer's latest stream
   return isLive ? (
-    <VideoPage streamId={streamId} />
+    <VideoPage streamerId={streamId} />
   ) : streamerName ? (
     <UserPage />
   ) : (

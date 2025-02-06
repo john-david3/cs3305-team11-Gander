@@ -23,6 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isLoggedIn } = useAuth();
   const [showSideBar, setShowSideBar] = useState(false);
+  
   useEffect(() => {
     if (showAuthModal) {
       document.body.style.overflow = "hidden";

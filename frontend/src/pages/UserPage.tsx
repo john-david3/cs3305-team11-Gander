@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Layout/Navbar";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 interface UserProfileData {
   username: string;
@@ -11,19 +12,28 @@ interface UserProfileData {
 
 const UserPage: React.FC = () => {
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
+  const { username: loggedInUsername } = useAuth();
   const { username } = useParams();
+  let userPageVariant = "user";
+
+  let setUserPageVariant = (currentStream: string) => {
+    if (username === loggedInUsername) userPageVariant = "personal";
+    else if (currentStream) userPageVariant = "streamer";
+  };
 
   useEffect(() => {
     // Fetch user profile data
-    fetch(`/api/get_streamer_data/${username}`)
+    fetch(`/api/user/${username}`)
       .then((res) => res.json())
       .then((data) => {
         setProfileData({
           username: data.username,
           bio: data.bio || "This user hasn't written a bio yet.",
-          followerCount: data.num_followering || 0,
+          followerCount: data.num_followers || 0,
           isPartnered: data.isPartnered || false,
         });
+
+        setUserPageVariant(data.current_stream_title);
       })
       .catch((err) => console.error("Error fetching profile data:", err));
   }, [username]);
@@ -42,9 +52,12 @@ const UserPage: React.FC = () => {
       <div className="mx-auto px-4 py-8">
         <div className="grid grid-cols-3 gap-8">
           {/* Profile Section - Left Third */}
-          <div className="col-span-1 bg-gray-800 rounded-lg p-6 shadow-lg">
-            {/* Profile Picture */}
+          <div
+            id="profile"
+            className="col-span-1 bg-gray-800 rounded-lg p-6 shadow-lg"
+          >
             <div className="flex flex-col items-center">
+              {/* Profile Picture */}
               <div className="relative w-48 h-48 rounded-full overflow-hidden mb-6">
                 <img
                   src="/images/monkey.png"
@@ -65,9 +78,11 @@ const UserPage: React.FC = () => {
                 )}
               </div>
 
+              {/* Username & Follower Count */}
               <h1 className="text-3xl font-bold mb-2">
                 {profileData.username}
               </h1>
+              <small className="text-green-400" >{userPageVariant.toUpperCase()}</small>
 
               <div className="flex items-center space-x-2 mb-6">
                 <span className="text-gray-400">
@@ -111,7 +126,10 @@ const UserPage: React.FC = () => {
           </div>
 
           {/* Content Section */}
-          <div className="col-span-2 bg-gray-800 rounded-lg p-6 flex flex-col">
+          <div
+            id="content"
+            className="col-span-2 bg-gray-800 rounded-lg p-6 flex flex-col"
+          >
             <h2 className="text-2xl font-bold mb-4">Past Broadcasts</h2>
             <div className="text-gray-400 flex h-full rounded-none">
               No past broadcasts found
