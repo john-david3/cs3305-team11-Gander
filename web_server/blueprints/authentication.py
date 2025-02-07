@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 from database.database import Database
 from blueprints.utils import login_required, sanitizer
 from blueprints.email import send_email
-from utils.user_utils import get_user_id
+from blueprints.user import get_user_id
 from secrets import token_hex
 
 auth_bp = Blueprint("auth", __name__)

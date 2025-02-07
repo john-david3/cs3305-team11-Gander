@@ -20,7 +20,93 @@ def get_user_data(username: str):
     data = get_user(user_id)
     return jsonify(data)
 
+def get_user_id(username: str) -> Optional[int]:
+    """
+    Returns user_id associated with given username
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT user_id 
+            FROM users 
+            WHERE username = ?
+        """, (username,))
+    return data['user_id'] if data else None
+
+def get_username(user_id: str) -> Optional[str]:
+    """
+    Returns username associated with given user_id
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT username 
+            FROM user 
+            WHERE user_id = ?
+        """, (user_id,))
+    return data['username'] if data else None
+
+def get_email(user_id: int) -> Optional[str]:
+    with Database() as db:
+        email = db.fetchone("""
+            SELECT email
+            FROM users
+            WHERE user_id = ?
+        """, (user_id,))
+    
+    return email["email"] if email else None
+
+def get_session_info_email(email: str) -> dict:
+    """
+    Returns username and user_id given email
+    """
+    with Database() as db:
+        session_info = db.fetchone("""
+            SELECT user_id, username
+            FROM user
+            WHERE email = ?
+        """, (email,))
+        return session_info
+    
+def is_user_partner(user_id: int) -> bool:
+    """
+    Returns True if user is a partner, else False
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT is_partnered 
+            FROM users 
+            WHERE user_id = ?
+        """, (user_id,))
+    return bool(data)
+
+def get_user(user_id: int) -> Optional[dict]:
+    """
+    Returns information about a user from user_id
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT user_id, username, bio, num_followers, is_partnered, is_live FROM users
+            WHERE user_id = ?;
+        """, (user_id,))
+    return data
+
 ## Subscription Routes
+def is_subscribed(user_id: int, subscribed_to_id: int) -> bool:
+    """
+    Returns True if user is subscribed to a streamer, else False
+    """
+    with Database() as db:
+        result = db.fetchone("""
+            SELECT *
+            FROM subscribes 
+            WHERE user_id = ? 
+            AND subscribed_id = ?
+            AND expires > ?;
+        """, (user_id, subscribed_to_id, datetime.now()))
+    print(result)
+    if result:
+        return True
+    return False
+
 @login_required
 @user_bp.route('/user/subscription/<int:subscribed_id>')
 def user_subscribed(subscribed_id: int):
@@ -38,10 +124,21 @@ def user_subscription_expiration(subscribed_id: int):
     """
     Returns remaining time until subscription expiration
     """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT expires 
+            FROM subscribes 
+            WHERE user_id = ? 
+            AND subscribed_id = ? 
+            AND expires > ?
+        """, (session.get("user_id"), subscribed_id, datetime.now()))
 
-    user_id = session.get("user_id")
-    remaining_time = subscription_expiration(user_id, subscribed_id)
-
+    if data:
+        expiration_date = data["expires"]
+        remaining_time = (parser.parse(expiration_date) - datetime.now()).seconds
+    else:
+        remaining_time = 0
+    
     return jsonify({"remaining_time": remaining_time})
 
 ## Follow Routes
@@ -82,8 +179,30 @@ def get_followed_streamers():
     """
     user_id = session.get('user_id')
 
-    live_following_streams = get_followed_streamers(user_id)
-    return live_following_streams
+    with Database() as db:
+        followed_streamers = db.fetchall("""
+            SELECT user_id, username
+            FROM users
+            WHERE user_id IN (SELECT followed_id FROM follows WHERE user_id = ?);
+        """, (user_id,))
+
+    return followed_streamers
+
+def get_followed_live_streams(user_id: int) -> Optional[List[dict]]:
+    """
+    Searches for streamers who the user followed which are currently live
+    Returns a list of live streams with the streamer's user id, stream title, and number of viewers
+    """
+    with Database() as db:
+        live_streams = db.fetchall("""
+                                    SELECT users.user_id, streams.title, streams.num_viewers, users.username
+                                    FROM streams JOIN users 
+                                    ON streams.user_id = users.user_id
+                                    WHERE users.user_id IN
+                                    (SELECT followed_id FROM follows WHERE user_id = ?)
+                                    AND users.is_live = 1;
+                                """, (user_id,))
+    return live_streams
 
 ## Login Routes
 @user_bp.route('/user/login_status')

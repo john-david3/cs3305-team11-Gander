@@ -1,6 +1,6 @@
 from authlib.integrations.flask_client import OAuth, OAuthError
 from flask import Blueprint, url_for, jsonify, session
-from utils.user_utils import get_session_info_email
+from blueprints.user import get_session_info_email
 
 oauth_bp = Blueprint("oauth", __name__)
 def init_oauth(app):

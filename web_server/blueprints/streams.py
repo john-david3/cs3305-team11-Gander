@@ -1,10 +1,11 @@
 from flask import Blueprint, session, jsonify, request, redirect
 from utils.stream_utils import *
-from utils.user_utils import get_user_id
+from blueprints.user import get_user_id
 from blueprints.utils import login_required
 from database.database import Database
 from datetime import datetime
 from celery_tasks import update_thumbnail
+from typing import List, Optional
 
 stream_bp = Blueprint("stream", __name__)
 
@@ -45,9 +46,15 @@ def get_popular_streams_by_category(category_name) -> list[dict]:
     Returns a list of streams live now with the highest viewers in a given category
     """
 
-    category_id = get_category_id(category_name)
-
     with Database() as db:
+
+        data = db.fetchone("""
+            SELECT category_id 
+            FROM categories 
+            WHERE category_name = ?;
+        """, (category_name,))
+        category_id = data["category_id"] if data else None
+
         streams = db.fetchall("""
             SELECT u.user_id, title, username, num_viewers, c.category_name
             FROM streams s
@@ -97,8 +104,29 @@ def get_stream_data(streamer_id):
     """
     Returns a streamer's current stream data
     """
-    
-    return jsonify(get_current_stream_data(streamer_id))
+    with Database() as db:
+        most_recent_stream = db.fetchone("""
+            SELECT s.user_id, u.username, s.title, s.start_time, s.num_viewers, c.category_name
+            FROM streams AS s
+            JOIN categories AS c ON s.category_id = c.category_id
+            JOIN users AS u ON s.user_id = u.user_id
+            WHERE u.user_id = ?
+        """, (streamer_id,))
+
+    return jsonify(most_recent_stream)
+
+def get_stream_tags(user_id: int) -> Optional[List[str]]:
+    """
+    Given a stream return tags associated with the user's stream
+    """
+    with Database() as db:
+        tags = db.fetchall("""
+            SELECT tag_name 
+            FROM tags
+            JOIN stream_tags ON tags.tag_id = stream_tags.tag_id
+            WHERE user_id = ?;    
+        """, (user_id,))
+    return tags
 
 
 ## Category Routes
@@ -176,7 +204,9 @@ def get_user_live_status(username):
 
     # Check if streamer is live and get their most recent vod
     is_live = True if get_streamer_live_status(user_id)['is_live'] else False
-    most_recent_vod = get_latest_vod(user_id)
+    
+    with Database() as db:
+        most_recent_vod = db.fetchone("""SELECT * FROM vods WHERE user_id = ? ORDER BY vod_id DESC LIMIT 1;""", (user_id,))
 
     # If there is no most recent vod, set it to None
     if not most_recent_vod:
@@ -197,8 +227,24 @@ def get_vods(username):
     Returns a JSON of all the vods of a streamer
     """
     user_id = get_user_id(username)
-    vods = get_user_vods(user_id)
+
+    with Database() as db:
+        vods = db.fetchall("""SELECT * FROM vods WHERE user_id = ?;""", (user_id,))
+
     return jsonify(vods)
+
+def get_vod_tags(vod_id: int):
+    """
+    Given a vod return tags associated with the vod
+    """
+    with Database() as db:
+        tags = db.fetchall("""
+            SELECT tag_name 
+            FROM tags
+            JOIN vod_tags ON tags.tag_id = vod_tags.tag_id
+            WHERE vod_id = ?;    
+        """, (vod_id,))
+    return tags
 
 
 ## RTMP Server Routes
@@ -248,3 +294,30 @@ def end_stream():
     db.execute("""DELETE FROM streams WHERE user_id = ?""", (user_info["user_id"],))
 
     return "Stream ended", 200
+
+def transfer_stream_to_vod(user_id: int):
+    """
+    Deletes stream from stream table and moves it to VoD table
+    TODO: Add functionaliy to save stream permanently
+    """
+
+    with Database() as db:
+        stream = db.fetchone("""
+            SELECT * FROM streams WHERE user_id = ?;
+        """, (user_id,))
+
+        if not stream:
+            return None
+        
+        ## TODO: calculate length in seconds, currently using temp value
+
+        db.execute("""
+            INSERT INTO vods (user_id, title, datetime, category_id, length, views)
+            VALUES (?, ?, ?, ?, ?, ?);
+        """, (stream["user_id"], stream["title"], stream["datetime"], stream["category_id"], 10, stream["num_viewers"]))
+
+        db.execute("""
+            DELETE FROM streams WHERE user_id = ?;
+        """, (user_id,))
+    
+    return True
