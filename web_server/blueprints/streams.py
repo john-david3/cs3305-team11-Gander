@@ -1,6 +1,5 @@
 from flask import Blueprint, session, jsonify, request, redirect
 from utils.stream_utils import *
-from utils.recommendation_utils import *
 from utils.user_utils import get_user_id
 from blueprints.utils import login_required
 from database.database import Database
@@ -28,7 +27,16 @@ def get_popular_streams(no_streams) -> list[dict]:
         no_streams = MAX_STREAMS
 
     # Get the highest viewed streams
-    streams = get_highest_view_streams(no_streams)
+    with Database() as db:
+        streams = db.fetchall("""
+            SELECT u.user_id, username, title, num_viewers, category_name
+            FROM streams 
+            JOIN users u ON streams.user_id = u.user_id
+            JOIN categories ON streams.category_id = categories.category_id
+            ORDER BY num_viewers DESC 
+            LIMIT ?;
+        """, (no_streams,))
+        
     return jsonify(streams)
 
 @stream_bp.route('/streams/popular/<string:category_name>')
@@ -38,8 +46,18 @@ def get_popular_streams_by_category(category_name) -> list[dict]:
     """
 
     category_id = get_category_id(category_name)
-    print(category_id, flush=True)
-    streams = get_streams_based_on_category(category_id)
+
+    with Database() as db:
+        streams = db.fetchall("""
+            SELECT u.user_id, title, username, num_viewers, c.category_name
+            FROM streams s
+            JOIN users u ON s.user_id = u.user_id
+            JOIN categories c ON s.category_id = c.category_id
+            WHERE c.category_id = ? 
+            ORDER BY num_viewers DESC 
+            LIMIT 25
+        """, (category_id,))
+
     return jsonify(streams)
 
 @login_required 
@@ -52,8 +70,26 @@ def get_recommended_streams() -> list[dict]:
     user_id = session.get("user_id")
 
     # Get the user's most popular categories
-    category = get_user_preferred_category(user_id)
-    streams = get_streams_based_on_category(category)
+    with Database() as db:
+        category = db.fetchone("""
+            SELECT category_id 
+            FROM user_preferences 
+            WHERE user_id = ? 
+            ORDER BY favourability DESC 
+            LIMIT 1
+        """, (user_id,))
+
+        category_id = category["category_id"] if category else None
+
+        streams = db.fetchall("""
+            SELECT u.user_id, title, username, num_viewers, c.category_name
+            FROM streams s
+            JOIN users u ON s.user_id = u.user_id
+            JOIN categories c ON s.category_id = c.category_id
+            WHERE c.category_id = ? 
+            ORDER BY num_viewers DESC 
+            LIMIT 25
+        """, (category_id,))
     return streams
 
 @stream_bp.route('/streams/<int:streamer_id>/data')
@@ -77,7 +113,16 @@ def get_popular_categories(no_categories) -> list[dict]:
     elif no_categories > 100:
         no_categories = 100
 
-    category_data = get_highest_view_categories(no_categories)
+    with Database() as db:
+        category_data = db.fetchall("""
+            SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS num_viewers
+            FROM streams
+            JOIN categories ON streams.category_id = categories.category_id
+            GROUP BY categories.category_name
+            ORDER BY SUM(streams.num_viewers) DESC
+            LIMIT ?;
+        """, (no_categories,))
+
     return jsonify(category_data)
 
 @login_required 
@@ -88,7 +133,17 @@ def get_recommended_categories() -> list | list[dict]:
 
     """
     user_id = session.get("user_id")
-    categories = get_user_category_recommendations(user_id)
+
+    with Database() as db:
+        categories = db.fetchall("""
+            SELECT categories.category_id, categories.category_name
+            FROM categories 
+            JOIN user_preferences ON categories.category_id = user_preferences.category_id
+            WHERE user_id = ? 
+            ORDER BY favourability DESC 
+            LIMIT 5
+        """, (user_id,))
+
     return jsonify(categories)
 
 @login_required
@@ -97,8 +152,17 @@ def get_following_categories_streams():
     """
     Returns popular streams in categories which the user followed
     """
+    with Database() as db:
+        streams = db.fetchall("""
+            SELECT u.user_id, title, u.username, num_viewers, category_name 
+            FROM streams 
+            JOIN users u ON streams.user_id = u.user_id
+            JOIN categories ON streams.category_id = categories.category_id
+            WHERE categories.category_id IN (SELECT category_id FROM followed_categories WHERE user_id = ?)
+            ORDER BY num_viewers DESC
+            LIMIT 25;
+        """, (session.get("user_id"),))
 
-    streams = followed_categories_recommendations(session.get('user_id'))
     return jsonify(streams)
 
 
