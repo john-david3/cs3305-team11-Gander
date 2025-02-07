@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import VideoPage from "../../pages/VideoPage";
-import UserPage from "../../pages/UserPage";
 
 const StreamerRoute: React.FC = () => {
   const { streamerName } = useParams();
@@ -42,13 +41,16 @@ const StreamerRoute: React.FC = () => {
   }
 
   // streamId=0 is a special case for the streamer's latest stream
-  return isLive ? (
-    <VideoPage streamerId={streamId} />
-  ) : streamerName ? (
-    navigate(`/user/${streamerName}`)
-  ) : (
-    <div>Streamer not found</div>
-  );
+  if (isLive) {
+    return <VideoPage streamerId={streamId} />;
+  }
+  
+  if (streamerName) {
+    navigate(`/user/${streamerName}`);
+    return null;
+  }
+  
+  return <div>Streamer not found</div>;
 };
 
 export default StreamerRoute;

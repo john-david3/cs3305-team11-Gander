@@ -19,7 +19,7 @@ def get_user_preferred_category(user_id: int) -> Optional[int]:
 
 def followed_categories_recommendations(user_id: int) -> Optional[List[dict]]:
     """
-    Returns top 25 streams given a users category following
+    Returns top 25 streams given a user's category following
     """
     with Database() as db:
         streams = db.fetchall("""
@@ -40,11 +40,11 @@ def get_streams_based_on_category(category_id: int) -> Optional[List[dict]]:
     """
     with Database() as db:
         streams = db.fetchall("""
-            SELECT u.user_id, title, username, num_viewers, category_name
-            FROM streams 
-            JOIN users u ON streams.user_id = u.user_id
-            JOIN categories ON streams.category_id = categories.category_id
-            WHERE categories.category_id = ? 
+            SELECT u.user_id, title, username, num_viewers, c.category_name
+            FROM streams s
+            JOIN users u ON s.user_id = u.user_id
+            JOIN categories c ON s.category_id = c.category_id
+            WHERE c.category_id = ? 
             ORDER BY num_viewers DESC 
             LIMIT 25
         """, (category_id,))

@@ -28,7 +28,8 @@ const UserPage: React.FC = () => {
     "personal" | "streamer" | "user" | "admin"
   >("user");
   const [profileData, setProfileData] = useState<UserProfileData>();
-  const { isFollowing, checkFollowStatus, followUser, unfollowUser } = useFollow();
+  const { isFollowing, checkFollowStatus, followUser, unfollowUser } =
+    useFollow();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { username: loggedInUsername } = useAuth();
   const { username } = useParams();
@@ -90,7 +91,10 @@ const UserPage: React.FC = () => {
             .catch((err) => console.error("Error fetching stream data:", err));
         }
       })
-      .catch((err) => console.error("Error fetching profile data:", err));
+      .catch((err) => {
+        console.error("Error fetching profile data:", err);
+        navigate("/404");
+      });
 
     // Check if the *logged-in* user is following this user
     if (loggedInUsername && username) checkFollowStatus(username);
@@ -167,14 +171,18 @@ const UserPage: React.FC = () => {
                   {!isFollowing ? (
                     <Button
                       extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
-                      onClick={() => followUser(profileData.id, setShowAuthModal)}
+                      onClick={() =>
+                        followUser(profileData.id, setShowAuthModal)
+                      }
                     >
                       Follow
                     </Button>
                   ) : (
                     <Button
                       extraClasses="w-full bg-[#a80000]"
-                      onClick={() => unfollowUser(profileData?.id, setShowAuthModal)}
+                      onClick={() =>
+                        unfollowUser(profileData?.id, setShowAuthModal)
+                      }
                     >
                       Unfollow
                     </Button>

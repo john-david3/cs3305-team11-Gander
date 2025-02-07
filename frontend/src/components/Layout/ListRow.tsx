@@ -17,7 +17,7 @@ interface ListRowProps {
   description: string;
   items: ListItemProps[];
   extraClasses?: string;
-  onClick: (itemId: number, itemName: string) => void;
+  onClick: (itemName: string) => void;
 }
 
 // Row of entries
@@ -26,10 +26,12 @@ const ListRow: React.FC<ListRowProps> = ({
   description,
   items,
   onClick,
-  extraClasses="",
+  extraClasses = "",
 }) => {
   return (
-    <div className={`flex flex-col space-y-4 py-6 bg-black/50 text-white px-5 mx-2 mt-5 rounded-[1.5rem] ${extraClasses}`}>
+    <div
+      className={`flex flex-col space-y-4 py-6 bg-black/50 text-white px-5 mx-2 mt-5 rounded-[1.5rem] ${extraClasses}`}
+    >
       <div className="space-y-1">
         <h2 className="text-2xl font-bold">{title}</h2>
         <p>{description}</p>
@@ -42,10 +44,16 @@ const ListRow: React.FC<ListRowProps> = ({
             type={item.type}
             title={item.title}
             streamer={item.type === "stream" ? item.streamer : undefined}
-            streamCategory={item.type === "stream" ? item.streamCategory : undefined}
+            streamCategory={
+              item.type === "stream" ? item.streamCategory : undefined
+            }
             viewers={item.viewers}
             thumbnail={item.thumbnail}
-            onItemClick={() => onClick?.(item.id, item.streamer || item.title)}
+            onItemClick={() =>
+              item.type === "stream" && item.streamer
+                ? onClick?.(item.streamer)
+                : onClick?.(item.title)
+            }
           />
         ))}
       </div>
@@ -82,7 +90,9 @@ export const ListItem: React.FC<ListItemProps> = ({
       <div className="p-3">
         <h3 className="font-semibold text-lg text-center">{title}</h3>
         {type === "stream" && <p className="font-bold">{streamer}</p>}
-        {type === "stream" && <p className="text-sm text-gray-300">{streamCategory}</p>}
+        {type === "stream" && (
+          <p className="text-sm text-gray-300">{streamCategory}</p>
+        )}
         <p className="text-sm text-gray-300">{viewers} viewers</p>
       </div>
     </div>

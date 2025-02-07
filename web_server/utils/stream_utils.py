@@ -48,6 +48,18 @@ def get_current_stream_data(user_id: int) -> Optional[dict]:
         """, (user_id,))
     return most_recent_stream
 
+def get_category_id(category_name: str) -> Optional[int]:
+    """
+    Returns the category_id given a category name
+    """
+    with Database() as db:
+        data = db.fetchone("""
+            SELECT category_id 
+            FROM categories 
+            WHERE category_name = ?;
+        """, (category_name,))
+    return data['category_id'] if data else None
+
 def get_vod(vod_id: int) -> dict:
     """
     Returns data of a streamers vod

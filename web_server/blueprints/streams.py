@@ -31,6 +31,17 @@ def get_popular_streams(no_streams) -> list[dict]:
     streams = get_highest_view_streams(no_streams)
     return jsonify(streams)
 
+@stream_bp.route('/streams/popular/<string:category_name>')
+def get_popular_streams_by_category(category_name) -> list[dict]:
+    """
+    Returns a list of streams live now with the highest viewers in a given category
+    """
+
+    category_id = get_category_id(category_name)
+    print(category_id, flush=True)
+    streams = get_streams_based_on_category(category_id)
+    return jsonify(streams)
+
 @login_required 
 @stream_bp.route('/streams/recommended')
 def get_recommended_streams() -> list[dict]:

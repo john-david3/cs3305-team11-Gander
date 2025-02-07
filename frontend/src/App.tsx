@@ -45,7 +45,7 @@ function App() {
             <Route path="/reset_password/:token" element={<ResetPasswordPage />}></Route>
             <Route path="/category/:category_name" element={<CategoryPage />}></Route>
 
-            <Route path="*" element={<NotFoundPage />} />
+            <Route path="/404" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </StreamsProvider>

@@ -12,13 +12,11 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   const { featuredStreams, featuredCategories } = useStreams();
   const navigate = useNavigate();
 
-  const handleStreamClick = (streamerId: number, streamerName: string) => {
-    console.log(`Navigating to stream by user ${streamerId}`);
+  const handleStreamClick = (streamerName: string) => {
     navigate(`/${streamerName}`);
   };
 
-  const handleCategoryClick = (categoryID: number, categoryName: string) => {
-    console.log(`Navigating to category ${categoryID}`);
+  const handleCategoryClick = (categoryName: string) => {
     navigate(`category/${categoryName}`);
   };
 

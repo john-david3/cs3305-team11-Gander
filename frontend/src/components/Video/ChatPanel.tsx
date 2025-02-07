@@ -67,7 +67,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
       // Handle live viewership
       socket.on("status", (data: any) => {
-        console.log("Live viewership: ", data); // returns dictionary {message: message, num_viewers: num_viewers}
         if (onViewerCountChange && data.num_viewers) {
           onViewerCountChange(data.num_viewers);
         }

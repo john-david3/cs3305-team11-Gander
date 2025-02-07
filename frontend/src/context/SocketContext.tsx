@@ -23,15 +23,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Start of useEffect");
-
     // Check if we already have a socket instance
     if (socketRef.current) {
       console.log("Socket already exists, closing existing socket");
       socketRef.current.close();
     }
 
-    console.log("Creating new socket connection");
     const newSocket = io("http://localhost:8080", {
       path: "/socket.io/",
       transports: ["websocket"],
@@ -82,7 +79,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => {
       if (socketRef.current) {
-        console.log("Cleaning up socket connection...");
         socketRef.current.disconnect();
         socketRef.current.close();
         socketRef.current = null;
