@@ -10,7 +10,7 @@ r = redis.from_url(redis_url, decode_responses=True)
 user_bp = Blueprint("user", __name__)
 
 @user_bp.route('/user/<string:username>')
-def get_user_data(username):
+def get_user_data(username: str):
     """
     Returns a given user's data
     """
@@ -45,43 +45,38 @@ def user_subscription_expiration(subscribed_id: int):
     return jsonify({"remaining_time": remaining_time})
 
 ## Follow Routes
-@user_bp.route('/user/<int:user_id>/follows/<int:followed_id>')
-def user_following(user_id: int, followed_id: int):
+@user_bp.route('/user/following/<string:followed_username>')
+def user_following(followed_username: str):
     """
-    Checks to see if user is following a streamer
+    Checks to see if user is following another streamer
     """
+    user_id = session.get("user_id")
+    followed_id = get_user_id(followed_username)
     if is_following(user_id, followed_id):
         return jsonify({"following": True})
     return jsonify({"following": False})
 
 @login_required
-@user_bp.route('/user/follow/<string:username>')
-def follow_user(username):
+@user_bp.route('/user/follow/<int:target_user_id>')
+def follow_user(target_user_id: int):
     """
     Follows a user
     """
     user_id = session.get("user_id")
-    following_id = get_user_id(username)
-    if follow(user_id, following_id):
-        return jsonify({"success": True,
-                        "already_following": False})
-    return jsonify({"success": True,
-                    "already_following": True})
+    return follow(user_id, target_user_id)
 
 @login_required
-@user_bp.route('/user/unfollow/<string:username>')
-def unfollow_user(username):
+@user_bp.route('/user/unfollow/<int:target_user_id>')
+def unfollow_user(target_user_id: int):
     """
     Unfollows a user
     """
     user_id = session.get("user_id")
-    followed_id = get_user_id(username)
-    unfollow(user_id, followed_id)
-    return jsonify({"success": True})
+    return unfollow(user_id, target_user_id)
 
 @login_required
 @user_bp.route('/user/following')
-def get_followed_streamers_():
+def get_followed_streamers():
     """
     Queries DB to get a list of followed streamers
     """

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Logo from "./Logo";
 import Button from "./Button";
 import Sidebar from "./Sidebar";
@@ -11,29 +11,17 @@ import {
 } from "lucide-react";
 import Input from "./Input";
 import AuthModal from "../Auth/AuthModal";
+import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 
 interface NavbarProps {
   variant?: "home" | "default";
 }
 
-const Navbar: React.FC<NavbarProps> = ({
-  variant = "default",
-}) => {
-  const [showAuthModal, setShowAuthModal] = useState(false);
+const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const { isLoggedIn } = useAuth();
+  const { showAuthModal, setShowAuthModal } = useAuthModal();
   const [showSideBar, setShowSideBar] = useState(false);
-  
-  useEffect(() => {
-    if (showAuthModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [showAuthModal]);
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -47,12 +35,16 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const handleSideBar = () => {
     setShowSideBar(!showSideBar);
-  }
+  };
 
   return (
     <div
       id="navbar"
-      className={`flex justify-center items-center ${variant === "home" ? "h-[45vh] flex-col" : "h-[15vh] col-span-2 flex-row"}`}
+      className={`flex justify-center items-center ${
+        variant === "home"
+          ? "h-[45vh] flex-col"
+          : "h-[15vh] col-span-2 flex-row"
+      }`}
     >
       <Logo variant={variant} />
       <Button
@@ -74,25 +66,28 @@ const Navbar: React.FC<NavbarProps> = ({
 
       {isLoggedIn && (
         <>
-          <Button onClick={() => handleSideBar()}
-            extraClasses={`absolute ${showSideBar ? `fixed top-[20px] left-[20px] p-2 text-[1.5rem] text-white hover:text-white
+          <Button
+            onClick={() => handleSideBar()}
+            extraClasses={`absolute ${
+              showSideBar
+                ? `fixed top-[20px] left-[20px] p-2 text-[1.5rem] text-white hover:text-white
           bg-black/30 hover:bg-purple-500/80 rounded-md border border-gray-300 hover:border-white h
-          over:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all ` :
-              "top-[75px] left-[20px]"
-              } transition-all duration-300 z-[99]`}
+          over:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all `
+                : "top-[75px] left-[20px]"
+            } transition-all duration-300 z-[99]`}
           >
             <SidebarIcon className="top-[0.20em] left-[10em] mr-1 z-[90]" />
           </Button>
           <div
             className={`fixed top-0 left-0 w-[250px] h-screen bg-[var(--sideBar-LightBG)] text-[var(--sideBar-LightText)] z-[90] overflow-y-auto scrollbar-hide
-    transition-transform transition-opacity duration-500 ease-in-out ${showSideBar ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
-              }`}
+    transition-transform transition-opacity duration-500 ease-in-out ${
+      showSideBar ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+    }`}
           >
             <Sidebar />
           </div>
         </>
       )}
-
 
       <Button
         extraClasses="absolute top-[20px] right-[20px] text-[1rem] flex items-center flex-nowrap"

@@ -11,6 +11,7 @@ interface Item {
 interface StreamItem extends Item {
   type: "stream";
   streamer: string;
+  streamCategory: string;
 }
 
 interface CategoryItem extends Item {
@@ -47,13 +48,13 @@ export function StreamsProvider({ children }: { children: React.ReactNode }) {
           id: stream.user_id,
           title: stream.title,
           streamer: stream.username,
+          streamCategory: stream.category_name,
           viewers: stream.num_viewers,
           thumbnail:
             stream.thumbnail ||
             `/images/thumbnails/categories/${stream.category_name
               .toLowerCase()
-              .replace(/ /g, "_")}.webp`,
-          category: stream.category_name,
+              .replace(/ /g, "_")}.webp`
         }));
 
         setFeaturedStreams(extractedData);

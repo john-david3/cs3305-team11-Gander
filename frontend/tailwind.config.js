@@ -20,6 +20,7 @@ export default {
 
       backgroundImage: {
         logo: "linear-gradient(45deg, #60A5FA, #8B5CF6, #EC4899, #FACC15,#60A5FA, #8B5CF6, #EC4899, #FACC15)",
+        'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))',
       },
 
       keyframes: {

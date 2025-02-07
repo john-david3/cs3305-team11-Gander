@@ -1,24 +1,45 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Layout/Navbar";
-import { useParams } from "react-router-dom";
+import AuthModal from "../components/Auth/AuthModal";
+import { useAuthModal } from "../hooks/useAuthModal";
 import { useAuth } from "../context/AuthContext";
+import { useParams } from "react-router-dom";
+import { ListItem } from "../components/Layout/ListRow";
+import { useFollow } from "../hooks/useFollow";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Layout/Button";
 
 interface UserProfileData {
+  id: number;
   username: string;
   bio: string;
   followerCount: number;
   isPartnered: boolean;
+  isLive: boolean;
+  currentStreamTitle?: string;
+  currentStreamCategory?: string;
+  currentStreamViewers?: number;
+  currentStreamStartTime?: string;
+  currentStreamThumbnail?: string;
 }
 
 const UserPage: React.FC = () => {
-  const [profileData, setProfileData] = useState<UserProfileData | null>(null);
+  const [userPageVariant, setUserPageVariant] = useState<
+    "personal" | "streamer" | "user" | "admin"
+  >("user");
+  const [profileData, setProfileData] = useState<UserProfileData>();
+  const { isFollowing, checkFollowStatus, followUser, unfollowUser } = useFollow();
+  const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { username: loggedInUsername } = useAuth();
   const { username } = useParams();
-  let userPageVariant = "user";
+  const navigate = useNavigate();
 
-  let setUserPageVariant = (currentStream: string) => {
-    if (username === loggedInUsername) userPageVariant = "personal";
-    else if (currentStream) userPageVariant = "streamer";
+  const bgColors = {
+    personal: "",
+    streamer: "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]", // offline streamer
+    user: "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff00f1]",
+    admin:
+      "bg-gradient-to-r from-[rgb(255,0,0)] via-transparent to-[rgb(0,0,255)]",
   };
 
   useEffect(() => {
@@ -27,15 +48,52 @@ const UserPage: React.FC = () => {
       .then((res) => res.json())
       .then((data) => {
         setProfileData({
+          id: data.user_id,
           username: data.username,
           bio: data.bio || "This user hasn't written a bio yet.",
           followerCount: data.num_followers || 0,
           isPartnered: data.isPartnered || false,
+          isLive: data.is_live,
+          currentStreamTitle: "",
+          currentStreamCategory: "",
+          currentStreamViewers: 0,
+          currentStreamThumbnail: "",
         });
 
-        setUserPageVariant(data.current_stream_title);
+        if (data.is_live) {
+          // Fetch stream data for this streamer
+          fetch(`/api/streams/${data.user_id}/data`)
+            .then((res) => res.json())
+            .then((streamData) => {
+              setProfileData((prevData) => {
+                if (!prevData) return prevData;
+                return {
+                  ...prevData,
+                  currentStreamTitle: streamData.title,
+                  currentStreamCategory: streamData.category_id,
+                  currentStreamViewers: streamData.num_viewers,
+                  currentStreamStartTime: streamData.start_time,
+                  currentStreamThumbnail:
+                    streamData.thumbnail ||
+                    `/images/thumbnails/categories/${streamData.category_name
+                      .toLowerCase()
+                      .replace(/ /g, "_")}.webp`,
+                };
+              });
+              let variant: "user" | "streamer" | "personal" | "admin";
+              if (username === loggedInUsername) variant = "personal";
+              else if (streamData.title) variant = "streamer";
+              // else if (data.isAdmin) variant = "admin";
+              else variant = "user";
+              setUserPageVariant(variant);
+            })
+            .catch((err) => console.error("Error fetching stream data:", err));
+        }
       })
       .catch((err) => console.error("Error fetching profile data:", err));
+
+    // Check if the *logged-in* user is following this user
+    if (loggedInUsername && username) checkFollowStatus(username);
   }, [username]);
 
   if (!profileData) {
@@ -45,12 +103,17 @@ const UserPage: React.FC = () => {
       </div>
     );
   }
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div
+      className={`min-h-screen ${
+        profileData.isLive
+          ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
+          : bgColors[userPageVariant]
+      } text-white flex flex-col`}
+    >
       <Navbar />
-      <div className="mx-auto px-4 py-8">
-        <div className="grid grid-cols-3 gap-8">
+      <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8">
+        <div className="grid grid-cols-3 w-full gap-8">
           {/* Profile Section - Left Third */}
           <div
             id="profile"
@@ -82,26 +145,46 @@ const UserPage: React.FC = () => {
               <h1 className="text-3xl font-bold mb-2">
                 {profileData.username}
               </h1>
-              <small className="text-green-400" >{userPageVariant.toUpperCase()}</small>
+              <small className="text-green-400">
+                {userPageVariant.toUpperCase()}
+              </small>
 
-              <div className="flex items-center space-x-2 mb-6">
-                <span className="text-gray-400">
-                  {profileData.followerCount.toLocaleString()} followers
-                </span>
-                {profileData.isPartnered && (
-                  <span className="bg-purple-600 text-white text-sm px-2 py-1 rounded">
-                    Partner
-                  </span>
-                )}
-              </div>
+              {/* Follower Count */}
+              {userPageVariant === "streamer" && (
+                <>
+                  <div className="flex items-center space-x-2 mb-6">
+                    <span className="text-gray-400">
+                      {profileData.followerCount.toLocaleString()} followers
+                    </span>
+                    {profileData.isPartnered && (
+                      <span className="bg-purple-600 text-white text-sm px-2 py-1 rounded">
+                        Partner
+                      </span>
+                    )}
+                  </div>
 
-              <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg mb-4 transition-colors">
-                Follow
-              </button>
+                  {/* (Un)Follow Button */}
+                  {!isFollowing ? (
+                    <Button
+                      extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
+                      onClick={() => followUser(profileData.id, setShowAuthModal)}
+                    >
+                      Follow
+                    </Button>
+                  ) : (
+                    <Button
+                      extraClasses="w-full bg-[#a80000]"
+                      onClick={() => unfollowUser(profileData?.id, setShowAuthModal)}
+                    >
+                      Unfollow
+                    </Button>
+                  )}
+                </>
+              )}
             </div>
 
             {/* Bio Section */}
-            <div className="mt-6">
+            <div className="mt-6 text-center">
               <h2 className="text-xl font-semibold mb-3">
                 About {profileData.username}
               </h2>
@@ -109,34 +192,47 @@ const UserPage: React.FC = () => {
                 {profileData.bio}
               </p>
             </div>
-
-            {/* Additional Stats */}
-            <div className="mt-6 pt-6 border-t border-gray-700">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-bold text-purple-400">0</div>
-                  <div className="text-sm text-gray-400">Total Views</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-purple-400">0</div>
-                  <div className="text-sm text-gray-400">Following</div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Content Section */}
           <div
             id="content"
-            className="col-span-2 bg-gray-800 rounded-lg p-6 flex flex-col"
+            className="col-span-2 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] items-center justify-center"
           >
-            <h2 className="text-2xl font-bold mb-4">Past Broadcasts</h2>
-            <div className="text-gray-400 flex h-full rounded-none">
-              No past broadcasts found
-            </div>
+            {userPageVariant === "streamer" && (
+              <>
+                {/* ↓↓ Current Stream ↓↓ */}
+                {profileData.isLive && (
+                  <div className="mb-8">
+                    <h2 className="text-2xl bg-[#ff0000] border py-4 px-12 font-black mb-4 rounded-[4rem]">
+                      Currently Live!
+                    </h2>
+                    <ListItem
+                      id={profileData.id}
+                      type="stream"
+                      title={profileData.currentStreamTitle || ""}
+                      streamer=""
+                      viewers={profileData.currentStreamViewers || 0}
+                      thumbnail={profileData.currentStreamThumbnail}
+                      onItemClick={() => {
+                        navigate(`/${profileData.username}`);
+                      }}
+                    />
+                  </div>
+                )}
+                {/* ↓↓ VODS ↓↓ */}
+                <div>
+                  <h2 className="text-2xl font-bold mb-4">Past Broadcasts</h2>
+                  <div className="text-gray-400 rounded-none">
+                    No past broadcasts found
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 };

@@ -88,32 +88,33 @@ def is_following(user_id: int, followed_id: int) -> bool:
         """, (user_id, followed_id))
     return bool(result)
 
-def follow(user_id: int, following_id: int):
+def follow(user_id: int, followed_id: int):
     """
-    Follows following_id user from user_id user
+    Follows followed_id user from user_id user
     """
-    if not is_following(user_id, following_id):
-        with Database() as db:
-            db.execute("""
-            INSERT INTO follows (user_id, followed_id)
-            VALUES(?,?);
-        """, (user_id, following_id))
-        return True
-    return False
+    if is_following(user_id, followed_id):
+        return {"success": False, "error": "Already following user"}, 400
+    
+    with Database() as db:
+        db.execute("""
+        INSERT INTO follows (user_id, followed_id)
+        VALUES(?,?);
+    """, (user_id, followed_id))
+    return {"success": True}
 
 def unfollow(user_id: int, followed_id: int):
     """
-    Unfollows follow_id user from user_id user
+    Unfollows followed_id user from user_id user
     """
-    if is_following(user_id, followed_id):
-        with Database() as db:
-            db.execute("""
-                DELETE FROM follows
-                WHERE user_id = ?
-                AND followed_id = ?
-            """, (user_id, followed_id))
-        return True
-    return False
+    if not is_following(user_id, followed_id):
+        return {"success": False, "error": "Not following user"}, 400
+    with Database() as db:
+        db.execute("""
+            DELETE FROM follows
+            WHERE user_id = ?
+            AND followed_id = ?
+        """, (user_id, followed_id))
+    return {"success": True}
 
 
 def subscription_expiration(user_id: int, subscribed_id: int) -> int:
@@ -197,11 +198,11 @@ def get_followed_streamers(user_id: int) -> Optional[List[dict]]:
 
 def get_user(user_id: int) -> Optional[dict]:
     """
-    Returns username, bio, number of followers, and if user is partnered from user_id
+    Returns information about a user from user_id
     """
     with Database() as db:
         data = db.fetchone("""
-            SELECT username, bio, num_followers, is_partnered FROM users
+            SELECT user_id, username, bio, num_followers, is_partnered, is_live FROM users
             WHERE user_id = ?;
         """, (user_id,))
     return data

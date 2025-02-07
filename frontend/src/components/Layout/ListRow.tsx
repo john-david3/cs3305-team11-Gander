@@ -5,6 +5,7 @@ interface ListItemProps {
   id: number;
   title: string;
   streamer?: string;
+  streamCategory?: string;
   viewers: number;
   thumbnail?: string;
   onItemClick?: () => void;
@@ -41,6 +42,7 @@ const ListRow: React.FC<ListRowProps> = ({
             type={item.type}
             title={item.title}
             streamer={item.type === "stream" ? item.streamer : undefined}
+            streamCategory={item.type === "stream" ? item.streamCategory : undefined}
             viewers={item.viewers}
             thumbnail={item.thumbnail}
             onItemClick={() => onClick?.(item.id, item.streamer || item.title)}
@@ -52,10 +54,11 @@ const ListRow: React.FC<ListRowProps> = ({
 };
 
 // Individual list entry component
-const ListItem: React.FC<ListItemProps> = ({
+export const ListItem: React.FC<ListItemProps> = ({
   type,
   title,
   streamer,
+  streamCategory,
   viewers,
   thumbnail,
   onItemClick,
@@ -79,6 +82,7 @@ const ListItem: React.FC<ListItemProps> = ({
       <div className="p-3">
         <h3 className="font-semibold text-lg text-center">{title}</h3>
         {type === "stream" && <p className="font-bold">{streamer}</p>}
+        {type === "stream" && <p className="text-sm text-gray-300">{streamCategory}</p>}
         <p className="text-sm text-gray-300">{viewers} viewers</p>
       </div>
     </div>

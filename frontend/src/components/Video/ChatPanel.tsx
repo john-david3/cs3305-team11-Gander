@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Input from "../Layout/Input";
-import { useAuth } from "../../context/AuthContext";
-import { useSocket } from "../../context/SocketContext";
 import Button from "../Layout/Button";
 import AuthModal from "../Auth/AuthModal";
+import { useAuthModal } from "../../hooks/useAuthModal";
+import { useAuth } from "../../context/AuthContext";
+import { useSocket } from "../../context/SocketContext";
 
 interface ChatMessage {
   chatter_username: string;
@@ -16,12 +17,16 @@ interface ChatPanelProps {
   onViewerCountChange?: (count: number) => void;
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({
+  streamId,
+  onViewerCountChange,
+}) => {
+  const { isLoggedIn, username } = useAuth();
+  const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const { isLoggedIn, username } = useAuth();
 
   // Join chat room when component mounts
   useEffect(() => {
@@ -57,17 +62,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 
       // Handle incoming messages
       socket.on("new_message", (data: ChatMessage) => {
-        console.log("New message:", data);
         setMessages((prev) => [...prev, data]);
       });
 
       // Handle live viewership
       socket.on("status", (data: any) => {
-        console.log("Live viewership: ", data)  // returns dictionary {message: message, num_viewers: num_viewers}
+        console.log("Live viewership: ", data); // returns dictionary {message: message, num_viewers: num_viewers}
         if (onViewerCountChange && data.num_viewers) {
           onViewerCountChange(data.num_viewers);
         }
-      })
+      });
 
       // Cleanup function
       return () => {
@@ -107,20 +111,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
       sendChat();
     }
   };
-
-  //added to show login/reg if not
-  const [showAuthModal, setShowAuthModal] = useState(false);
-
-  useEffect(() => {
-    if (showAuthModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [showAuthModal]);
 
   return (
     <div
@@ -166,8 +156,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder={isLoggedIn ? "Type a message..." : "Login to chat"}
-              disabled={!isLoggedIn}
+              placeholder="Type a message..."
               extraClasses="flex-grow w-full focus:w-full"
               onClick={() => !isLoggedIn && setShowAuthModal(true)}
             />
@@ -181,18 +170,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
           </>
         ) : (
           <Button
-            extraClasses="text-[1rem] flex items-center flex-nowrap z-[999]"
+            extraClasses="text-[1rem] flex items-center flex-nowrap"
             onClick={() => setShowAuthModal(true)}
           >
             Login to Chat
           </Button>
         )}
       </div>
-      {showAuthModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-          <AuthModal onClose={() => setShowAuthModal(false)} />
-        </div>
-      )}
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 };

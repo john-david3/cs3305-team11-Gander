@@ -95,7 +95,7 @@ def get_following_categories_streams():
 @stream_bp.route('/user/<string:username>/status')
 def get_user_live_status(username):
     """
-    Returns a streamer's status, if they are live or not and their most recent stream (their current stream if live)
+    Returns a streamer's status, if they are live or not and their most recent stream (as a vod) (their current stream if live)
     """
     user_id = get_user_id(username)
 

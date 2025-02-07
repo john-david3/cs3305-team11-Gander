@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import VideoPage from "../../pages/VideoPage";
 import UserPage from "../../pages/UserPage";
 
 const StreamerRoute: React.FC = () => {
-  const { streamerName } = useParams<{ streamerName: string }>();
+  const { streamerName } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLive, setIsLive] = useState<boolean>(false);
   const [streamId, setStreamId] = useState<number>(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkStreamStatus = async () => {
@@ -27,7 +28,7 @@ const StreamerRoute: React.FC = () => {
     checkStreamStatus();
 
     // Poll for live status changes
-    const interval = setInterval(checkStreamStatus, 10000); // Check every 10 second
+    const interval = setInterval(checkStreamStatus, 60000); // Check every minute
 
     return () => clearInterval(interval);
   }, [streamerName]);
@@ -38,17 +39,15 @@ const StreamerRoute: React.FC = () => {
         Loading...
       </div>
     );
-
-    // Or your loading component
   }
 
   // streamId=0 is a special case for the streamer's latest stream
   return isLive ? (
     <VideoPage streamerId={streamId} />
   ) : streamerName ? (
-    <UserPage />
+    navigate(`/user/${streamerName}`)
   ) : (
-    <div>Error: Streamer not found</div>
+    <div>Streamer not found</div>
   );
 };
 
