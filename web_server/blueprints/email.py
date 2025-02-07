@@ -25,7 +25,6 @@ def send_email(email, func) -> None:
     SMTP_PASSWORD = getenv("EMAIL_PASSWORD")
 
     # Setup up the receiver details
-    login_code = randrange(100000, 1000000)
     body = func()
 
     msg = MIMEText(body, "html")
