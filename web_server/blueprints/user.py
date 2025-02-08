@@ -116,7 +116,7 @@ def user_reset_password(token, new_password):
     if salt_value:
             r.delete(token)
 
-    email = verify_token(token, salt_value)
+    email = verify_token(token[:-5], salt_value)
 
     if email:
         response = reset_password(new_password, email)

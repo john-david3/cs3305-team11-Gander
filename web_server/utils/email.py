@@ -45,13 +45,14 @@ def send_email(email, func) -> None:
         except Exception as e:
             print("Error: ", e, flush=True)
 
-def forgot_password_body(email):
+def forgot_password_body(email) -> str:
     """
     Handles the creation of the email body for resetting password
     """
     salt = token_hex(32)
 
     token = generate_token(email, salt)
+    token += "R3sET" 
     url = getenv("VITE_API_URL")
     r.setex(token, 3600, salt)
 
@@ -75,6 +76,45 @@ def forgot_password_body(email):
             <h2>Password Reset Request</h2>
             <p>Click the button below to reset your password. This link is valid for 1 hour.</p>
             <a href="{full_url}" class="btn">Reset Password</a>
+        </div>
+    </body>
+    </html>
+    """
+
+    return content
+
+def confirm_account_creation_body(email) -> str:
+    """
+    Handles account confirmation email body for account creation
+    """
+    salt = token_hex(32)
+
+    token = generate_token(email, salt)
+    token += "CrEaTe"
+    url = getenv("VITE_API_URL")
+    r.setex(token, 3600, salt)
+
+    full_url = url + "/confirm_account_creation/" + token
+
+    content = f"""
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Password Reset</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }}
+            .container {{ max-width: 400px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
+            .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px; }}
+            .btn:hover {{ background-color: #0056b3; }}
+            p {{ color: #333; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Gander</h1>   
+            <h2>Confirm Account Creation</h2>
+            <p>Click the button below to create your account. This link is valid for 1 hour.</p>
+            <a href="{full_url}" class="btn">Create Account</a>
         </div>
     </body>
     </html>
