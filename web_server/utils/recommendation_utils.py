@@ -81,9 +81,9 @@ def get_highest_view_categories(no_categories: int = 4) -> Optional[List[dict]]:
         """, (no_categories,))
     return categories
 
-def get_user_category_recommendations(user_id: int) -> Optional[List[dict]]:
+def get_user_category_recommendations(user_id: int, no_categories: int = 4) -> Optional[List[dict]]:
     """
-    Queries user_preferences database to find users top 5 favourite streaming category and returns the category
+    Queries user_preferences database to find users top favourite streaming category and returns the category
     """
     with Database() as db:
         categories = db.fetchall("""
@@ -92,6 +92,6 @@ def get_user_category_recommendations(user_id: int) -> Optional[List[dict]]:
             JOIN user_preferences ON categories.category_id = user_preferences.category_id
             WHERE user_id = ? 
             ORDER BY favourability DESC 
-            LIMIT 5
-        """, (user_id,))
+            LIMIT ?
+        """, (user_id, no_categories))
     return categories
