@@ -55,12 +55,12 @@ const ListRow: React.FC<ListRowProps> = ({
       
       <div className="relative overflow-hidden flex items-center z-0">
 
-        <ArrowLeftIcon onClick={slideLeft} size={20} className="mr-1 cursor-pointer" />
+        <ArrowLeftIcon onClick={slideLeft} size={20} className="absolute mr-1 cursor-pointer z-[999]" />
 
         <div
           ref={slider}
           className="flex overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide gap-5"
-          style={{ scrollbarWidth: 'none', padding: "10px"}}
+          style={{ scrollbarWidth: 'none', paddingLeft: "30px", paddingTop: "10px", paddingBottom: "10px" }}
         >
           {items.map((item) => (
             <ListItem
@@ -83,7 +83,7 @@ const ListRow: React.FC<ListRowProps> = ({
           ))}
         </div>
 
-        <ArrowRightIcon onClick={slideRight} size={20} className="relative left-[10px] cursor-pointer" />
+        <ArrowRightIcon onClick={slideRight} size={20} className="absolute right-[10px] cursor-pointer" />
 
       </div>
     </div>
