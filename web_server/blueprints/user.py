@@ -59,7 +59,7 @@ def user_following(followed_username: str):
 
 @login_required
 @user_bp.route('/user/follow/<int:target_user_id>')
-def follow_user(target_user_id: int):
+def user_follow(target_user_id: int):
     """
     Follows a user
     """
@@ -68,7 +68,7 @@ def follow_user(target_user_id: int):
 
 @login_required
 @user_bp.route('/user/unfollow/<string:target_user_id>')
-def unfollow_user(target_user_id: int):
+def user_unfollow(target_user_id: int):
     """
     Unfollows a user
     """
@@ -77,7 +77,7 @@ def unfollow_user(target_user_id: int):
 
 @login_required
 @user_bp.route('/user/following')
-def followed_streamers():
+def user_followed_streamers():
     """
     Queries DB to get a list of followed streamers
     """
@@ -88,7 +88,7 @@ def followed_streamers():
 
 ## Login Routes
 @user_bp.route('/user/login_status')
-def login_status():
+def user_login_status():
     """
     Returns whether the user is logged in or not
     """
