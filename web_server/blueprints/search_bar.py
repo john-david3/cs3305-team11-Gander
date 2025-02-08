@@ -3,7 +3,7 @@ from database.database import Database
 
 search_bp = Blueprint("search", __name__)
 
-@search_bp.route("/search/<str:query>", methods=["GET", "POST"])
+@search_bp.route("/search/<string:query>", methods=["GET", "POST"])
 def search_results(query: str):
     """
     Return the most similar search results
@@ -46,7 +46,7 @@ def search_results(query: str):
     
     return jsonify({"categories": categories, "users": users, "streams": streams})
 
-@search_bp.route("/search/categories/<str:query>", methods=["GET", "POST"])
+@search_bp.route("/search/categories/<string:query>", methods=["GET", "POST"])
 def search_categories(query: str):
 	# Create the connection to the database
     db = Database()
@@ -63,7 +63,7 @@ def search_categories(query: str):
     
     return jsonify({"categories": categories})
 
-@search_bp.route("/search/users/<str:query>", methods=["GET", "POST"])
+@search_bp.route("/search/users/<string:query>", methods=["GET", "POST"])
 def search_users(query: str):
 	# Create the connection to the database
     db = Database()
@@ -81,7 +81,7 @@ def search_users(query: str):
     return jsonify({"users": users})
 
 
-@search_bp.route("/search/streams/<str:query>", methods=["GET", "POST"])
+@search_bp.route("/search/streams/<string:query>", methods=["GET", "POST"])
 def search_streams(query: str):
 	# Create the connection to the database
     db = Database()

@@ -1,5 +1,5 @@
 from flask import Blueprint
-from blueprints.utils import admin_required
+from blueprints.middleware import admin_required
 
 admin_bp = Blueprint("admin", __name__)
 

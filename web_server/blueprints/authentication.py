@@ -2,9 +2,10 @@ from flask import Blueprint, session, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 from database.database import Database
-from blueprints.utils import login_required, sanitizer
-from blueprints.email import send_email
-from blueprints.user import get_user_id
+from blueprints.middleware import login_required
+from utils.email import send_email
+from utils.user_utils import get_user_id
+from utils.utils import sanitize
 from secrets import token_hex
 
 auth_bp = Blueprint("auth", __name__)
@@ -37,9 +38,9 @@ def signup():
     
     # Sanitize the inputs - helps to prevent SQL injection
     try:
-        username = sanitizer(username, "username")
-        email = sanitizer(email, "email")
-        password = sanitizer(password, "password")
+        username = sanitize(username, "username")
+        email = sanitize(email, "email")
+        password = sanitize(password, "password")
     except ValueError as e:
         error_fields = get_error_fields([username, email, password])
         return jsonify({
@@ -144,8 +145,8 @@ def login():
     
     # Sanitize the inputs - helps to prevent SQL injection
     try:
-        username = sanitizer(username, "username")
-        password = sanitizer(password, "password")
+        username = sanitize(username, "username")
+        password = sanitize(password, "password")
     except ValueError as e:
         return jsonify({
             "account_created": False,

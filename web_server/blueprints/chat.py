@@ -3,7 +3,7 @@ from database.database import Database
 from .socket import socketio
 from flask_socketio import emit, join_room, leave_room
 from datetime import datetime
-from blueprints.user import get_user_id
+from utils.user_utils import get_user_id
 
 chat_bp = Blueprint("chat", __name__)
 

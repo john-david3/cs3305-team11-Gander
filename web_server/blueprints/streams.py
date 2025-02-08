@@ -1,11 +1,11 @@
 from flask import Blueprint, session, jsonify, request, redirect
 from utils.stream_utils import *
-from blueprints.user import get_user_id
-from blueprints.utils import login_required
+from utils.recommendation_utils import *
+from utils.user_utils import get_user_id
+from blueprints.middleware import login_required
 from database.database import Database
 from datetime import datetime
 from celery_tasks import update_thumbnail
-from typing import List, Optional
 
 stream_bp = Blueprint("stream", __name__)
 
@@ -15,7 +15,7 @@ THUMBNAIL_GENERATION_INTERVAL = 180
 
 ## Stream Routes
 @stream_bp.route('/streams/popular/<int:no_streams>')
-def get_popular_streams(no_streams) -> list[dict]:
+def popular_streams(no_streams) -> list[dict]:
     """
     Returns a list of streams live now with the highest viewers
     """
@@ -28,48 +28,23 @@ def get_popular_streams(no_streams) -> list[dict]:
         no_streams = MAX_STREAMS
 
     # Get the highest viewed streams
-    with Database() as db:
-        streams = db.fetchall("""
-            SELECT u.user_id, username, title, num_viewers, category_name
-            FROM streams 
-            JOIN users u ON streams.user_id = u.user_id
-            JOIN categories ON streams.category_id = categories.category_id
-            ORDER BY num_viewers DESC 
-            LIMIT ?;
-        """, (no_streams,))
-        
+    streams = get_highest_view_streams(no_streams)
     return jsonify(streams)
 
 @stream_bp.route('/streams/popular/<string:category_name>')
-def get_popular_streams_by_category(category_name) -> list[dict]:
+def popular_streams_by_category(category_name) -> list[dict]:
     """
     Returns a list of streams live now with the highest viewers in a given category
     """
 
-    with Database() as db:
+    category_id = get_category_id(category_name)
 
-        data = db.fetchone("""
-            SELECT category_id 
-            FROM categories 
-            WHERE category_name = ?;
-        """, (category_name,))
-        category_id = data["category_id"] if data else None
-
-        streams = db.fetchall("""
-            SELECT u.user_id, title, username, num_viewers, c.category_name
-            FROM streams s
-            JOIN users u ON s.user_id = u.user_id
-            JOIN categories c ON s.category_id = c.category_id
-            WHERE c.category_id = ? 
-            ORDER BY num_viewers DESC 
-            LIMIT 25
-        """, (category_id,))
-
+    streams = get_streams_based_on_category(category_id)
     return jsonify(streams)
 
 @login_required 
 @stream_bp.route('/streams/recommended')
-def get_recommended_streams() -> list[dict]:
+def recommended_streams() -> list[dict]:
     """
     Queries DB to get a list of recommended streams using an algorithm
     """
@@ -77,61 +52,22 @@ def get_recommended_streams() -> list[dict]:
     user_id = session.get("user_id")
 
     # Get the user's most popular categories
-    with Database() as db:
-        category = db.fetchone("""
-            SELECT category_id 
-            FROM user_preferences 
-            WHERE user_id = ? 
-            ORDER BY favourability DESC 
-            LIMIT 1
-        """, (user_id,))
-
-        category_id = category["category_id"] if category else None
-
-        streams = db.fetchall("""
-            SELECT u.user_id, title, username, num_viewers, c.category_name
-            FROM streams s
-            JOIN users u ON s.user_id = u.user_id
-            JOIN categories c ON s.category_id = c.category_id
-            WHERE c.category_id = ? 
-            ORDER BY num_viewers DESC 
-            LIMIT 25
-        """, (category_id,))
+    category = get_user_preferred_category(user_id)
+    streams = get_streams_based_on_category(category)
     return streams
 
 @stream_bp.route('/streams/<int:streamer_id>/data')
-def get_stream_data(streamer_id):
+def stream_data(streamer_id):
     """
     Returns a streamer's current stream data
     """
-    with Database() as db:
-        most_recent_stream = db.fetchone("""
-            SELECT s.user_id, u.username, s.title, s.start_time, s.num_viewers, c.category_name
-            FROM streams AS s
-            JOIN categories AS c ON s.category_id = c.category_id
-            JOIN users AS u ON s.user_id = u.user_id
-            WHERE u.user_id = ?
-        """, (streamer_id,))
-
-    return jsonify(most_recent_stream)
-
-def get_stream_tags(user_id: int) -> Optional[List[str]]:
-    """
-    Given a stream return tags associated with the user's stream
-    """
-    with Database() as db:
-        tags = db.fetchall("""
-            SELECT tag_name 
-            FROM tags
-            JOIN stream_tags ON tags.tag_id = stream_tags.tag_id
-            WHERE user_id = ?;    
-        """, (user_id,))
-    return tags
+    
+    return jsonify(get_current_stream_data(streamer_id))
 
 
 ## Category Routes
 @stream_bp.route('/categories/popular/<int:no_categories>')
-def get_popular_categories(no_categories) -> list[dict]:
+def popular_categories(no_categories) -> list[dict]:
     """
     Returns a list of most popular categories
     """
@@ -141,62 +77,34 @@ def get_popular_categories(no_categories) -> list[dict]:
     elif no_categories > 100:
         no_categories = 100
 
-    with Database() as db:
-        category_data = db.fetchall("""
-            SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS num_viewers
-            FROM streams
-            JOIN categories ON streams.category_id = categories.category_id
-            GROUP BY categories.category_name
-            ORDER BY SUM(streams.num_viewers) DESC
-            LIMIT ?;
-        """, (no_categories,))
-
+    category_data = get_highest_view_categories(no_categories)
     return jsonify(category_data)
 
 @login_required 
 @stream_bp.route('/categories/recommended')
-def get_recommended_categories() -> list | list[dict]:
+def recommended_categories() -> list | list[dict]:
     """
     Queries DB to get a list of recommended categories for the user
 
     """
     user_id = session.get("user_id")
-
-    with Database() as db:
-        categories = db.fetchall("""
-            SELECT categories.category_id, categories.category_name
-            FROM categories 
-            JOIN user_preferences ON categories.category_id = user_preferences.category_id
-            WHERE user_id = ? 
-            ORDER BY favourability DESC 
-            LIMIT 5
-        """, (user_id,))
-
+    categories = get_user_category_recommendations(user_id)
     return jsonify(categories)
 
 @login_required
 @stream_bp.route('/categories/following')
-def get_following_categories_streams():
+def following_categories_streams():
     """
     Returns popular streams in categories which the user followed
     """
-    with Database() as db:
-        streams = db.fetchall("""
-            SELECT u.user_id, title, u.username, num_viewers, category_name 
-            FROM streams 
-            JOIN users u ON streams.user_id = u.user_id
-            JOIN categories ON streams.category_id = categories.category_id
-            WHERE categories.category_id IN (SELECT category_id FROM followed_categories WHERE user_id = ?)
-            ORDER BY num_viewers DESC
-            LIMIT 25;
-        """, (session.get("user_id"),))
 
+    streams = get_followed_categories_recommendations(session.get('user_id'))
     return jsonify(streams)
 
 
 ## User Routes
 @stream_bp.route('/user/<string:username>/status')
-def get_user_live_status(username):
+def user_live_status(username):
     """
     Returns a streamer's status, if they are live or not and their most recent stream (as a vod) (their current stream if live)
     """
@@ -204,9 +112,7 @@ def get_user_live_status(username):
 
     # Check if streamer is live and get their most recent vod
     is_live = True if get_streamer_live_status(user_id)['is_live'] else False
-    
-    with Database() as db:
-        most_recent_vod = db.fetchone("""SELECT * FROM vods WHERE user_id = ? ORDER BY vod_id DESC LIMIT 1;""", (user_id,))
+    most_recent_vod = get_latest_vod(user_id)
 
     # If there is no most recent vod, set it to None
     if not most_recent_vod:
@@ -222,29 +128,13 @@ def get_user_live_status(username):
 
 ## VOD Routes
 @stream_bp.route('/vods/<string:username>')
-def get_vods(username):
+def vods(username):
     """
     Returns a JSON of all the vods of a streamer
     """
     user_id = get_user_id(username)
-
-    with Database() as db:
-        vods = db.fetchall("""SELECT * FROM vods WHERE user_id = ?;""", (user_id,))
-
+    vods = get_user_vods(user_id)
     return jsonify(vods)
-
-def get_vod_tags(vod_id: int):
-    """
-    Given a vod return tags associated with the vod
-    """
-    with Database() as db:
-        tags = db.fetchall("""
-            SELECT tag_name 
-            FROM tags
-            JOIN vod_tags ON tags.tag_id = vod_tags.tag_id
-            WHERE vod_id = ?;    
-        """, (vod_id,))
-    return tags
 
 
 ## RTMP Server Routes
@@ -294,30 +184,3 @@ def end_stream():
     db.execute("""DELETE FROM streams WHERE user_id = ?""", (user_info["user_id"],))
 
     return "Stream ended", 200
-
-def transfer_stream_to_vod(user_id: int):
-    """
-    Deletes stream from stream table and moves it to VoD table
-    TODO: Add functionaliy to save stream permanently
-    """
-
-    with Database() as db:
-        stream = db.fetchone("""
-            SELECT * FROM streams WHERE user_id = ?;
-        """, (user_id,))
-
-        if not stream:
-            return None
-        
-        ## TODO: calculate length in seconds, currently using temp value
-
-        db.execute("""
-            INSERT INTO vods (user_id, title, datetime, category_id, length, views)
-            VALUES (?, ?, ?, ?, ?, ?);
-        """, (stream["user_id"], stream["title"], stream["datetime"], stream["category_id"], 10, stream["num_viewers"]))
-
-        db.execute("""
-            DELETE FROM streams WHERE user_id = ?;
-        """, (user_id,))
-    
-    return True

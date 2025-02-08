@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_session import Session
 from flask_cors import CORS
-from blueprints.utils import logged_in_user
-from blueprints.errorhandlers import register_error_handlers
+from blueprints.middleware import logged_in_user, register_error_handlers
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 from blueprints.authentication import auth_bp
