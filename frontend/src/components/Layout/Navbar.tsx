@@ -35,9 +35,14 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
       });
   };
 
+  const handleQuickSettings = () => {
+    setShowQuickSettings(!showQuickSettings);
+  };
+
   const handleSideBar = () => {
     setShowSideBar(!showSideBar);
   };
+
 
   return (
     <div
@@ -89,17 +94,18 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
       )}
 
       <Button
-        extraClasses="absolute top-[20px] right-[20px] text-[1rem] flex items-center flex-nowrap"
-        onClick={() => console.log("Settings - TODO")}
+        extraClasses={`absolute top-[20px] right-[20px] text-[1rem] flex items-center flex-nowrap z-[9999]`}
+        onClick={() => handleQuickSettings()}
       >
-        <SettingsIcon className="h-15 w-15 mr-1" />
+        <SettingsIcon className="h-15 w-15 mr-1 " />
         Quick Settings
       </Button>
       
-        <div
-          className={`fix top-0 right-0 w-250px h-screen overflow-y-auto scrollbar-hide transition-opacity duration-500 ease-in-out ${showQuickSettings ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`
-          }
-        >
+      <div
+            className={`fixed top-0 right-0 w-[250px] h-screen bg-[var(--sideBar-LightBG)] text-[var(--sideBar-LightText)] z-[90] overflow-y-auto scrollbar-hide
+              transition-transform transition-opacity duration-500 ease-in-out ${showQuickSettings? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+              }`}
+          >
           <QuickSettings />
         </div>
 
