@@ -29,7 +29,7 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
 
     const confirmPasswordReset = () => {
         alert(`${resetData.newPassword} - ${token}`);
-        // You can replace this with navigation or API success handling logic
+ 
       };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {

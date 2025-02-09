@@ -9,6 +9,9 @@ const ResetPasswordPage: React.FC = () => {
     const handlePasswordReset = () => {
 
     };
+    if (!token) {
+        return <p className="text-red-500 text-center mt-4">Invalid or missing token.</p>;
+    }
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
