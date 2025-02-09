@@ -8,7 +8,6 @@ interface SideBarProps {
 }
 
 const Sidebar: React.FC<SideBarProps> = () => {
-  const [thisTheme, setThisTheme] = useState(false);
   const [isCursorOnSidebar, setIsCursorOnSidebar] = useState(false);
   const [triggerAnimation, setTriggerAnimation] = useState(false);
   useEffect(() => {
@@ -22,23 +21,19 @@ const Sidebar: React.FC<SideBarProps> = () => {
     };
   }, [isCursorOnSidebar]);
 
-  const handleTheme = () => {
-    setThisTheme(!thisTheme);
-    setTriggerAnimation(false);  // Reset animation
-    setTimeout(() => setTriggerAnimation(true), 0);  // Re-trigger animation
-  };
+
   const testStreamer: Record<string, string> = {
     "Markiplier": "Slink1",
     "Jacksepticeye": "Slink2",
     "8-BitRyan": "Slink3",
   };
 
-  const testCategory: Record<string, {dummyLink: string; dummyImage: string} > = {
-    "Action": {dummyLink : "link1", dummyImage: "../../../images/icons/Action.webp"},
-    "Horror": {dummyLink : "link2", dummyImage: "../../../images/icons/Horror.png"},
-    "Psychological": {dummyLink : "link3", dummyImage: "../../../images/icons/Psychological.png"},
-    "Adult": {dummyLink : "link4", dummyImage: "../../../images/icons/R-18.png"},
-    "Shooter": {dummyLink : "link5", dummyImage: "../../../images/icons/Shooter.png"}
+  const testCategory: Record<string, { dummyLink: string; dummyImage: string }> = {
+    "Action": { dummyLink: "link1", dummyImage: "../../../images/icons/Action.webp" },
+    "Horror": { dummyLink: "link2", dummyImage: "../../../images/icons/Horror.png" },
+    "Psychological": { dummyLink: "link3", dummyImage: "../../../images/icons/Psychological.png" },
+    "Adult": { dummyLink: "link4", dummyImage: "../../../images/icons/R-18.png" },
+    "Shooter": { dummyLink: "link5", dummyImage: "../../../images/icons/Shooter.png" }
   };
 
   const shownStreamers = Object.entries(testStreamer).map(([dummyCategory, dummyLink]) => {
@@ -49,11 +44,11 @@ const Sidebar: React.FC<SideBarProps> = () => {
     );
   });
 
-  const shownCategory = Object.entries(testCategory).map(([dummyCategory, {dummyLink, dummyImage}]) => {
+  const shownCategory = Object.entries(testCategory).map(([dummyCategory, { dummyLink, dummyImage }]) => {
     return (
       <li key={dummyCategory} className="flex items-center border border-7 border-black space-x-3 rounded-md p-0 text-center
       hover:bg-[#800020] hover:scale-110 hover:shadow-[-1px_1.5px_10px_white] transition-all duration-250 m-[0.25em]">
-        <img src={dummyImage} alt={dummyCategory} className="w-[2em] h-[2em] bg-white ml-[0.25em]"/>
+        <img src={dummyImage} alt={dummyCategory} className="w-[2em] h-[2em] bg-white ml-[0.25em]" />
         <a href={dummyLink} className="pr-[7.5em] pt-[0.75em] pb-[0.75em]">{dummyCategory}</a>
       </li>
     );
@@ -61,17 +56,8 @@ const Sidebar: React.FC<SideBarProps> = () => {
 
   return (
     <>
-      <div id="sidebar"
-        key={triggerAnimation ? 'burn-in' : 'reset'}
-        className={`fixed top-0 left-0 w-[250px] ${thisTheme
-          ? " bg-[var(--sideBar-LightBG)] text-[var(--sideBar-LightText)]"
-          : " bg-[var(--sideBar-DarkBG)] text-[var(--sideBar-DarkText)]"
-          } py-4 px-3 z-[90] h-screen overflow-y-auto 
-    transition-transform duration-500 ease-in-out animate-burnIn`}
-        onMouseLeave={() => setIsCursorOnSidebar(false)}
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <Theme isMode={thisTheme} onClick={handleTheme} />
 
+      <div>
         <h1 className="style"> Followed </h1>
         <ul>
           {shownStreamers}

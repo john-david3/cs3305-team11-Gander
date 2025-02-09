@@ -84,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
             <SidebarIcon className="top-[0.20em] left-[10em] mr-1 z-[90]" />
           </Button>
           <div
-            className={`fixed top-0 left-0 w-[250px] h-screen bg-[var(--sideBar-LightBG)] text-[var(--sideBar-LightText)] z-[90] overflow-y-auto scrollbar-hide
+            className={`fixed top-0 left-0 w-[250px] h-screen bg-[var(--bg-color)] text-[var(--text-color)] z-[90] overflow-y-auto scrollbar-hide
               transition-transform transition-opacity duration-500 ease-in-out ${showSideBar ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
               }`}
           >
@@ -102,8 +102,8 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
       </Button>
       
       <div
-            className={`fixed top-0 right-0 w-[250px] h-screen bg-[var(--sideBar-LightBG)] text-[var(--sideBar-LightText)] z-[90] overflow-y-auto scrollbar-hide
-              transition-transform transition-opacity duration-500 ease-in-out ${showQuickSettings? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+            className={`fixed top-0 right-0 w-[250px] h-screen ] z-[90] overflow-y-auto scrollbar-hide
+               transition-opacity duration-500 ease-in-out ${showQuickSettings? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
               }`}
           >
           <QuickSettings />

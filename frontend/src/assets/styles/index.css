@@ -8,6 +8,8 @@
   
   --sideBar-DarkBG: black;
   --sideBar-DarkText: white;
+
+  --quickBar-DarkBG: rgb(0,0,0,0.5)
 }
 
 
@@ -30,6 +32,35 @@
 }
 
 
+body[data-theme="light"] {
+  --bg-color: white;
+  --text-color: black;
+}
+
+body[data-theme="dark"] {
+  --bg-color: black;
+  --text-color: white;
+}
+
+body[data-theme="blue"] {
+  --bg-color: #e0f7fa;
+  --text-color: #004d40;
+}
+
+body[data-theme="green"] {
+  --bg-color: #e8f5e9;
+  --text-color: #2e7d32;
+}
+
+body[data-theme="orange"] {
+  --bg-color: #ffe0b2;
+  --text-color: #e65100;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
 
 
 

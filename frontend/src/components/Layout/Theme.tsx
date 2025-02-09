@@ -1,33 +1,35 @@
-import React, { useState } from 'react';
-import { SunMoon as SunMoonIcon, Sun as SunIcon,
-        Moon as MoonIcon } from 'lucide-react';
+import React from "react";
+import { Sun as SunIcon, Moon as MoonIcon, Droplet as BlueIcon, Leaf as GreenIcon, Flame as OrangeIcon } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
 
-interface ThemeProps {
-  children?: React.ReactNode;
-  onClick: () => void;
-  isMode: boolean;
-}
+const themeIcons = {
+  light: <SunIcon size={27} className="text-yellow-400" />,
+  dark: <MoonIcon size={27} className="text-white" />,
+  blue: <BlueIcon size={27} className="text-blue-500" />,
+  green: <GreenIcon size={27} className="text-green-500" />,
+  orange: <OrangeIcon size={27} className="text-orange-500" />,
+};
 
-const Theme: React.FC<ThemeProps> = ({ onClick, isMode }) => {
+const themes = ["light", "dark", "blue", "green", "orange"];
+
+const Theme: React.FC = () => {
+  const { theme, setTheme } = useTheme();
+
+  const handleNextTheme = () => {
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    const nextTheme = themes[nextIndex];
+    setTheme(nextTheme);
+    document.body.setAttribute("data-theme", nextTheme); // Update globally
+  };
 
   return (
-    <div className='relative top-[0.20em] left-[10em]'>
     <button
-      onClick={onClick}
-      className= {`p-2 text-[1.5rem] flex items-center gap-2 rounded-md border border-3
-        ${isMode ? 
-          `text-white bg-[#3478ef] hover:text-[#3478ef] hover:bg-[#000000]
-          border-[#3478ef] hover:border-[##3478ef]` :
-        `text-yellow-400 bg-white hover:text-yellow-400 hover:bg-white 
-          border-yellow-400 hover:border-yellow-400`}
-         hover:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all `}
+      onClick={handleNextTheme}
+      className="p-2 text-[1.5rem] flex items-center gap-2 rounded-md border transition-all"
     >
-      {isMode ?  <MoonIcon size={27} className={`transition-transform duration-300 ease-in-out`}/>: 
-       <SunIcon size={27} className={`transition-transform duration-300 ease-in-out`}/> 
-       }
-
-    </button>
-    </div>
+      {themeIcons[theme as keyof typeof themeIcons]} {theme}
+      </button>
   );
 };
 

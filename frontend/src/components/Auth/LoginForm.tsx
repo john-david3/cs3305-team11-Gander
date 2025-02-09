@@ -97,6 +97,9 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   };
 
   return (
+    <> 
+    <div className="h-[100%] flex flex-col justify-evenly items-center">
+    <h1 className="text-white text-lg"> Login </h1>
     <form
       onSubmit={handleSubmit}
       id="login-form"
@@ -131,6 +134,8 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {
 
       <Button type="submit">Login</Button>
     </form>
+    </div>
+    </>
   );
 };
 

@@ -8,7 +8,6 @@ import NotFoundPage from "./pages/NotFoundPage";
 import UserPage from "./pages/UserPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CategoryPage from "./pages/CategoryPage";
-import ForgotPasswordForm from "./components/Auth/ForgotPasswordForm";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,7 +43,6 @@ function App() {
             <Route path="/:streamerName" element={<StreamerRoute />} />
             <Route path="/user/:username" element={<UserPage />} />
             <Route path="/reset_password/:token" element={<ResetPasswordPage />}></Route>
-            <Route path="/forgot_password/" element={<ForgotPasswordForm />}></Route>
             <Route path="/category/:category_name" element={<CategoryPage />}></Route>
 
             <Route path="/404" element={<NotFoundPage />} />
