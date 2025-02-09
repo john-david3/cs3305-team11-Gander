@@ -64,10 +64,11 @@ def forgot_password_body(email) -> str:
         <title>Password Reset</title>
         <style>
             body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }}
-            .container {{ max-width: 400px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
-            .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px; }}
-            .btn:hover {{ background-color: #0056b3; }}
-            p {{ color: #333; }}
+            .container {{ max-width: 500px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
+            .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #FFFFFF; text-decoration: none; border-radius: 5px; border: 1px solid #000000; font-weight: bold;}}
+            .btn:hover {{ background-color: #E0E0E0; }}
+            p {{ color: #000000; }}
+            a.btn {{ color: #000000; }}
         </style>
     </head>
     <body>
@@ -103,10 +104,11 @@ def confirm_account_creation_body(email) -> str:
         <title>Password Reset</title>
         <style>
             body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }}
-            .container {{ max-width: 400px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
-            .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px; }}
-            .btn:hover {{ background-color: #0056b3; }}
-            p {{ color: #333; }}
+            .container {{ max-width: 500px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
+            .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #FFFFFF; text-decoration: none; border-radius: 5px; border: 1px solid #000000; font-weight: bold; }}
+            .btn:hover {{ background-color: #E0E0E0; }}
+            p {{ color: #000000; }}
+            a.btn {{ color: #000000; }}
         </style>
     </head>
     <body>
