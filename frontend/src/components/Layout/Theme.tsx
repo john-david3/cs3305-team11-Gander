@@ -34,3 +34,11 @@ const Theme: React.FC = () => {
 };
 
 export default Theme;
+
+{/*
+${isMode ? 
+  `text-white bg-[#3478ef] hover:text-[#3478ef] hover:bg-[#000000]
+  border-[#3478ef] hover:border-[##3478ef]` :
+`text-yellow-400 bg-white hover:text-yellow-400 hover:bg-white 
+  border-yellow-400 hover:border-yellow-400`}
+ hover:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all `} */}
