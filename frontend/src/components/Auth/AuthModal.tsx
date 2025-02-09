@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { ToggleButton } from "../Layout/Button";
-import { LogIn as LogInIcon, User as UserIcon } from "lucide-react";
+import { LogIn as LogInIcon, User as UserIcon, CircleHelp as ForgotIcon} from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import ForgotPasswordForm from "./ForgotPasswordForm";
 import "../../assets/styles/auth.css";
 
 interface AuthModalProps {
@@ -55,6 +56,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             <UserIcon className="h-[40px] w-[40px] mr-1" />
             Register
           </ToggleButton>
+
+          <ToggleButton 
+            toggled={selectedTab==="Forgot"}
+            extraClasses="flex flex-col items-center px-8 duration-250 transition-transform hover:translate-y-[-50px] z-[9001]"
+            onClick={() => setSelectedTab("Forgot")}>
+            <ForgotIcon />
+            Forgot Password
+            </ToggleButton>
         </div>
         <div
           className="container fixed inset-0 flex flex-col items-center justify-around z-[9999] 
