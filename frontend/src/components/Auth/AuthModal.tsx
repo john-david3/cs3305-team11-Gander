@@ -22,6 +22,27 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
     }, 3500);
   };
 
+  const authSwitch = () => {
+    
+    const formMap: { [key: string]: JSX.Element} = {
+      Login: <LoginForm onSubmit={(handleSubmit)}/>,
+      Register: <RegisterForm onSubmit={(handleSubmit)}/>,
+      Forgot: <ForgotPasswordForm onSubmit={(handleSubmit)}/>
+    };
+    return formMap[selectedTab] || <div>Please select a valid option</div>;
+    {/*
+    if (selectedTab === "Login") {
+      return  <LoginForm onSubmit={(handleSubmit)}/>
+    } else if (selectedTab === "Register") {
+      return  <RegisterForm onSubmit={(handleSubmit)}/>
+    } else if (selectedTab === "Forgot") {
+      return  <ForgotPasswordForm onSubmit={(handleSubmit)}/>
+    } else
+      return <div> Please select a valid icon</div>
+      */}
+
+  }
+
   return (
     <>
       {/*Background Blur*/}
@@ -87,11 +108,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
                 ✕
               </button>
             </div>
-            {selectedTab === "Login" ? (
-              <LoginForm onSubmit={handleSubmit} />
-            ) : (
-              <RegisterForm onSubmit={handleSubmit} />
-            )}
+            <>
+            {authSwitch()}
+            </>
+
+          
+    
           </div>
         </div>
       </div>

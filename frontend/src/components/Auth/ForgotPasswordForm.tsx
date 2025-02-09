@@ -6,7 +6,11 @@ interface ForgotPasswordProps {
     email?: string;
 }
 
-const ForgotPasswordForm: React.FC = () => {
+interface SubmitProps {
+    onSubmit: () => void;
+  }
+
+const ForgotPasswordForm: React.FC<SubmitProps> = ( {onSubmit} ) => {
     const [email, setEmail] = useState<string>("");
     const [errors, setErrors] = useState<ForgotPasswordProps>({});
 
