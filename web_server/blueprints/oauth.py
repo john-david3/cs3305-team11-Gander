@@ -1,5 +1,5 @@
 from authlib.integrations.flask_client import OAuth, OAuthError
-from flask import Blueprint, jsonify, session, redirect
+from flask import Blueprint, jsonify, session, redirect, request
 from blueprints.user import get_session_info_email
 from database.database import Database
 from secrets import token_hex, token_urlsafe
@@ -31,6 +31,8 @@ def login_google():
     """
     # Creates nonce to be sent
     session["nonce"] = token_urlsafe(16)
+    session["origin"] = request.args.get("next")
+
     return google.authorize_redirect(
         'http://127.0.0.1:8080/api/google_auth',
         nonce=session['nonce']
@@ -82,12 +84,12 @@ def google_auth():
                 )
             user_data = get_session_info_email(user_email)
 
+        origin = session.pop("origin", "http://127.0.0.1:8080/")
         session.clear()
         session["username"] = user_data["username"]
         session["user_id"] = user_data["user_id"]
 
-        # TODO: redirect back to original page user started on, or other pages based on success failure of login
-        return redirect("http://127.0.0.1:8080/")
+        return redirect(origin)
 
     except OAuthError as e:
         return jsonify({
