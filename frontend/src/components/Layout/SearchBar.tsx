@@ -18,17 +18,28 @@ const SearchBar: React.FC = () => {
   // Perform search when debounced query changes
   useEffect(() => {
     if (debouncedQuery.trim()) {
-      fetch(`/api/search/${debouncedQuery}`)
-        .then((response) => response.json())
-        .then((data) => {
+      const fetchSearchResults = async () => {
+        try {
+          const response = await fetch("/api/search", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query: debouncedQuery }), // <-- Fixed payload
+          });
+  
+          const data = await response.json();
           console.log("Search results:", data);
           // Handle the search results here
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Error performing search:", error);
-        });
+        }
+      };
+  
+      fetchSearchResults(); // Call the async function
     }
   }, [debouncedQuery]);
+  
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);

@@ -12,7 +12,8 @@ from blueprints.chat import chat_bp
 from blueprints.oauth import oauth_bp, init_oauth
 from blueprints.socket import socketio
 from celery import Celery
-from celery_tasks import celery_init_app
+from celery_tasks import celery_init_app#
+from blueprints.search_bar import search_bp
 
 from os import getenv
 
@@ -69,6 +70,7 @@ def create_app():
         app.register_blueprint(stream_bp)
         app.register_blueprint(chat_bp)
         app.register_blueprint(oauth_bp)
+        app.register_blueprint(search_bp)
 
         socketio.init_app(app)
 
