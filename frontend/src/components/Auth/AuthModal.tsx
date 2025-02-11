@@ -25,7 +25,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   const authSwitch = () => {
     
     const formMap: { [key: string]: JSX.Element} = {
-      Login: <LoginForm onSubmit={(handleSubmit)}/>,
+      Login: <LoginForm onSubmit={(handleSubmit)} onForgotPassword={() => setSelectedTab("Forgot")}/>,
       Register: <RegisterForm onSubmit={(handleSubmit)}/>,
       Forgot: <ForgotPasswordForm onSubmit={(handleSubmit)}/>
     };
@@ -78,13 +78,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             Register
           </ToggleButton>
 
-          <ToggleButton 
-            toggled={selectedTab==="Forgot"}
-            extraClasses="flex flex-col items-center px-8 duration-250 transition-transform hover:translate-y-[-50px] z-[9001]"
-            onClick={() => setSelectedTab("Forgot")}>
-            <ForgotIcon />
-            Forgot Password
-            </ToggleButton>
+
         </div>
         <div
           className="container fixed inset-0 flex flex-col items-center justify-around z-[9999] 
