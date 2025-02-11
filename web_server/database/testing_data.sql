@@ -1,6 +1,6 @@
 -- Sample Data for users
 INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, current_stream_title, current_selected_category_id) VALUES 
-('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 1, 'Epic Gaming Session', 1),
+('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 0, 'Epic Gaming Session', 1),
 ('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.', 1, 'Live Music Jam', 2),
 ('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.', 1, 'Sketching Live', 3),
 ('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.', 1, 'Math Made Easy', 4),
@@ -135,3 +135,5 @@ SELECT * FROM stream_tags;
 
 -- To see all tables in the database
 SELECT name FROM sqlite_master WHERE type='table';
+
+UPDATE users SET is_live = 0 WHERE user_id = 1;

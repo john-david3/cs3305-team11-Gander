@@ -2,6 +2,7 @@ from database.database import Database
 from typing import Optional
 import os, subprocess
 from typing import Optional, List
+from time import sleep
 
 def get_streamer_live_status(user_id: int):
     """
@@ -82,7 +83,6 @@ def get_user_vods(user_id: int):
         vods = db.fetchall("""SELECT * FROM vods WHERE user_id = ?;""", (user_id,))
     return vods
 
-
 def generate_thumbnail(user_id: int) -> None:
     """
     Generates the thumbnail of a stream
@@ -108,7 +108,20 @@ def generate_thumbnail(user_id: int) -> None:
         f"stream_data/thumbnails/{username['username']}.jpg"
     ]
 
-    subprocess.run(thumbnail_command)
+    attempts = 3
+
+    while attempts > 0:
+        try:
+            subprocess.run(thumbnail_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            print(f"Thumbnail {username['username']} generated successfully")
+            break
+        except subprocess.CalledProcessError as e:
+            attempts -= 1
+            print("FFmpeg failed with an error:")
+            print(e.stderr.decode())  # Print detailed error message
+            print("Retrying in 5 seconds...")
+            sleep(5)
+            continue
 
 def get_stream_tags(user_id: int) -> Optional[List[str]]:
     """
@@ -148,7 +161,7 @@ def transfer_stream_to_vod(user_id: int):
         """, (user_id,))
 
         if not stream:
-            return None
+            return False
         
         ## TODO: calculate length in seconds, currently using temp value
 

@@ -5,7 +5,8 @@ from utils.user_utils import get_user_id
 from blueprints.middleware import login_required
 from database.database import Database
 from datetime import datetime
-from celery_tasks import update_thumbnail
+from celery_tasks import update_thumbnail, combine_ts_stream
+from dateutil import parser
 
 stream_bp = Blueprint("stream", __name__)
 
@@ -142,26 +143,40 @@ def vods(username):
 def publish_stream():
     """
     Authenticates stream from streamer and publishes it to the site
+
+    step-by-step:
+    fetch user info from stream key
+    insert stream into database
+    set user as streaming
+    periodically update thumbnail
     """
     stream_key = request.form.get("name")
+    print("Stream request received")
 
-    # Check if stream key is valid
-    db = Database()
-    user_info = db.fetchone("""SELECT user_id, username, current_stream_title, current_selected_category_id 
-                               FROM users 
-                               WHERE stream_key = ?""", (stream_key,))
+    # Open database connection
+    with Database() as db:
+        # Get user info from stream key
+        user_info = db.fetchone("""SELECT user_id, username, current_stream_title, current_selected_category_id, is_live
+                                FROM users 
+                                WHERE stream_key = ?""", (stream_key,))
 
-    if not user_info:
-        return "Unauthorized", 403
+        # If stream key is invalid, return unauthorized
+        if not user_info or user_info["is_live"]:
+            return "Unauthorized", 403
+        
+        # Insert stream into database
+        db.execute("""INSERT INTO streams (user_id, title, start_time, num_viewers, category_id)
+                    VALUES (?, ?, ?, ?, ?)""", (user_info["user_id"], 
+                                            user_info["current_stream_title"],
+                                            datetime.now(),
+                                            0,
+                                            1))
+        
+        # Set user as streaming
+        db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""", (user_info["user_id"],))
     
-    # Insert stream into database
-    db.execute("""INSERT INTO streams (user_id, title, category_id, start_time, isLive)
-                  VALUES (?, ?, ?, ?, ?)""", (user_info["user_id"], 
-                                           user_info["current_stream_title"],
-                                           1,
-                                           datetime.now(),
-                                           1))
     
+    # Update thumbnail periodically
     update_thumbnail.delay(user_info["user_id"])
 
     return redirect(f"/{user_info['username']}")
@@ -170,17 +185,54 @@ def publish_stream():
 def end_stream():
     """
     Ends a stream
+
+    step-by-step:
+    remove stream from database
+    move stream to vod table
+    set user as not streaming
+    convert ts files to mp4
+    clean up old ts files
+    end thumbnail generation
     """
-    db = Database()
-
-    # get stream key
-    user_info = db.fetchone("""SELECT user_id FROM users WHERE stream_key = ?""", (request.form.get("name"),))
-    stream_info = db.fetchone("""SELECT stream_id FROM streams WHERE user_id = ?""", (user_info["user_id"],))
-
-    if not user_info:
-        return "Unauthorized", 403
     
-    # Remove stream from database
-    db.execute("""DELETE FROM streams WHERE user_id = ?""", (user_info["user_id"],))
+    stream_key = request.form.get("name")
+
+    # Open database connection
+    with Database() as db:
+        # Get user info from stream key
+        user_info = db.fetchone("""SELECT *
+                                FROM users 
+                                WHERE stream_key = ?""", (stream_key,))
+        
+        stream_info = db.fetchone("""SELECT *
+                                FROM streams
+                                WHERE user_id = ?""", (user_info["user_id"],))
+        
+
+        # If stream key is invalid, return unauthorized
+        if not user_info:
+            return "Unauthorized", 403
+        
+        # Remove stream from database
+        db.execute("""DELETE FROM streams 
+                   WHERE user_id = ?""", (user_info["user_id"],))
+
+        # Move stream to vod table
+        stream_length = int((datetime.now() - parser.parse(stream_info["start_time"])).total_seconds())
+
+        db.execute("""INSERT INTO vods (user_id, title, datetime, category_id, length, views)
+                    VALUES (?, ?, ?, ?, ?, ?)""", (user_info["user_id"], 
+                                            user_info["current_stream_title"],
+                                            stream_info["start_time"],
+                                            user_info["current_selected_category_id"],
+                                            stream_length,
+                                            0))
+        
+        # Set user as not streaming
+        db.execute("""UPDATE users 
+                   SET is_live = 0 
+                   WHERE user_id = ?""", (user_info["user_id"],))
+    
+    combine_ts_stream.delay(user_info["username"])
 
     return "Stream ended", 200
