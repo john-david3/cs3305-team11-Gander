@@ -1,6 +1,6 @@
 from database.database import Database
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 
 def get_user_id(username: str) -> Optional[int]:
@@ -108,6 +108,39 @@ def unfollow(user_id: int, followed_id: int):
             AND followed_id = ?
         """, (user_id, followed_id))
     return {"success": True}
+
+def subscribe(user_id: int, streamer_id: int):
+    """
+    Subscribes user_id to streamer_id
+    """
+    # If user is already subscribed then extend the expiration date else create a new entry
+    with Database() as db:
+        existing = db.fetchone("""
+            SELECT expires 
+            FROM subscribes 
+            WHERE user_id = ? AND subscribed_id = ?
+        """, (user_id, streamer_id))
+        if existing:
+            db.execute("""
+                UPDATE subscribes SET expires = expires + ?
+                WHERE user_id = ? AND subscribed_id = ?
+            """, (timedelta(days=30), user_id, streamer_id))
+        else:   
+            db.execute("""
+                INSERT INTO subscribes
+                (user_id, subscribed_id, since, expires)
+                VALUES (?,?,?,?)
+            """, (user_id, streamer_id, datetime.now(), datetime.now() + timedelta(days=30)))
+
+def delete_subscription(user_id: int, subscribed_id: int):
+    """
+    Deletes a subscription entry given user_id and streamer_id
+    """
+    with Database() as db:
+        db.execute("""
+            DELETE FROM subscribes
+            WHERE user_id = ? AND subscribed_id = ?
+        """, (user_id, subscribed_id))
 
 
 def subscription_expiration(user_id: int, subscribed_id: int) -> int:
