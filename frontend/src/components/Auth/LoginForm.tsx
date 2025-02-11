@@ -102,11 +102,11 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
   return (
     <>
       <div className="h-[100%] flex flex-col justify-evenly items-center">
-        <h1 className="text-white text-lg"> Login </h1>
+        <h1 className="text-white text-[2.5em] font-[800]"> Login </h1>
         <form
           onSubmit={handleSubmit}
           id="login-form"
-          className="h-[100%] flex flex-col justify-evenly items-center"
+          className="h-[100%] flex flex-col items-center"
         >
           {errors.general && (
             <p className="text-red-500 text-sm text-center">{errors.general}</p>
@@ -134,18 +134,19 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
             onChange={handleInputChange}
             extraClasses={`${errors.password ? "border-red-500" : ""}`}
           />
+          <button
+            type="button"
+            className="flex items-center justify-start bg-white text-gray-600 font-semibold py-1 px-2 rounded shadow-md w-[220px] hover:bg-gray-100 active:bg-gray-200"
+            onClick={onForgotPassword}>
+            <ForgotIcon className="flex flex-row justify-content "/>
+            Forgot Password
+          </button>
 
           <Button type="submit">Login</Button>
-          
-          <Button
-            type="button"
-            extraClasses="flex flex-row items-center px-3"
-            onClick={onForgotPassword}>
-            <ForgotIcon />
-            Forgot Password
-          </Button>
-          <GoogleLogin />
         </form>
+        <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
+          <GoogleLogin />
+          </div>
       </div>
     </>
   );

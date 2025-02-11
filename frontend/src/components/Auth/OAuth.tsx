@@ -7,17 +7,22 @@ export default function GoogleLogin() {
   };
 
   return (
-    <div>
-    <button
-        onClick={handleLoginClick}
-        className="flex items-center justify-start bg-white text-gray-600 font-semibold py-1 px-2 rounded shadow-md w-[220px] hover:bg-gray-100 active:bg-gray-200">
-        <img
-        src="../../../images/icons/google-icon.png"
-        alt="Google logo"
-        className="w-8 h-8 mr-2"
-        />
-        <span className="flex-grow">Sign in with Google</span>
-    </button>
+    <div className="w-full">
+      <div className="flex flex-wrap justify-center w-full">
+        <button
+          onClick={handleLoginClick}
+          //w-full basis-[90%] (% size of original container)
+          className="flex w-full max-w-[19em] basis-[90%] flex-grow flex-shrink items-center justify-start bg-white text-gray-600 
+        font-semibold py-[0.15em] pl-[0.3em] pr-[0.6em] rounded shadow-md flex-grow flex-shrink
+        hover:bg-gray-100 active:bg-gray-200 sm:max-w-[18em] mx-[1em]">
+          <img
+            src="../../../images/icons/google-icon.png"
+            alt="Google logo"
+            className="w-[2em] h-[2em] mr-2"
+          />
+          <span className="flex-grow">Sign in with Google</span>
+        </button>
+      </div>
     </div>
   );
 }
