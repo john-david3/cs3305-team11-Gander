@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Input from "../Layout/Input";
-import Button from "../Layout/Button";
+import Button, { ToggleButton } from "../Layout/Button";
 import { useAuth } from "../../context/AuthContext";
+import GoogleLogin from "./OAuth";
+import { CircleHelp as ForgotIcon} from "lucide-react";
 
 interface LoginFormData {
   username: string;
@@ -17,9 +19,10 @@ interface FormErrors {
 //Speed up border animation
 interface SubmitProps {
   onSubmit: () => void;
+  onForgotPassword: () => void;
 }
 
-const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {
+const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
   const { setIsLoggedIn } = useAuth();
 
   const [formData, setFormData] = useState<LoginFormData>({
@@ -97,44 +100,54 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   };
 
   return (
-    <> 
-    <div className="h-[100%] flex flex-col justify-evenly items-center">
-    <h1 className="text-white text-lg"> Login </h1>
-    <form
-      onSubmit={handleSubmit}
-      id="login-form"
-      className="h-[100%] flex flex-col justify-evenly items-center"
-    >
-      {errors.general && (
-        <p className="text-red-500 text-sm text-center">{errors.general}</p>
-      )}
+    <>
+      <div className="h-[100%] flex flex-col justify-evenly items-center">
+        <h1 className="text-white text-[2.5em] font-[800]"> Login </h1>
+        <form
+          onSubmit={handleSubmit}
+          id="login-form"
+          className="h-[100%] flex flex-col items-center"
+        >
+          {errors.general && (
+            <p className="text-red-500 text-sm text-center">{errors.general}</p>
+          )}
 
-      {errors.username && (
-        <p className="text-red-500 mt-3 text-sm">{errors.username}</p>
-      )}
-      <Input
-        name="username"
-        placeholder="Username"
-        value={formData.username}
-        onChange={handleInputChange}
-        extraClasses={`${errors.username ? "border-red-500" : ""}`}
-      />
+          {errors.username && (
+            <p className="text-red-500 mt-3 text-sm">{errors.username}</p>
+          )}
+          <Input
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleInputChange}
+            extraClasses={`${errors.username ? "border-red-500" : ""}`}
+          />
 
-      {errors.password && (
-        <p className="text-red-500 mt-3 text-sm">{errors.password}</p>
-      )}
-      <Input
-        name="password"
-        type="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleInputChange}
-        extraClasses={`${errors.password ? "border-red-500" : ""}`}
-      />
+          {errors.password && (
+            <p className="text-red-500 mt-3 text-sm">{errors.password}</p>
+          )}
+          <Input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleInputChange}
+            extraClasses={`${errors.password ? "border-red-500" : ""}`}
+          />
+          <button
+            type="button"
+            className="flex items-center justify-start bg-white text-gray-600 font-semibold py-1 px-2 rounded shadow-md w-[220px] hover:bg-gray-100 active:bg-gray-200"
+            onClick={onForgotPassword}>
+            <ForgotIcon className="flex flex-row justify-content "/>
+            Forgot Password
+          </button>
 
-      <Button type="submit">Login</Button>
-    </form>
-    </div>
+          <Button type="submit">Login</Button>
+        </form>
+        <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
+          <GoogleLogin />
+          </div>
+      </div>
     </>
   );
 };

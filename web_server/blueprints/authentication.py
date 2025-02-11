@@ -81,18 +81,13 @@ def signup():
         # Create new user once input is validated
         db.execute(
             """INSERT INTO users 
-               (username, password, email, num_followers, stream_key, is_partnered, bio, current_stream_title, current_selected_category_id)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+               (username, password, email, stream_key)
+               VALUES (?, ?, ?, ?)""",
             (
                 username,
                 generate_password_hash(password),
                 email,
-                0,
-                token_hex(32),
-                0,
-                "This user does not have a Bio.",
-                "My Stream",
-                None
+                token_hex(32)
             )
         )
 

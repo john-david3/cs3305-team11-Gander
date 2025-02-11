@@ -37,7 +37,7 @@ def get_most_popular_category() -> Optional[List[dict]]:
     
     return category
 
-def sanitize(user_input: str, input_type="username") -> str:
+def sanitize(user_input: str, input_type="default") -> str:
     """
     Sanitizes user input based on the specified input type.
     
@@ -62,6 +62,11 @@ def sanitize(user_input: str, input_type="username") -> str:
             "pattern": r"^[\S]+$",  # Non-whitespace characters only
             "min_length": 8,
             "max_length": 256,
+        },
+        "default": {
+            "pattern": r"^[\S]+$",  # Non-whitespace characters only
+            "min_length": 1,
+            "max_length": 50,
         },
     }
 

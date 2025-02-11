@@ -23,6 +23,17 @@ def user_data(username: str):
 
 ## Subscription Routes
 @login_required
+@user_bp.route('/user/subscribe/<int:streamer_id>')
+def user_subscribe(streamer_id):
+    """
+    Given a streamer subscribes as user
+    """
+    #TODO: Keep this route secure so only webhooks from Stripe payment can trigger it
+    user_id = session.get("user_id")
+    subscribe(user_id, streamer_id)
+    return jsonify({"status": True})
+
+@login_required
 @user_bp.route('/user/subscription/<int:subscribed_id>')
 def user_subscribed(subscribed_id: int):
     """
@@ -42,6 +53,9 @@ def user_subscription_expiration(subscribed_id: int):
 
     user_id = session.get("user_id")
     remaining_time = subscription_expiration(user_id, subscribed_id)
+    # Remove any expired subscriptions from the table
+    if remaining_time == 0:
+        delete_subscription(user_id, subscribed_id)
 
     return jsonify({"remaining_time": remaining_time})
 
