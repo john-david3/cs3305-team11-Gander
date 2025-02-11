@@ -32,6 +32,9 @@ def admin_required(view):
     return wrapped_view
 
 def register_error_handlers(app):
+    """
+    Default reponses to status codes
+    """
     error_responses = {
         400: "Bad Request",
         403: "Forbidden",

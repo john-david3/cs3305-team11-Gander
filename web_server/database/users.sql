@@ -3,13 +3,13 @@ CREATE TABLE users
 (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(256) NOT NULL,
+    password VARCHAR(256),
     email VARCHAR(128) NOT NULL,
-    num_followers INTEGER NOT NULL,
+    num_followers INTEGER NOT NULL DEFAULT 0,
     stream_key VARCHAR(60) NOT NULL,
     is_partnered BOOLEAN NOT NULL DEFAULT 0,
     is_live BOOLEAN NOT NULL DEFAULT 0,
-    bio VARCHAR(1024),
+    bio VARCHAR(1024) DEFAULT 'This user does not have a Bio.',
 
     current_stream_title VARCHAR(100),
     current_selected_category_id INTEGER

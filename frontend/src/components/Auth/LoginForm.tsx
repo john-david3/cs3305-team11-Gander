@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Input from "../Layout/Input";
 import Button from "../Layout/Button";
 import { useAuth } from "../../context/AuthContext";
+import GoogleLogin from "./OAuth";
 
 interface LoginFormData {
   username: string;
@@ -133,6 +134,7 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit }) => {
       />
 
       <Button type="submit">Login</Button>
+      <GoogleLogin />
     </form>
     </div>
     </>

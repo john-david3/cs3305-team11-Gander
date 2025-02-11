@@ -22,7 +22,7 @@ def get_username(user_id: str) -> Optional[str]:
     with Database() as db:
         data = db.fetchone("""
             SELECT username 
-            FROM user 
+            FROM users
             WHERE user_id = ?
         """, (user_id,))
     return data['username'] if data else None
@@ -31,10 +31,10 @@ def get_session_info_email(email: str) -> dict:
     """
     Returns username and user_id given email
     """
-    with Database as db:
+    with Database() as db:
         session_info = db.fetchone("""
             SELECT user_id, username
-            FROM user
+            FROM users
             WHERE email = ?
         """, (email,))
         return session_info

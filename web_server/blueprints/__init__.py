@@ -9,6 +9,7 @@ from blueprints.stripe import stripe_bp
 from blueprints.user import user_bp
 from blueprints.streams import stream_bp
 from blueprints.chat import chat_bp
+from blueprints.oauth import oauth_bp, init_oauth
 from blueprints.socket import socketio
 from celery import Celery
 from celery_tasks import celery_init_app
@@ -24,10 +25,13 @@ def create_app():
         And setup web sockets to be used throughout the project.
     """
     app = Flask(__name__)
+    app.config["SERVER_NAME"] = "127.0.0.1:8080"
     app.config["SECRET_KEY"] = getenv("FLASK_SECRET_KEY")
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
     app.config["PROPAGATE_EXCEPTIONS"] = True
+    app.config['GOOGLE_CLIENT_ID'] = getenv("GOOGLE_CLIENT_ID")
+    app.config['GOOGLE_CLIENT_SECRET'] = getenv("GOOGLE_CLIENT_SECRET")
 
     app.config.from_mapping(
     CELERY=dict(
@@ -47,6 +51,7 @@ def create_app():
     
     Session(app)
     app.before_request(logged_in_user)
+    init_oauth(app)
 
     # adds in error handlers
     register_error_handlers(app)
@@ -63,6 +68,7 @@ def create_app():
         app.register_blueprint(user_bp)
         app.register_blueprint(stream_bp)
         app.register_blueprint(chat_bp)
+        app.register_blueprint(oauth_bp)
 
         socketio.init_app(app)
 
