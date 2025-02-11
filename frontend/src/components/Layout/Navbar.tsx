@@ -4,12 +4,11 @@ import Button from "./Button";
 import Sidebar from "./Sidebar";
 import { Sidebar as SidebarIcon } from "lucide-react";
 import {
-  Search as SearchIcon,
   LogIn as LogInIcon,
   LogOut as LogOutIcon,
   Settings as SettingsIcon,
 } from "lucide-react";
-import Input from "./Input";
+import SearchBar from "./SearchBar";
 import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
@@ -109,15 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
           <QuickSettings />
         </div>
 
-      <div id="search-bar" className="flex items-center">
-        <Input
-          type="text"
-          placeholder="Search..."
-          extraClasses="pr-[30px] focus:outline-none focus:border-purple-500 focus:w-[30vw]"
-        />
-
-        <SearchIcon className="-translate-x-[28px] top-1/2 h-6 w-6 text-white" />
-      </div>
+      <SearchBar />
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
