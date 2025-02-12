@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const SearchBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
-<<<<<<< HEAD
   //const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
   const navigate = useNavigate();
 
@@ -52,28 +51,6 @@ const SearchBar: React.FC = () => {
     }
   };
 
-=======
-
-  const handleSearch = async () => {
-    if (searchQuery.trim()) {
-      try {
-        const response = await fetch("/api/search", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ query: searchQuery }),
-        });
-
-        const data = await response.json();
-        console.log("Search results:", data);
-        // Handle the search results here
-      } catch (error) {
-        console.error("Error performing search:", error);
-      }
-    }
-  };
->>>>>>> 571cb9c0f570358236daeed97c2e969a85cd8d1e
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -92,18 +69,12 @@ const SearchBar: React.FC = () => {
         placeholder="Search..."
         value={searchQuery}
         onChange={handleSearchChange}
-<<<<<<< HEAD
         onKeyDown={handleKeyPress}
         extraClasses="pr-[30px] focus:outline-none focus:border-purple-500 focus:w-[30vw]"
       />
 
       
 
-=======
-        onKeyDown={handleKeyDown}
-        extraClasses="pr-[30px] focus:outline-none focus:border-purple-500 focus:w-[30vw]"
-      />
->>>>>>> 571cb9c0f570358236daeed97c2e969a85cd8d1e
       <SearchIcon className="-translate-x-[28px] top-1/2 h-6 w-6 text-white" />
     </div>
   );
