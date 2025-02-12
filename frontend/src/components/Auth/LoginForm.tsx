@@ -3,7 +3,7 @@ import Input from "../Layout/Input";
 import Button, { ToggleButton } from "../Layout/Button";
 import { useAuth } from "../../context/AuthContext";
 import GoogleLogin from "./OAuth";
-import { CircleHelp as ForgotIcon} from "lucide-react";
+import { CircleHelp as ForgotIcon } from "lucide-react";
 
 interface LoginFormData {
   username: string;
@@ -101,52 +101,70 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
 
   return (
     <>
-      <div className="h-[100%] flex flex-col justify-evenly items-center">
-        <h1 className="text-white text-[2.5em] font-[800]"> Login </h1>
-        <form
-          onSubmit={handleSubmit}
-          id="login-form"
-          className="h-[100%] flex flex-col items-center"
-        >
-          {errors.general && (
-            <p className="text-red-500 text-sm text-center">{errors.general}</p>
-          )}
+      <div className="h-[100%] flex flex-col items-center p-10">
+        <h1 className="flex flex-col text-white text-[2.5em] font-[800]"> Login </h1>
+        <div className="mt-10 bg-white/10 backdrop-blur-md p-6 md:p-16 rounded-xl shadow-lg w-full 
+       md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] h-[27.5em] border border-white/10">
 
-          {errors.username && (
-            <p className="text-red-500 mt-3 text-sm">{errors.username}</p>
-          )}
-          <Input
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleInputChange}
-            extraClasses={`${errors.username ? "border-red-500" : ""}`}
-          />
+          <form
+            onSubmit={handleSubmit}
+            id="login-form"
+            className="flex flex-col"
+          >
+            {errors.general && (
+              <p className="text-red-500 text-sm text-center text-[0.75em]">{errors.general}</p>
+            )}
 
-          {errors.password && (
-            <p className="text-red-500 mt-3 text-sm">{errors.password}</p>
-          )}
-          <Input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleInputChange}
-            extraClasses={`${errors.password ? "border-red-500" : ""}`}
-          />
-          <button
-            type="button"
-            className="flex items-center justify-start bg-white text-gray-600 font-semibold py-1 px-2 rounded shadow-md w-[220px] hover:bg-gray-100 active:bg-gray-200"
-            onClick={onForgotPassword}>
-            <ForgotIcon className="flex flex-row justify-content "/>
-            Forgot Password
-          </button>
+            {errors.username && (
+              <p className="text-red-500 text-center text-[0.75em]">{errors.username}</p>
+            )}
+            <Input
+              name="username"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleInputChange}
+              extraClasses={`w-full mb-[2em] p-3 ${errors.username ? "border-red-500" : ""}`}
+            />
 
-          <Button type="submit">Login</Button>
-        </form>
-        <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
-          <GoogleLogin />
+            {errors.password && (
+              <p className="text-red-500 text-center text-[0.75em]">{errors.password}</p>
+            )}
+
+            <div className="mb-[2em]">
+              <Input
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                extraClasses={`w-full p-3 ${errors.password ? "border-red-500" : ""}`}
+              >
+
+              </Input>
+              <div className="flex flex-row">
+              <label className="flex w-full items-center justify-start cursor-pointer w-10px">
+                <input
+                  type="checkbox"
+                  className="accent-purple-600 w-3 h-3 mr-1"
+                />
+                <span className="sm:text-[0.5em] md:text-[0.8em]">Remember me</span>
+              </label>
+              <button
+                type="button"
+                className="flex w-full justify-end items-center justify-items-end sm:text-[0.5em] md:text-[0.8em] text-white font-semibold hover:scale-[1.05] transition-all ease-in"
+                onClick={onForgotPassword}>
+                <ForgotIcon size={16} className="flex flex-row mr-1" />
+                <span> Forgot Password </span>
+              </button>
+              </div>
+            </div>
+            <Button type="submit">Login</Button>
+          </form>
+
+          <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
+            <GoogleLogin />
           </div>
+        </div>
       </div>
     </>
   );

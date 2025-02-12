@@ -20,7 +20,7 @@ const Theme: React.FC = () => {
     const nextIndex = (currentIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
     setTheme(nextTheme);
-    document.body.setAttribute("data-theme", nextTheme); // Update globally
+    document.body.setAttribute("data-theme", nextTheme); 
   };
 
   return (

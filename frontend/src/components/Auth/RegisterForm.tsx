@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Input from "../Layout/Input";
 import Button from "../Layout/Button";
 import { useAuth } from "../../context/AuthContext";
+import GoogleLogin from "./OAuth";
 
 interface RegisterFormData {
   username: string;
@@ -107,64 +108,88 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      id="register-form"
-      className="h-[100%] flex flex-col justify-evenly items-center"
-    >
-      {errors.general && (
-        <p className="text-red-500 text-sm text-center">{errors.general}</p>
-      )}
+    <>
+      <div className="mb-2">
+        <div className="h-[100%] flex flex-col items-center p-10">
+          <h1 className="flex flex-col text-white text-[2.5em] font-[800]"> Register </h1>
+          <div className="mt-5 bg-white/10 backdrop-blur-md p-10 md:px-16 rounded-xl shadow-lg w-full 
+          md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] h-[31em] border border-white/10">
 
-      {errors.username && (
-        <p className="text-red-500 mt-3 text-sm">{errors.username}</p>
-      )}
-      <Input
-        name="username"
-        placeholder="Username"
-        value={formData.username}
-        onChange={handleInputChange}
-        extraClasses={`${errors.username ? "border-red-500" : ""}`}
-      />
+            <form
+              onSubmit={handleSubmit}
+              id="register-form"
+              className="flex flex-col"
+            >
+              <div className="relative w-full">
+                {errors.general && (
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.general}</p>
+                )}
 
-      {errors.email && (
-        <p className="text-red-500 mt-3 text-sm">{errors.email}</p>
-      )}
-      <Input
-        name="email"
-        type="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleInputChange}
-        extraClasses={`${errors.email ? "border-red-500" : ""}`}
-      />
+                {errors.username && (
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.username}</p>
+                )}
+                <Input
+                  name="username"
+                  placeholder="Username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  extraClasses={`w-full mb-[2em] p-3 ${errors.username ? "border-red-500" : ""}`}
+                />
+              </div>
 
-      {errors.password && (
-        <p className="text-red-500 mt-3 text-sm">{errors.password}</p>
-      )}
-      <Input
-        name="password"
-        type="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleInputChange}
-        extraClasses={`${errors.password ? "border-red-500" : ""}`}
-      />
+              <div className="relative w-full">
+                {errors.email && (
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.email}</p>
+                )}
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  extraClasses={`w-full mb-[2em] p-3 ${errors.email ? "border-red-500" : ""}`}
+                />
+              </div>
 
-      {errors.confirmPassword && (
-        <p className="text-red-500 mt-3 text-sm">{errors.confirmPassword}</p>
-      )}
-      <Input
-        name="confirmPassword"
-        type="password"
-        placeholder="Confirm Password"
-        value={formData.confirmPassword}
-        onChange={handleInputChange}
-        extraClasses={`${errors.confirmPassword ? "border-red-500" : ""}`}
-      />
+              <div className="relative w-full">
+                {errors.password && (
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.password}</p>
+                )}
+                <Input
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  extraClasses={`w-full mb-[2em] p-3 ${errors.password ? "border-red-500" : ""}`}
+                />
+              </div>
+              <div className="relative w-full">
 
-      <Button type="submit">Register</Button>
-    </form>
+                {errors.confirmPassword && (
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.confirmPassword}</p>
+                )}
+                <Input
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  extraClasses={`w-full mb-[2em] p-3 ${errors.confirmPassword ? "border-red-500" : ""}`}
+                />
+              </div>
+
+              <Button type="submit">Register</Button>
+            </form>
+          </div>
+          <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
+                  <GoogleLogin />
+                </div>
+        </div>
+        
+      </div>
+
+    </>
   );
 };
 
