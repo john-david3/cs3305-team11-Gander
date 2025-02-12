@@ -65,3 +65,4 @@ networks:
 
 volumes:
   stream_data:
+    driver: local

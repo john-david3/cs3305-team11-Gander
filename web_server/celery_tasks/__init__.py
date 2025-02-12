@@ -18,30 +18,29 @@ def celery_init_app(app) -> Celery:
     return celery_app
 
 @shared_task
-def update_thumbnail(user_id, sleep_time=180) -> None:
+def update_thumbnail(stream_file, thumbnail_file, sleep_time) -> None:
     """
     Updates the thumbnail of a stream periodically
     """
-    generate_thumbnail(user_id)
+    generate_thumbnail(stream_file, thumbnail_file)
     sleep(sleep_time)
 
 @shared_task
-def combine_ts_stream(username):
+def combine_ts_stream(stream_path, vods_path):
     """
     Combines all ts files into a single vod, and removes the ts files
     """
-    path = f"stream_data/hls/{username}/"
-    ts_files = [f for f in listdir(path) if f.endswith(".ts")]
+    ts_files = [f for f in listdir(stream_path) if f.endswith(".ts")]
     ts_files.sort()
 
     # Create temp file listing all ts files
-    with open(f"{path}list.txt", "w") as f:
+    with open(f"{stream_path}/list.txt", "w") as f:
         for ts_file in ts_files:
             f.write(f"file '{ts_file}'\n")
     
     # Concatenate all ts files into a single vod
-    file_name = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
-    vod_path = f"stream_data/hls/{username}/{file_name}.mp4"
+    file_name = datetime.now().strftime("%d-%m-%Y-%H-%M-%S") + ".mp4"
+    
     vod_command = [
         "ffmpeg",
         "-f",
@@ -49,16 +48,14 @@ def combine_ts_stream(username):
         "-safe",
         "0",
         "-i",
-        f"{path}list.txt",
+        f"{stream_path}/list.txt",
         "-c",
         "copy",
-        vod_path
+        f"{vods_path}/{file_name}"
     ]
 
     subprocess.run(vod_command)
 
     # Remove ts files
     for ts_file in ts_files:
-        remove(f"{path}{ts_file}")
-
-    return vod_path
+        remove(f"{stream_path}/{ts_file}")

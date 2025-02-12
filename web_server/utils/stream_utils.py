@@ -83,44 +83,36 @@ def get_user_vods(user_id: int):
         vods = db.fetchall("""SELECT * FROM vods WHERE user_id = ?;""", (user_id,))
     return vods
 
-def generate_thumbnail(user_id: int) -> None:
+def generate_thumbnail(stream_file: str, thumbnail_file: str, retry_time=5, retry_count=3) -> None:
     """
     Generates the thumbnail of a stream
     """
-    with Database() as db:
-        username = db.fetchone("""SELECT * FROM users WHERE user_id = ?""", (user_id,))
 
-    if not username:
-        return None
-    
-    if not os.path.exists(f"stream_data/thumbnails/"):
-        os.makedirs(f"stream_data/thumbnails/")
-    
     thumbnail_command = [
         "ffmpeg",
         "-y",
         "-i",
-        f"stream_data/hls/{username['username']}/index.m3u8",
+        f"{stream_file}",
         "-vframes",
         "1",
         "-q:v",
         "2",
-        f"stream_data/thumbnails/{username['username']}.jpg"
+        f"{thumbnail_file}"
     ]
 
-    attempts = 3
+    attempts = retry_count
 
     while attempts > 0:
         try:
             subprocess.run(thumbnail_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-            print(f"Thumbnail {username['username']} generated successfully")
+            print(f"Thumbnail generated for {stream_file}")
             break
         except subprocess.CalledProcessError as e:
             attempts -= 1
             print("FFmpeg failed with an error:")
             print(e.stderr.decode())  # Print detailed error message
-            print("Retrying in 5 seconds...")
-            sleep(5)
+            print(f"Retrying in {retry_time} seconds...")
+            sleep(retry_time)
             continue
 
 def get_stream_tags(user_id: int) -> Optional[List[str]]:
@@ -175,3 +167,33 @@ def transfer_stream_to_vod(user_id: int):
         """, (user_id,))
     
     return True
+
+def create_local_directories(username: str):
+    """
+    Create directories for user stream data if they do not exist
+    """
+
+    vods_path = f"stream_data/{username}/vods"
+    stream_path = f"stream_data/{username}/stream"
+    thumbnail_path = f"stream_data/{username}/thumbnails"
+
+    if not os.path.exists(vods_path):
+        os.makedirs(vods_path)
+
+    if not os.path.exists(stream_path):
+        os.makedirs(stream_path)
+
+    if not os.path.exists(thumbnail_path):
+        os.makedirs(thumbnail_path)
+
+    # Fix permissions
+    os.chmod(f"stream_data/{username}", 0o777)
+    os.chmod(vods_path, 0o777)
+    os.chmod(stream_path, 0o777)
+    os.chmod(thumbnail_path, 0o777)
+
+    return {
+        "vod_path": vods_path,
+        "stream_path": stream_path,
+        "thumbnail_path": thumbnail_path
+    }

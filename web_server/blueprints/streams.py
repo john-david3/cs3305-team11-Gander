@@ -7,12 +7,15 @@ from database.database import Database
 from datetime import datetime
 from celery_tasks import update_thumbnail, combine_ts_stream
 from dateutil import parser
+from utils.path_manager import PathManager
 
 stream_bp = Blueprint("stream", __name__)
 
 # Constants
 THUMBNAIL_GENERATION_INTERVAL = 180
 
+## Path Manager
+path_manager = PathManager()
 
 ## Stream Routes
 @stream_bp.route('/streams/popular/<int:no_streams>')
@@ -174,12 +177,18 @@ def publish_stream():
         
         # Set user as streaming
         db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""", (user_info["user_id"],))
-    
-    
-    # Update thumbnail periodically
-    update_thumbnail.delay(user_info["user_id"])
 
-    return redirect(f"/{user_info['username']}")
+    username = user_info["username"]
+    
+    # Local file creation
+    create_local_directories(username)
+
+    # Update thumbnail periodically
+    update_thumbnail.delay(path_manager.get_stream_file_path(username), 
+                           path_manager.get_thumbnail_file_path(username), 
+                           THUMBNAIL_GENERATION_INTERVAL)
+
+    return redirect(f"/{user_info['username']}/stream/")
 
 @stream_bp.route("/end_stream", methods=["POST"])
 def end_stream():
@@ -232,7 +241,10 @@ def end_stream():
         db.execute("""UPDATE users 
                    SET is_live = 0 
                    WHERE user_id = ?""", (user_info["user_id"],))
+        
+    # Get username
+    username = user_info["username"]
     
-    combine_ts_stream.delay(user_info["username"])
+    combine_ts_stream.delay(path_manager.get_stream_path(username), path_manager.get_vods_path(username))
 
     return "Stream ended", 200
