@@ -113,7 +113,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
         <div className="h-[100%] flex flex-col items-center p-10">
           <h1 className="flex flex-col text-white text-[2.5em] font-[800]"> Register </h1>
           <div className="mt-5 bg-white/10 backdrop-blur-md p-10 md:px-16 rounded-xl shadow-lg w-full 
-          md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] h-[31em] border border-white/10">
+          md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] h-[31.5em] border border-white/10">
 
             <form
               onSubmit={handleSubmit}
@@ -133,7 +133,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[2em] p-3 ${errors.username ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-3 ${errors.username ? "border-red-500" : ""}`}
                 />
               </div>
 
@@ -147,7 +147,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[2em] p-3 ${errors.email ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-3 ${errors.email ? "border-red-500" : ""}`}
                 />
               </div>
 
@@ -161,7 +161,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[2em] p-3 ${errors.password ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-3 ${errors.password ? "border-red-500" : ""}`}
                 />
               </div>
               <div className="relative w-full">
@@ -175,11 +175,11 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Confirm Password"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[2em] p-3 ${errors.confirmPassword ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-3 ${errors.confirmPassword ? "border-red-500" : ""}`}
                 />
               </div>
 
-              <Button type="submit">Register</Button>
+              <Button type="submit" >Register</Button>
             </form>
           </div>
           <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
