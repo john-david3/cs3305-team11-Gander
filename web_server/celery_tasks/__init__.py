@@ -22,8 +22,10 @@ def update_thumbnail(stream_file, thumbnail_file, sleep_time) -> None:
     """
     Updates the thumbnail of a stream periodically
     """
-    generate_thumbnail(stream_file, thumbnail_file)
-    sleep(sleep_time)
+
+    while True:
+        generate_thumbnail(stream_file, thumbnail_file)
+        sleep(sleep_time)
 
 @shared_task
 def combine_ts_stream(stream_path, vods_path):
