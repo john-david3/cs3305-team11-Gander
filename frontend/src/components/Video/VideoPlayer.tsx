@@ -11,7 +11,7 @@ const VideoPlayer: React.FC = () => {
   useEffect(() => {
     if (!videoRef.current || !streamerName) return;
 
-    const streamUrl = `http://localhost:8080/stream/${streamerName}/index.m3u8`; // Updated URL with streamerName
+    const streamUrl = `/stream/${streamerName}/index.m3u8`; // Updated URL with streamerName
 
     if (!playerRef.current) {
       const videoElement = document.createElement("video");
