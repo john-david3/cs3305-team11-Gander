@@ -3,7 +3,8 @@ import { useEffect } from "react";
 export default function GoogleLogin() {
   const handleLoginClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    window.location.href = "/api/login/google";
+    const nextUrl = encodeURIComponent(window.location.href);
+    window.location.href = `/api/login/google?next=${nextUrl}`;
   };
 
   return (

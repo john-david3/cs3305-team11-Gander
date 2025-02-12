@@ -8,6 +8,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import UserPage from "./pages/UserPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CategoryPage from "./pages/CategoryPage";
+import CategoriesPage from "./pages/CategoriesPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,6 +45,7 @@ function App() {
             <Route path="/user/:username" element={<UserPage />} />
             <Route path="/reset_password/:token" element={<ResetPasswordPage />}></Route>
             <Route path="/category/:category_name" element={<CategoryPage />}></Route>
+            <Route path="/category" element={<CategoriesPage />}></Route>
 
             <Route path="/404" element={<NotFoundPage />} />
           </Routes>
