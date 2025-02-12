@@ -34,6 +34,7 @@ def combine_ts_stream(stream_path, vods_path):
     """
     ts_files = [f for f in listdir(stream_path) if f.endswith(".ts")]
     ts_files.sort()
+    print(ts_files)
 
     # Create temp file listing all ts files
     with open(f"{stream_path}/list.txt", "w") as f:
@@ -61,3 +62,5 @@ def combine_ts_stream(stream_path, vods_path):
     # Remove ts files
     for ts_file in ts_files:
         remove(f"{stream_path}/{ts_file}")
+    # Remove m3u8 file
+    remove(f"{stream_path}/index.m3u8")
