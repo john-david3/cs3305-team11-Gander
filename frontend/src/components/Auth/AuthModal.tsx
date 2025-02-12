@@ -83,7 +83,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
         
         <div
           className="container fixed inset-0 flex flex-col items-center justify-around z-[9999] 
-        h-auto max-h-[75vh] m-auto min-w-[31vw] w-fit py-[50px] rounded-[5rem]"
+        h-auto max-h-[75vh] m-auto max-w-[350px] min-w-[34vw]  py-[50px] rounded-[5rem]"
           style={{ "--spin-duration": spinDuration } as React.CSSProperties}
         >
           {/*Border Container*/}

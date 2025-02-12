@@ -104,33 +104,33 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
       <div className="h-[100%] flex flex-col items-center p-10">
         <h1 className="flex flex-col text-white text-[2.5em] font-[800]"> Login </h1>
         <div className="mt-10 bg-white/10 backdrop-blur-md p-6 md:p-16 rounded-xl shadow-lg w-full 
-       md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] h-[26em] border border-white/10">
+       md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] h-[27.5em] border border-white/10">
 
           <form
             onSubmit={handleSubmit}
             id="login-form"
-            className="flex flex-col space-y-8"
+            className="flex flex-col"
           >
             {errors.general && (
-              <p className="text-red-500 text-sm text-center">{errors.general}</p>
+              <p className="text-red-500 text-sm text-center text-[0.75em]">{errors.general}</p>
             )}
 
             {errors.username && (
-              <p className="text-red-500 text-center">{errors.username}</p>
+              <p className="text-red-500 text-center text-[0.75em]">{errors.username}</p>
             )}
             <Input
               name="username"
               placeholder="Username"
               value={formData.username}
               onChange={handleInputChange}
-              extraClasses={`w-full p-3 ${errors.username ? "border-red-500" : ""}`}
+              extraClasses={`w-full mb-[2em] p-3 ${errors.username ? "border-red-500" : ""}`}
             />
 
             {errors.password && (
-              <p className="text-red-500 mt-3 text-sm">{errors.password}</p>
+              <p className="text-red-500 text-center text-[0.75em]">{errors.password}</p>
             )}
 
-            <div className="">
+            <div className="mb-[2em]">
               <Input
                 name="password"
                 type="password"
