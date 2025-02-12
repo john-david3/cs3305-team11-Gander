@@ -182,9 +182,6 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
               <Button type="submit" >Register</Button>
             </form>
           </div>
-          <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
-                  <GoogleLogin />
-                </div>
         </div>
         
       </div>
