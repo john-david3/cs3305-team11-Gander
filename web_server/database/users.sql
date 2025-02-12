@@ -11,8 +11,8 @@ CREATE TABLE users
     is_live BOOLEAN NOT NULL DEFAULT 0,
     bio VARCHAR(1024) DEFAULT 'This user does not have a Bio.',
 
-    current_stream_title VARCHAR(100),
-    current_selected_category_id INTEGER
+    current_stream_title VARCHAR(100) DEFAULT 'Stream',
+    current_selected_category_id INTEGER DEFAULT 1
 );
 
 SELECT * FROM users;
