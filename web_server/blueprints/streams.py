@@ -237,6 +237,8 @@ def end_stream():
                                             stream_length,
                                             0))
         
+        vod_id = db.get_last_insert_id()
+        
         # Set user as not streaming
         db.execute("""UPDATE users 
                    SET is_live = 0 
@@ -245,6 +247,6 @@ def end_stream():
     # Get username
     username = user_info["username"]
     
-    combine_ts_stream.delay(path_manager.get_stream_path(username), path_manager.get_vods_path(username))
+    combine_ts_stream.delay(path_manager.get_stream_path(username), path_manager.get_vods_path(username), vod_id)
 
     return "Stream ended", 200

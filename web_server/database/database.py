@@ -54,6 +54,10 @@ class Database:
             print(f"Database error: {e}")
             raise
 
+    def get_last_insert_id(self) -> int:
+        """Get the ID of the last inserted row."""
+        return self.cursor.lastrowid if self.cursor else None
+
     def convert_to_list_dict(self, result):
         """Convert query result to a list of dictionaries."""
         if not result:

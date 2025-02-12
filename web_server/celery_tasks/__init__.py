@@ -28,13 +28,12 @@ def update_thumbnail(stream_file, thumbnail_file, sleep_time) -> None:
         sleep(sleep_time)
 
 @shared_task
-def combine_ts_stream(stream_path, vods_path):
+def combine_ts_stream(stream_path, vods_path, vod_file_name):
     """
     Combines all ts files into a single vod, and removes the ts files
     """
     ts_files = [f for f in listdir(stream_path) if f.endswith(".ts")]
     ts_files.sort()
-    print(ts_files)
 
     # Create temp file listing all ts files
     with open(f"{stream_path}/list.txt", "w") as f:
@@ -42,7 +41,6 @@ def combine_ts_stream(stream_path, vods_path):
             f.write(f"file '{ts_file}'\n")
     
     # Concatenate all ts files into a single vod
-    file_name = datetime.now().strftime("%d-%m-%Y-%H-%M-%S") + ".mp4"
     
     vod_command = [
         "ffmpeg",
@@ -54,7 +52,7 @@ def combine_ts_stream(stream_path, vods_path):
         f"{stream_path}/list.txt",
         "-c",
         "copy",
-        f"{vods_path}/{file_name}"
+        f"{vods_path}/{vod_file_name}.mp4"
     ]
 
     subprocess.run(vod_command)
