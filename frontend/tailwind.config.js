@@ -21,6 +21,8 @@ export default {
       backgroundImage: {
         logo: "linear-gradient(45deg, #60A5FA, #8B5CF6, #EC4899, #FACC15,#60A5FA, #8B5CF6, #EC4899, #FACC15)",
         'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))',
+        authForm:  "linear-gradient(45deg, #1A0B33, #240046, #3C096C, #5A189A)",
+        authFormBorder:   "linear-gradient(45deg, #3A0CA3, #7209B7, #B5179E, #F72585)",
       },
 
       keyframes: {
@@ -56,6 +58,10 @@ export default {
           '50%' : { opacity: '0.8'},
           '100%' : { opacity: '1'},
         },
+
+        fontSize: {
+          forgotPasswordResponsive: "clamp(0.3em, 3vw, 5em)",
+        }
       },
     },
     plugins: [

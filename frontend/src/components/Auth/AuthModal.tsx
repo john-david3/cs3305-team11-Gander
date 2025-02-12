@@ -54,7 +54,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       {/*Container*/}
       <div id="auth-modal"
         className="fixed inset-0 flex flex-col items-center justify-around z-[9000] 
-        h-[95vh] m-auto min-w-[65vw] w-fit py-[80px] rounded-[5rem]  transition-all animate-floating"
+        h-[95vh] m-auto min-w-[65vw] w-fit py-[80px] rounded-[5rem]  transition-all animate-floating "
       >
         {/* Login/Register Buttons Container */}
         <div className="absolute top-[60px] left-1/2 transform -translate-x-1/2 w-[300px] flex justify-center gap-8 transition-transform overflow-visible ">
@@ -80,16 +80,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
 
 
         </div>
+        
         <div
           className="container fixed inset-0 flex flex-col items-center justify-around z-[9999] 
-        h-[75vh] m-auto min-w-[45vw] w-fit py-[50px] rounded-[5rem]"
+        h-auto max-h-[75vh] m-auto min-w-[31vw] w-fit py-[50px] rounded-[5rem]"
           style={{ "--spin-duration": spinDuration } as React.CSSProperties}
         >
           {/*Border Container*/}
           <div
             id="border-container"
-            className="front-content fixed inset-0 bg-gradient-to-br from-blue-950 via-purple-500 to-violet-800 flex flex-col justify-center
-          z-50 h-[70vh] mr-0.5 mb-0.5 m-auto min-w-[40vw] w-fit py-[50px] rounded-[2rem] transition-all"
+            className="front-content fixed ml-[1px] mt-[0.5px] inset-0 bg-authForm flex flex-col justify-center
+          z-50 h-[70vh] min-w-[30vw] w-fit py-[50px] rounded-[2rem] transition-all"
           >
             <div
               id="login-methods"
@@ -105,12 +106,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             <>
             {authSwitch()}
             </>
+            
 
           
     
           </div>
         </div>
       </div>
+
+      
     </>
   );
 };
