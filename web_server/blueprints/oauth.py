@@ -2,11 +2,17 @@ from authlib.integrations.flask_client import OAuth, OAuthError
 from flask import Blueprint, jsonify, session, redirect, request
 from blueprints.user import get_session_info_email
 from database.database import Database
+from dotenv import load_dotenv
 from secrets import token_hex, token_urlsafe
 from random import randint
 
 oauth_bp = Blueprint("oauth", __name__)
 google = None
+
+from os import getenv
+load_dotenv()
+url = getenv("VITE_API_URL")
+
 
 def init_oauth(app):
     oauth = OAuth(app)
@@ -21,7 +27,7 @@ def init_oauth(app):
         api_base_url='https://www.googleapis.com/oauth2/v1/',
         userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
         server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-        redirect_uri="http://127.0.0.1:8080/api/google_auth"
+        redirect_uri=f"{url}/api/google_auth"
     )
 
 @oauth_bp.route('/login/google')
@@ -34,7 +40,7 @@ def login_google():
     session["origin"] = request.args.get("next")
 
     return google.authorize_redirect(
-        'http://127.0.0.1:8080/api/google_auth',
+        f'{url}/api/google_auth',
         nonce=session['nonce']
     )
 
@@ -84,7 +90,7 @@ def google_auth():
                 )
             user_data = get_session_info_email(user_email)
 
-        origin = session.pop("origin", "http://127.0.0.1:8080/")
+        origin = session.pop("origin", f"{url}")
         session.clear()
         session["username"] = user_data["username"]
         session["user_id"] = user_data["user_id"]
