@@ -36,14 +36,15 @@ def popular_streams(no_streams) -> list[dict]:
     return jsonify(streams)
 
 @stream_bp.route('/streams/popular/<string:category_name>')
-def popular_streams_by_category(category_name) -> list[dict]:
+@stream_bp.route('/streams/popular/<string:category_name>/<int:no_streams>/<int:offset>')
+def popular_streams_by_category(category_name, no_streams=4, offset=0) -> list[dict]:
     """
     Returns a list of streams live now with the highest viewers in a given category
     """
 
     category_id = get_category_id(category_name)
 
-    streams = get_streams_based_on_category(category_id)
+    streams = get_streams_based_on_category(category_id, no_streams, offset)
     return jsonify(streams)
 
 @login_required 
@@ -71,7 +72,8 @@ def stream_data(streamer_id):
 
 ## Category Routes
 @stream_bp.route('/categories/popular/<int:no_categories>')
-def popular_categories(no_categories) -> list[dict]:
+@stream_bp.route('/categories/popular/<int:no_categories>/<int:offset>')
+def popular_categories(no_categories, offset=0) -> list[dict]:
     """
     Returns a list of most popular categories
     """
@@ -81,7 +83,7 @@ def popular_categories(no_categories) -> list[dict]:
     elif no_categories > 100:
         no_categories = 100
 
-    category_data = get_highest_view_categories(no_categories)
+    category_data = get_highest_view_categories(no_categories, offset)
     return jsonify(category_data)
 
 @login_required 

@@ -34,7 +34,7 @@ def get_followed_categories_recommendations(user_id: int, no_streams: int = 4) -
     return streams
 
 
-def get_streams_based_on_category(category_id: int, no_streams: int = 4) -> Optional[List[dict]]:
+def get_streams_based_on_category(category_id: int, no_streams: int = 4, offset: int = 0) -> Optional[List[dict]]:
     """
     Queries stream database to get top most viewed streams based on given category
     """
@@ -46,8 +46,8 @@ def get_streams_based_on_category(category_id: int, no_streams: int = 4) -> Opti
             JOIN categories c ON s.category_id = c.category_id
             WHERE c.category_id = ? 
             ORDER BY num_viewers DESC 
-            LIMIT ?
-        """, (category_id, no_streams))
+            LIMIT ? OFFSET ?
+        """, (category_id, no_streams, offset))
     return streams
 
 
@@ -66,9 +66,9 @@ def get_highest_view_streams(no_streams: int = 4) -> Optional[List[dict]]:
         """, (no_streams,))
         return data
 
-def get_highest_view_categories(no_categories: int = 4) -> Optional[List[dict]]:
+def get_highest_view_categories(no_categories: int = 4, offset: int = 0) -> Optional[List[dict]]:
     """
-    Returns a list of top most popular categories
+    Returns a list of top most popular categories given offset
     """
     with Database() as db:
         categories = db.fetchall("""
@@ -77,8 +77,8 @@ def get_highest_view_categories(no_categories: int = 4) -> Optional[List[dict]]:
             JOIN categories ON streams.category_id = categories.category_id
             GROUP BY categories.category_name
             ORDER BY SUM(streams.num_viewers) DESC
-            LIMIT ?;
-        """, (no_categories,))
+            LIMIT ? OFFSET ?;
+        """, (no_categories, offset))
     return categories
 
 def get_user_category_recommendations(user_id: int, no_categories: int = 4) -> Optional[List[dict]]:
