@@ -31,7 +31,7 @@ def verify_token(token: str, salt_value) -> Optional[str]:
         print("Token is invalid", flush=True)
         return None
 
-def reset_password(new_password: str, email: str) -> bool:
+def reset_password(new_password: str, email: str):
     """
     Given email and new password reset the password for a given user
     """
@@ -41,5 +41,3 @@ def reset_password(new_password: str, email: str) -> bool:
             SET password = ? 
             WHERE email = ?
         """, (generate_password_hash(new_password), email))
-    
-    return True

@@ -11,7 +11,8 @@ google = None
 
 from os import getenv
 load_dotenv()
-url = getenv("VITE_API_URL")
+url_api = getenv("VITE_API_URL")
+url = getenv("HOMEPAGE_URL")
 
 
 def init_oauth(app):
@@ -27,7 +28,7 @@ def init_oauth(app):
         api_base_url='https://www.googleapis.com/oauth2/v1/',
         userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
         server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-        redirect_uri=f"{url}/api/google_auth"
+        redirect_uri=f"{url_api}/google_auth"
     )
 
 @oauth_bp.route('/login/google')
@@ -40,7 +41,7 @@ def login_google():
     session["origin"] = request.args.get("next")
 
     return google.authorize_redirect(
-        f'{url}/api/google_auth',
+        f'{url_api}/google_auth',
         nonce=session['nonce']
     )
 

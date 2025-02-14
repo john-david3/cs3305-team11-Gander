@@ -131,11 +131,7 @@ def user_reset_password(token, new_password):
             r.delete(token)
 
     email = verify_token(token[:-5], salt_value)
-
     if email:
-        response = reset_password(new_password, email)
-        if response:
-            return 200
-        else:
-            return jsonify({"error": "Failed to reset password"}), 500
+        reset_password(new_password, email)
+        return jsonify({"message": "Password reset successful"}), 200
     return jsonify({"error": "Invalid token"}), 400

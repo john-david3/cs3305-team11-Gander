@@ -27,10 +27,6 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
         confirmNewPassword: "",
     });
 
-    const confirmPasswordReset = () => {
-        alert(`${resetData.newPassword} - ${token}`);
- 
-      };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -77,9 +73,9 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
 
                 if (!response.ok) {
                     const data = await response.json();
-                    throw new Error(data.message || "An error has occurred while resetting");
+                    throw new Error(data.error || "An error has occurred while resetting");
                 } else {
-                    confirmPasswordReset();
+                    onSubmit(true)
                 }
             } catch (error: any) {
                 console.error("Password reset error:", error.message);

@@ -6,9 +6,13 @@ const ResetPasswordPage: React.FC = () => {
     const { token } = useParams<{ token: string }>();
     const navigate = useNavigate();
 
-    const handlePasswordReset = () => {
-
+    const handlePasswordReset = (success: boolean) => {
+        if (success) {
+            alert("Password reset successful!");
+            navigate("/");
+        } 
     };
+
     if (!token) {
         return <p className="text-red-500 text-center mt-4">Invalid or missing token.</p>;
     }

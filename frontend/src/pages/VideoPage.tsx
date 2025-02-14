@@ -100,9 +100,8 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
         <div
           id="container"
-          className={`grid ${
-            isChatOpen ? "w-[100vw]" : "w-[125vw]"
-          } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
+          className={`grid ${isChatOpen ? "w-[100vw]" : "w-[125vw]"
+            } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
         >
           <div className="relative">
             <VideoPlayer streamId={streamerId} />
@@ -114,7 +113,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             extraClasses="group cursor-pointer absolute top-[70px] right-[20px] text-[1rem] flex items-center flex-nowrap"
           >
             {isChatOpen ? "Hide Chat" : "Show Chat"}
-            
+
             <small className="absolute right-0 left-0 -bottom-0 group-hover:-bottom-5 opacity-0 group-hover:opacity-100 text-white transition-all">Press C</small>
           </ToggleButton>
 
@@ -123,68 +122,98 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             onViewerCountChange={(count: number) => setViewerCount(count)}
           />
 
+          {/* Stream Data */}
           <div
             id="stream-info"
-            className="flex flex-row items-center justify-evenly gap-2 p-8 text-white text-xl"
-            style={{ gridArea: "2 / 1 / 3 / 2" }}
+            className="flex flex-row items-center justify-between gap-4 p-4 bg-[#18181b] text-white text-lg rounded-md shadow-lg"
           >
-            <h1 className="text-3xl text-center font-bold">
-              {streamData ? streamData.streamTitle : "Loading..."}
-            </h1>
-            <div>
-              <Button
-                extraClasses="flex flex-col items-center font-bold bg-[#ff0000] p-4 px-12 rounded-[3rem] cursor-pointer"
+            {/* Streamer Icon */}
+            <div className="flex flex-col items-center mb-[1em]">
+              <img
+                src="/images/monkey.png"
+                alt="streamer"
+                className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500"
+                onClick={() => navigate(`/user/${streamerName}`)}
+              />
+              <button
+                className="text-white font-bold hover:underline mt-[0.5em]"
                 onClick={() => navigate(`/user/${streamerName}`)}
               >
-                <h1>{streamData ? streamData.streamerName : "Loading..."}</h1>
-                <img
-                  src="/images/monkey.png"
-                  alt="streamer"
-                  className="w-30 h-10 bg-indigo-500 rounded-full"
-                />
-              </Button>
+                {streamData ? streamData.streamerName : "Loading..."}
+              </button>
+            </div>
 
-              {/* (Un)Follow Button */}
-              {!isFollowing ? (
-                <Button
-                  extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
-                  onClick={() => followUser(streamerId, setShowAuthModal)}
-                >
-                  Follow
-                </Button>
-              ) : (
-                <Button
-                  extraClasses="w-full bg-green-400/30 hover:content-['Unfollow'] hover:border-[#a80000]"
-                  onClick={() => unfollowUser(streamerId, setShowAuthModal)}
-                >
-                  Following
-                </Button>
-              )}
+            {/* Stream Title */}
+            <div className="flex flex-col items-start flex-grow">
+              <h1 className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] font-bold">
+                {streamData ? streamData.streamTitle : "Loading..."}
+              </h1>
+              <span className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] text-gray-400">
+                {streamData ? streamData.categoryName : "Loading..."}
+              </span>
             </div>
-            <div className="flex flex-col items-center font-bold">
-              <span className="font-thin">Viewers</span>
-              <span>{viewerCount}</span>
+
+            {/* Streamer Info */}
+            <div className="flex items-center gap-[0.75em] flex-col lg:flex-row">
+              <div className="flex flex-col items-center lg:items-start">
+                {!isFollowing ? (
+                  <button
+                    className="bg-purple-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-purple-700 text-sm"
+                    onClick={() => followUser(streamerId, setShowAuthModal)}
+                  >
+                    Follow
+                  </button>
+                ) : (
+                  <button
+                    className="bg-gray-700 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-600 text-sm"
+                    onClick={() => unfollowUser(streamerId, setShowAuthModal)}
+                  >
+                    Unfollow
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="flex flex-col items-center font-bold">
-              <span className="font-thin">Started</span>
-              <span>
+
+            {/* Stream Stats */}
+            <div className="flex flex-col items-center">
+              <div className="flex items-center gap-[0.5em]">
+                <img
+                  src="../../../images/icons/user.png"
+                  alt="Viewers Icon"
+                  className="w-[1em] h-[1em] md:w-[1.2em] md:h-[1.2em]"
+                />
+                <span className="font-bold text-[1.2em]">{viewerCount}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <span className="text-gray-400 text-[0.75em]">Started</span>
+              <span className="text-[0.75em]">
                 {streamData
-                  ? new Date(streamData.startTime).toLocaleString()
+                  ? `${Math.floor((Date.now() - new Date(streamData.startTime).getTime()) / 3600000)} hours ago`
                   : "Loading..."}
               </span>
             </div>
-            <div className="flex flex-col items-center font-bold">
-              <span className="font-thin">Category</span>
-              <span>{streamData ? streamData.categoryName : "Loading..."}</span>
+
+            {/* Subscribe Button */}
+            <div className="flex flex-col items-center">
+              <button
+                className="bg-red-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-700 text-sm"
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    setShowAuthModal(true);
+                  }
+                }}
+              >
+                Subscribe
+              </button>
             </div>
+
           </div>
-          {isLoggedIn && (
-            <Button extraClasses="mx-auto mb-4">Payment Screen Test</Button>
-          )}
+          {/* {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} />} */}
+          {/* {showReturn && <Return />} */}
+          {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
         </div>
-        {/* {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} />} */}
-        {/* {showReturn && <Return />} */}
-        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
       </div>
     </SocketProvider>
   );

@@ -12,6 +12,9 @@ r = redis.from_url(redis_url, decode_responses=True)
 
 load_dotenv()
 
+url = getenv("HOMEPAGE_URL")
+
+
 def send_email(email, func) -> None:
     """
     Send a verification email to the user.
@@ -53,7 +56,6 @@ def forgot_password_body(email) -> str:
 
     token = generate_token(email, salt)
     token += "R3sET" 
-    url = getenv("VITE_API_URL")
     r.setex(token, 3600, salt)
 
     full_url = url + "/reset_password/" + token
@@ -92,7 +94,6 @@ def confirm_account_creation_body(email) -> str:
 
     token = generate_token(email, salt)
     token += "CrEaTe"
-    url = getenv("VITE_API_URL")
     r.setex(token, 3600, salt)
 
     full_url = url + "/confirm_account_creation/" + token
