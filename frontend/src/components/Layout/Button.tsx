@@ -32,7 +32,7 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
   children = "Toggle",
   extraClasses = "",
   onClick,
-  toggled = false,
+  toggled = false
 }) => {
   toggled
     ? (extraClasses += " cursor-default bg-purple-600")
