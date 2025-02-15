@@ -9,6 +9,7 @@ import { useFollow } from "../hooks/useFollow";
 import VideoPlayer from "../components/Video/VideoPlayer";
 import { SocketProvider } from "../context/SocketContext";
 import AuthModal from "../components/Auth/AuthModal";
+import CheckoutForm from "../components/Checkout/CheckoutForm";
 
 interface VideoPageProps {
   streamerId: number;
@@ -30,22 +31,22 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const { isFollowing, checkFollowStatus, followUser, unfollowUser } =
     useFollow();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
-  // const [showCheckout, setShowCheckout] = useState(false);
-  // const showReturn = window.location.search.includes("session_id");
+  const [showCheckout, setShowCheckout] = useState(false);
+  const showReturn = window.location.search.includes("session_id");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // Prevent scrolling when checkout is open
-  //   if (showCheckout) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "unset";
-  //   }
-  //   // Cleanup function to ensure overflow is restored when component unmounts
-  //   return () => {
-  //     document.body.style.overflow = "unset";
-  //   };
-  // }, [showCheckout]);
+  useEffect(() => {
+    // Prevent scrolling when checkout is open
+    if (showCheckout) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    // Cleanup function to ensure overflow is restored when component unmounts
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showCheckout]);
 
   useEffect(() => {
     // Fetch stream data for this streamer
@@ -210,7 +211,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             </div>
 
           </div>
-          {/* {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} />} */}
+          {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} />}
           {/* {showReturn && <Return />} */}
           {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
         </div>

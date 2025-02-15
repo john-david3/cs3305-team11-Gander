@@ -21,12 +21,12 @@ def create_checkout_session():
                     'quantity': 1,
                 },
             ],
-            mode='payment',
+            mode='subscription',
             redirect_on_completion = 'never'
         )
     except Exception as e:
-        print(e)
-        return str(e)
+        print(f"Error creating session: {e}", flush=True)
+        return jsonify(error=str(e)), 500
 
     return jsonify(clientSecret=session.client_secret)
 

@@ -61,3 +61,7 @@ dev-env/
 project_structure.txt
 *.db
 flask_session/
+
+# Certs
+nginx/server.crt
+nginx/server.key
