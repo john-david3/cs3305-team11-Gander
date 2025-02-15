@@ -21,7 +21,7 @@ def create_checkout_session():
                     'quantity': 1,
                 },
             ],
-            mode='payment',
+            mode='subscription',
             redirect_on_completion = 'never'
         )
     except Exception as e:

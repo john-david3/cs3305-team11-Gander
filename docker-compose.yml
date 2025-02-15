@@ -37,6 +37,8 @@ services:
       - app_network
     environment:
       - VITE_API_URL=/api
+    env_file:
+      - .env
     depends_on:
       - web_server
 
