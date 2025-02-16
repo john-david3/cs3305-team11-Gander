@@ -63,9 +63,9 @@ const ResultsPage: React.FC = ({}) => {
             <li
               key={index}
               className="border p-2 rounded my-2 cursor-pointer"
-              onClick={() => navigate(`/${stream.streamer_name}`)}
+              onClick={() => navigate(`/${stream.username}`)}
             >
-              {stream.title} - {stream.num_viewers} viewers
+              {stream.title} - {stream.username} - {stream.num_viewers} viewers
             </li>
           ))}
         </ul>

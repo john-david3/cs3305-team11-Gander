@@ -9,16 +9,17 @@ const SearchBar: React.FC = () => {
   const navigate = useNavigate();
 
   // Debounce the search query
-  {/*
+  {
+    /*
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery);
     }, 500); // Wait 500ms after user stops typing
 
     return () => clearTimeout(timer);
-  }, [searchQuery]); */}
+  }, [searchQuery]); */
+  }
 
-  // Perform search when debounced query changes
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 
@@ -28,13 +29,15 @@ const SearchBar: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: searchQuery }), // <-- Fixed payload
+        body: JSON.stringify({ query: searchQuery }),
       });
 
       const data = await response.json();
       console.log("Search results:", data);
 
-      navigate("/results", { state: { searchResults: data, query: searchQuery } });
+      navigate("/results", {
+        state: { searchResults: data, query: searchQuery },
+      });
 
       // Handle the search results here
     } catch (error) {
@@ -44,22 +47,13 @@ const SearchBar: React.FC = () => {
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      console.log("Key pressed:", e.key); // Debugging
-
-      e.preventDefault(); // Prevent unintended form submission
-      handleSearch(); // Trigger search when Enter key is pressed
+      e.preventDefault();
+      handleSearch();
     }
   };
-
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
   };
 
   return (
@@ -72,8 +66,6 @@ const SearchBar: React.FC = () => {
         onKeyDown={handleKeyPress}
         extraClasses="pr-[30px] focus:outline-none focus:border-purple-500 focus:w-[30vw]"
       />
-
-      
 
       <SearchIcon className="-translate-x-[28px] top-1/2 h-6 w-6 text-white" />
     </div>

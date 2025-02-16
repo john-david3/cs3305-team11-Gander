@@ -41,9 +41,10 @@ def search_results():
 
     # 3 streams
     streams = db.fetchall("""
-                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, s.category_id
+                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, s.category_id, u.username
                     FROM streams AS s
                     INNER JOIN stream_fts AS f ON s.user_id = f.user_id
+                    INNER JOIN users AS u ON s.user_id = u.user_id
                     WHERE f.title LIKE '%' || ? || '%'
                     ORDER BY score ASC
                     LIMIT 3;
@@ -123,9 +124,10 @@ def search_streams():
     
     # Fetch the ranked data and send to JSON to be displayed
     streams = db.fetchall("""
-                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, s.category_id
+                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, s.category_id, u.username
                     FROM streams AS s
                     INNER JOIN stream_fts AS f ON s.user_id = f.user_id
+                    INNER JOIN users AS u ON s.user_id = u.user_id
                     WHERE f.title LIKE '%' || ? || '%'
                     ORDER BY score ASC;
         """, (query,))
