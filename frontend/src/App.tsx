@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { StreamsProvider } from "./context/StreamsContext";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -49,7 +49,8 @@ function App() {
             <Route path="/category" element={<CategoriesPage />}></Route>
             <Route path="/results" element={<FoundPage />}></Route>
             <Route path="/404" element={<NotFoundPage />} />
-          </Routes>
+            <Route path="*" element={<Navigate to="/404" replace />} />
+            </Routes>
         </BrowserRouter>
       </StreamsProvider>
     </AuthContext.Provider>
