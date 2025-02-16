@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../components/Layout/Navbar";
+import Navbar from "../components/Navigation/Navbar";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
 
@@ -78,6 +78,7 @@ const CategoryPage: React.FC = () => {
           title={`${category_name} Streams`}
           description={`Live streams in the ${category_name} category`}
           items={streams}
+          wrap={true}
           onClick={handleStreamClick}
           extraClasses="bg-purple-950/60"
         />

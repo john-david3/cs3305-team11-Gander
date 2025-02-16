@@ -1,8 +1,9 @@
 import React from "react";
-import Navbar from "../components/Layout/Navbar";
+import Navbar from "../components/Navigation/Navbar";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
 import { useStreams, useCategories } from "../context/ContentContext";
+import Button from "../components/Input/Button";
 
 interface HomePageProps {
   variant?: "default" | "personalised";
@@ -33,7 +34,8 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
       <ListRow
         type="stream"
         title={
-          "Streams - Live Now" + (variant === "personalised" ? " - Recommended" : "")
+          "Streams - Live Now" +
+          (variant === "personalised" ? " - Recommended" : "")
         }
         description={
           variant === "personalised"
@@ -41,9 +43,14 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
             : "Streamers that are currently live"
         }
         items={streams}
+        wrap={false}
         onClick={handleStreamClick}
         extraClasses="bg-red-950/60"
-      />
+      >
+        <Button extraClasses="absolute right-10" onClick={() => navigate("/")}>
+          Show More . . .
+        </Button>
+      </ListRow>
 
       {/* If Personalised_HomePage, display Categories the logged-in user follows. Else, trending categories. */}
       <ListRow
@@ -59,9 +66,17 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
             : "Categories that have been 'popping off' lately"
         }
         items={categories}
+        wrap={false}
         onClick={handleCategoryClick}
         extraClasses="bg-green-950/60"
-      />
+      >
+        <Button
+          extraClasses="absolute right-10"
+          onClick={() => navigate("/categories")}
+        >
+          Show More . . .
+        </Button>
+      </ListRow>
     </div>
   );
 };

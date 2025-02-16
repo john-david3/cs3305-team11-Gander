@@ -32,21 +32,19 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
   children = "Toggle",
   extraClasses = "",
   onClick,
-  toggled = false
+  toggled = false,
 }) => {
   toggled
     ? (extraClasses += " cursor-default bg-purple-600")
     : (extraClasses +=
         " cursor-pointer hover:text-purple-600 hover:bg-black/80 hover:border-purple-500 hover:border-b-4 hover:border-l-4");
   return (
-    <div>
-      <button
-        className={`${extraClasses} p-2 text-[1.5rem] text-white bg-black/30 rounded-[1rem] border border-gray-300 transition-all`}
-        onClick={onClick}
-      >
-        {children}
-      </button>
-    </div>
+    <button
+      className={`${extraClasses} p-2 text-[1.5rem] text-white bg-black/30 rounded-[1rem] border border-gray-300 transition-all`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
   );
 };
 

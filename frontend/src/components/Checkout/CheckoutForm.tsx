@@ -53,6 +53,7 @@ export const Return: React.FC = () => {
 
 // Main CheckoutForm component
 interface CheckoutFormProps {
+  streamerID: number;
   onClose: () => void;
 }
 

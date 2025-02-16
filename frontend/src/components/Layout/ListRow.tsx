@@ -1,46 +1,44 @@
 import React, { useRef } from "react";
-import { ArrowLeft as ArrowLeftIcon, ArrowRight as ArrowRightIcon } from "lucide-react";
-import "../../assets/styles/listRow.css"
-
-interface ListItemProps {
-  type: "stream" | "category";
-  id: number;
-  title: string;
-  streamer?: string;
-  streamCategory?: string;
-  viewers: number;
-  thumbnail?: string;
-  onItemClick?: () => void;
-}
+import {
+  ArrowLeft as ArrowLeftIcon,
+  ArrowRight as ArrowRightIcon,
+} from "lucide-react";
+import "../../assets/styles/listRow.css";
+import ListItem, { ListItemProps } from "./ListItem";
 
 interface ListRowProps {
-  type: "stream" | "category";
-  title: string;
-  description: string;
+  type: "stream" | "category" | "user";
+  title?: string;
+  description?: string;
   items: ListItemProps[];
-  extraClasses?: string;
+  wrap: boolean;
   onClick: (itemName: string) => void;
+  extraClasses?: string;
+  children?: React.ReactNode;
 }
 
 // Row of entries
 const ListRow: React.FC<ListRowProps> = ({
-  title,
-  description,
+  title = "",
+  description = "",
   items,
+  wrap,
   onClick,
   extraClasses = "",
+  children,
 }) => {
   const slider = useRef<HTMLDivElement>(null);
+  const scrollAmount = window.innerWidth * 0.3;
 
   const slideRight = () => {
-    if (slider.current) {
-      slider.current.scrollBy({ left: +200, behavior: "smooth" });
+    if (!wrap && slider.current) {
+      slider.current.scrollBy({ left: +scrollAmount, behavior: "smooth" });
     }
   };
 
   const slideLeft = () => {
-    if (slider.current) {
-      slider.current.scrollBy({ left: -200, behavior: "smooth" });
+    if (!wrap && slider.current) {
+      slider.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
     }
   };
 
@@ -54,13 +52,26 @@ const ListRow: React.FC<ListRowProps> = ({
       </div>
 
       <div className="relative overflow-hidden flex items-center z-0">
-
-        <ArrowLeftIcon onClick={slideLeft} size={20} className="absolute mr-1 cursor-pointer z-[999]" />
+        {!wrap && items.length > 3 && (
+          <>
+            <ArrowLeftIcon
+              onClick={slideLeft}
+              size={30}
+              className="absolute left-0 cursor-pointer z-[999]"
+            />
+            <ArrowRightIcon
+              onClick={slideRight}
+              size={30}
+              className="absolute right-0 cursor-pointer z-[999]"
+            />
+          </>
+        )}
 
         <div
           ref={slider}
-          className="flex overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide gap-5 pr-20"
-          style={{ scrollbarWidth: 'none', paddingLeft: "30px", paddingTop: "10px", paddingBottom: "10px", paddingRight: "50px" }}
+          className={`flex ${
+            wrap ? "flex-wrap" : "overflow-x-scroll whitespace-nowrap"
+          } items-center justify-between scroll-smooth scrollbar-hide gap-5 py-[10px] px=[30px] mx-[30px]`}
         >
 
           {items.map((item) => (
@@ -83,51 +94,9 @@ const ListRow: React.FC<ListRowProps> = ({
             />
           ))}
         </div>
-
-        <ArrowRightIcon onClick={slideRight} size={20} className="absolute right-[10px] cursor-pointer" />
-
       </div>
-    </div>
-  );
-};
 
-// Individual list entry component
-export const ListItem: React.FC<ListItemProps> = ({
-  type,
-  title,
-  streamer,
-  streamCategory,
-  viewers,
-  thumbnail,
-  onItemClick,
-}) => {
-  return (
-    <div className="relative pr-[3]">
-      <div
-        className="min-w-[430px] overflow-visible flex-shrink-0 flex flex-col bg-purple-900 rounded-lg 
-     cursor-pointer hover:bg-pink-700 hover:scale-105 transition-all"
-        onClick={onItemClick}
-      >
-        <div className="relative w-full pt-[56.25%] overflow-hidden rounded-t-lg">
-          {thumbnail ? (
-            <img
-              src={thumbnail}
-              alt={title}
-              className="absolute top-0 left-0 w-full h-full object-cover"
-            />
-          ) : (
-            <div className="absolute top-0 left-0 w-full h-full bg-gray-600" />
-          )}
-        </div>
-        <div className="p-3">
-          <h3 className="font-semibold text-lg text-center">{title}</h3>
-          {type === "stream" && <p className="font-bold">{streamer}</p>}
-          {type === "stream" && (
-            <p className="text-sm text-gray-300">{streamCategory}</p>
-          )}
-          <p className="text-sm text-gray-300">{viewers} viewers</p>
-        </div>
-      </div>
+      {children}
     </div>
   );
 };

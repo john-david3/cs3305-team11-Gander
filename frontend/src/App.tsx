@@ -52,7 +52,7 @@ function App() {
               path="/category/:category_name"
               element={<CategoryPage />}
             ></Route>
-            <Route path="/category" element={<CategoriesPage />}></Route>
+            <Route path="/categories" element={<CategoriesPage />}></Route>
             <Route path="/results" element={<ResultsPage />}></Route>
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="*" element={<Navigate to="/404" replace />} />

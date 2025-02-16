@@ -12,7 +12,7 @@ const themeIcons = {
 
 const themes = ["light", "dark", "blue", "green", "orange"];
 
-const Theme: React.FC = () => {
+const ThemeSetting: React.FC = () => {
   const { theme, setTheme } = useTheme();
 
   const handleNextTheme = () => {
@@ -33,7 +33,7 @@ const Theme: React.FC = () => {
   );
 };
 
-export default Theme;
+export default ThemeSetting;
 
 {/*
 ${isMode ? 

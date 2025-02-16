@@ -1,10 +1,10 @@
 -- Sample Data for users
 INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, current_stream_title, current_selected_category_id) VALUES 
-('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 0, 'Epic Gaming Session', 1),
+('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 1, 'Game On!', 1),
 ('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.', 1, 'Live Music Jam', 2),
 ('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.', 1, 'Sketching Live', 3),
 ('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.', 1, 'Math Made Easy', 4),
-('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!', 0, 'Sports Highlights', 5);
+('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!', 1, 'Sports Highlights', 5);
 
 INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
 ('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!'),
@@ -53,10 +53,12 @@ INSERT INTO categories (category_name) VALUES
 ('Sports');
 
 -- Sample Data for streams
-INSERT INTO streams (user_id, title, start_time, num_viewers, category_id) VALUES 
+INSERT INTO streams (user_id, title, start_time, num_viewers, category_id) VALUES
+(1, 'Game on!', '2025-02-16 17:00:00', 5, 1),
 (2, 'Live Music Jam', '2025-01-25 20:00:00', 350, 2),
 (3, 'Sketching Live', '2025-01-24 15:00:00', 80, 3),
-(4, 'Math Made Easy', '2025-01-23 10:00:00', 400, 4);
+(4, 'Math Made Easy', '2025-01-23 10:00:00', 400, 4),
+(5, 'Sports Highlights', '2025-02-15 23:00:00', 210, 5);
 
 -- Sample Data for vods
 INSERT INTO vods (user_id, title, datetime, category_id, length, views) VALUES 
@@ -93,21 +95,6 @@ INSERT INTO chat (stream_id, chatter_id, message) VALUES
 (1, 2, 'Woah, cannot believe that');
 
 
-
-SELECT users.user_id, streams.title, streams.num_viewers, users.username
-FROM streams JOIN users 
-ON streams.user_id = users.user_id
-WHERE users.user_id IN
-(SELECT followed_id FROM follows WHERE user_id = 1)
-AND users.is_live = 1;
-
-SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS total_viewers
-FROM streams
-JOIN categories ON streams.category_id = categories.category_id
-GROUP BY categories.category_name
-ORDER BY SUM(streams.num_viewers) DESC
-LIMIT 10;
-
 INSERT INTO follows (user_id, followed_id, since) VALUES 
 (7, 1, '2024-08-30'),
 (7, 2, '2024-08-30'),
@@ -135,4 +122,18 @@ SELECT * FROM stream_tags;
 -- To see all tables in the database
 SELECT name FROM sqlite_master WHERE type='table';
 
-UPDATE users SET is_live = 0 WHERE user_id = 1;
+-- UPDATE users SET is_live = 0 WHERE user_id = 1;
+
+SELECT users.user_id, streams.title, streams.num_viewers, users.username
+FROM streams JOIN users 
+ON streams.user_id = users.user_id
+WHERE users.user_id IN
+(SELECT followed_id FROM follows WHERE user_id = 1)
+AND users.is_live = 1;
+
+SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS total_viewers
+FROM streams
+JOIN categories ON streams.category_id = categories.category_id
+GROUP BY categories.category_name
+ORDER BY SUM(streams.num_viewers) DESC
+LIMIT 10;
