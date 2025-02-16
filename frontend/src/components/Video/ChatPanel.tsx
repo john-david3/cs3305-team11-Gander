@@ -15,11 +15,13 @@ interface ChatMessage {
 interface ChatPanelProps {
   streamId: number;
   onViewerCountChange?: (count: number) => void;
+  onInputFocus: (focused: boolean) => void;
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({
   streamId,
   onViewerCountChange,
+  onInputFocus,
 }) => {
   const { isLoggedIn, username } = useAuth();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
@@ -114,17 +116,19 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   return (
     <div
       id="chat-panel"
-      className="max-w-[30vw] h-full flex flex-col rounded-lg p-4"
+      className="max-w-[30vw] h-[83vh] flex flex-col rounded-lg p-[2vh] justify-between"
       style={{ gridArea: "1 / 2 / 3 / 3" }}
     >
-      <h2 className="text-xl font-bold mb-4 text-white text-center">
+      {/* Chat Header */}
+      <h2 className="text-xl font-bold mb-4 text-white text-center flex-none">
         Stream Chat
       </h2>
 
+      {/* Message List */}
       <div
         ref={chatContainerRef}
         id="chat-message-list"
-        className="flex-grow w-full max-h-[30em] overflow-y-auto mb-4 space-y-2 rounded-md"
+        className="w-full h-full overflow-y-auto mb-4 space-y-2 rounded-md"
       >
         {messages.map((msg, index) => (
           <div
@@ -141,7 +145,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               />
             </div>
 
-            <div className="flex-grow">
+            <div className="flex-grow overflow-hidden">
               <div className="flex items-center space-x-0.5em">
                 {/* Username */}
                 <span
@@ -155,7 +159,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 </span>
               </div>
               {/* Message content */}
-              <div className="text-[0.9em] mt-0.5em">{msg.message}</div>
+              <div className="w-full text-[0.9em] mt-0.5em flex flex-col overflow-hidden">
+                {msg.message}
+              </div>
             </div>
 
             {/* Time sent */}
@@ -166,7 +172,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         ))}
       </div>
 
-      <div className="flex justify-center gap-2">
+      {/* Input area */}
+      <div className="flex-none flex justify-center gap-2">
         {isLoggedIn ? (
           <>
             <Input
@@ -176,7 +183,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               onKeyDown={handleKeyPress}
               placeholder="Type a message..."
               extraClasses="flex-grow w-full focus:w-full"
+              maxLength={200}
               onClick={() => !isLoggedIn && setShowAuthModal(true)}
+              onFocus={() => onInputFocus(true)}
+              onBlur={() => onInputFocus(false)}
             />
 
             <button

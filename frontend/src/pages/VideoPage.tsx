@@ -28,6 +28,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const [streamData, setStreamData] = useState<StreamDataProps>();
   const [viewerCount, setViewerCount] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(true);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const { isFollowing, checkFollowStatus, followUser, unfollowUser } =
     useFollow();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
@@ -78,7 +79,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   // Keyboard shortcut to toggle chat
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "c") {
+      if (e.key === "c" && !isInputFocused) {
         setIsChatOpen((prev) => !prev);
       }
     };
@@ -88,7 +89,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, []);
+  }, [isInputFocused]);
 
   const toggleChat = () => {
     setIsChatOpen((prev) => !prev);
@@ -96,18 +97,16 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
   return (
     <SocketProvider>
-      <div id="videoPage" className="w-full">
+      <div id="videoPage" className="w-full h-full bg-gray-900 flex flex-col">
         <Navbar />
 
         <div
           id="container"
           className={`grid ${
             isChatOpen ? "w-[100vw]" : "w-[125vw]"
-          } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
+          } flex-grow bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
         >
-          <div className="relative">
-            <VideoPlayer streamId={streamerId} />
-          </div>
+          <VideoPlayer />
 
           <ToggleButton
             onClick={toggleChat}
@@ -124,111 +123,110 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
           <ChatPanel
             streamId={streamerId}
             onViewerCountChange={(count: number) => setViewerCount(count)}
+            onInputFocus={setIsInputFocused}
           />
+        </div>
+        {/* Stream Data */}
+        <div
+          id="stream-info"
+          className="flex flex-row items-center justify-evenly gap-4 p-4 bg-[#18181b] text-white text-lg rounded-md shadow-lg"
+          style={{ gridArea: "2 / 1 / 3 / 3" }}
+        >
+          {/* Streamer Icon */}
+          <div className="flex flex-col items-center mb-[1em]">
+            <img
+              src="/images/monkey.png"
+              alt="streamer profile picture"
+              className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
+              onClick={() => navigate(`/user/${streamerName}`)}
+            />
+            <button
+              className="text-white font-bold hover:underline mt-[0.5em]"
+              onClick={() => navigate(`/user/${streamerName}`)}
+            >
+              {streamData ? streamData.streamerName : "Loading..."}
+            </button>
+          </div>
 
-          {/* Stream Data */}
-          <div
-            id="stream-info"
-            className="flex flex-row items-center justify-between gap-4 p-4 bg-[#18181b] text-white text-lg rounded-md shadow-lg"
-          >
-            {/* Streamer Icon */}
-            <div className="flex flex-col items-center mb-[1em]">
-              <img
-                src="/images/monkey.png"
-                alt="streamer"
-                className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500"
-                onClick={() => navigate(`/user/${streamerName}`)}
-              />
-              <button
-                className="text-white font-bold hover:underline mt-[0.5em]"
-                onClick={() => navigate(`/user/${streamerName}`)}
-              >
-                {streamData ? streamData.streamerName : "Loading..."}
-              </button>
-            </div>
+          {/* Stream Title */}
+          <div className="flex flex-col items-start min-w-[45%] max-w-[60%] mx-12 text-pretty">
+            <h1 className="text-[1rem] lg:text-[1.25em] xl:text-[1.5em] font-bold">
+              {streamData ? streamData.streamTitle : "Loading..."}
+            </h1>
+            <span className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] text-gray-400">
+              {streamData ? streamData.categoryName : "Loading..."}
+            </span>
+          </div>
 
-            {/* Stream Title */}
-            <div className="flex flex-col items-start flex-grow">
-              <h1 className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] font-bold">
-                {streamData ? streamData.streamTitle : "Loading..."}
-              </h1>
-              <span className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] text-gray-400">
-                {streamData ? streamData.categoryName : "Loading..."}
-              </span>
-            </div>
-
-            {/* Streamer Info */}
-            <div className="flex items-center gap-[0.75em] flex-col lg:flex-row">
-              <div className="flex flex-col items-center lg:items-start">
-                {!isFollowing ? (
-                  <button
-                    className="bg-purple-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-purple-700 text-sm"
-                    onClick={() => followUser(streamerId, setShowAuthModal)}
-                  >
-                    Follow
-                  </button>
-                ) : (
-                  <button
-                    className="bg-gray-700 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-600 text-sm"
-                    onClick={() => unfollowUser(streamerId, setShowAuthModal)}
-                  >
-                    Unfollow
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Stream Stats */}
-            <div className="flex flex-col items-center">
-              <div className="flex items-center gap-[0.5em]">
-                <img
-                  src="../../../images/icons/user.png"
-                  alt="Viewers Icon"
-                  className="w-[1em] h-[1em] md:w-[1.2em] md:h-[1.2em]"
-                />
-                <span className="font-bold text-[1.2em]">{viewerCount}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <span className="text-gray-400 text-[0.75em]">Started</span>
-              <span className="text-[0.75em]">
-                {streamData
-                  ? `${Math.floor(
-                      (Date.now() - new Date(streamData.startTime).getTime()) /
-                        3600000
-                    )} hours ago`
-                  : "Loading..."}
-              </span>
-            </div>
-
-            {/* Subscribe Button */}
-            <div className="flex flex-col items-center">
-              <button
-                className="bg-red-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-700 text-sm"
-                onClick={() => {
-                  if (!isLoggedIn) {
-                    setShowAuthModal(true);
-                  } else {
-                    setShowCheckout(true);
-                  }
-                }}
-              >
-                Subscribe
-              </button>
+          {/* Streamer Info */}
+          <div className="flex items-center gap-[0.75em] flex-col lg:flex-row">
+            <div className="flex flex-col items-center lg:items-start">
+              {!isFollowing ? (
+                <button
+                  className="bg-purple-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-purple-700 text-sm"
+                  onClick={() => followUser(streamerId, setShowAuthModal)}
+                >
+                  Follow
+                </button>
+              ) : (
+                <button
+                  className="bg-gray-700 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-600 text-sm"
+                  onClick={() => unfollowUser(streamerId, setShowAuthModal)}
+                >
+                  Unfollow
+                </button>
+              )}
             </div>
           </div>
-          {showCheckout && (
-            <CheckoutForm
-              onClose={() => setShowCheckout(false)}
-              streamerID={streamerId}
-            />
-          )}
-          {showReturn && <Return />}
-          {showAuthModal && (
-            <AuthModal onClose={() => setShowAuthModal(false)} />
-          )}
+
+          {/* Stream Stats */}
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-[0.5em]">
+              <img
+                src="../../../images/icons/user.png"
+                alt="Viewers Icon"
+                className="w-[1em] h-[1em] md:w-[1.2em] md:h-[1.2em]"
+              />
+              <span className="font-bold text-[1.2em]">{viewerCount}</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <span className="text-gray-400 text-[0.75em]">Started</span>
+            <span className="text-[0.75em]">
+              {streamData
+                ? `${Math.floor(
+                    (Date.now() - new Date(streamData.startTime).getTime()) /
+                      3600000
+                  )} hours ago`
+                : "Loading..."}
+            </span>
+          </div>
+
+          {/* Subscribe Button */}
+          <div className="flex flex-col items-center">
+            <button
+              className="bg-red-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-700 text-sm"
+              onClick={() => {
+                if (!isLoggedIn) {
+                  setShowAuthModal(true);
+                } else {
+                  setShowCheckout(true);
+                }
+              }}
+            >
+              Subscribe
+            </button>
+          </div>
         </div>
+        {showCheckout && (
+          <CheckoutForm
+            onClose={() => setShowCheckout(false)}
+            streamerID={streamerId}
+          />
+        )}
+        {showReturn && <Return />}
+        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
       </div>
     </SocketProvider>
   );
