@@ -213,7 +213,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             </div>
 
           </div>
-          {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} />}
+          {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} streamerID={streamerId}/>}
           {showReturn && <Return />}
           {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
         </div>

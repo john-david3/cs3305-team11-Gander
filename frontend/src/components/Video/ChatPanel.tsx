@@ -117,32 +117,48 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       className="max-w-[30vw] h-full flex flex-col rounded-lg p-4"
       style={{ gridArea: "1 / 2 / 3 / 3" }}
     >
-      <h2 className="text-xl font-bold mb-4 text-white">Stream Chat</h2>
+      <h2 className="text-xl font-bold mb-4 text-white text-center">Stream Chat</h2>
 
       <div
         ref={chatContainerRef}
         id="chat-message-list"
-        className="flex-grow w-full max-h-[50vh] overflow-y-auto mb-4 space-y-2 rounded-md"
+        className="flex-grow w-full max-h-[30em] overflow-y-auto mb-4 space-y-2 rounded-md"
       >
         {messages.map((msg, index) => (
           <div
             key={index}
-            className="grid grid-cols-[minmax(15%,_100px)_1fr] group h-fit items-center bg-gray-700 rounded p-2 text-white"
+            className="flex items-start space-x-2 bg-gray-800 rounded p-2 text-white"
           >
-            <span
-              className={`font-bold ${
-                msg.chatter_username === username
-                  ? "text-blue-400"
-                  : "text-green-400"
-              }`}
-            >
-              {" "}
-              {msg.chatter_username}:{" "}
-            </span>
-            <span className="text-center">{msg.message}</span>
-            <span className="text-gray-400 text-sm scale-0 group-hover:scale-100 h-[0px] group-hover:h-[10px] transition-all delay-1000 group-hover:delay-200">
+            {/* User avatar with image */}
+            <div className="w-2em h-2em rounded-full overflow-hidden flex-shrink-0">
+              <img
+                src="/images/monkey.png"
+                alt="User Avatar"
+                className="w-full h-full object-cover"
+                style={{ width: '2.5em', height: '2.5em' }}
+              />
+            </div>
+
+            <div className="flex-grow">
+              <div className="flex items-center space-x-0.5em">
+                {/* Username */}
+                <span
+                  className={`font-bold text-[1em] ${msg.chatter_username === username
+                    ? "text-purple-600"
+                    : "text-green-400"
+                    }`}
+                >
+                  {msg.chatter_username}
+                </span>
+              </div>
+              {/* Message content */}
+              <div className="text-[0.9em] mt-0.5em">{msg.message}</div>
+            </div>
+
+            {/* Time sent */}
+            <div className="text-gray-500 text-[0.8em] self-start">
               {new Date(msg.time_sent).toLocaleTimeString()}
-            </span>
+            </div>
           </div>
         ))}
       </div>

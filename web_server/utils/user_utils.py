@@ -52,21 +52,18 @@ def is_user_partner(user_id: int) -> bool:
     return bool(data)
 
 def is_subscribed(user_id: int, subscribed_to_id: int) -> bool:
-    """
-    Returns True if user is subscribed to a streamer, else False
-    """
+    """Returns True if user is subscribed to a streamer, else False"""
     with Database() as db:
-        result = db.fetchone("""
-            SELECT *
+        return bool(db.fetchone(
+            """
+            SELECT 1 
             FROM subscribes 
             WHERE user_id = ? 
-            AND subscribed_id = ?
+            AND subscribed_id = ? 
             AND expires > ?;
-        """, (user_id, subscribed_to_id, datetime.now()))
-    print(result)
-    if result:
-        return True
-    return False
+            """, 
+            (user_id, subscribed_to_id, datetime.now())
+        ))
 
 def is_following(user_id: int, followed_id: int) -> bool:
     """

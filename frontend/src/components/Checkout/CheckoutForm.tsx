@@ -21,9 +21,11 @@ export const Return: React.FC = () => {
     const sessionId = urlParams.get("session_id");
 
     if (sessionId) {
+      console.log("1")
       fetch(`/api/session-status?session_id=${sessionId}`)
         .then((res) => res.json())
         .then((data) => {
+          console.log("Response Data:", data);
           setStatus(data.status);
           setCustomerEmail(data.customer_email);
         });
@@ -54,9 +56,9 @@ interface CheckoutFormProps {
   onClose: () => void;
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose }) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose, streamerID }) => {
   const fetchClientSecret = () => {
-    return fetch(`/api/create-checkout-session`, {
+    return fetch(`/api/create-checkout-session?streamer_id=${streamerID}`, {
       method: "POST",
     })
       .then((res) => res.json())
