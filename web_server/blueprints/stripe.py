@@ -6,7 +6,7 @@ import os, stripe
 stripe_bp = Blueprint("stripe", __name__)
 
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-endpoint_secret = ""
+endpoint_secret = os.getenv("STRIPE_ENDPOINT_SECRET")
 
 subscription = os.getenv("GANDER_SUBSCRIPTION")
 
@@ -18,6 +18,7 @@ def create_checkout_session():
     """
     print("Creating checkout session", flush=True)
     try:
+        # Checks to see who is subscribing to who
         user_id = s.get("user_id")
         streamer_id = request.args.get("streamer_id")
         session = stripe.checkout.Session.create(
@@ -25,7 +26,7 @@ def create_checkout_session():
             payment_method_types=['card'],
             line_items=[
                 {
-                    'price': 'price_1QikNCGk6yuk3uA86mZf3dmM',
+                    'price': 'price_1QtGVsQoce1zhaP3csrztOoh',
                     'quantity': 1,
                 },
             ],
@@ -57,6 +58,7 @@ def stripe_webhook():
     payload = request.data
     sig_header = request.headers['STRIPE_SIGNATURE']
 
+    # Verifies signature is from Stripe
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, endpoint_secret
@@ -66,7 +68,7 @@ def stripe_webhook():
     except stripe.error.SignatureVerificationError as e:
         raise e
     
-    if event['type'] == "checkout.session.completed":
+    if event['type'] == "checkout.session.completed": # Handles payment success webhook
         session = event['data']['object']
         product_id = stripe.checkout.Session.list_line_items(session['id'])['data'][0]['price']['product']
         if product_id == subscription:
