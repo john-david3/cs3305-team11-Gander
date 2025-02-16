@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Input from "../Layout/Input";
-import Button from "../Layout/Button";
+import Input from "../Input/Input";
+import Button from "../Input/Button";
 import { useAuth } from "../../context/AuthContext";
 import GoogleLogin from "./OAuth";
 
@@ -111,10 +111,13 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
     <>
       <div className="mb-2">
         <div className="flex flex-col items-center p-[2.5rem]">
-          <h1 className="flex flex-col text-white text-[2.5em] font-[800]"> Register </h1>
-          <div className="mt-5 bg-white/10 backdrop-blur-md p-[2.5rem] md:px-16 rounded-xl shadow-lg w-full 
-          md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] border border-white/10">
-
+          <h1 className="flex flex-col text-white text-[2.5em] font-[800]">
+            Register
+          </h1>
+          <div
+            className="mt-5 bg-white/10 backdrop-blur-md p-[2.5rem] md:px-16 rounded-xl shadow-lg w-full 
+          md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] border border-white/10"
+          >
             <form
               onSubmit={handleSubmit}
               id="register-form"
@@ -122,24 +125,32 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
             >
               <div className="relative w-full">
                 {errors.general && (
-                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.general}</p>
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">
+                    {errors.general}
+                  </p>
                 )}
 
                 {errors.username && (
-                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.username}</p>
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">
+                    {errors.username}
+                  </p>
                 )}
                 <Input
                   name="username"
                   placeholder="Username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${errors.username ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                    errors.username ? "border-red-500" : ""
+                  }`}
                 />
               </div>
 
               <div className="relative w-full">
                 {errors.email && (
-                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.email}</p>
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">
+                    {errors.email}
+                  </p>
                 )}
                 <Input
                   name="email"
@@ -147,13 +158,17 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${errors.email ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                    errors.email ? "border-red-500" : ""
+                  }`}
                 />
               </div>
 
               <div className="relative w-full">
                 {errors.password && (
-                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.password}</p>
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">
+                    {errors.password}
+                  </p>
                 )}
                 <Input
                   name="password"
@@ -161,13 +176,16 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${errors.password ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                    errors.password ? "border-red-500" : ""
+                  }`}
                 />
               </div>
               <div className="relative w-full">
-
                 {errors.confirmPassword && (
-                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">{errors.confirmPassword}</p>
+                  <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">
+                    {errors.confirmPassword}
+                  </p>
                 )}
                 <Input
                   name="confirmPassword"
@@ -175,17 +193,17 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Confirm Password"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${errors.confirmPassword ? "border-red-500" : ""}`}
+                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                    errors.confirmPassword ? "border-red-500" : ""
+                  }`}
                 />
               </div>
 
-              <Button type="submit" >Register</Button>
+              <Button type="submit">Register</Button>
             </form>
           </div>
         </div>
-        
       </div>
-
     </>
   );
 };

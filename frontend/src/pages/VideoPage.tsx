@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Layout/Navbar";
-import Button, { ToggleButton } from "../components/Layout/Button";
+import Navbar from "../components/Navigation/Navbar";
+import { ToggleButton } from "../components/Input/Button";
 import ChatPanel from "../components/Video/ChatPanel";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthModal } from "../hooks/useAuthModal";
@@ -9,7 +9,7 @@ import { useFollow } from "../hooks/useFollow";
 import VideoPlayer from "../components/Video/VideoPlayer";
 import { SocketProvider } from "../context/SocketContext";
 import AuthModal from "../components/Auth/AuthModal";
-import CheckoutForm, {Return} from "../components/Checkout/CheckoutForm";
+import CheckoutForm, { Return } from "../components/Checkout/CheckoutForm";
 
 interface VideoPageProps {
   streamerId: number;
@@ -101,8 +101,9 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
         <div
           id="container"
-          className={`grid ${isChatOpen ? "w-[100vw]" : "w-[125vw]"
-            } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
+          className={`grid ${
+            isChatOpen ? "w-[100vw]" : "w-[125vw]"
+          } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
         >
           <div className="relative">
             <VideoPlayer streamId={streamerId} />
@@ -115,7 +116,9 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
           >
             {isChatOpen ? "Hide Chat" : "Show Chat"}
 
-            <small className="absolute right-0 left-0 -bottom-0 group-hover:-bottom-5 opacity-0 group-hover:opacity-100 text-white transition-all">Press C</small>
+            <small className="absolute right-0 left-0 -bottom-0 group-hover:-bottom-5 opacity-0 group-hover:opacity-100 text-white transition-all">
+              Press C
+            </small>
           </ToggleButton>
 
           <ChatPanel
@@ -191,7 +194,10 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
               <span className="text-gray-400 text-[0.75em]">Started</span>
               <span className="text-[0.75em]">
                 {streamData
-                  ? `${Math.floor((Date.now() - new Date(streamData.startTime).getTime()) / 3600000)} hours ago`
+                  ? `${Math.floor(
+                      (Date.now() - new Date(streamData.startTime).getTime()) /
+                        3600000
+                    )} hours ago`
                   : "Loading..."}
               </span>
             </div>
@@ -211,11 +217,17 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
                 Subscribe
               </button>
             </div>
-
           </div>
-          {showCheckout && <CheckoutForm onClose={() => setShowCheckout(false)} streamerID={streamerId}/>}
+          {showCheckout && (
+            <CheckoutForm
+              onClose={() => setShowCheckout(false)}
+              streamerID={streamerId}
+            />
+          )}
           {showReturn && <Return />}
-          {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+          {showAuthModal && (
+            <AuthModal onClose={() => setShowAuthModal(false)} />
+          )}
         </div>
       </div>
     </SocketProvider>

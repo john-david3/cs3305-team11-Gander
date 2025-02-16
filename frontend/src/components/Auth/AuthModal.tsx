@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { ToggleButton } from "../Layout/Button";
-import { LogIn as LogInIcon, User as UserIcon, CircleHelp as ForgotIcon } from "lucide-react";
+import { ToggleButton } from "../Input/Button";
+import {
+  LogIn as LogInIcon,
+  User as UserIcon,
+  CircleHelp as ForgotIcon,
+} from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
@@ -23,14 +27,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   };
 
   const authSwitch = () => {
-
     const formMap: { [key: string]: JSX.Element } = {
-      Login: <LoginForm onSubmit={(handleSubmit)} onForgotPassword={() => setSelectedTab("Forgot")} />,
-      Register: <RegisterForm onSubmit={(handleSubmit)} />,
-      Forgot: <ForgotPasswordForm onSubmit={(handleSubmit)} />
+      Login: (
+        <LoginForm
+          onSubmit={handleSubmit}
+          onForgotPassword={() => setSelectedTab("Forgot")}
+        />
+      ),
+      Register: <RegisterForm onSubmit={handleSubmit} />,
+      Forgot: <ForgotPasswordForm onSubmit={handleSubmit} />,
     };
     return formMap[selectedTab] || <div>Please select a valid option</div>;
-    {/*
+    {
+      /*
     if (selectedTab === "Login") {
       return  <LoginForm onSubmit={(handleSubmit)}/>
     } else if (selectedTab === "Register") {
@@ -39,9 +48,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       return  <ForgotPasswordForm onSubmit={(handleSubmit)}/>
     } else
       return <div> Please select a valid icon</div>
-      */}
-
-  }
+      */
+    }
+  };
 
   return (
     <>
@@ -52,7 +61,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       ></div>
 
       {/*Container*/}
-      <div id="auth-modal"
+      <div
+        id="auth-modal"
         className="fixed inset-0 flex flex-col items-center justify-around z-[9000] 
         h-[95vh] m-auto min-w-[65vw] w-fit py-[80px] rounded-[5rem]  transition-all animate-floating "
       >
@@ -78,8 +88,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             <UserIcon className=" w-[3em] sm:w-[1em] mr-1" />
             Register
           </ToggleButton>
-
-
         </div>
 
         <div
@@ -104,18 +112,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
                 ✕
               </button>
             </div>
-            <>
-              {authSwitch()}
-            </>
-
-
-
-
+            <>{authSwitch()}</>
           </div>
         </div>
       </div>
-
-
     </>
   );
 };

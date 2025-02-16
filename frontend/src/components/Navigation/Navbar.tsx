@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Logo from "./Logo";
-import Button from "./Button";
+import Logo from "../Layout/Logo";
+import Button from "../Input/Button";
 import Sidebar from "./Sidebar";
 import { Sidebar as SidebarIcon } from "lucide-react";
 import {
@@ -8,11 +8,11 @@ import {
   LogOut as LogOutIcon,
   Settings as SettingsIcon,
 } from "lucide-react";
-import SearchBar from "./SearchBar";
+import SearchBar from "../Input/SearchBar";
 import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
-import QuickSettings from "./QuickSettings";
+import QuickSettings from "../Settings/QuickSettings";
 
 interface NavbarProps {
   variant?: "home" | "default";
@@ -42,14 +42,14 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
     setShowSideBar(!showSideBar);
   };
 
-
   return (
     <div
       id="navbar"
-      className={`flex justify-center items-center ${variant === "home"
+      className={`flex justify-center items-center ${
+        variant === "home"
           ? "h-[45vh] flex-col"
           : "h-[15vh] col-span-2 flex-row"
-        }`}
+      }`}
     >
       <Logo variant={variant} />
       <Button
@@ -73,18 +73,22 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         <>
           <Button
             onClick={() => handleSideBar()}
-            extraClasses={`fixed ${showSideBar
+            extraClasses={`absolute ${
+              showSideBar
                 ? `fixed top-[20px] left-[20px] p-2 text-[1.5rem] text-white hover:text-white
           bg-black/30 hover:bg-purple-500/80 rounded-md border border-gray-300 hover:border-white h
           over:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all `
                 : "top-[75px] left-[20px]"
-              } transition-all duration-300 z-[99]`}
+            } transition-all duration-300 z-[99]`}
           >
             <SidebarIcon className="top-[0.20em] left-[10em] mr-1 z-[90]" />
           </Button>
           <div
             className={`fixed top-0 left-0 w-[250px] h-screen bg-[var(--bg-color)] text-[var(--text-color)] z-[90] overflow-y-auto scrollbar-hide
-               transition-opacity duration-500 ease-in-out ${showSideBar ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+              transition-transform transition-opacity duration-500 ease-in-out ${
+                showSideBar
+                  ? "translate-x-0 opacity-100"
+                  : "-translate-x-full opacity-0"
               }`}
           >
             <Sidebar />
@@ -99,14 +103,17 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         <SettingsIcon className="h-15 w-15 mr-1 " />
         Quick Settings
       </Button>
-      
+
       <div
-            className={`fixed top-0 right-0 w-[250px] h-screen ] z-[90] overflow-y-auto scrollbar-hide
-               transition-opacity duration-500 ease-in-out ${showQuickSettings? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
-              }`}
-          >
-          <QuickSettings />
-        </div>
+        className={`fixed top-0 right-0 w-[250px] h-screen ] z-[90] overflow-y-auto scrollbar-hide
+               transition-opacity duration-500 ease-in-out ${
+                 showQuickSettings
+                   ? "translate-x-0 opacity-100"
+                   : "translate-x-full opacity-0"
+               }`}
+      >
+        <QuickSettings />
+      </div>
 
       <SearchBar />
 

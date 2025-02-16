@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Layout/Navbar";
+import Navbar from "../components/Navigation/Navbar";
 import AuthModal from "../components/Auth/AuthModal";
 import { useAuthModal } from "../hooks/useAuthModal";
 import { useAuth } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
-import { ListItem } from "../components/Layout/ListRow";
+import ListItem from "../components/Layout/ListItem";
 import { useFollow } from "../hooks/useFollow";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Layout/Button";
+import Button from "../components/Input/Button";
 
 interface UserProfileData {
   id: number;

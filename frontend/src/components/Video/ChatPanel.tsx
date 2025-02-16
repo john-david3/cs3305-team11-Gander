@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import Input from "../Layout/Input";
-import Button from "../Layout/Button";
+import Input from "../Input/Input";
+import Button from "../Input/Button";
 import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
@@ -117,7 +117,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       className="max-w-[30vw] h-full flex flex-col rounded-lg p-4"
       style={{ gridArea: "1 / 2 / 3 / 3" }}
     >
-      <h2 className="text-xl font-bold mb-4 text-white text-center">Stream Chat</h2>
+      <h2 className="text-xl font-bold mb-4 text-white text-center">
+        Stream Chat
+      </h2>
 
       <div
         ref={chatContainerRef}
@@ -135,7 +137,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 src="/images/monkey.png"
                 alt="User Avatar"
                 className="w-full h-full object-cover"
-                style={{ width: '2.5em', height: '2.5em' }}
+                style={{ width: "2.5em", height: "2.5em" }}
               />
             </div>
 
@@ -143,10 +145,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               <div className="flex items-center space-x-0.5em">
                 {/* Username */}
                 <span
-                  className={`font-bold text-[1em] ${msg.chatter_username === username
-                    ? "text-purple-600"
-                    : "text-green-400"
-                    }`}
+                  className={`font-bold text-[1em] ${
+                    msg.chatter_username === username
+                      ? "text-purple-600"
+                      : "text-green-400"
+                  }`}
                 >
                   {msg.chatter_username}
                 </span>
