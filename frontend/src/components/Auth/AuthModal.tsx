@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ToggleButton } from "../Layout/Button";
-import { LogIn as LogInIcon, User as UserIcon, CircleHelp as ForgotIcon} from "lucide-react";
+import { LogIn as LogInIcon, User as UserIcon, CircleHelp as ForgotIcon } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
@@ -23,11 +23,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   };
 
   const authSwitch = () => {
-    
-    const formMap: { [key: string]: JSX.Element} = {
-      Login: <LoginForm onSubmit={(handleSubmit)} onForgotPassword={() => setSelectedTab("Forgot")}/>,
-      Register: <RegisterForm onSubmit={(handleSubmit)}/>,
-      Forgot: <ForgotPasswordForm onSubmit={(handleSubmit)}/>
+
+    const formMap: { [key: string]: JSX.Element } = {
+      Login: <LoginForm onSubmit={(handleSubmit)} onForgotPassword={() => setSelectedTab("Forgot")} />,
+      Register: <RegisterForm onSubmit={(handleSubmit)} />,
+      Forgot: <ForgotPasswordForm onSubmit={(handleSubmit)} />
     };
     return formMap[selectedTab] || <div>Please select a valid option</div>;
     {/*
@@ -57,30 +57,31 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
         h-[95vh] m-auto min-w-[65vw] w-fit py-[80px] rounded-[5rem]  transition-all animate-floating "
       >
         {/* Login/Register Buttons Container */}
-        <div className="absolute top-[60px] left-1/2 transform -translate-x-1/2 w-[300px] flex justify-center gap-8 transition-transform overflow-visible ">
+        <div className="fixed top-[1em] left-1/2 transform -translate-x-1/2 w-[300px] flex justify-center gap-8 transition-transform overflow-visible ">
           {/* Login Toggle */}
           <ToggleButton
             toggled={selectedTab === "Login"}
-            extraClasses="flex flex-col items-center px-8 duration-250 transition-transform hover:translate-y-[-50px] z-[9001]"
+            extraClasses={`flex flex-col items-center px-8 "
+              }`}
             onClick={() => setSelectedTab("Login")}
           >
-            <LogInIcon className="h-[40px] w-[40px] mr-1" />
+            <LogInIcon className=" w-[3em] sm:w-[1em] mr-1" />
             Login
           </ToggleButton>
 
           {/* Register Toggle */}
           <ToggleButton
             toggled={selectedTab === "Register"}
-            extraClasses="flex flex-col items-center px-8 duration-250 transition-transform hover:translate-y-[-50px] z-[9001]"
+            extraClasses="flex flex-col items-center px-8  z-[9001]"
             onClick={() => setSelectedTab("Register")}
           >
-            <UserIcon className="h-[40px] w-[40px] mr-1" />
+            <UserIcon className=" w-[3em] sm:w-[1em] mr-1" />
             Register
           </ToggleButton>
 
 
         </div>
-        
+
         <div
           className="container fixed inset-0 flex flex-col items-center justify-around z-[9999] 
         h-auto max-h-[75vh] m-auto max-w-[350px] min-w-[34vw]  py-[50px] rounded-[5rem]"
@@ -104,17 +105,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
               </button>
             </div>
             <>
-            {authSwitch()}
+              {authSwitch()}
             </>
-            
 
-          
-    
+
+
+
           </div>
         </div>
       </div>
 
-      
+
     </>
   );
 };

@@ -52,16 +52,17 @@ const ListRow: React.FC<ListRowProps> = ({
         <h2 className="text-2xl font-bold">{title}</h2>
         <p>{description}</p>
       </div>
-      
+
       <div className="relative overflow-hidden flex items-center z-0">
 
         <ArrowLeftIcon onClick={slideLeft} size={20} className="absolute mr-1 cursor-pointer z-[999]" />
 
         <div
           ref={slider}
-          className="flex overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide gap-5"
-          style={{ scrollbarWidth: 'none', paddingLeft: "30px", paddingTop: "10px", paddingBottom: "10px" }}
+          className="flex overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide gap-5 pr-20"
+          style={{ scrollbarWidth: 'none', paddingLeft: "30px", paddingTop: "10px", paddingBottom: "10px", paddingRight: "50px" }}
         >
+
           {items.map((item) => (
             <ListItem
               key={`${item.type}-${item.id}`}
@@ -98,35 +99,35 @@ export const ListItem: React.FC<ListItemProps> = ({
   streamCategory,
   viewers,
   thumbnail,
-  onItemClick,  
+  onItemClick,
 }) => {
   return (
-    <div className="">
-    <div
-      className="min-w-[430px] overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg 
+    <div className="relative pr-[3]">
+      <div
+        className="min-w-[430px] overflow-visible flex-shrink-0 flex flex-col bg-purple-900 rounded-lg 
      cursor-pointer hover:bg-pink-700 hover:scale-105 transition-all"
-      onClick={onItemClick}
-    >
-      <div className="relative w-full pt-[56.25%] overflow-hidden rounded-t-lg">
-        {thumbnail ? (
-          <img
-            src={thumbnail}
-            alt={title}
-            className="absolute top-0 left-0 w-full h-full object-cover"
-          />
-        ) : (
-          <div className="absolute top-0 left-0 w-full h-full bg-gray-600" />
-        )}
+        onClick={onItemClick}
+      >
+        <div className="relative w-full pt-[56.25%] overflow-hidden rounded-t-lg">
+          {thumbnail ? (
+            <img
+              src={thumbnail}
+              alt={title}
+              className="absolute top-0 left-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div className="absolute top-0 left-0 w-full h-full bg-gray-600" />
+          )}
+        </div>
+        <div className="p-3">
+          <h3 className="font-semibold text-lg text-center">{title}</h3>
+          {type === "stream" && <p className="font-bold">{streamer}</p>}
+          {type === "stream" && (
+            <p className="text-sm text-gray-300">{streamCategory}</p>
+          )}
+          <p className="text-sm text-gray-300">{viewers} viewers</p>
+        </div>
       </div>
-      <div className="p-3">
-        <h3 className="font-semibold text-lg text-center">{title}</h3>
-        {type === "stream" && <p className="font-bold">{streamer}</p>}
-        {type === "stream" && (
-          <p className="text-sm text-gray-300">{streamCategory}</p>
-        )}
-        <p className="text-sm text-gray-300">{viewers} viewers</p>
-      </div>
-    </div>
     </div>
   );
 };

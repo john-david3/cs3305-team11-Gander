@@ -47,7 +47,7 @@ const Sidebar: React.FC<SideBarProps> = () => {
   const shownCategory = Object.entries(testCategory).map(([dummyCategory, { dummyLink, dummyImage }]) => {
     return (
       <li key={dummyCategory} className="flex items-center border border-7 border-black space-x-3 rounded-md p-0 text-center
-      hover:bg-[#800020] hover:scale-110 hover:shadow-[-1px_1.5px_10px_white] transition-all duration-250 m-[0.25em]">
+      hover:bg-[#800020] hover:shadow-[-1px_1.5px_10px_white] transition-all duration-250 m-[0.25em]">
         <img src={dummyImage} alt={dummyCategory} className="w-[2em] h-[2em] bg-white ml-[0.25em]" />
         <a href={dummyLink} className="pr-[7.5em] pt-[0.75em] pb-[0.75em]">{dummyCategory}</a>
       </li>
@@ -57,13 +57,13 @@ const Sidebar: React.FC<SideBarProps> = () => {
   return (
     <>
 
-      <div>
+      <div className="overflow-hidden">
         <h1 className="style"> Followed </h1>
         <ul>
           {shownStreamers}
         </ul>
 
-        <h1 className="category-style pt-[0.50em]"> Your Categories </h1>
+        <h1 className="category-style pt-[0.50em] overflow-hidden"> Your Categories </h1>
         <ul>
           {shownCategory}
         </ul>
