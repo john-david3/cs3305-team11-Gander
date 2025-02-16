@@ -1,3 +1,4 @@
+from os import getenv
 from authlib.integrations.flask_client import OAuth, OAuthError
 from flask import Blueprint, jsonify, session, redirect, request
 from blueprints.user import get_session_info_email
@@ -9,7 +10,6 @@ from random import randint
 oauth_bp = Blueprint("oauth", __name__)
 google = None
 
-from os import getenv
 load_dotenv()
 url_api = getenv("VITE_API_URL")
 url = getenv("HOMEPAGE_URL")
@@ -28,8 +28,9 @@ def init_oauth(app):
         api_base_url='https://www.googleapis.com/oauth2/v1/',
         userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
         server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-        redirect_uri=f"{url_api}/google_auth"
+        redirect_uri=f"{url}/api/google_auth"
     )
+
 
 @oauth_bp.route('/login/google')
 def login_google():
@@ -41,9 +42,10 @@ def login_google():
     session["origin"] = request.args.get("next")
 
     return google.authorize_redirect(
-        f'{url_api}/google_auth',
+        f'{url}/api/google_auth',
         nonce=session['nonce']
     )
+
 
 @oauth_bp.route('/google_auth')
 def google_auth():
@@ -70,12 +72,13 @@ def google_auth():
             with Database() as db:
                 # Generates a new username for the user
                 for _ in range(1000000):
-                    username = user.get("given_name") + str(randint(1, 1000000))
+                    username = user.get("given_name") + \
+                        str(randint(1, 1000000))
                     taken = db.fetchone("""
                         SELECT * FROM users
                         WHERE username = ?
                     """, (username,))
-                    
+
                     if not taken:
                         break
 
@@ -91,7 +94,7 @@ def google_auth():
                 )
             user_data = get_session_info_email(user_email)
 
-        origin = session.pop("origin", f"{url}")
+        origin = session.pop("origin", f"{url.replace('/api', '')}")
         session.clear()
         session["username"] = user_data["username"]
         session["user_id"] = user_data["user_id"]

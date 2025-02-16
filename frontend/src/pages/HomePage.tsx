@@ -2,14 +2,15 @@ import React from "react";
 import Navbar from "../components/Layout/Navbar";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
-import { useStreams } from "../context/StreamsContext";
+import { useStreams, useCategories } from "../context/ContentContext";
 
 interface HomePageProps {
   variant?: "default" | "personalised";
 }
 
 const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
-  const { featuredStreams, featuredCategories } = useStreams();
+  const { streams } = useStreams();
+  const { categories } = useCategories();
   const navigate = useNavigate();
 
   const handleStreamClick = (streamerName: string) => {
@@ -32,14 +33,14 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
       <ListRow
         type="stream"
         title={
-          "Live Now" + (variant === "personalised" ? " - Recommended" : "")
+          "Streams - Live Now" + (variant === "personalised" ? " - Recommended" : "")
         }
         description={
           variant === "personalised"
             ? "We think you might like these streams - Streamers recommended for you"
             : "Streamers that are currently live"
         }
-        items={featuredStreams}
+        items={streams}
         onClick={handleStreamClick}
         extraClasses="bg-red-950/60"
       />
@@ -57,10 +58,9 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
             ? "Current streams from your followed categories"
             : "Categories that have been 'popping off' lately"
         }
-        items={featuredCategories}
+        items={categories}
         onClick={handleCategoryClick}
         extraClasses="bg-green-950/60"
-
       />
     </div>
   );

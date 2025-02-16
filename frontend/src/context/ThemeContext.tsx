@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 //  Defines the Theme (Colour Theme) that would be shared/used
 interface ThemeContextType {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
-import { StreamsProvider } from "./context/StreamsContext";
+import { ContentProvider } from "./context/ContentContext";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
@@ -8,8 +8,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import UserPage from "./pages/UserPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CategoryPage from "./pages/CategoryPage";
-import CategoriesPage from "./pages/CategoriesPage";
-import FoundPage from "./pages/FoundPage";
+import CategoriesPage from "./pages/AllCategoriesPage";
+import ResultsPage from "./pages/ResultsPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,7 +32,7 @@ function App() {
     <AuthContext.Provider
       value={{ isLoggedIn, username, setIsLoggedIn, setUsername }}
     >
-      <StreamsProvider>
+      <ContentProvider>
         <BrowserRouter>
           <Routes>
             <Route
@@ -44,15 +44,21 @@ function App() {
 
             <Route path="/:streamerName" element={<StreamerRoute />} />
             <Route path="/user/:username" element={<UserPage />} />
-            <Route path="/reset_password/:token" element={<ResetPasswordPage />}></Route>
-            <Route path="/category/:category_name" element={<CategoryPage />}></Route>
+            <Route
+              path="/reset_password/:token"
+              element={<ResetPasswordPage />}
+            ></Route>
+            <Route
+              path="/category/:category_name"
+              element={<CategoryPage />}
+            ></Route>
             <Route path="/category" element={<CategoriesPage />}></Route>
-            <Route path="/results" element={<FoundPage />}></Route>
+            <Route path="/results" element={<ResultsPage />}></Route>
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
             </Routes>
         </BrowserRouter>
-      </StreamsProvider>
+      </ContentProvider>
     </AuthContext.Provider>
   );
 }
