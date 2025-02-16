@@ -30,7 +30,11 @@ const ResultsPage: React.FC = ({}) => {
         <h3 className="text-lg font-semibold">Categories</h3>
         <ul>
           {searchResults.categories.map((category: any, index: number) => (
-            <li key={index} className="border p-2 rounded my-2">
+            <li
+              key={index}
+              className="border p-2 rounded my-2 cursor-pointer"
+              onClick={() => navigate(`/category/${category.category_name}`)}
+            >
               {category.category_name}
             </li>
           ))}
@@ -41,8 +45,12 @@ const ResultsPage: React.FC = ({}) => {
         <h3 className="text-lg font-semibold">Users</h3>
         <ul>
           {searchResults.users.map((user: any, index: number) => (
-            <li key={index} className="border p-2 rounded my-2">
-              {user.username} {user.is_live ? "🔴" : ""}
+            <li
+              key={index}
+              className="border p-2 rounded my-2 cursor-pointer"
+              onClick={() => navigate(`/user/${user.username}`)}
+            >
+              {user.is_live ? "🔴" : ""} {user.username}
             </li>
           ))}
         </ul>
@@ -52,7 +60,11 @@ const ResultsPage: React.FC = ({}) => {
         <h3 className="text-lg font-semibold">Streams</h3>
         <ul>
           {searchResults.streams.map((stream: any, index: number) => (
-            <li key={index} className="border p-2 rounded my-2">
+            <li
+              key={index}
+              className="border p-2 rounded my-2 cursor-pointer"
+              onClick={() => navigate(`/${stream.streamer_name}`)}
+            >
               {stream.title} - {stream.num_viewers} viewers
             </li>
           ))}
