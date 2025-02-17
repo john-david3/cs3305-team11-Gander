@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, session
+from flask import Blueprint, jsonify
 from database.database import Database
 from .socket import socketio
 from flask_socketio import emit, join_room, leave_room
@@ -7,7 +7,7 @@ from utils.user_utils import get_user_id
 
 chat_bp = Blueprint("chat", __name__)
 
-# <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
+#NOTE: <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
 
 @socketio.on("connect")
 def handle_connection() -> None:
@@ -23,6 +23,7 @@ def handle_join(data) -> None:
     Allow a user to join the chat of the stream they are watching.
     """
     stream_id = data.get("stream_id")
+    print(f"Stream ID GLORP: {stream_id}", flush=True)
     if stream_id:
         join_room(stream_id)
         num_viewers = len(list(socketio.server.manager.get_participants("/", stream_id)))
@@ -118,3 +119,15 @@ def save_chat(chatter_id, stream_id, message):
                     INSERT INTO chat (chatter_id, stream_id, message)
                     VALUES (?, ?, ?);""", (chatter_id, stream_id, message))
     db.close_connection()
+
+def update_viewers(stream_id, num_viewers):
+    """
+        Live Update the number of viewers in the stream to be
+        displayed in the homepage or discovery pages
+    """
+    db = Database()
+    db.execute("""
+                UPDATE streams
+                SET num_viewers = ?
+                WHERE user_id = ?;
+                """)

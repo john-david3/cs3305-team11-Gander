@@ -15,7 +15,7 @@ const StreamerRoute: React.FC = () => {
         const response = await fetch(`/api/user/${streamerName}/status`);
         const data = await response.json();
         setIsLive(Boolean(data.is_live));
-        setStreamId(data.most_recent_stream);
+        setStreamId(data.user_id);
       } catch (error) {
         console.error("Error checking stream status:", error);
         setIsLive(false);

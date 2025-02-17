@@ -128,7 +128,8 @@ def user_live_status(username):
 
     return jsonify({
         "is_live": is_live,
-        "most_recent_stream": most_recent_vod
+        "most_recent_stream": most_recent_vod,
+        "user_id": user_id
     })
 
 

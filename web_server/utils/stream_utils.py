@@ -72,7 +72,7 @@ def get_latest_vod(user_id: int):
     Returns data of the most recent stream by a streamer
     """
     with Database() as db:
-        latest_vod = db.fetchone("""SELECT * FROM vods WHERE user_id = ? ORDER BY vod_id DESC LIMIT 1;""", (user_id,))
+        latest_vod = db.fetchone("""SELECT * FROM vods WHERE user_id = ? ORDER BY vod_id DESC;""", (user_id,))
     return latest_vod
 
 def get_user_vods(user_id: int):
