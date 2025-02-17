@@ -61,3 +61,5 @@ dev-env/
 project_structure.txt
 *.db
 flask_session/
+server.crt
+server.key
