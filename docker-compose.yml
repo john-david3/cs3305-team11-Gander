@@ -27,6 +27,7 @@ services:
       - FLASK_ENV=production
     volumes:
       - stream_data:/web_server/stream_data
+      - database_data:/web_server/database
 
   frontend:
     build:
@@ -37,8 +38,6 @@ services:
       - app_network
     environment:
       - VITE_API_URL=/api
-    env_file:
-      - .env
     depends_on:
       - web_server
 
@@ -58,6 +57,7 @@ services:
     volumes:
       - .:/app
       - stream_data:/web_server/stream_data
+      - database_data:/web_server/database
     networks:
       - app_network
       
@@ -67,4 +67,6 @@ networks:
 
 volumes:
   stream_data:
+    driver: local
+  database_data:
     driver: local
