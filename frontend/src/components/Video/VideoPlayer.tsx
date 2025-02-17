@@ -25,6 +25,7 @@ const VideoPlayer: React.FC = () => {
         muted: true,
         fluid: true,
         responsive: true,
+        aspectRatio: "16:9",
         liveui: true,
         sources: [
           {
@@ -58,7 +59,7 @@ const VideoPlayer: React.FC = () => {
 
   return (
     <div className="min-w-[65vw] w-full h-full flex justify-center items-center bg-gray-900 rounded-lg">
-      <div ref={videoRef} className="w-full max-w-[80vw] self-center" />
+      <div ref={videoRef} className="w-full max-w-[160vh] self-center" />
     </div>
   );
 };

@@ -47,9 +47,9 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         onClick={handleStreamClick}
         extraClasses="bg-red-950/60"
       >
-        <Button extraClasses="absolute right-10" onClick={() => navigate("/")}>
+        {/* <Button extraClasses="absolute right-10" onClick={() => navigate("/")}>
           Show More . . .
-        </Button>
+        </Button> */}
       </ListRow>
 
       {/* If Personalised_HomePage, display Categories the logged-in user follows. Else, trending categories. */}

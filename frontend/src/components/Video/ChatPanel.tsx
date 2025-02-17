@@ -116,7 +116,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   return (
     <div
       id="chat-panel"
-      className="max-w-[30vw] h-[83vh] flex flex-col rounded-lg p-[2vh] justify-between"
+      className="max-w-[30vw] max-h-[83vh] flex flex-col rounded-lg p-[2vh] justify-between"
       style={{ gridArea: "1 / 2 / 3 / 3" }}
     >
       {/* Chat Header */}

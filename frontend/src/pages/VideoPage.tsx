@@ -97,7 +97,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
   return (
     <SocketProvider>
-      <div id="videoPage" className="w-full h-full bg-gray-900 flex flex-col">
+      <div id="videoPage" className="w-full h-full min-h-screen bg-gray-900 flex flex-col">
         <Navbar />
 
         <div
@@ -149,7 +149,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
           </div>
 
           {/* Stream Title */}
-          <div className="flex flex-col items-start min-w-[45%] max-w-[60%] mx-12 text-pretty">
+          <div className="flex flex-col items-start min-w-fit max-w-[60%] mx-8 text-wrap">
             <h1 className="text-[1rem] lg:text-[1.25em] xl:text-[1.5em] font-bold">
               {streamData ? streamData.streamTitle : "Loading..."}
             </h1>
