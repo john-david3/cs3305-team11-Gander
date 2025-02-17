@@ -205,7 +205,7 @@ const UserPage: React.FC = () => {
           {/* Content Section */}
           <div
             id="content"
-            className="col-span-2 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] items-center justify-center"
+            className="col-span-2 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
           >
             {userPageVariant === "streamer" && (
               <>

@@ -5,6 +5,7 @@ import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
+import { useNavigate } from "react-router-dom";
 
 interface ChatMessage {
   chatter_username: string;
@@ -29,6 +30,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Join chat room when component mounts
   useEffect(() => {
@@ -136,7 +138,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             className="flex items-start space-x-2 bg-gray-800 rounded p-2 text-white"
           >
             {/* User avatar with image */}
-            <div className="w-2em h-2em rounded-full overflow-hidden flex-shrink-0">
+            <div
+              className={`w-2em h-2em rounded-full overflow-hidden flex-shrink-0 ${
+                msg.chatter_username === username ? "" : "cursor-pointer"
+              }`}
+              onClick={() =>
+                msg.chatter_username === username
+                  ? null
+                  : navigate(`/user/${msg.chatter_username}`)
+              }
+            >
               <img
                 src="/images/monkey.png"
                 alt="User Avatar"
@@ -152,8 +163,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                   className={`font-bold text-[1em] ${
                     msg.chatter_username === username
                       ? "text-purple-600"
-                      : "text-green-400"
+                      : "text-green-400 cursor-pointer"
                   }`}
+                  onClick={() =>
+                    msg.chatter_username === username
+                      ? null
+                      : navigate(`/user/${msg.chatter_username}`)
+                  }
                 >
                   {msg.chatter_username}
                 </span>
