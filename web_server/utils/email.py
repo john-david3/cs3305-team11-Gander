@@ -5,6 +5,7 @@ from os import getenv
 from dotenv import load_dotenv
 from utils.auth import generate_token
 from secrets import token_hex
+from .user_utils import get_session_info_email
 import redis
 
 redis_url = "redis://redis:6379/1"
@@ -57,6 +58,7 @@ def forgot_password_body(email) -> str:
     token = generate_token(email, salt)
     token += "R3sET" 
     r.setex(token, 3600, salt)
+    username = (get_session_info_email(email))["username"]
 
     full_url = url + "/reset_password/" + token
     content = f"""
@@ -66,8 +68,8 @@ def forgot_password_body(email) -> str:
         <title>Password Reset</title>
         <style>
             body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }}
-            .container {{ max-width: 500px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
-            .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #FFFFFF; text-decoration: none; border-radius: 5px; border: 1px solid #000000; font-weight: bold;}}
+            .container {{ background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
+            .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #FFFFFF; text-decoration: none; border-radius: 5px; border: 1px solid #000000; font-weight: bold; }}
             .btn:hover {{ background-color: #E0E0E0; }}
             p {{ color: #000000; }}
             a.btn {{ color: #000000; }}
@@ -77,12 +79,13 @@ def forgot_password_body(email) -> str:
         <div class="container">
             <h1>Gander</h1>   
             <h2>Password Reset Request</h2>
-            <p>Click the button below to reset your password. This link is valid for 1 hour.</p>
+            <p>Click the button below to reset your password for your account {username}. This link is valid for 1 hour.</p>
             <a href="{full_url}" class="btn">Reset Password</a>
         </div>
     </body>
     </html>
     """
+
 
     return content
 
@@ -105,7 +108,7 @@ def confirm_account_creation_body(email) -> str:
         <title>Password Reset</title>
         <style>
             body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }}
-            .container {{ max-width: 500px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
+            .container {{ background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }}
             .btn {{ display: inline-block; padding: 10px 20px; color: white; background-color: #FFFFFF; text-decoration: none; border-radius: 5px; border: 1px solid #000000; font-weight: bold; }}
             .btn:hover {{ background-color: #E0E0E0; }}
             p {{ color: #000000; }}

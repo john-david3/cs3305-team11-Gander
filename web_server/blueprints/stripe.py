@@ -73,7 +73,7 @@ def stripe_webhook():
         product_id = stripe.checkout.Session.list_line_items(session['id'])['data'][0]['price']['product']
         if product_id == subscription:
             client_reference_id = session.get("client_reference_id")
-            user_id, streamer_id = client_reference_id.split("-")
+            user_id, streamer_id = map(int, client_reference_id.split("-"))
             print(f"user_id: {user_id} is subscribing to streamer_id: {streamer_id}", flush=True)
             subscribe(user_id, streamer_id)
 
