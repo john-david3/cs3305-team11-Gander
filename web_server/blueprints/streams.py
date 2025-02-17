@@ -12,7 +12,7 @@ from utils.path_manager import PathManager
 stream_bp = Blueprint("stream", __name__)
 
 # Constants
-THUMBNAIL_GENERATION_INTERVAL = 180
+THUMBNAIL_GENERATION_INTERVAL = 10
 
 ## Path Manager
 path_manager = PathManager()
@@ -182,12 +182,14 @@ def publish_stream():
         db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""", (user_info["user_id"],))
 
     username = user_info["username"]
+    user_id = user_info["user_id"]
     
     # Local file creation
     create_local_directories(username)
 
     # Update thumbnail periodically
-    update_thumbnail.delay(path_manager.get_stream_file_path(username), 
+    update_thumbnail.delay(user_id,
+                           path_manager.get_stream_file_path(username), 
                            path_manager.get_thumbnail_file_path(username), 
                            THUMBNAIL_GENERATION_INTERVAL)
 

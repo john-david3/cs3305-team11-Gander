@@ -109,11 +109,12 @@ def generate_thumbnail(stream_file: str, thumbnail_file: str, retry_time=5, retr
             break
         except subprocess.CalledProcessError as e:
             attempts -= 1
-            print("FFmpeg failed with an error:")
-            print(e.stderr.decode())  # Print detailed error message
-            print(f"Retrying in {retry_time} seconds...")
+            print(f"No information available, retrying in {retry_time} seconds...")
             sleep(retry_time)
             continue
+
+    if attempts == 0:
+        print(f"Failed to generate thumbnail for {stream_file}, skipping...")
 
 def get_stream_tags(user_id: int) -> Optional[List[str]]:
     """

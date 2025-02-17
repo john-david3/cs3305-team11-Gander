@@ -18,14 +18,17 @@ def celery_init_app(app) -> Celery:
     return celery_app
 
 @shared_task
-def update_thumbnail(stream_file, thumbnail_file, sleep_time) -> None:
+def update_thumbnail(user_id, stream_file, thumbnail_file, sleep_time) -> None:
     """
     Updates the thumbnail of a stream periodically
     """
 
-    while True:
+    if get_streamer_live_status(user_id)['is_live']:
+        print("Updating thumbnail...")
         generate_thumbnail(stream_file, thumbnail_file)
-        sleep(sleep_time)
+        update_thumbnail.apply_async((user_id, stream_file, thumbnail_file, sleep_time), countdown=sleep_time)
+    else:
+        print("Stream has ended, stopping thumbnail updates")
 
 @shared_task
 def combine_ts_stream(stream_path, vods_path, vod_file_name):
