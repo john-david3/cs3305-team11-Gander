@@ -35,6 +35,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const [showCheckout, setShowCheckout] = useState(false);
   const showReturn = window.location.search.includes("session_id");
   const navigate = useNavigate();
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
     // Prevent scrolling when checkout is open
@@ -95,6 +96,19 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     setIsChatOpen((prev) => !prev);
   };
 
+  // Checks if user is subscribed
+  useEffect(() => {
+    fetch(`/api/user/subscription/${streamerName}/expiration`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.remaining_time);
+        if (data.remaining_time > 0) {
+          setIsSubscribed(true);
+        }
+      })
+      .catch(error => console.error("Error fetching subscription:", error));
+  }, [streamerName]);
+
   return (
     <SocketProvider>
       <div id="videoPage" className="w-full">
@@ -102,9 +116,8 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
         <div
           id="container"
-          className={`grid ${
-            isChatOpen ? "w-[100vw]" : "w-[125vw]"
-          } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
+          className={`grid ${isChatOpen ? "w-[100vw]" : "w-[125vw]"
+            } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
         >
           <div className="relative">
             <VideoPlayer />
@@ -197,9 +210,9 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
               <span className="text-[0.75em]">
                 {streamData
                   ? `${Math.floor(
-                      (Date.now() - new Date(streamData.startTime).getTime()) /
-                        3600000
-                    )} hours ago`
+                    (Date.now() - new Date(streamData.startTime).getTime()) /
+                    3600000
+                  )} hours ago`
                   : "Loading..."}
               </span>
             </div>

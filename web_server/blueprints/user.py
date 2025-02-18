@@ -23,24 +23,26 @@ def user_data(username: str):
 
 ## Subscription Routes
 @login_required
-@user_bp.route('/user/subscription/<int:subscribed_id>')
-def user_subscribed(subscribed_id: int):
+@user_bp.route('/user/subscription/<string:streamer_name>')
+def user_subscribed(streamer_name: str):
     """
     Checks to see if user is subscribed to another user
     """
     user_id = session.get("user_id")
+    subscribed_id = get_user_id(streamer_name)
     if is_subscribed(user_id, subscribed_id):
         return jsonify({"subscribed": True})
     return jsonify({"subscribed": False})
 
 @login_required
-@user_bp.route('/user/subscription/<int:subscribed_id>/expiration')
-def user_subscription_expiration(subscribed_id: int):
+@user_bp.route('/user/subscription/<string:streamer_name>/expiration')
+def user_subscription_expiration(streamer_name: str):
     """
     Returns remaining time until subscription expiration
     """
 
     user_id = session.get("user_id")
+    subscribed_id = get_user_id(streamer_name)
     remaining_time = subscription_expiration(user_id, subscribed_id)
     # Remove any expired subscriptions from the table
     if remaining_time == 0:
