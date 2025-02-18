@@ -31,17 +31,24 @@ body[data-theme="light"] {
   --bg-color: white;
   --text-color: black;
 
-  --sideBar-bg: white;
+  --sideBar-bg: rgb(255, 255, 255);
   --sideBar-text: black;
+  --sideBar-profile-bg: rgb(132, 0, 255);
+  --sideBar-profile-text: #ffffff;
+  --profile-border: #ffffff;
+  
+  --follow-bg: #ff0000;
+  --follow-text: white;
+  --follow-shadow: 0px 0px 15px rgba(94, 94, 94, 0.754);
 
   --liveNow: rgba(46, 16, 16, 0.6);
   --recommend: rgba(5, 46, 22, 0.6);
 
-  --quickBar-title: rgba(21, 21, 21, 1);
-  --quickBar-title-bg: rgb(255, 255, 255);
+  --quickBar-title: #ffffff;
+  --quickBar-title-bg: rgb(132, 0, 255);
   --quickBar-bg: #ffffff;
   --quickBar-text: #000000;
-  --quickBar-border: #000000;
+  --quickBar-border: #ffffff;
 }
 
 body[data-theme="dark"] {
@@ -50,6 +57,17 @@ body[data-theme="dark"] {
 
   --sideBar-bg: black;
   --sideBar-text: white;
+  --sideBar-profile-bg: rgba(92, 2, 176, 0.592);
+  --sideBar-profile-text: #ffffff;
+  --profile-border: #ffffff;
+  
+  --follow-bg: #a50000c6;
+  --follow-text: rgb(255, 255, 255);
+  --follow-shadow: 0px 0px 15px rgba(255, 255, 255, 0.966);
+
+  --liveNow: rgba(46, 16, 16, 0.6);
+  --recommend: rgba(5, 46, 22, 0.6);
+
 
   --quickBar-title: rgb(255, 255, 255);
   --quickBar-title-bg: rgb(0, 0, 0);
@@ -62,8 +80,18 @@ body[data-theme="blue"] {
   --bg-color: #e0f7fa;
   --text-color: #00539b;
 
-  --sideBar-bg: #ADD8E6;
+  --sideBar-bg: #eefafffb;
   --sideBar-text: #002147;
+  --sideBar-profile-bg: #003571;
+  --sideBar-profile-text: #ffffff;
+  --profile-border: #ffffff;
+
+  --follow-bg: #ffffff;
+  --follow-shadow: 0px 0px 15px rgba(161, 222, 255, 0.823);
+
+  --liveNow: rgba(46, 16, 16, 0.6);
+  --recommend: rgba(5, 46, 22, 0.6);
+
 
   --quickBar-title: #ffffff;
   --quickBar-title-bg: #003571;
@@ -76,9 +104,20 @@ body[data-theme="green"] {
   --bg-color: #e8f5e9;
   --text-color: #2e7d32;
 
-  --sideBar-bg: rgb(131, 179, 154);
+  /*Sidebar*/
+  --sideBar-bg: #f7fff3;
   --sideBar-text: #2e7d32;
+  --sideBar-profile-bg: rgb(0, 78, 38);
+  --sideBar-profile-text: #ffffff;
+  --profile-border: #ffffff;
 
+  --follow-bg: #ffffff;
+  --follow-shadow: 0px 0px 15px rgba(84, 255, 92, 0.754);
+
+  --liveNow: rgba(46, 16, 16, 0.6);
+  --recommend: rgba(5, 46, 22, 0.6);
+
+  /*Quick Settings*/
   --quickBar-title: rgb(226, 255, 240);
   --quickBar-title-bg: rgb(0, 78, 38);
   --quickBar-bg: #e8f5e9;
@@ -90,8 +129,19 @@ body[data-theme="orange"] {
   --bg-color: #ffe0b2;
   --text-color: #e65100;
 
-  --sideBar-bg: #ffe0b2;
+  --sideBar-bg:  #fff3dc;
   --sideBar-text: #4d3b31;
+  --sideBar-profile-bg:  #E67E22;
+  --sideBar-profile-text: #ffffff;
+  --profile-border: #ffd900;
+
+  --follow-bg: #fdfd00af;
+  --follow-text: #000000;
+  --follow-shadow: 0px 0px 15px rgba(0, 229, 255, 0.754);
+
+  --liveNow: rgba(46, 16, 16, 0.6);
+  --recommend: rgba(5, 46, 22, 0.6);
+
 
   --quickBar-title-bg: #E67E22;
   --quickBar-title: #ffffff;
@@ -104,6 +154,26 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
 }
+
+
+/*Animations*/
+.follow-shadow {
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
