@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 interface AuthContextType {
   isLoggedIn: boolean;
   username: string | null;
-  user_id: number | null;
+  userId: number | null;
   setIsLoggedIn: (value: boolean) => void;
   setUsername: (value: string | null) => void;
   setUserId: (value: number | null) => void;

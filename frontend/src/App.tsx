@@ -15,14 +15,14 @@ import { QuickSettingsProvider } from "./context/QuickSettingsContext";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user_id, setUserID] = useState<number | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/user/login_status")
       .then((response) => response.json())
       .then((data) => {
-        setUserID(data.user_id);
+        setUserId(data.user_id);
         setIsLoggedIn(data.status);
         setUsername(data.username);
       })
@@ -34,7 +34,7 @@ function App() {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, username, user_id, setIsLoggedIn, setUsername }}
+      value={{ isLoggedIn, username, userId, setIsLoggedIn, setUsername, setUserId }}
     >
       <ContentProvider>
         <SidebarProvider>
