@@ -39,7 +39,7 @@ def get_current_stream_data(user_id: int) -> Optional[dict]:
     """
     with Database() as db:
         most_recent_stream = db.fetchone("""
-            SELECT s.user_id, u.username, s.title, s.start_time, s.num_viewers, c.category_name
+            SELECT s.user_id, u.username, s.title, s.start_time, s.num_viewers, c.category_name, c.category_id
             FROM streams AS s
             JOIN categories AS c ON s.category_id = c.category_id
             JOIN users AS u ON s.user_id = u.user_id

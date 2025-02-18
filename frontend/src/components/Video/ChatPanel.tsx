@@ -24,7 +24,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onViewerCountChange,
   onInputFocus,
 }) => {
-  const { isLoggedIn, username } = useAuth();
+  const { isLoggedIn, username, user_id} = useAuth();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -37,13 +37,17 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     if (socket && isConnected) {
       // Add username check
       socket.emit("join", {
+        user_id: user_id ? user_id : null,
         username: username ? username : "Guest",
         stream_id: streamId,
       });
 
       // Handle beforeunload event
       const handleBeforeUnload = () => {
-        socket.emit("leave", { stream_id: streamId });
+        socket.emit("leave", {         
+          user_id: user_id ? user_id : null,
+          username: username ? username : "Guest",
+          stream_id: streamId, });
         socket.disconnect();
       };
 
@@ -83,7 +87,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         socket.disconnect();
       };
     }
-  }, [socket, isConnected, username, streamId]);
+  }, [socket, isConnected, user_id, username, streamId]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

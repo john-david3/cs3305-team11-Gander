@@ -13,12 +13,14 @@ import ResultsPage from "./pages/ResultsPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user_id, setUserID] = useState<number | null>(null);
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/user/login_status")
       .then((response) => response.json())
       .then((data) => {
+        setUserID(data.user_id);
         setIsLoggedIn(data.status);
         setUsername(data.username);
       })
@@ -30,7 +32,7 @@ function App() {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, username, setIsLoggedIn, setUsername }}
+      value={{ isLoggedIn, username, user_id, setIsLoggedIn, setUsername }}
     >
       <ContentProvider>
         <BrowserRouter>

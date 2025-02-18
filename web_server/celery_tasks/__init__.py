@@ -3,6 +3,7 @@ from utils.stream_utils import generate_thumbnail, get_streamer_live_status
 from time import sleep
 from os import listdir, remove
 from datetime import datetime
+from celery_tasks.preferences import user_preferences
 import subprocess
 
 def celery_init_app(app) -> Celery:
@@ -13,9 +14,16 @@ def celery_init_app(app) -> Celery:
 
     celery_app = Celery(app.name, task_cls=FlaskTask)
     celery_app.config_from_object(app.config["CELERY"])
+    celery_app.conf.beat_schedule = {
+        'user-favourability-task': {
+            'task': 'celery_tasks.preferences.user_preferences',
+            'schedule': 30.0,
+        },
+    }
     celery_app.set_default()
     app.extensions["celery"] = celery_app
     return celery_app
+
 
 @shared_task
 def update_thumbnail(user_id, stream_file, thumbnail_file, sleep_time) -> None:

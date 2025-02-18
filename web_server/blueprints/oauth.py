@@ -98,6 +98,7 @@ def google_auth():
         session.clear()
         session["username"] = user_data["username"]
         session["user_id"] = user_data["user_id"]
+        print(f"session: {session.get('username')}. user_id: {session.get('user_id')}", flush=True)
 
         return redirect(origin)
 

@@ -1,4 +1,3 @@
-
 services:
   nginx:
     build:
@@ -13,6 +12,7 @@ services:
       - app_network
     volumes:
       - stream_data:/stream_data
+  
   web_server:
     build:
       context: ./web_server
@@ -60,7 +60,20 @@ services:
       - database_data:/web_server/database
     networks:
       - app_network
-      
+
+  celery_beat:
+    build:
+      context: ./web_server
+    command: celery -A celery_tasks.celery_app beat --loglevel=info
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+      - stream_data:/web_server/stream_data
+      - database_data:/web_server/database
+    networks:
+      - app_network
+
 networks:
   app_network:
     driver: bridge
