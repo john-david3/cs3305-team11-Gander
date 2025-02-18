@@ -33,6 +33,8 @@ def create_app():
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config['GOOGLE_CLIENT_ID'] = getenv("GOOGLE_CLIENT_ID")
     app.config['GOOGLE_CLIENT_SECRET'] = getenv("GOOGLE_CLIENT_SECRET")
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+
 
     app.config.from_mapping(
     CELERY=dict(
