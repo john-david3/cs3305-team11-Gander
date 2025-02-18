@@ -78,7 +78,7 @@ const CategoryPage: React.FC = () => {
           items={streams}
           wrap={true}
           onClick={handleStreamClick}
-          extraClasses="bg-purple-950/60"
+          extraClasses="bg-[var(--recommend)]"
         />
       </div>
 

@@ -61,7 +61,10 @@ const AllCategoriesPage: React.FC = () => {
         items={categories}
         onClick={handleCategoryClick}
         extraClasses="text-center"
+        extraClasses="bg-[var(--recommend)]"
+
         wrap={true}
+
       />
     </DynamicPageContent>
   );

@@ -242,6 +242,8 @@ const UserPage: React.FC = () => {
         </div>
       </div>
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+
+        
     </DynamicPageContent>
   );
 };

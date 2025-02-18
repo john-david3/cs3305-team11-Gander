@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../../assets/styles/sidebar.css";
 import { useSidebar } from "../../context/SidebarContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -71,7 +70,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
         } ${extraClasses}`}
     >
       {/* Profile Info */}
-      <div className="flex flex-row items-center justify-evenly bg-blue-700/40 py-[1em]">
+      <div className="flex flex-row items-center border-b-4 border-[var(--profile-border)] justify-evenly bg-[var(--sideBar-profile-bg)] py-[1em]">
         <img
           src="/images/monkey.png"
           alt="profile picture"
@@ -79,20 +78,29 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
           onClick={() => navigate(`/user/${username}`)}
         />
         <div className="text-center flex flex-col items-center justify-center">
-          <h5 className="font-thin text-[0.85rem] cursor-default">Logged in as</h5>
+          <h5 className="font-thin text-[0.85rem] cursor-default text-[var(--sideBar-profile-text)]">
+            Logged in as
+          </h5>
           <button
             className="font-black text-[1.4rem] hover:underline"
             onClick={() => navigate(`/user/${username}`)}
           >
+            <div className="text-[var(--sideBar-profile-text)]">
             {username}
+            </div>
           </button>
         </div>
       </div>
 
-      <div id="following" className="flex flex-col flex-grow justify-evenly gap-4 p-4">
-        <h1 className="style border cursor-default">Following</h1>
+      <div id="following" className="flex flex-col flex-grow justify-evenly gap-4 p-[1rem]">
+        <div className="bg-[var(--follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300"
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+        >
+        <h1 className="text-[var(--follow-text)] font-bold text-2xl p-[0.75rem] cursor-default">Following</h1>
+        </div>
         <div id="streamers-followed" className="flex-grow">
-          <h2 className="text-[1.5rem] cursor-default">Streamers</h2>
+          <h2 className="border-b-4 border-t-4 text-2xl cursor-default">Streamers</h2>
           <ul className="mt-2 space-y-2">
             {followedStreamers.map((streamer) => (
               <li
@@ -107,7 +115,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
         </div>
 
         <div id="categories-followed" className="flex-grow">
-          <h2 className="text-[1.5rem] cursor-default">Categories</h2>
+          <h2 className="border-b-4 border-t-4 text-[1.5rem] cursor-default">Categories</h2>
           <ul className="mt-2 space-y-2">
             {followedCategories.map((category) => (
               <li
