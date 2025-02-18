@@ -43,7 +43,8 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         items={streams}
         wrap={false}
         onClick={handleStreamClick}
-        extraClasses="bg-red-950/60"
+        extraClasses="bg-[var(--liveNow)]"
+
       >
         {/* <Button extraClasses="absolute right-10" onClick={() => navigate("/")}>
           Show More . . .
@@ -66,7 +67,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         items={categories}
         wrap={false}
         onClick={handleCategoryClick}
-        extraClasses="bg-green-950/60"
+        extraClasses="bg-[var(--recommend)]"
       >
         <Button
           extraClasses="absolute right-10"

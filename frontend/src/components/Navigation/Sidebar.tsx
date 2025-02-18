@@ -65,7 +65,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
   return (
     <div
       id="sidebar"
-      className={`fixed top-0 left-0 w-[15vw] h-screen flex flex-col bg-[var(--bg-color)] text-[var(--text-color)] text-center overflow-y-auto scrollbar-hide
+      className={`fixed top-0 left-0 w-[15vw] h-screen flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide
         transition-all duration-500 ease-in-out ${
           showSideBar ? "translate-x-0" : "-translate-x-full"
         } ${extraClasses}`}

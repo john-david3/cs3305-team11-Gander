@@ -15,6 +15,7 @@ interface ListRowProps {
   onClick: (itemName: string) => void;
   extraClasses?: string;
   children?: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
 // Row of entries
@@ -26,6 +27,7 @@ const ListRow: React.FC<ListRowProps> = ({
   onClick,
   extraClasses = "",
   children,
+  style,
 }) => {
   const slider = useRef<HTMLDivElement>(null);
   const scrollAmount = window.innerWidth * 0.3;
@@ -45,6 +47,7 @@ const ListRow: React.FC<ListRowProps> = ({
   return (
     <div
       className={`flex flex-col w-full space-y-4 py-6 bg-black/50 text-white px-5 mx-2 mt-5 rounded-[1.5rem] transition-all ${extraClasses}`}
+      style={style}
     >
       <div className="space-y-1">
         <h2 className="text-2xl font-bold">{title}</h2>
