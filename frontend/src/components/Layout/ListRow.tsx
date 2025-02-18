@@ -44,7 +44,7 @@ const ListRow: React.FC<ListRowProps> = ({
 
   return (
     <div
-      className={`flex flex-col space-y-4 py-6 bg-black/50 text-white px-5 mx-2 mt-5 rounded-[1.5rem] ${extraClasses}`}
+      className={`flex flex-col w-full space-y-4 py-6 bg-black/50 text-white px-5 mx-2 mt-5 rounded-[1.5rem] transition-all ${extraClasses}`}
     >
       <div className="space-y-1">
         <h2 className="text-2xl font-bold">{title}</h2>

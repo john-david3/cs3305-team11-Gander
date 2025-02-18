@@ -10,6 +10,8 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CategoryPage from "./pages/CategoryPage";
 import CategoriesPage from "./pages/AllCategoriesPage";
 import ResultsPage from "./pages/ResultsPage";
+import { SidebarProvider } from "./context/SidebarContext";
+import { QuickSettingsProvider } from "./context/QuickSettingsContext";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,31 +37,38 @@ function App() {
       value={{ isLoggedIn, username, user_id, setIsLoggedIn, setUsername }}
     >
       <ContentProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                isLoggedIn ? <HomePage variant="personalised" /> : <HomePage />
-              }
-            />
-
-            <Route path="/:streamerName" element={<StreamerRoute />} />
-            <Route path="/user/:username" element={<UserPage />} />
-            <Route
-              path="/reset_password/:token"
-              element={<ResetPasswordPage />}
-            ></Route>
-            <Route
-              path="/category/:category_name"
-              element={<CategoryPage />}
-            ></Route>
-            <Route path="/categories" element={<CategoriesPage />}></Route>
-            <Route path="/results" element={<ResultsPage />}></Route>
-            <Route path="/404" element={<NotFoundPage />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
-        </BrowserRouter>
+        <SidebarProvider>
+          <QuickSettingsProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    isLoggedIn ? (
+                      <HomePage variant="personalised" />
+                    ) : (
+                      <HomePage />
+                    )
+                  }
+                />
+                <Route path="/:streamerName" element={<StreamerRoute />} />
+                <Route path="/user/:username" element={<UserPage />} />
+                <Route
+                  path="/reset_password/:token"
+                  element={<ResetPasswordPage />}
+                ></Route>
+                <Route
+                  path="/category/:category_name"
+                  element={<CategoryPage />}
+                ></Route>
+                <Route path="/categories" element={<CategoriesPage />}></Route>
+                <Route path="/results" element={<ResultsPage />}></Route>
+                <Route path="/404" element={<NotFoundPage />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </BrowserRouter>
+          </QuickSettingsProvider>
+        </SidebarProvider>
       </ContentProvider>
     </AuthContext.Provider>
   );

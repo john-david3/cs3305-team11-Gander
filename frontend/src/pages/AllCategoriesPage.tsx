@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import Navbar from "../components/Navigation/Navbar";
 import { useNavigate } from "react-router-dom";
 import ListRow from "../components/Layout/ListRow";
 import { useCategories } from "../context/ContentContext";
+import DynamicPageContent from "../components/Layout/DynamicPageContent";
 
 const AllCategoriesPage: React.FC = () => {
   const { categories, setCategories } = useCategories();
@@ -51,11 +51,10 @@ const AllCategoriesPage: React.FC = () => {
   };
 
   return (
-    <div
+    <DynamicPageContent
       className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]"
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
-      <Navbar />
       <ListRow
         type="category"
         title="All Categories"
@@ -64,7 +63,7 @@ const AllCategoriesPage: React.FC = () => {
         extraClasses="text-center"
         wrap={true}
       />
-    </div>
+    </DynamicPageContent>
   );
 };
 

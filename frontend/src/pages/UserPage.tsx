@@ -8,6 +8,7 @@ import ListItem from "../components/Layout/ListItem";
 import { useFollow } from "../hooks/useFollow";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Input/Button";
+import DynamicPageContent from "../components/Layout/DynamicPageContent";
 
 interface UserProfileData {
   id: number;
@@ -108,14 +109,14 @@ const UserPage: React.FC = () => {
     );
   }
   return (
-    <div
+    <DynamicPageContent
       className={`min-h-screen ${
         profileData.isLive
           ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
           : bgColors[userPageVariant]
       } text-white flex flex-col`}
     >
-      <Navbar />
+      
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8">
         <div className="grid grid-cols-3 w-full gap-8">
           {/* Profile Section - Left Third */}
@@ -241,7 +242,7 @@ const UserPage: React.FC = () => {
         </div>
       </div>
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
-    </div>
+    </DynamicPageContent>
   );
 };
 

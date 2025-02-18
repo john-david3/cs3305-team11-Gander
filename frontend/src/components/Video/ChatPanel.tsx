@@ -16,13 +16,11 @@ interface ChatMessage {
 interface ChatPanelProps {
   streamId: number;
   onViewerCountChange?: (count: number) => void;
-  onInputFocus: (focused: boolean) => void;
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({
   streamId,
   onViewerCountChange,
-  onInputFocus,
 }) => {
   const { isLoggedIn, username, user_id} = useAuth();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
@@ -205,8 +203,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               extraClasses="flex-grow w-full focus:w-full"
               maxLength={200}
               onClick={() => !isLoggedIn && setShowAuthModal(true)}
-              onFocus={() => onInputFocus(true)}
-              onBlur={() => onInputFocus(false)}
             />
 
             <button

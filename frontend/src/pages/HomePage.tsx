@@ -1,9 +1,9 @@
 import React from "react";
-import Navbar from "../components/Navigation/Navbar";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
 import { useStreams, useCategories } from "../context/ContentContext";
 import Button from "../components/Input/Button";
+import DynamicPageContent from "../components/Layout/DynamicPageContent";
 
 interface HomePageProps {
   variant?: "default" | "personalised";
@@ -23,13 +23,11 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   };
 
   return (
-    <div
-      id="home-page"
-      className="animate-moving_bg h-full"
+    <DynamicPageContent
+      navbarVariant="home"
+      className="h-full min-h-screen animate-moving_bg"
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
-      <Navbar variant="home" />
-
       {/* If Personalised_HomePage, display Streams recommended for the logged-in user. Else, live streams with the most viewers. */}
       <ListRow
         type="stream"
@@ -77,7 +75,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
           Show More . . .
         </Button>
       </ListRow>
-    </div>
+    </DynamicPageContent>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../components/Navigation/Navbar";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
+import DynamicPageContent from "../components/Layout/DynamicPageContent";
 
 interface StreamData {
   type: "stream";
@@ -66,12 +66,10 @@ const CategoryPage: React.FC = () => {
   }
 
   return (
-    <div
+    <DynamicPageContent
       className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]"
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
-      <Navbar />
-
       <div className="pt-8">
         <ListRow
           type="stream"
@@ -89,7 +87,7 @@ const CategoryPage: React.FC = () => {
           No live streams found in this category
         </div>
       )}
-    </div>
+    </DynamicPageContent>
   );
 };
 

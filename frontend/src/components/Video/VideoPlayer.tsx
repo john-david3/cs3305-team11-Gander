@@ -58,7 +58,7 @@ const VideoPlayer: React.FC = () => {
   }, [streamerName]);
 
   return (
-    <div className="min-w-[65vw] w-full h-full flex justify-center items-center bg-gray-900 rounded-lg">
+    <div className="w-full h-full flex justify-center items-center bg-gray-900 rounded-lg">
       <div ref={videoRef} className="w-full max-w-[160vh] self-center" />
     </div>
   );

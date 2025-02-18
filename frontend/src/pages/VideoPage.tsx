@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navigation/Navbar";
 import { ToggleButton } from "../components/Input/Button";
 import ChatPanel from "../components/Video/ChatPanel";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +9,8 @@ import VideoPlayer from "../components/Video/VideoPlayer";
 import { SocketProvider } from "../context/SocketContext";
 import AuthModal from "../components/Auth/AuthModal";
 import CheckoutForm, { Return } from "../components/Checkout/CheckoutForm";
+import DynamicPageContent from "../components/Layout/DynamicPageContent";
+import { useSidebar } from "../context/SidebarContext";
 
 interface VideoPageProps {
   streamerId: number;
@@ -28,7 +29,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const [streamData, setStreamData] = useState<StreamDataProps>();
   const [viewerCount, setViewerCount] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(true);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const { showSideBar } = useSidebar();
   const { isFollowing, checkFollowStatus, followUser, unfollowUser } =
     useFollow();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
@@ -80,7 +81,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   // Keyboard shortcut to toggle chat
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "c" && !isInputFocused) {
+      if (e.key === "c" && document.activeElement == document.body) {
         setIsChatOpen((prev) => !prev);
       }
     };
@@ -90,7 +91,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isInputFocused]);
+  }, []);
 
   const toggleChat = () => {
     setIsChatOpen((prev) => !prev);
@@ -111,34 +112,39 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
   return (
     <SocketProvider>
-      <div id="videoPage" className="w-full">
-        <Navbar />
+      {/* Toggle Button for Chat */}
+      <ToggleButton
+        onClick={toggleChat}
+        toggled={isChatOpen}
+        extraClasses="group cursor-pointer absolute top-[70px] right-[20px] text-[1rem] flex items-center flex-nowrap"
+      >
+        {isChatOpen ? "Hide Chat" : "Show Chat"}
 
+        <small className="absolute right-0 left-0 -bottom-0 group-hover:-bottom-5 opacity-0 group-hover:opacity-100 text-white transition-all">
+          Press C
+        </small>
+      </ToggleButton>
+
+      <DynamicPageContent className="w-full min-h-screen">
         <div
           id="container"
-          className={`grid ${isChatOpen ? "w-[100vw]" : "w-[125vw]"
-            } grid-rows-[auto_1fr] bg-gray-900 h-full grid-cols-[auto_25vw] transition-all`}
+          className={`bg-gray-900 h-full grid ${
+            isChatOpen
+              ? showSideBar
+                ? "w-[85vw] duration-[1s]"
+                : "w-[100vw] duration-[0.5s]"
+              : showSideBar
+              ? "w-[110vw] duration-[1s]"
+              : "w-[125vw] duration-[0.5s]"
+          } grid-rows-[auto_1fr] grid-cols-[auto_25vw] transition-all ease-in-out`}
         >
           <div className="relative">
             <VideoPlayer />
           </div>
 
-          <ToggleButton
-            onClick={toggleChat}
-            toggled={isChatOpen}
-            extraClasses="group cursor-pointer absolute top-[70px] right-[20px] text-[1rem] flex items-center flex-nowrap"
-          >
-            {isChatOpen ? "Hide Chat" : "Show Chat"}
-
-            <small className="absolute right-0 left-0 -bottom-0 group-hover:-bottom-5 opacity-0 group-hover:opacity-100 text-white transition-all">
-              Press C
-            </small>
-          </ToggleButton>
-
           <ChatPanel
             streamId={streamerId}
             onViewerCountChange={(count: number) => setViewerCount(count)}
-            onInputFocus={setIsInputFocused}
           />
 
           {/* Stream Data */}
@@ -244,7 +250,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             <AuthModal onClose={() => setShowAuthModal(false)} />
           )}
         </div>
-      </div>
+      </DynamicPageContent>
     </SocketProvider>
   );
 };

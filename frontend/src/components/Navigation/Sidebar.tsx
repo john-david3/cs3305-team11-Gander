@@ -1,75 +1,127 @@
-import React, { useEffect, useState } from "react";
-import { SunMoon as SunMoonIcon } from "lucide-react"
-import Theme from "./Theme";
-import "../../assets/styles/sidebar.css"
+import React, { useState, useEffect } from "react";
+import "../../assets/styles/sidebar.css";
+import { useSidebar } from "../../context/SidebarContext";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
+interface Streamer {
+  user_id: number;
+  username: string;
+}
+
+interface Category {
+  category_id: number;
+  category_name: string;
+}
 
 interface SideBarProps {
   extraClasses?: string;
 }
 
-const Sidebar: React.FC<SideBarProps> = () => {
-  const [isCursorOnSidebar, setIsCursorOnSidebar] = useState(false);
-  const [triggerAnimation, setTriggerAnimation] = useState(false);
+const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
+  const { showSideBar } = useSidebar();
+  const navigate = useNavigate();
+  const { username, isLoggedIn } = useAuth();
+  const [followedStreamers, setFollowedStreamers] = useState<Streamer[]>([]);
+  const [followedCategories, setFollowedCategories] = useState<Category[]>([]);
+
+  // Fetch followed streamers
   useEffect(() => {
-    const sideBarScroll = () => {
-      document.body.style.overflow = isCursorOnSidebar ? "hidden" : "unset";
+    if (!isLoggedIn) return;
+
+    const fetchFollowedStreamers = async () => {
+      try {
+        const response = await fetch("/api/user/following");
+        if (!response.ok) throw new Error("Failed to fetch followed streamers");
+        const data = await response.json();
+        setFollowedStreamers(data);
+      } catch (error) {
+        console.error("Error fetching followed streamers:", error);
+      }
     };
-    sideBarScroll()
 
-    return () => {
-      document.body.style.overflow = "unset";
+    fetchFollowedStreamers();
+  }, [isLoggedIn]);
+
+  // Fetch followed categories
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const fetchFollowedCategories = async () => {
+      try {
+        const response = await fetch("/api/categories/following");
+        if (!response.ok)
+          throw new Error("Failed to fetch followed categories");
+        const data = await response.json();
+        setFollowedCategories(data);
+      } catch (error) {
+        console.error("Error fetching followed categories:", error);
+      }
     };
-  }, [isCursorOnSidebar]);
 
-
-  const testStreamer: Record<string, string> = {
-    "Markiplier": "Slink1",
-    "Jacksepticeye": "Slink2",
-    "8-BitRyan": "Slink3",
-  };
-
-  const testCategory: Record<string, { dummyLink: string; dummyImage: string }> = {
-    "Action": { dummyLink: "link1", dummyImage: "../../../images/icons/Action.webp" },
-    "Horror": { dummyLink: "link2", dummyImage: "../../../images/icons/Horror.png" },
-    "Psychological": { dummyLink: "link3", dummyImage: "../../../images/icons/Psychological.png" },
-    "Adult": { dummyLink: "link4", dummyImage: "../../../images/icons/R-18.png" },
-    "Shooter": { dummyLink: "link5", dummyImage: "../../../images/icons/Shooter.png" }
-  };
-
-  const shownStreamers = Object.entries(testStreamer).map(([dummyCategory, dummyLink]) => {
-    return (
-      <li key={dummyCategory}>
-        <a href={dummyLink}>{dummyCategory}</a>
-      </li>
-    );
-  });
-
-  const shownCategory = Object.entries(testCategory).map(([dummyCategory, { dummyLink, dummyImage }]) => {
-    return (
-      <li key={dummyCategory} className="flex items-center border border-7 border-black space-x-3 rounded-md p-0 text-center
-      hover:bg-[#800020] hover:scale-110 hover:shadow-[-1px_1.5px_10px_white] transition-all duration-250 m-[0.25em]">
-        <img src={dummyImage} alt={dummyCategory} className="w-[2em] h-[2em] bg-white ml-[0.25em]" />
-        <a href={dummyLink} className="pr-[7.5em] pt-[0.75em] pb-[0.75em]">{dummyCategory}</a>
-      </li>
-    );
-  });
+    fetchFollowedCategories();
+  }, [isLoggedIn]);
 
   return (
-    <>
-
-      <div>
-        <h1 className="style"> Followed </h1>
-        <ul>
-          {shownStreamers}
-        </ul>
-
-        <h1 className="category-style pt-[0.50em]"> Your Categories </h1>
-        <ul>
-          {shownCategory}
-        </ul>
-
+    <div
+      id="sidebar"
+      className={`fixed top-0 left-0 w-[15vw] h-screen flex flex-col bg-[var(--bg-color)] text-[var(--text-color)] text-center overflow-y-auto scrollbar-hide
+        transition-all duration-500 ease-in-out ${
+          showSideBar ? "translate-x-0" : "-translate-x-full"
+        } ${extraClasses}`}
+    >
+      {/* Profile Info */}
+      <div className="flex flex-row items-center justify-evenly bg-blue-700/40 py-[1em]">
+        <img
+          src="/images/monkey.png"
+          alt="profile picture"
+          className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
+          onClick={() => navigate(`/user/${username}`)}
+        />
+        <div className="text-center flex flex-col items-center justify-center">
+          <h5 className="font-thin text-[0.85rem] cursor-default">Logged in as</h5>
+          <button
+            className="font-black text-[1.4rem] hover:underline"
+            onClick={() => navigate(`/user/${username}`)}
+          >
+            {username}
+          </button>
+        </div>
       </div>
-    </>
+
+      <div id="following" className="flex flex-col flex-grow justify-evenly gap-4 p-4">
+        <h1 className="style border cursor-default">Following</h1>
+        <div id="streamers-followed" className="flex-grow">
+          <h2 className="text-[1.5rem] cursor-default">Streamers</h2>
+          <ul className="mt-2 space-y-2">
+            {followedStreamers.map((streamer) => (
+              <li
+                key={streamer.user_id}
+                className="cursor-pointer bg-black py-2 rounded-lg text-white hover:text-purple-500 transition-colors"
+                onClick={() => navigate(`/user/${streamer.username}`)}
+              >
+                {streamer.username}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div id="categories-followed" className="flex-grow">
+          <h2 className="text-[1.5rem] cursor-default">Categories</h2>
+          <ul className="mt-2 space-y-2">
+            {followedCategories.map((category) => (
+              <li
+                key={category.category_id}
+                className="cursor-pointer bg-black py-2 rounded-lg text-white hover:text-purple-500 transition-colors"
+                onClick={() => navigate(`/category/${category.category_name}`)}
+              >
+                {category.category_name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
 

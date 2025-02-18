@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../Layout/Logo";
-import Button from "../Input/Button";
+import Button, { ToggleButton } from "../Input/Button";
 import Sidebar from "./Sidebar";
 import { Sidebar as SidebarIcon } from "lucide-react";
 import {
@@ -13,6 +13,8 @@ import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 import QuickSettings from "../Settings/QuickSettings";
+import { useSidebar } from "../../context/SidebarContext";
+import { useQuickSettings } from "../../context/QuickSettingsContext";
 
 interface NavbarProps {
   variant?: "home" | "default";
@@ -21,8 +23,8 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const { isLoggedIn } = useAuth();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
-  const [showSideBar, setShowSideBar] = useState(false);
-  const [showQuickSettings, setShowQuickSettings] = useState(false);
+  const { showSideBar, setShowSideBar } = useSidebar();
+  const { showQuickSettings, setShowQuickSettings } = useQuickSettings();
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -42,10 +44,32 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
     setShowSideBar(!showSideBar);
   };
 
+  // Keyboard shortcut to toggle sidebar
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (
+        e.key === "s" &&
+        document.activeElement == document.body &&
+        isLoggedIn
+      ) {
+        handleSideBar();
+      }
+      if (e.key === "q" && document.activeElement == document.body) {
+        handleQuickSettings();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [showSideBar, showQuickSettings, setShowSideBar, isLoggedIn]);
+
   return (
     <div
       id="navbar"
-      className={`flex justify-center items-center ${
+      className={`flex justify-center items-center w-full ${
         variant === "home"
           ? "h-[45vh] flex-col"
           : "h-[15vh] col-span-2 flex-row"
@@ -53,7 +77,11 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
     >
       <Logo variant={variant} />
       <Button
-        extraClasses="absolute top-[20px] left-[20px] text-[1rem] flex items-center flex-nowrap"
+        extraClasses={`absolute top-[75px] ${
+          showSideBar
+            ? "left-[16vw] duration-[0.5s]"
+            : "left-[20px] duration-[1s]"
+        } text-[1rem] flex items-center flex-nowrap`}
         onClick={() => (isLoggedIn ? handleLogout() : setShowAuthModal(true))}
       >
         {isLoggedIn ? (
@@ -69,51 +97,47 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         )}
       </Button>
 
+      {/* Sidebar */}
       {isLoggedIn && (
         <>
-          <Button
+          <ToggleButton
             onClick={() => handleSideBar()}
-            extraClasses={`absolute ${
+            extraClasses={`absolute group text-[1rem] top-[20px] ${
               showSideBar
-                ? `fixed top-[20px] left-[20px] p-2 text-[1.5rem] text-white hover:text-white
-          bg-black/30 hover:bg-purple-500/80 rounded-md border border-gray-300 hover:border-white h
-          over:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all `
-                : "top-[75px] left-[20px]"
-            } transition-all duration-300 z-[99]`}
+                ? "left-[16vw] duration-[0.5s]"
+                : "left-[20px] duration-[1s]"
+            } ease-in-out cursor-pointer`}
+            toggled={showSideBar}
           >
-            <SidebarIcon className="top-[0.20em] left-[10em] mr-1 z-[90]" />
-          </Button>
-          <div
-            className={`fixed top-0 left-0 w-[250px] h-screen bg-[var(--bg-color)] text-[var(--text-color)] z-[90] overflow-y-auto scrollbar-hide
-              transition-transform transition-opacity duration-500 ease-in-out ${
-                showSideBar
-                  ? "translate-x-0 opacity-100"
-                  : "-translate-x-full opacity-0"
-              }`}
-          >
-            <Sidebar />
-          </div>
+            <SidebarIcon className="top-[0.20em] left-[10em] z-[90]" />
+
+            {showSideBar && (
+              <small className="absolute flex items-center top-0 ml-4 left-0 h-full w-full my-auto group-hover:left-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
+                Press S
+              </small>
+            )}
+          </ToggleButton>
+          <Sidebar />
         </>
       )}
 
-      <Button
-        extraClasses={`absolute top-[20px] right-[20px] text-[1rem] flex items-center flex-nowrap z-[9999]`}
+      {/* Quick Settings Sidebar */}
+      <ToggleButton
+        extraClasses={`absolute group text-[1rem] top-[20px] ${
+          showQuickSettings ? "right-[21vw]" : "right-[20px]"
+        } cursor-pointer`}
         onClick={() => handleQuickSettings()}
+        toggled={showQuickSettings}
       >
-        <SettingsIcon className="h-15 w-15 mr-1 " />
-        Quick Settings
-      </Button>
+        <SettingsIcon className="h-15 w-15" />
 
-      <div
-        className={`fixed top-0 right-0 w-[250px] h-screen ] z-[90] overflow-y-auto scrollbar-hide
-               transition-opacity duration-500 ease-in-out ${
-                 showQuickSettings
-                   ? "translate-x-0 opacity-100"
-                   : "translate-x-full opacity-0"
-               }`}
-      >
-        <QuickSettings />
-      </div>
+        {showQuickSettings && (
+              <small className="absolute flex items-center top-0 mr-4 right-0 h-full w-full my-auto group-hover:right-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
+                Press Q
+              </small>
+            )}
+      </ToggleButton>
+      <QuickSettings />
 
       <SearchBar />
 
