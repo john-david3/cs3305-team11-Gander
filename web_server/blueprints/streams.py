@@ -14,10 +14,12 @@ stream_bp = Blueprint("stream", __name__)
 # Constants
 THUMBNAIL_GENERATION_INTERVAL = 10
 
-## Path Manager
+# Path Manager
 path_manager = PathManager()
 
-## Stream Routes
+# Stream Routes
+
+
 @stream_bp.route('/streams/popular/<int:no_streams>')
 def popular_streams(no_streams) -> list[dict]:
     """
@@ -35,6 +37,7 @@ def popular_streams(no_streams) -> list[dict]:
     streams = get_highest_view_streams(no_streams)
     return jsonify(streams)
 
+
 @stream_bp.route('/streams/popular/<string:category_name>')
 @stream_bp.route('/streams/popular/<string:category_name>/<int:no_streams>/<int:offset>')
 def popular_streams_by_category(category_name, no_streams=4, offset=0) -> list[dict]:
@@ -47,7 +50,8 @@ def popular_streams_by_category(category_name, no_streams=4, offset=0) -> list[d
     streams = get_streams_based_on_category(category_id, no_streams, offset)
     return jsonify(streams)
 
-@login_required 
+
+@login_required
 @stream_bp.route('/streams/recommended')
 def recommended_streams() -> list[dict]:
     """
@@ -61,16 +65,27 @@ def recommended_streams() -> list[dict]:
     streams = get_streams_based_on_category(category)
     return streams
 
+
 @stream_bp.route('/streams/<int:streamer_id>/data')
-def stream_data(streamer_id):
+def stream_data(streamer_id) -> dict:
     """
     Returns a streamer's current stream data
     """
+    data = get_current_stream_data(streamer_id)
     
-    return jsonify(get_current_stream_data(streamer_id))
+    if session.get('user_id') == streamer_id:
+        with Database() as db:
+            stream_key = db.fetchone(
+                """SELECT stream_key FROM users WHERE user_id = ?""", (streamer_id,))
+            if data:
+                data["stream_key"] = stream_key["stream_key"]
+            else:
+                data = {"stream_key": stream_key["stream_key"]}
+
+    return jsonify(data)
 
 
-## Category Routes
+# Category Routes
 @stream_bp.route('/categories/popular/<int:no_categories>')
 @stream_bp.route('/categories/popular/<int:no_categories>/<int:offset>')
 def popular_categories(no_categories=4, offset=0) -> list[dict]:
@@ -87,7 +102,8 @@ def popular_categories(no_categories=4, offset=0) -> list[dict]:
     category_data = get_highest_view_categories(no_categories, offset)
     return jsonify(category_data)
 
-@login_required 
+
+@login_required
 @stream_bp.route('/categories/recommended')
 def recommended_categories() -> list | list[dict]:
     """
@@ -97,6 +113,7 @@ def recommended_categories() -> list | list[dict]:
     user_id = session.get("user_id")
     categories = get_user_category_recommendations(user_id)
     return jsonify(categories)
+
 
 @login_required
 @stream_bp.route('/categories/following')
@@ -109,7 +126,7 @@ def following_categories_streams():
     return jsonify(streams)
 
 
-## User Routes
+# User Routes
 @stream_bp.route('/user/<string:username>/status')
 def user_live_status(username):
     """
@@ -134,7 +151,7 @@ def user_live_status(username):
     })
 
 
-## VOD Routes
+# VOD Routes
 @stream_bp.route('/vods/<string:username>')
 def vods(username):
     """
@@ -145,7 +162,7 @@ def vods(username):
     return jsonify(vods)
 
 
-## RTMP Server Routes
+# RTMP Server Routes
 @stream_bp.route("/publish_stream", methods=["POST"])
 def publish_stream():
     """
@@ -157,7 +174,7 @@ def publish_stream():
     set user as streaming
     periodically update thumbnail
     """
-    stream_key = request.form.get("name")
+    stream_key = request.form.get("key")
     print("Stream request received")
 
     # Open database connection
@@ -170,31 +187,33 @@ def publish_stream():
         # If stream key is invalid, return unauthorized
         if not user_info or user_info["is_live"]:
             return "Unauthorized", 403
-        
+
         # Insert stream into database
         db.execute("""INSERT INTO streams (user_id, title, start_time, num_viewers, category_id)
-                    VALUES (?, ?, ?, ?, ?)""", (user_info["user_id"], 
-                                            user_info["current_stream_title"],
-                                            datetime.now(),
-                                            0,
-                                            1))
-        
+                    VALUES (?, ?, ?, ?, ?)""", (user_info["user_id"],
+                                                user_info["current_stream_title"],
+                                                datetime.now(),
+                                                0,
+                                                1))
+
         # Set user as streaming
-        db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""", (user_info["user_id"],))
+        db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""",
+                   (user_info["user_id"],))
 
     username = user_info["username"]
     user_id = user_info["user_id"]
-    
+
     # Local file creation
     create_local_directories(username)
 
     # Update thumbnail periodically
     update_thumbnail.delay(user_id,
-                           path_manager.get_stream_file_path(username), 
-                           path_manager.get_thumbnail_file_path(username), 
+                           path_manager.get_stream_file_path(username),
+                           path_manager.get_thumbnail_file_path(username),
                            THUMBNAIL_GENERATION_INTERVAL)
 
     return redirect(f"/{user_info['username']}/stream/")
+
 
 @stream_bp.route("/end_stream", methods=["POST"])
 def end_stream():
@@ -209,8 +228,8 @@ def end_stream():
     clean up old ts files
     end thumbnail generation
     """
-    
-    stream_key = request.form.get("name")
+
+    stream_key = request.form.get("key")
 
     # Open database connection
     with Database() as db:
@@ -218,41 +237,42 @@ def end_stream():
         user_info = db.fetchone("""SELECT *
                                 FROM users 
                                 WHERE stream_key = ?""", (stream_key,))
-        
+
         stream_info = db.fetchone("""SELECT *
                                 FROM streams
                                 WHERE user_id = ?""", (user_info["user_id"],))
-        
 
         # If stream key is invalid, return unauthorized
         if not user_info:
             return "Unauthorized", 403
-        
+
         # Remove stream from database
         db.execute("""DELETE FROM streams 
                    WHERE user_id = ?""", (user_info["user_id"],))
 
         # Move stream to vod table
-        stream_length = int((datetime.now() - parser.parse(stream_info["start_time"])).total_seconds())
+        stream_length = int(
+            (datetime.now() - parser.parse(stream_info["start_time"])).total_seconds())
 
         db.execute("""INSERT INTO vods (user_id, title, datetime, category_id, length, views)
-                    VALUES (?, ?, ?, ?, ?, ?)""", (user_info["user_id"], 
-                                            user_info["current_stream_title"],
-                                            stream_info["start_time"],
-                                            user_info["current_selected_category_id"],
-                                            stream_length,
-                                            0))
-        
+                    VALUES (?, ?, ?, ?, ?, ?)""", (user_info["user_id"],
+                                                   user_info["current_stream_title"],
+                                                   stream_info["start_time"],
+                                                   user_info["current_selected_category_id"],
+                                                   stream_length,
+                                                   0))
+
         vod_id = db.get_last_insert_id()
-        
+
         # Set user as not streaming
         db.execute("""UPDATE users 
                    SET is_live = 0 
                    WHERE user_id = ?""", (user_info["user_id"],))
-        
+
     # Get username
     username = user_info["username"]
-    
-    combine_ts_stream.delay(path_manager.get_stream_path(username), path_manager.get_vods_path(username), vod_id)
+
+    combine_ts_stream.delay(path_manager.get_stream_path(
+        username), path_manager.get_vods_path(username), vod_id)
 
     return "Stream ended", 200

@@ -12,6 +12,7 @@ import CategoriesPage from "./pages/AllCategoriesPage";
 import ResultsPage from "./pages/ResultsPage";
 import { SidebarProvider } from "./context/SidebarContext";
 import { QuickSettingsProvider } from "./context/QuickSettingsContext";
+import StreamDashboardPage from "./pages/StreamDashboardPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -51,6 +52,7 @@ function App() {
                     )
                   }
                 />
+                <Route path="/go-live" element={isLoggedIn ? <StreamDashboardPage /> : <Navigate to="/" replace />} />
                 <Route path="/:streamerName" element={<StreamerRoute />} />
                 <Route path="/user/:username" element={<UserPage />} />
                 <Route

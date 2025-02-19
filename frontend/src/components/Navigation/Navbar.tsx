@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Logo from "../Layout/Logo";
 import Button, { ToggleButton } from "../Input/Button";
 import Sidebar from "./Sidebar";
@@ -7,6 +7,7 @@ import {
   LogIn as LogInIcon,
   LogOut as LogOutIcon,
   Settings as SettingsIcon,
+  Radio as LiveIcon,
 } from "lucide-react";
 import SearchBar from "../Input/SearchBar";
 import AuthModal from "../Auth/AuthModal";
@@ -15,6 +16,7 @@ import { useAuth } from "../../context/AuthContext";
 import QuickSettings from "../Settings/QuickSettings";
 import { useSidebar } from "../../context/SidebarContext";
 import { useQuickSettings } from "../../context/QuickSettingsContext";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   variant?: "home" | "default";
@@ -25,6 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { showSideBar, setShowSideBar } = useSidebar();
   const { showQuickSettings, setShowQuickSettings } = useQuickSettings();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -76,8 +79,10 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
       }`}
     >
       <Logo variant={variant} />
+
+      {/* Login / Logout Button */}
       <Button
-        extraClasses={`absolute top-[75px] ${
+        extraClasses={`absolute top-[2vh] ${
           showSideBar
             ? "left-[16vw] duration-[0.5s]"
             : "left-[20px] duration-[1s]"
@@ -102,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         <>
           <ToggleButton
             onClick={() => handleSideBar()}
-            extraClasses={`absolute group text-[1rem] top-[20px] ${
+            extraClasses={`absolute group text-[1rem] top-[9vh] ${
               showSideBar
                 ? "left-[16vw] duration-[0.5s]"
                 : "left-[20px] duration-[1s]"
@@ -123,7 +128,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
 
       {/* Quick Settings Sidebar */}
       <ToggleButton
-        extraClasses={`absolute group text-[1rem] top-[20px] ${
+        extraClasses={`absolute group text-[1rem] top-[2vh] ${
           showQuickSettings ? "right-[21vw]" : "right-[20px]"
         } cursor-pointer`}
         onClick={() => handleQuickSettings()}
@@ -132,14 +137,27 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         <SettingsIcon className="h-15 w-15" />
 
         {showQuickSettings && (
-              <small className="absolute flex items-center top-0 mr-4 right-0 h-full w-full my-auto group-hover:right-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
-                Press Q
-              </small>
-            )}
+          <small className="absolute flex items-center top-0 mr-4 right-0 h-full w-full my-auto group-hover:right-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
+            Press Q
+          </small>
+        )}
       </ToggleButton>
       <QuickSettings />
 
       <SearchBar />
+
+      {/* Stream Button */}
+      {isLoggedIn && !window.location.pathname.includes('go-live') && (
+        <Button
+          extraClasses={`${
+            variant === "home" ? "absolute top-[2vh] right-[10vw]" : ""
+          } flex flex-row items-center`}
+          onClick={() => navigate("/go-live")}
+        >
+          <LiveIcon className="h-15 w-15 mr-2" />
+          Go Live
+        </Button>
+      )}
 
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
