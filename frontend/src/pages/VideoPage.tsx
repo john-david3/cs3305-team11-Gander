@@ -37,6 +37,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const showReturn = window.location.search.includes("session_id");
   const navigate = useNavigate();
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [timeStarted, setTimeStarted] = useState("");
 
   useEffect(() => {
     // Prevent scrolling when checkout is open
@@ -60,7 +61,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
       res
         .json()
         .then((data) => {
-          // Transform snake_case to camelCase
           const transformedData: StreamDataProps = {
             streamerName: data.username,
             streamTitle: data.title,
@@ -68,6 +68,20 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             categoryName: data.category_name,
           };
           setStreamData(transformedData);
+
+          const time = Math.floor(
+            (Date.now() - new Date(data.start_time).getTime()) / 60000 // Convert to minutes
+          );
+
+          if (time < 60) setTimeStarted(`${time}m ago`);
+          else if (time < 1440)
+            setTimeStarted(`${Math.floor(time / 60)}h ${time % 60}m ago`);
+          else
+            setTimeStarted(
+              `${Math.floor(time / 1440)}d ${Math.floor((time % 1440) / 60)}h ${
+                time % 60
+              }m ago`
+            );
 
           // Check if the logged-in user is following this streamer
           if (isLoggedIn) checkFollowStatus(data.username);
@@ -100,14 +114,14 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   // Checks if user is subscribed
   useEffect(() => {
     fetch(`/api/user/subscription/${streamerName}/expiration`)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.remaining_time);
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(streamData?.streamerName, data.remaining_time);
         if (data.remaining_time > 0) {
           setIsSubscribed(true);
         }
       })
-      .catch(error => console.error("Error fetching subscription:", error));
+      .catch((error) => console.error("Error fetching subscription:", error));
   }, [streamerName]);
 
   return (
@@ -214,12 +228,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             <div className="flex flex-col items-center">
               <span className="text-gray-400 text-[0.75em]">Started</span>
               <span className="text-[0.75em]">
-                {streamData
-                  ? `${Math.floor(
-                    (Date.now() - new Date(streamData.startTime).getTime()) /
-                    3600000
-                  )} hours ago`
-                  : "Loading..."}
+                {streamData ? timeStarted : "Loading..."}
               </span>
             </div>
 
