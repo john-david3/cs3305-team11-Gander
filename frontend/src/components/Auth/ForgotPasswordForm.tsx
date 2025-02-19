@@ -51,9 +51,7 @@ const ForgotPasswordForm: React.FC<SubmitProps> = ({ onSubmit }) => {
 
         if (!response.ok) {
           const data = await response.json();
-          throw new Error(
-            data.message || "An error has occurred while resetting"
-          );
+          throw new Error(data.message || "An error has occurred while resetting");
         } else {
           confirmPasswordReset();
         }
@@ -68,32 +66,39 @@ const ForgotPasswordForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center">
-      <div className="h-[25em] w-[20em] flex flex-col items-center justify-center bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-center mb-4">Forgot Password</h2>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col items-center space-y-4 w-full m-6"
-        >
-          <Input
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={handleEmailChange}
-            extraClasses={`appearance-none bg-transparent text-black m-5 ${
-              errors.email ? "border-red-500" : ""
-            }`}
-          />
+    <div className="mb-2">
+      <div className="flex flex-col items-center p-[2.5rem]">
+      <h1 className="text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">Forgot Password</h1>
+      <div className="mt-10 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-[10em] min-w-[14em] border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
+          <form
+            onSubmit={handleSubmit}
+            id="forgot-password-form"
+            className="flex flex-col"
+          >
+            <div className="relative w-full">
+              {errors.general && (
+                <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">
+                  {errors.general}
+                </p>
+              )}
 
-          {errors.email && (
-            <p className="text-red-500 mt-2 text-sm">{errors.email}</p>
-          )}
-
-          <Button type="submit" extraClasses="text-black">
-            Send Reset Link
-          </Button>
-        </form>
+              {errors.email && (
+                <p className="absolute top-[-1.5em] text-red-500 text-sm text-center w-full">
+                  {errors.email}
+                </p>
+              )}
+              <Input
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={handleEmailChange}
+                extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${errors.email ? "border-red-500" : ""}`}
+              />
+            </div>
+            <Button type="submit">Send Link</Button>
+          </form>
+        </div>
       </div>
     </div>
   );

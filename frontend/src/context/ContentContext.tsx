@@ -60,7 +60,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
           streamCategory: stream.category_name,
           viewers: stream.num_viewers,
           thumbnail: stream.thumbnail ||
-            `/images/thumbnails/categories/${stream.category_name.toLowerCase().replace(/ /g, "_")}.webp`
+            `/images/category_thumbnails/${stream.category_name.toLowerCase().replace(/ /g, "_")}.webp`
         }));
         setStreams(processedStreams);
       });
@@ -78,7 +78,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
           id: category.category_id,
           title: category.category_name,
           viewers: category.num_viewers,
-          thumbnail: `/images/thumbnails/categories/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`,
+          thumbnail: `/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`,
         }));
         setCategories(processedCategories);
       });

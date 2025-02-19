@@ -38,7 +38,7 @@ const CategoryPage: React.FC = () => {
           thumbnail:
             stream.thumbnail ||
             (category_name &&
-              `/images/thumbnails/categories/${category_name
+              `/images/category_thumbnails/${category_name
                 .toLowerCase()
                 .replace(/ /g, "_")}.webp`),
         }));

@@ -23,7 +23,7 @@ const AllCategoriesPage: React.FC = () => {
           id: category.category_id,
           title: category.category_name,
           viewers: category.num_viewers,
-          thumbnail: `/images/thumbnails/categories/${category.category_name
+          thumbnail: `/images/category_thumbnails/${category.category_name
             .toLowerCase()
             .replace(/ /g, "_")}.webp`,
         }));

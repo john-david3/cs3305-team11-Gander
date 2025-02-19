@@ -3,7 +3,6 @@ import { ToggleButton } from "../Input/Button";
 import {
   LogIn as LogInIcon,
   User as UserIcon,
-  CircleHelp as ForgotIcon,
 } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
@@ -20,7 +19,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
 
   const handleSubmit = () => {
     setSpinDuration("1s");
-
     setTimeout(() => {
       setSpinDuration("7s");
     }, 3500);
@@ -38,18 +36,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       Forgot: <ForgotPasswordForm onSubmit={handleSubmit} />,
     };
     return formMap[selectedTab] || <div>Please select a valid option</div>;
-    {
-      /*
-    if (selectedTab === "Login") {
-      return  <LoginForm onSubmit={(handleSubmit)}/>
-    } else if (selectedTab === "Register") {
-      return  <RegisterForm onSubmit={(handleSubmit)}/>
-    } else if (selectedTab === "Forgot") {
-      return  <ForgotPasswordForm onSubmit={(handleSubmit)}/>
-    } else
-      return <div> Please select a valid icon</div>
-      */
-    }
   };
 
   return (
@@ -60,50 +46,46 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
         className="fixed z-50 inset-0 w-screen h-screen backdrop-blur-sm group-has-[input:focus]:backdrop-blur-[5px]"
       ></div>
 
-      {/*Container*/}
+      {/*Main Container*/}
       <div
         id="auth-modal"
-        className="fixed inset-0 flex flex-col items-center justify-around z-[9000] 
-        h-[95vh] m-auto min-w-[65vw] w-fit py-[80px] rounded-[5rem]  transition-all animate-floating "
+        className="fixed inset-0 flex items-start justify-center z-[9000] h-[95vh] m-auto pt-[15vh] rounded-[5rem] transition-all animate-floating"
       >
-        {/* Login/Register Buttons Container */}
-        <div className="fixed top-[1em] left-1/2 transform -translate-x-1/2 w-[300px] flex justify-center gap-8 transition-transform overflow-visible ">
-          {/* Login Toggle */}
-          <ToggleButton
-            toggled={selectedTab === "Login"}
-            extraClasses={`flex flex-col items-center px-8 "
-              }`}
-            onClick={() => setSelectedTab("Login")}
-          >
-            <LogInIcon className=" w-[3em] sm:w-[1em] mr-1" />
-            Login
-          </ToggleButton>
+        <div className="relative w-full max-w-[300px] min-w-[28vw]">
+          {/* Login/Register Buttons Container */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-20 w-[250px] flex justify-center gap-8 transition-transform overflow-visible">
+            {/* Login Toggle */}
+            <ToggleButton
+              toggled={selectedTab === "Login"}
+              extraClasses="flex flex-col items-center px-[1em] sm:px-[1.45em] ml:px-[1.6em] lx:px-[2em]"
+              onClick={() => setSelectedTab("Login")}
+            >
+              <LogInIcon className="w-[2em] sm:w-[2.5em] md:w-[2.75em] lg:w-[3em] mr-1" />
+              Login
+            </ToggleButton>
 
-          {/* Register Toggle */}
-          <ToggleButton
-            toggled={selectedTab === "Register"}
-            extraClasses="flex flex-col items-center px-8  z-[9001]"
-            onClick={() => setSelectedTab("Register")}
-          >
-            <UserIcon className=" w-[3em] sm:w-[1em] mr-1" />
-            Register
-          </ToggleButton>
-        </div>
+            {/* Register Toggle */}
+            <ToggleButton
+              toggled={selectedTab === "Register"}
+              extraClasses="flex flex-col items-center px-[1em] sm:px-[1.45em] ml:px-[1.6em] lx:px-[2em]"
+              onClick={() => setSelectedTab("Register")}
+            >
+              <UserIcon className="w-[2em] sm:w-[2.5em] md:w-[2.75em] lg:w-[3em] mr-1" />
+              Register
+            </ToggleButton>
+          </div>
 
-        <div
-          className="container fixed inset-0 flex flex-col items-center justify-around z-[9999] 
-        h-auto max-h-[75vh] m-auto max-w-[350px] min-w-[34vw]  py-[50px] rounded-[5rem]"
-          style={{ "--spin-duration": spinDuration } as React.CSSProperties}
-        >
-          {/*Border Container*/}
+          {/* Form Container */}
           <div
-            id="border-container"
-            className="front-content fixed ml-[1px] mt-[0.5px] inset-0 bg-authForm flex flex-col justify-center
-          z-50 h-[70vh] min-w-[30vw] w-fit py-[50px] rounded-[2rem] transition-all"
+            className="container flex flex-col items-center justify-around z-[9999] 
+            h-[70vh] max-h-[75vh] m-auto py-[50px] rounded-[5rem] transition-all"
+            style={{ "--spin-duration": spinDuration } as React.CSSProperties}
           >
+            {/*Border Container*/}
             <div
-              id="login-methods"
-              className=" w-full flex flex-row items-center justify-evenly"
+              id="border-container"
+              className="front-content ml-[1px] mt-[0.5px] bg-authForm flex flex-col justify-center
+                z-50 h-full w-full py-[50px] rounded-[5rem] transition-all"
             >
               <button
                 onClick={onClose}
@@ -111,8 +93,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
               >
                 ✕
               </button>
+              <div id="login-methods" className="w-full flex flex-row items-center justify-evenly">
+                {authSwitch()}
+              </div>
             </div>
-            <>{authSwitch()}</>
           </div>
         </div>
       </div>

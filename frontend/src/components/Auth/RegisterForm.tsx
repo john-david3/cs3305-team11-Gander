@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Input from "../Input/Input";
 import Button from "../Input/Button";
 import { useAuth } from "../../context/AuthContext";
-import GoogleLogin from "./OAuth";
 
 interface RegisterFormData {
   username: string;
@@ -111,13 +110,10 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
     <>
       <div className="mb-2">
         <div className="flex flex-col items-center p-[2.5rem]">
-          <h1 className="flex flex-col text-white text-[2.5em] font-[800]">
+          <h1 className="flex flex-col text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">
             Register
           </h1>
-          <div
-            className="mt-5 bg-white/10 backdrop-blur-md p-[2.5rem] md:px-16 rounded-xl shadow-lg w-full 
-          md:max-w-[20em] lg:max-w-[27.5em] min-w-[10em] border border-white/10"
-          >
+          <div className="mt-10 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-[10em] min-w-[14em] border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
             <form
               onSubmit={handleSubmit}
               id="register-form"

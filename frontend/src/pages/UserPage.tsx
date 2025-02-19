@@ -77,7 +77,7 @@ const UserPage: React.FC = () => {
                   currentStreamStartTime: streamData.start_time,
                   currentStreamThumbnail:
                     streamData.thumbnail ||
-                    `/images/thumbnails/categories/${streamData.category_name
+                    `/images/category_thumbnails/${streamData.category_name
                       .toLowerCase()
                       .replace(/ /g, "_")}.webp`,
                 };
