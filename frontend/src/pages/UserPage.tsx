@@ -110,97 +110,90 @@ const UserPage: React.FC = () => {
   }
   return (
     <DynamicPageContent
-      className={`min-h-screen ${
-        profileData.isLive
-          ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
-          : bgColors[userPageVariant]
-      } text-white flex flex-col`}
+      className={`min-h-screen ${profileData.isLive
+        ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
+        : bgColors[userPageVariant]
+        } text-white flex flex-col`}
     >
-      
-      <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8">
-        <div className="grid grid-cols-3 w-full gap-8">
-          {/* Profile Section - Left Third */}
-          <div
-            id="profile"
-            className="col-span-1 bg-gray-800 rounded-lg p-6 shadow-lg"
-          >
-            <div className="flex flex-col items-center">
+
+      <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
+      <div className="grid grid-cols-4 grid-rows-[0.1fr_1.5fr] w-full gap-8">
+  {/* Profile Section - TOP */}
+  <div id="profile" 
+       className="col-span-4 row-span-1 h-full bg-[var(--user-bg)] 
+                  rounded-[30px] p-6 shadow-lg border-4 border-[var(--user-borderBg)] 
+                  relative flex flex-col items-center">
+
+<div className="absolute top-10 left-0 w-full h-3 bg-white "></div>
+
               {/* Profile Picture */}
-              <div className="relative w-48 h-48 rounded-full overflow-hidden mb-6">
+              <div className="relative -top-[50px] w-[20vw] h-[20vw] max-w-[200px] max-h-[200px]
+               rounded-full overflow-hidden flex-shrink-0 border-4 border-[var(--user-pfp-border)]">
                 <img
                   src="/images/monkey.png"
                   alt={`${profileData.username}'s profile`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-full"
                 />
-
-                {profileData.isPartnered && (
-                  <div className="absolute bottom-2 right-2 bg-purple-600 rounded-full p-2">
-                    <svg
-                      className="w-6 h-6 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  </div>
-                )}
               </div>
 
-              {/* Username & Follower Count */}
-              <h1 className="text-3xl font-bold mb-2">
-                {profileData.username}
+              {/* Username - Now Directly Below PFP */}
+              <h1 className="text-[2em] font-bold -mt-9 text-center">
+                Welcome {profileData.username}
               </h1>
-              <small className="text-green-400">
-                {userPageVariant.toUpperCase()}
-              </small>
 
-              {/* Follower Count */}
-              {userPageVariant === "streamer" && (
-                <>
-                  <div className="flex items-center space-x-2 mb-6">
-                    <span className="text-gray-400">
-                      {profileData.followerCount.toLocaleString()} followers
+              {/* User Type (e.g., "USER")
+              <small className="text-green-400">{userPageVariant.toUpperCase()}</small>
+
+             Bio Section
+              <div className="mt-6 text-center">
+                <h2 className="text-xl font-semibold mb-3">About {profileData.username}</h2>
+                <p className="text-gray-300 whitespace-pre-wrap">{profileData.bio}</p>
+              </div>
+ */}
+
+
+            {/* Follower Count */}
+            {userPageVariant === "streamer" && (
+              <>
+                <div className="flex items-center space-x-2 mb-6">
+                  <span className="text-gray-400">
+                    {profileData.followerCount.toLocaleString()} followers
+                  </span>
+                  {profileData.isPartnered && (
+                    <span className="bg-purple-600 text-white text-sm px-2 py-1 rounded">
+                      Partner
                     </span>
-                    {profileData.isPartnered && (
-                      <span className="bg-purple-600 text-white text-sm px-2 py-1 rounded">
-                        Partner
-                      </span>
-                    )}
-                  </div>
-
-                  {/* (Un)Follow Button */}
-                  {!isFollowing ? (
-                    <Button
-                      extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
-                      onClick={() =>
-                        followUser(profileData.id, setShowAuthModal)
-                      }
-                    >
-                      Follow
-                    </Button>
-                  ) : (
-                    <Button
-                      extraClasses="w-full bg-[#a80000]"
-                      onClick={() =>
-                        unfollowUser(profileData?.id, setShowAuthModal)
-                      }
-                    >
-                      Unfollow
-                    </Button>
                   )}
-                </>
-              )}
-            </div>
+                </div>
 
-            {/* Bio Section */}
-            <div className="mt-6 text-center">
-              <h2 className="text-xl font-semibold mb-3">
-                About {profileData.username}
-              </h2>
-              <p className="text-gray-300 whitespace-pre-wrap">
-                {profileData.bio}
-              </p>
-            </div>
+                {/* (Un)Follow Button */}
+                {!isFollowing ? (
+                  <Button
+                    extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
+                    onClick={() =>
+                      followUser(profileData.id, setShowAuthModal)
+                    }
+                  >
+                    Follow
+                  </Button>
+                ) : (
+                  <Button
+                    extraClasses="w-full bg-[#a80000]"
+                    onClick={() =>
+                      unfollowUser(profileData?.id, setShowAuthModal)
+                    }
+                  >
+                    Unfollow
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+
+          <div
+            id="settings"
+            className="col-span-1 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
+          >
           </div>
 
           {/* Content Section */}
@@ -239,11 +232,16 @@ const UserPage: React.FC = () => {
               </>
             )}
           </div>
+
+          <div
+            id="mini"
+            className="col-span-1 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
+          ></div>
         </div>
       </div>
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
 
-        
+
     </DynamicPageContent>
   );
 };
