@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navigation/Navbar";
 import AuthModal from "../components/Auth/AuthModal";
 import { useAuthModal } from "../hooks/useAuthModal";
 import { useAuth } from "../context/AuthContext";
