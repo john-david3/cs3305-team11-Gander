@@ -24,6 +24,24 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
+interface EditButtonProps extends ButtonProps {
+}
+
+export const EditButton: React.FC<EditButtonProps> = ({
+  children = "",
+  extraClasses = "",
+  onClick,
+}) => {
+  return (
+    <button
+      className={`${extraClasses} p-[0.5em] bg-yellow-500 hover:bg-black rounded-[3rem] border-2 border-white shadow-lg transition-all duration-300`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};  
+
 interface ToggleButtonProps extends ButtonProps {
   toggled?: boolean;
 }

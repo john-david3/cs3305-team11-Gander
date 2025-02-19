@@ -7,8 +7,9 @@ import { useParams } from "react-router-dom";
 import ListItem from "../components/Layout/ListItem";
 import { useFollow } from "../hooks/useFollow";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Input/Button";
+import Button, { EditButton } from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
+
 
 interface UserProfileData {
   id: number;
@@ -117,42 +118,50 @@ const UserPage: React.FC = () => {
     >
 
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
-      <div className="grid grid-cols-4 grid-rows-[0.1fr_1.5fr] w-full gap-8">
-  {/* Profile Section - TOP */}
-  <div id="profile" 
-       className="col-span-4 row-span-1 h-full bg-[var(--user-bg)] 
-                  rounded-[30px] p-6 shadow-lg border-4 border-[var(--user-borderBg)] 
-                  relative flex flex-col items-center">
 
-<div className="absolute top-10 left-0 w-full h-3 bg-white "></div>
-
-              {/* Profile Picture */}
-              <div className="relative -top-[50px] w-[20vw] h-[20vw] max-w-[200px] max-h-[200px]
-               rounded-full overflow-hidden flex-shrink-0 border-4 border-[var(--user-pfp-border)]">
-                <img
-                  src="/images/monkey.png"
-                  alt={`${profileData.username}'s profile`}
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-
-              {/* Username - Now Directly Below PFP */}
-              <h1 className="text-[2em] font-bold -mt-9 text-center">
-                Welcome {profileData.username}
-              </h1>
-
-              {/* User Type (e.g., "USER")
-              <small className="text-green-400">{userPageVariant.toUpperCase()}</small>
-
-             Bio Section
-              <div className="mt-6 text-center">
-                <h2 className="text-xl font-semibold mb-3">About {profileData.username}</h2>
-                <p className="text-gray-300 whitespace-pre-wrap">{profileData.bio}</p>
-              </div>
- */}
+        <div className="grid grid-cols-4 grid-rows-[0.1fr_1.5fr] w-full gap-8">
+          {/* Profile Section - TOP  */}
 
 
-            {/* Follower Count */}
+          <div id="profile"
+            className="col-span-4 row-span-1 h-full bg-[var(--user-bg)] 
+        rounded-[30px] p-3 shadow-lg 
+        relative flex flex-col items-center">
+
+            {/* Border Overlay (Always on Top) */}
+            <div className="absolute left-[0.5px] inset-0 border-[5px] border-[var(--user-borderBg)] rounded-[20px] z-20"></div>
+
+
+            {/* Background Box */}
+            <div className="absolute flex top-0 left-[0.5px] w-[99.8%] h-[5vh] min-h-[1em] max-h-[10em] rounded-t-[25.5px] 
+                 bg-[var(--user-box)] z-10 flex-shrink justify-center"
+              style={{ boxShadow: 'var(--user-box-shadow)' }}
+            >
+              <div className="absolute top-4 w-[99.8%] h-[1.5vh] min-h-[10px] max-h-[2em]  bg-[var(--user-box-strip)]"></div>
+
+            </div>
+            {/* Profile Picture */}
+            <div className="relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
+               rounded-full overflow-hidden flex-shrink-0 border-4 border-[var(--user-pfp-border)] inset-0 z-20"
+              style={{ boxShadow: 'var(--user-pfp-border-shadow)' }}>
+              <img
+                src="/images/monkey.png"
+                alt={`${profileData.username}'s profile`}
+                className="sm:w-[full] h-full object-cover rounded-full
+                "
+              />
+            </div>
+
+            {/* Username - Now Directly Below PFP */}
+            <h1 className="text-[1.5em] sm:text-[2em] font-bold -mt-[45px] sm:-mt-[90px] text-center">
+              {profileData.username}
+            </h1>
+
+
+
+
+
+            {/* Follower Count  */}
             {userPageVariant === "streamer" && (
               <>
                 <div className="flex items-center space-x-2 mb-6">
@@ -166,7 +175,7 @@ const UserPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* (Un)Follow Button */}
+                {/* (Un)Follow Button  */}
                 {!isFollowing ? (
                   <Button
                     extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
@@ -186,20 +195,29 @@ const UserPage: React.FC = () => {
                     Unfollow
                   </Button>
                 )}
+
               </>
             )}
           </div>
 
           <div
             id="settings"
-            className="col-span-1 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
+            className="col-span-1 bg-[var(--user-sideBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
           >
+            {/* User Type (e.g., "USER") */}
+            <small className="text-green-400">{userPageVariant.toUpperCase()}</small>
+
+            Bio Section
+            <div className="mt-6 text-center">
+              <h2 className="text-xl font-semibold mb-3">About {profileData.username}</h2>
+              <p className="text-gray-300 whitespace-pre-wrap">{profileData.bio}</p>
+            </div>
           </div>
 
           {/* Content Section */}
           <div
             id="content"
-            className="col-span-2 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
+            className="col-span-2 bg-[var(--user-contentBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
           >
             {userPageVariant === "streamer" && (
               <>
@@ -235,8 +253,21 @@ const UserPage: React.FC = () => {
 
           <div
             id="mini"
-            className="col-span-1 bg-gray-800 rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
-          ></div>
+            className="bg-[var(--user-sideBox)] col-span-1 bg-gray-800 rounded-lg  text-center items-center justify-center
+  flex flex-col flex-grow gap-4 p-[2rem]"
+          >
+            <div
+              className="bg-[var(--follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
+                 flex items-center justify-center w-full p-4"
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+            >
+                <p className="text-[var(--follow-text)] whitespace-pre-wrap">Following www</p>
+                
+            </div>
+          </div>
+
+
         </div>
       </div>
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}

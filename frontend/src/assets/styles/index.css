@@ -112,6 +112,7 @@ body[data-theme="green"] {
   --profile-border: #ffffff;
 
   --follow-bg: #ffffff;
+  --follow-text: #2e7d32;
   --follow-shadow: 0px 0px 15px rgba(84, 255, 92, 0.754);
 
   --liveNow: rgba(69, 150, 74, 0.6);
@@ -127,9 +128,14 @@ body[data-theme="green"] {
   /*User Page*/
 
   --user-pfp-border: #ffffff;
-  --user-pfp-border-shadow: 0px 0px 15px rgba(0, 0, 0, 0.754);
+  --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
 
-  --user-borderBg: rgb(217, 240, 133);
+  --user-borderBg: rgb(255, 237, 123);
+  --user-box: rgb(1, 136, 66);
+  --user-box-strip: rgb(217, 240, 133);
+  --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
+  --user-sideBox: rgb(1, 61, 30);
+  --user-contentBox: rgb(245, 228, 167);
 
   --user-bg:  rgb(0, 78, 38);
   --user-live-bg: rgb(217, 240, 133);
