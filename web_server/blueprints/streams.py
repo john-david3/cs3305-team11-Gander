@@ -73,10 +73,11 @@ def stream_data(streamer_id):
 ## Category Routes
 @stream_bp.route('/categories/popular/<int:no_categories>')
 @stream_bp.route('/categories/popular/<int:no_categories>/<int:offset>')
-def popular_categories(no_categories, offset=0) -> list[dict]:
+def popular_categories(no_categories=4, offset=0) -> list[dict]:
     """
     Returns a list of most popular categories
     """
+    print(no_categories, offset, flush=True)
     # Limit the number of categories to 100
     if no_categories < 1:
         return jsonify([])

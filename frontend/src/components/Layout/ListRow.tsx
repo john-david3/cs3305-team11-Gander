@@ -52,7 +52,7 @@ const ListRow: React.FC<ListRowProps> = ({
       </div>
 
       <div className="relative overflow-hidden flex items-center z-0">
-        {!wrap && items.length > 3 && (
+        {!wrap && items.length > 4 && (
           <>
             <ArrowLeftIcon
               onClick={slideLeft}

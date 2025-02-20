@@ -38,7 +38,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         description={
           variant === "personalised"
             ? "We think you might like these streams - Streamers recommended for you"
-            : "Streamers that are currently live"
+            : "Popular streamers that are currently live!"
         }
         items={streams}
         wrap={false}
@@ -62,7 +62,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         description={
           variant === "personalised"
             ? "Current streams from your followed categories"
-            : "Categories that have been 'popping off' lately"
+            : "Recently popular categories lately!"
         }
         items={categories}
         wrap={false}

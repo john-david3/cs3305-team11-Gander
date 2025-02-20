@@ -23,7 +23,7 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <div className="p-4">
       <div
-        className="min-w-[25vw] overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg 
+        className="min-w-[20vw] overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg 
 	   cursor-pointer hover:bg-pink-700 hover:scale-105 transition-all"
         onClick={onItemClick}
       >
