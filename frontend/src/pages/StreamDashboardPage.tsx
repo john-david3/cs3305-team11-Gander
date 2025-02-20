@@ -277,7 +277,7 @@ const StreamDashboardPage: React.FC = () => {
                   value={streamData.title}
                   onChange={handleInputChange}
                   placeholder="Enter your stream title"
-                  extraClasses="w-[70%] focus:w-[100%]"
+                  extraClasses="w-[70%] focus:w-[70%]"
                   maxLength={50}
                 />
               </div>
@@ -285,6 +285,7 @@ const StreamDashboardPage: React.FC = () => {
               <div className="relative">
                 <label className="block text-white mb-2">Category</label>
                 <Input
+                  name="category_name"
                   value={streamData.category_name}
                   onChange={handleInputChange}
                   onFocus={() => setIsCategoryFocused(true)}
@@ -292,7 +293,7 @@ const StreamDashboardPage: React.FC = () => {
                     setTimeout(() => setIsCategoryFocused(false), 200)
                   }
                   placeholder="Select or type a category"
-                  extraClasses="w-[70%] focus:w-[100%]"
+                  extraClasses="w-[70%] focus:w-[70%]"
                   maxLength={50}
                   autoComplete="off"
                   type="search"
@@ -388,13 +389,25 @@ const StreamDashboardPage: React.FC = () => {
               </div>
 
               <div className="flex flex-col w-fit mx-auto items-center justify-center pt-6 gap-6">
-                <Button
-                  onClick={isStreaming ? handleUpdateStream : handleStartStream}
-                  disabled={!isFormValid()}
-                  extraClasses="text-2xl px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isStreaming ? "Update Stream" : "Start Streaming"}
-                </Button>
+                <div className="flex gap-8">
+                  <Button
+                    onClick={
+                      isStreaming ? handleUpdateStream : handleStartStream
+                    }
+                    disabled={!isFormValid()}
+                    extraClasses="text-2xl px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isStreaming ? "Update Stream" : "Start Streaming"}
+                  </Button>
+                  {isStreaming && (
+                    <Button
+                      onClick={handleEndStream}
+                      extraClasses="text-2xl px-8 py-4 hover:text-red-500 hover:border-red-500"
+                    >
+                      End Stream
+                    </Button>
+                  )}
+                </div>
                 {!streamDetected && (
                   <p className="text-red-500 text-sm">
                     No stream input detected. Please start streaming using your
