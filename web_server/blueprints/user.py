@@ -21,6 +21,16 @@ def user_data(username: str):
     data = get_user(user_id)
     return jsonify(data)
 
+@user_bp.route('/user/<string:username>/stream_key')
+def user_stream_key(username: str):
+    """
+    Returns a stream key for a given user
+    """
+    user_id = get_user_id(username)
+    with Database() as db:
+        data = db.fetchone("SELECT stream_key FROM users WHERE user_id = ?", (user_id,))
+    return jsonify({"stream_key": data["stream_key"]})
+
 ## Subscription Routes
 @login_required
 @user_bp.route('/user/subscription/<string:streamer_name>')

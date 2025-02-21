@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Input/Button";
+// @ts-ignore
+import ChromeDinoGame from "react-chrome-dino";
 
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ const NotFoundPage: React.FC = () => {
         <div className="w-full text-center animate-floating">
           <h1 className="text-6xl font-bold mb-4">404</h1>
           <p className="text-2xl mb-8">Page Not Found</p>
+          <ChromeDinoGame />
           <Button extraClasses="z-[100]" onClick={() => navigate("/")}>
             Go Home
           </Button>

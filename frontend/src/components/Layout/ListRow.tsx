@@ -14,6 +14,7 @@ interface ListRowProps {
   wrap: boolean;
   onClick: (itemName: string) => void;
   extraClasses?: string;
+  itemExtraClasses?: string;
   children?: React.ReactNode;
 }
 
@@ -25,6 +26,7 @@ const ListRow: React.FC<ListRowProps> = ({
   wrap,
   onClick,
   extraClasses = "",
+  itemExtraClasses = "",
   children,
 }) => {
   const slider = useRef<HTMLDivElement>(null);
@@ -52,7 +54,7 @@ const ListRow: React.FC<ListRowProps> = ({
       </div>
 
       <div className="relative overflow-hidden flex items-center z-0">
-        {!wrap && items.length > 3 && (
+        {!wrap && items.length > 4 && (
           <>
             <ArrowLeftIcon
               onClick={slideLeft}
@@ -91,6 +93,7 @@ const ListRow: React.FC<ListRowProps> = ({
                   ? onClick?.(item.streamer)
                   : onClick?.(item.title)
               }
+              extraClasses={`${itemExtraClasses} min-w-[25vw]`}
             />
           ))}
         </div>

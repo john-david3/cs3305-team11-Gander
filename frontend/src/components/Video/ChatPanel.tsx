@@ -177,7 +177,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 </span>
               </div>
               {/* Message content */}
-              <div className="w-full text-[0.9em] mt-0.5em flex flex-col overflow-hidden break-words">
+              <div className="message w-full text-[0.9em] mt-0.5em flex flex-col overflow-hidden" >
                 {msg.message}
               </div>
             </div>

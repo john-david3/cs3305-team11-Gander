@@ -9,6 +9,7 @@ export interface ListItemProps {
   viewers: number;
   thumbnail?: string;
   onItemClick?: () => void;
+  extraClasses?: string;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
@@ -19,12 +20,12 @@ const ListItem: React.FC<ListItemProps> = ({
   viewers,
   thumbnail,
   onItemClick,
+  extraClasses = "",
 }) => {
   return (
     <div className="p-4">
       <div
-        className="min-w-[25vw] overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg 
-	   cursor-pointer hover:bg-pink-700 hover:scale-105 transition-all"
+        className={`${extraClasses} overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg cursor-pointer mx-auto hover:bg-pink-700 hover:scale-105 transition-all`}
         onClick={onItemClick}
       >
         <div className="relative w-full pt-[56.25%] overflow-hidden rounded-t-lg">

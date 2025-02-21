@@ -45,20 +45,44 @@ INSERT INTO followed_categories (user_id, category_id) VALUES
 (5, 5);
 
 -- Sample Data for categories
-INSERT INTO categories (category_name) VALUES 
-('Gaming'),
-('Music'),
-('Art'),
-('Education'),
-('Sports');
+INSERT INTO categories (category_name) VALUES  
+('Gaming'),  
+('Music'),  
+('Art'),  
+('Education'),  
+('Sports'),  
+('League of Legends'),  
+('Fortnite'),  
+('Minecraft'),  
+('Call of Duty'),  
+('Counter-Strike 2'),  
+('Valorant'),  
+('Dota 2'),  
+('Apex Legends'),  
+('Grand Theft Auto V'),  
+('The Legend of Zelda: Breath of the Wild'),  
+('Elden Ring'),  
+('Red Dead Redemption 2'),  
+('Cyberpunk 2077'),  
+('Super Smash Bros. Ultimate'),  
+('Overwatch 2'),  
+('Genshin Impact'),  
+('World of Warcraft'),  
+('Rocket League'),  
+('FIFA 24'),  
+('The Sims 4'),  
+('Among Us'),  
+('Dead by Daylight'),  
+('Hogwarts Legacy');  
+
 
 -- Sample Data for streams
-INSERT INTO streams (user_id, title, start_time, num_viewers, category_id) VALUES
-(1, 'Game on!', '2025-02-16 17:00:00', 5, 1),
-(2, 'Live Music Jam', '2025-01-25 20:00:00', 350, 2),
-(3, 'Sketching Live', '2025-01-24 15:00:00', 80, 3),
-(4, 'Math Made Easy', '2025-01-23 10:00:00', 400, 4),
-(5, 'Sports Highlights', '2025-02-15 23:00:00', 210, 5);
+INSERT INTO streams (user_id, title, start_time, category_id) VALUES
+(1, 'Game on!', '2025-02-16 17:00:00', 1),
+(2, 'Live Music Jam', '2025-01-25 20:00:00', 2),
+(3, 'Sketching Live', '2025-01-24 15:00:00', 3),
+(4, 'Math Made Easy', '2025-01-23 10:00:00', 4),
+(5, 'Sports Highlights', '2025-02-15 23:00:00', 5);
 
 -- Sample Data for vods
 INSERT INTO vods (user_id, title, datetime, category_id, length, views) VALUES 
@@ -118,22 +142,3 @@ SELECT * FROM streams;
 SELECT * FROM chat;
 SELECT * FROM tags;
 SELECT * FROM stream_tags;
-
--- To see all tables in the database
-SELECT name FROM sqlite_master WHERE type='table';
-
--- UPDATE users SET is_live = 0 WHERE user_id = 1;
-
-SELECT users.user_id, streams.title, streams.num_viewers, users.username
-FROM streams JOIN users 
-ON streams.user_id = users.user_id
-WHERE users.user_id IN
-(SELECT followed_id FROM follows WHERE user_id = 1)
-AND users.is_live = 1;
-
-SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS total_viewers
-FROM streams
-JOIN categories ON streams.category_id = categories.category_id
-GROUP BY categories.category_name
-ORDER BY SUM(streams.num_viewers) DESC
-LIMIT 10;

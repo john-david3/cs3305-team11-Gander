@@ -8,18 +8,6 @@ const SearchBar: React.FC = () => {
   //const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
   const navigate = useNavigate();
 
-  // Debounce the search query
-  {
-    /*
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 500); // Wait 500ms after user stops typing
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]); */
-  }
-
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 

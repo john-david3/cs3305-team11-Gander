@@ -1,23 +1,22 @@
 import React from "react";
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   type?: "button" | "submit" | "reset";
   extraClasses?: string;
   children?: React.ReactNode;
-  onClick?: () => void;
 }
 
 const Button: React.FC<ButtonProps> = ({
   type = "button",
   children = "Submit",
   extraClasses = "",
-  onClick,
+  ...props
 }) => {
   return (
     <button
       type={type}
       className={`${extraClasses} p-2 text-[1.5rem] text-white hover:text-purple-600 bg-black/30 hover:bg-black/80 rounded-md border border-gray-300 hover:border-purple-500 hover:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all`}
-      onClick={onClick}
+      {...props}
     >
       {children}
     </button>

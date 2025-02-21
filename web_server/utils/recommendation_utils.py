@@ -72,11 +72,11 @@ def get_highest_view_categories(no_categories: int = 4, offset: int = 0) -> Opti
     """
     with Database() as db:
         categories = db.fetchall("""
-            SELECT categories.category_id, categories.category_name, SUM(streams.num_viewers) AS num_viewers
-            FROM streams
-            JOIN categories ON streams.category_id = categories.category_id
-            GROUP BY categories.category_name
-            ORDER BY SUM(streams.num_viewers) DESC
+            SELECT categories.category_id, categories.category_name, COALESCE(SUM(streams.num_viewers), 0) AS num_viewers
+            FROM categories
+            LEFT JOIN streams ON streams.category_id = categories.category_id
+            GROUP BY categories.category_id, categories.category_name
+            ORDER BY num_viewers DESC
             LIMIT ? OFFSET ?;
         """, (no_categories, offset))
     return categories

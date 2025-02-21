@@ -171,6 +171,10 @@ body {
   color: var(--text-color);
 }
 
+.message {
+  word-wrap: anywhere;
+}
+
 
 
 

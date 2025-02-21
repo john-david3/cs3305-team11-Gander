@@ -1,21 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ListRow from "../components/Layout/ListRow";
 import { useCategories } from "../context/ContentContext";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
+import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 
 const AllCategoriesPage: React.FC = () => {
   const { categories, setCategories } = useCategories();
   const navigate = useNavigate();
+  const [categoryOffset, setCategoryOffset] = useState(0);
+  const [noCategories, setNoCategories] = useState(12);
+  const [hasMoreData, setHasMoreData] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/api/categories/popular/8/0");
+        const response = await fetch(`/api/categories/popular/${noCategories}/${categoryOffset}`);
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
         }
         const data = await response.json();
+        // Adds to offset once data is returned
+        if (data.length > 0) {
+          setCategoryOffset(prev => prev + data.length);
+        } else {
+          setHasMoreData(false);
+        }
 
         // Transform the data to match CategoryItem interface
         const processedCategories = data.map((category: any) => ({
@@ -36,6 +46,11 @@ const AllCategoriesPage: React.FC = () => {
 
     fetchCategories();
   }, [setCategories]);
+
+  const logOnScroll = () => {
+    console.log("hi")
+  };
+  fetchContentOnScroll(logOnScroll,hasMoreData)
 
   if (!categories.length) {
     return (
