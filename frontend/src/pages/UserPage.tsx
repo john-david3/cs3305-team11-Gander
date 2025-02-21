@@ -207,6 +207,7 @@ const UserPage: React.FC = () => {
             {/* User Type (e.g., "USER") */}
             <small className="text-green-400">{userPageVariant.toUpperCase()}</small>
 
+            Bio Section
             <div className="mt-6 text-center">
               <h2 className="text-xl font-semibold mb-3">About {profileData.username}</h2>
               <p className="text-gray-300 whitespace-pre-wrap">{profileData.bio}</p>
