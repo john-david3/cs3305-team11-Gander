@@ -142,41 +142,14 @@ def get_vod_tags(vod_id: int):
         """, (vod_id,))
     return tags
 
-def transfer_stream_to_vod(user_id: int):
-    """
-    Deletes stream from stream table and moves it to VoD table
-    TODO: Add functionaliy to save stream permanently
-    """
-
-    with Database() as db:
-        stream = db.fetchone("""
-            SELECT * FROM streams WHERE user_id = ?;
-        """, (user_id,))
-
-        if not stream:
-            return False
-        
-        ## TODO: calculate length in seconds, currently using temp value
-
-        db.execute("""
-            INSERT INTO vods (user_id, title, datetime, category_id, length, views)
-            VALUES (?, ?, ?, ?, ?, ?);
-        """, (stream["user_id"], stream["title"], stream["datetime"], stream["category_id"], 10, stream["num_viewers"]))
-
-        db.execute("""
-            DELETE FROM streams WHERE user_id = ?;
-        """, (user_id,))
-    
-    return True
-
 def create_local_directories(username: str):
     """
     Create directories for user stream data if they do not exist
     """
 
-    vods_path = f"stream_data/{username}/vods"
-    stream_path = f"stream_data/{username}/stream"
-    thumbnail_path = f"stream_data/{username}/thumbnails"
+    vods_path = f"stream_data/vods/{username}"
+    stream_path = f"stream_data/stream"
+    thumbnail_path = f"stream_data/thumbnails/{username}"
 
     if not os.path.exists(vods_path):
         os.makedirs(vods_path)
@@ -188,7 +161,6 @@ def create_local_directories(username: str):
         os.makedirs(thumbnail_path)
 
     # Fix permissions
-    os.chmod(f"stream_data/{username}", 0o777)
     os.chmod(vods_path, 0o777)
     os.chmod(stream_path, 0o777)
     os.chmod(thumbnail_path, 0o777)
