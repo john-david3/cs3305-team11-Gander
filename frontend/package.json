@@ -15,6 +15,7 @@
     "@stripe/react-stripe-js": "^3.1.1",
     "@stripe/stripe-js": "^5.5.0",
     "@types/video.js": "^7.3.58",
+    "html2canvas": "^1.4.1",
     "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-chrome-dino": "^0.1.3",

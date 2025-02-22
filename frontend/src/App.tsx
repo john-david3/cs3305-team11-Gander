@@ -13,6 +13,7 @@ import ResultsPage from "./pages/ResultsPage";
 import { SidebarProvider } from "./context/SidebarContext";
 import { QuickSettingsProvider } from "./context/QuickSettingsContext";
 import StreamDashboardPage from "./pages/StreamDashboardPage";
+import { Brightness } from "./context/BrightnessContext";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,6 +35,7 @@ function App() {
   }, []);
 
   return (
+    <Brightness>
     <AuthContext.Provider
       value={{ isLoggedIn, username, userId, setIsLoggedIn, setUsername, setUserId }}
     >
@@ -73,6 +75,7 @@ function App() {
         </SidebarProvider>
       </ContentProvider>
     </AuthContext.Provider>
+    </Brightness>
   );
 }
 
