@@ -36,7 +36,7 @@ body[data-theme="light"] {
   --sideBar-profile-bg: rgb(132, 0, 255);
   --sideBar-profile-text: #ffffff;
   --profile-border: #ffffff;
-  
+
   --follow-bg: #ff0000;
   --follow-text: white;
   --follow-shadow: 0px 0px 15px rgba(94, 94, 94, 0.754);
@@ -49,6 +49,22 @@ body[data-theme="light"] {
   --quickBar-bg: #ffffff;
   --quickBar-text: #000000;
   --quickBar-border: #ffffff;
+
+  /*User Page*/
+  --user-name: #000000;
+  --user-pfp-border: #ffffff;
+  --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
+
+  --user-borderBg: rgb(123, 0, 0);
+  --user-box: rgb(128, 0, 255);
+  --user-box-strip: rgb(255, 0, 0);
+  --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
+  --user-sideBox: rgb(149, 0, 255);
+  --user-contentBox: rgb(255, 255, 253);
+  --user-follow-bg: #ff0000;
+
+  --user-bg: rgb(255, 255, 255);
+  --user-live-bg: rgb(127, 161, 5);
 }
 
 body[data-theme="dark"] {
@@ -60,7 +76,7 @@ body[data-theme="dark"] {
   --sideBar-profile-bg: rgba(92, 2, 176, 0.592);
   --sideBar-profile-text: #ffffff;
   --profile-border: #ffffff;
-  
+
   --follow-bg: #a50000c6;
   --follow-text: rgb(255, 255, 255);
   --follow-shadow: 0px 0px 15px rgba(255, 255, 255, 0.966);
@@ -74,6 +90,23 @@ body[data-theme="dark"] {
   --quickBar-bg: #000000d3;
   --quickBar-text: #ffffff;
   --quickBar-border: #ffffff;
+
+
+  /*User Page*/
+  --user-name: #ffffff;
+  --user-pfp-border: #ffffff;
+  --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
+
+  --user-borderBg: rgb(123, 0, 0);
+  --user-box: rgb(75, 0, 150);
+  --user-box-strip: rgb(165, 0, 0);
+  --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
+  --user-sideBox: rgba(25, 25, 25, 0.938);
+  --user-contentBox: rgba(108, 0, 0, 0.764);
+  --user-follow-bg: #9a0000;
+
+  --user-bg: rgb(16, 16, 16);
+  --user-live-bg: rgb(127, 161, 5);
 }
 
 body[data-theme="blue"] {
@@ -98,6 +131,25 @@ body[data-theme="blue"] {
   --quickBar-bg: #eefafffb;
   --quickBar-text: #003571;
   --quickBar-border: #ffffff;
+
+
+  /*User Page*/
+  --user-name: #000000;
+  --user-pfp-border: #ffffff;
+  --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
+
+  --user-borderBg: rgb(0, 29, 92);
+  --user-box: rgb(246, 255, 0);
+  --user-box-strip: rgb(68, 160, 218);
+  --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
+  --user-sideBox: #00525c;
+  --user-contentBox: rgba(161, 254, 252, 0.691);
+  --user-follow-bg: #78baeddf;
+
+  --user-bg: rgba(167, 245, 244, 0.886);
+  --user-live-bg: rgb(127, 161, 5);
+
+
 }
 
 body[data-theme="green"] {
@@ -135,9 +187,9 @@ body[data-theme="green"] {
   --user-box-strip: rgb(217, 240, 133);
   --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
   --user-sideBox: rgb(1, 61, 30);
-  --user-contentBox: rgb(245, 228, 167);
-
-  --user-bg:  rgb(0, 78, 38);
+  --user-contentBox: rgba(213, 197, 141, 0.982);
+  --user-follow-bg: #ffffff;
+  --user-bg: rgb(0, 78, 38);
   --user-live-bg: rgb(217, 240, 133);
 }
 
@@ -145,9 +197,9 @@ body[data-theme="orange"] {
   --bg-color: #ffe0b2;
   --text-color: #e65100;
 
-  --sideBar-bg:  #fff3dc;
+  --sideBar-bg: #fff3dc;
   --sideBar-text: #4d3b31;
-  --sideBar-profile-bg:  #E67E22;
+  --sideBar-profile-bg: #E67E22;
   --sideBar-profile-text: #ffffff;
   --profile-border: #ffd900;
 
@@ -164,6 +216,22 @@ body[data-theme="orange"] {
   --quickBar-bg: #fff3dc;
   --quickBar-text: #ff8800;
   --quickBar-border: #ffffff;
+
+  /*User Page*/
+
+  --user-pfp-border: #ffffff;
+  --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
+  --user-name: #000000;
+  --user-borderBg: rgb(255, 237, 123);
+  --user-box: rgb(157, 149, 0);
+  --user-box-strip: rgb(216, 255, 73);
+  --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
+  --user-sideBox: rgb(189, 116, 43);
+  --user-contentBox: rgba(229, 244, 92, 0.877);
+  --user-follow-bg: #fff59c;
+
+  --user-bg: rgb(255, 145, 0);
+  --user-live-bg: rgb(127, 161, 5);
 }
 
 body {

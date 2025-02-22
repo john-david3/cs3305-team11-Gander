@@ -118,7 +118,7 @@ const UserPage: React.FC = () => {
 
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
 
-        <div className="grid grid-cols-4 grid-rows-[0.1fr_1.5fr] w-full gap-8">
+        <div className="grid grid-cols-4 grid-rows-[0.1fr_4fr] w-full gap-8">
           {/* Profile Section - TOP  */}
 
 
@@ -128,11 +128,11 @@ const UserPage: React.FC = () => {
         relative flex flex-col items-center">
 
             {/* Border Overlay (Always on Top) */}
-            <div className="absolute left-[0.5px] inset-0 border-[5px] border-[var(--user-borderBg)] rounded-[20px] z-20"></div>
+            <div className="absolute left-[0px] inset-0 border-[5px] border-[var(--user-borderBg)] rounded-[20px] z-20"></div>
 
 
             {/* Background Box */}
-            <div className="absolute flex top-0 left-[0.5px] w-[99.8%] h-[5vh] min-h-[1em] max-h-[10em] rounded-t-[25.5px] 
+            <div className="absolute flex top-0 left-[0.55px] w-[99.9%] h-[5vh] min-h-[1em] max-h-[10em] rounded-t-[25.5px] 
                  bg-[var(--user-box)] z-10 flex-shrink justify-center"
               style={{ boxShadow: 'var(--user-box-shadow)' }}
             >
@@ -152,7 +152,7 @@ const UserPage: React.FC = () => {
             </div>
 
             {/* Username - Now Directly Below PFP */}
-            <h1 className="text-[1.5em] sm:text-[2em] font-bold -mt-[45px] sm:-mt-[90px] text-center">
+            <h1 className="text-[var(--user-name)] text-[1.5em] sm:text-[2em] font-bold -mt-[45px] sm:-mt-[90px] text-center">
               {profileData.username}
             </h1>
 
@@ -206,7 +206,6 @@ const UserPage: React.FC = () => {
             {/* User Type (e.g., "USER") */}
             <small className="text-green-400">{userPageVariant.toUpperCase()}</small>
 
-            Bio Section
             <div className="mt-6 text-center">
               <h2 className="text-xl font-semibold mb-3">About {profileData.username}</h2>
               <p className="text-gray-300 whitespace-pre-wrap">{profileData.bio}</p>
@@ -220,8 +219,7 @@ const UserPage: React.FC = () => {
           >
             {userPageVariant === "streamer" && (
               <>
-                {/* ↓↓ Current Stream ↓↓ */}
-                {profileData.isLive && (
+                {profileData.isLive ? (
                   <div className="mb-8">
                     <h2 className="text-2xl bg-[#ff0000] border py-4 px-12 font-black mb-4 rounded-[4rem]">
                       Currently Live!
@@ -238,7 +236,10 @@ const UserPage: React.FC = () => {
                       }}
                     />
                   </div>
+                ) : (
+                  <h1>Currently not live</h1>
                 )}
+
                 {/* ↓↓ VODS ↓↓ */}
                 <div>
                   <h2 className="text-2xl font-bold mb-4">Past Broadcasts</h2>
@@ -248,22 +249,54 @@ const UserPage: React.FC = () => {
                 </div>
               </>
             )}
+
+            {userPageVariant === "user" && (
+              <>
+                {/* ↓↓ VODS ↓↓ */}
+                <div>
+                  <h2 className="text-2xl font-bold mb-4">Past Broadcasts</h2>
+                  <div className="text-gray-400 rounded-none">
+                    No past broadcasts found
+                  </div>
+                </div>
+              </>
+            )}
+
           </div>
 
           <div
             id="mini"
-            className="bg-[var(--user-sideBox)] col-span-1 bg-gray-800 rounded-lg  text-center items-center justify-center
+            className="bg-[var(--user-sideBox)] col-span-1 rounded-lg  text-center items-center justify-center
   flex flex-col flex-grow gap-4 p-[2rem]"
           >
             <div
-              className="bg-[var(--follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
-                 flex items-center justify-center w-full p-4"
+              className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
+                 flex items-center justify-center w-full p-4 content-start"
               onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
               onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
             >
-                <p className="text-[var(--follow-text)] whitespace-pre-wrap">Following www</p>
-                
+              <li className="text-[var(--follow-text)] whitespace-pre-wrap">Following</li>
+
             </div>
+            <div
+              className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
+                 flex items-center justify-center w-full p-4 content-start"
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+            >
+              <li className="text-[var(--follow-text)] whitespace-pre-wrap">Streamers</li>
+
+            </div>
+            <div
+              className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
+                 flex items-center justify-center w-full p-4 content-start"
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+            >
+              <li className="text-[var(--follow-text)] whitespace-pre-wrap">Category</li>
+
+            </div>
+
           </div>
 
 
