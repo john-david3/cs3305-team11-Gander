@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import Button, { EditButton } from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 
-
 interface UserProfileData {
   id: number;
   username: string;
@@ -110,23 +109,23 @@ const UserPage: React.FC = () => {
   }
   return (
     <DynamicPageContent
-      className={`min-h-screen ${profileData.isLive
-        ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
-        : bgColors[userPageVariant]
-        } text-white flex flex-col`}
+      className={`min-h-screen ${
+        profileData.isLive
+          ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
+          : bgColors[userPageVariant]
+      } text-white flex flex-col`}
     >
-
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
 
         <div className="grid grid-cols-4 grid-rows-[0.1fr_4fr] w-full gap-8">
           {/* Profile Section - TOP  */}
 
-
-          <div id="profile"
+          <div
+            id="profile"
             className="col-span-4 row-span-1 h-full bg-[var(--user-bg)] 
         rounded-[30px] p-3 shadow-lg 
-        relative flex flex-col items-center">
-
+        relative flex flex-col items-center"
+          >
             {/* Border Overlay (Always on Top) */}
             <div className="absolute left-[0px] inset-0 border-[5px] border-[var(--user-borderBg)] rounded-[20px] z-20"></div>
 
@@ -134,15 +133,16 @@ const UserPage: React.FC = () => {
             {/* Background Box */}
             <div className="absolute flex top-0 left-[0.55px] w-[99.9%] h-[5vh] min-h-[1em] max-h-[10em] rounded-t-[25.5px] 
                  bg-[var(--user-box)] z-10 flex-shrink justify-center"
-              style={{ boxShadow: 'var(--user-box-shadow)' }}
+              style={{ boxShadow: "var(--user-box-shadow)" }}
             >
               <div className="absolute top-4 w-[99.8%] h-[1.5vh] min-h-[10px] max-h-[2em]  bg-[var(--user-box-strip)]"></div>
-
             </div>
             {/* Profile Picture */}
-            <div className="relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
+            <div
+              className="relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
                rounded-full overflow-hidden flex-shrink-0 border-4 border-[var(--user-pfp-border)] inset-0 z-20"
-              style={{ boxShadow: 'var(--user-pfp-border-shadow)' }}>
+              style={{ boxShadow: "var(--user-pfp-border-shadow)" }}
+            >
               <img
                 src="/images/monkey.png"
                 alt={`${profileData.username}'s profile`}
@@ -155,10 +155,6 @@ const UserPage: React.FC = () => {
             <h1 className="text-[var(--user-name)] text-[1.5em] sm:text-[2em] font-bold -mt-[45px] sm:-mt-[90px] text-center">
               {profileData.username}
             </h1>
-
-
-
-
 
             {/* Follower Count  */}
             {userPageVariant === "streamer" && (
@@ -178,9 +174,7 @@ const UserPage: React.FC = () => {
                 {!isFollowing ? (
                   <Button
                     extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
-                    onClick={() =>
-                      followUser(profileData.id, setShowAuthModal)
-                    }
+                    onClick={() => followUser(profileData.id, setShowAuthModal)}
                   >
                     Follow
                   </Button>
@@ -194,7 +188,6 @@ const UserPage: React.FC = () => {
                     Unfollow
                   </Button>
                 )}
-
               </>
             )}
           </div>
@@ -207,8 +200,12 @@ const UserPage: React.FC = () => {
             <small className="text-green-400">{userPageVariant.toUpperCase()}</small>
 
             <div className="mt-6 text-center">
-              <h2 className="text-xl font-semibold mb-3">About {profileData.username}</h2>
-              <p className="text-gray-300 whitespace-pre-wrap">{profileData.bio}</p>
+              <h2 className="text-xl font-semibold mb-3">
+                About {profileData.username}
+              </h2>
+              <p className="text-gray-300 whitespace-pre-wrap">
+                {profileData.bio}
+              </p>
             </div>
           </div>
 
@@ -298,13 +295,9 @@ const UserPage: React.FC = () => {
             </div>
 
           </div>
-
-
         </div>
       </div>
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
-
-
     </DynamicPageContent>
   );
 };

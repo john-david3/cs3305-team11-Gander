@@ -2,17 +2,21 @@ import React from "react";
 
 interface LogoProps {
   variant?: "home" | "default";
+  extraClasses?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ variant = "default" }) => {
+const Logo: React.FC<LogoProps> = ({
+  variant = "default",
+  extraClasses = "",
+}) => {
   const gradient = "text-transparent group-hover:mx-1 transition-all";
   return (
     <div
       id="logo"
-      className={`group py-3 cursor-pointer text-center font-bold hover:scale-110 transition-all ${
+      className={`${extraClasses} group py-3 cursor-pointer text-center font-bold hover:scale-110 transition-all ${
         variant === "home" ? "text-[12vh]" : "text-[4vh]"
       }`}
-      onClick={() => {window.location.href = "/";}}
+      onClick={() => (window.location.href = "/")}
     >
       <h6 className="text-sm bg-gradient-to-br from-blue-400 via-green-500 to-indigo-500 font-black text-transparent bg-clip-text">
         Go on, have a...

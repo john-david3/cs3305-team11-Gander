@@ -1,82 +1,143 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Button from "../components/Input/Button";
+import SearchBar from "../components/Input/SearchBar";
+import ListRow from "../components/Layout/ListRow";
+import Logo from "../components/Layout/Logo";
 
 const ResultsPage: React.FC = ({}) => {
+  const [overflow, setOverflow] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { searchResults, query } = location.state || {
-    searchResults: null,
+    searchResults: { categories: [], users: [], streams: [] },
     query: "",
   };
-  if (!searchResults) {
+
+  useEffect(() => {
+    const checkHeight = () => {
+      setOverflow(
+        document.documentElement.scrollHeight + 20 > window.innerHeight
+      );
+    };
+
+    checkHeight();
+    window.addEventListener("resize", checkHeight);
+
+    return () => window.removeEventListener("resize", checkHeight);
+  }, []);
+
+  if (
+    searchResults.categories.length === 0 &&
+    searchResults.users.length === 0 &&
+    searchResults.streams.length === 0
+  ) {
     return (
-      <div className="p-4">
-        <h2 className="text-xl font-bold">No results found for "{query}"</h2>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-4 px-4 py-2 bg-purple-500 text-white rounded"
-        >
-          Go Back
-        </button>
+      <div className="flex flex-col items-center justify-evenly min-h-[70vh] my-[15vh] p-4">
+        <h1 className="text-3xl font-bold mb-4">
+          Search results for "{query}"
+        </h1>
+        <SearchBar value={query} />
+        <h3 className="text-2xl text-gray-400">Nothing Found</h3>
+        <div className="flex gap-8">
+          <Button onClick={() => navigate(-1)}>Go Back</Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Search Results for "{query}"</h2>
+    <div
+      id="results-page"
+      className="flex flex-col items-center justify-evenly min-h-[96vh] p-4"
+    >
+      <Logo extraClasses="absolute top-[5vh] left-0" />
+      <h1 className="text-3xl font-bold mb-4">Search results for "{query}"</h1>
+      <SearchBar value={query} />
 
-      <div>
-        <h3 className="text-lg font-semibold">Categories</h3>
-        <ul>
-          {searchResults.categories.map((category: any, index: number) => (
-            <li
-              key={index}
-              className="border p-2 rounded my-2 cursor-pointer"
-              onClick={() => navigate(`/category/${category.category_name}`)}
-            >
-              {category.category_name}
-            </li>
-          ))}
-        </ul>
+      <div id="results" className="flex flex-col flex-grow w-full">
+        {searchResults.streams.length > 0 && (
+          <ListRow
+            variant="search"
+            type="stream"
+            items={searchResults.streams.map((stream: any) => ({
+              id: stream.user_id,
+              type: "stream",
+              title: stream.title,
+              username: stream.username,
+              streamCategory: stream.category_name,
+              viewers: stream.num_viewers,
+              thumbnail: stream.thumbnail_url,
+            }))}
+            title="Streams"
+            onClick={(streamer_name: string) =>
+              (window.location.href = `/${streamer_name}`)
+            }
+            itemExtraClasses="min-w-[calc(12vw+12vh/2)]"
+            amountForScroll={3}
+          />
+        )}
+
+        {searchResults.categories.length > 0 && (
+          <ListRow
+            variant="search"
+            type="category"
+            items={searchResults.categories.map((category: any) => ({
+              id: category.category_id,
+              type: "category",
+              title: category.category_name,
+              viewers: 0,
+              thumbnail: `/images/category_thumbnails/${category.category_name
+                .toLowerCase()
+                .replace(/ /g, "_")}.webp`,
+            }))}
+            title="Categories"
+            onClick={(category_name: string) =>
+              navigate(`/category/${category_name}`)
+            }
+            titleClickable={true}
+            itemExtraClasses="min-w-[calc(12vw+12vh/2)]"
+            amountForScroll={3}
+          />
+        )}
+
+        {searchResults.users.length > 0 && (
+          <ListRow
+            variant="search"
+            type="user"
+            items={searchResults.users.map((user: any) => ({
+              id: user.user_id,
+              type: "user",
+              title: `${user.is_live ? "🔴" : ""} ${user.username}`,
+              viewers: 0,
+              username: user.username,
+              thumbnail: user.profile_picture,
+            }))}
+            title="Users"
+            onClick={(username: string) =>
+              (window.location.href = `/user/${username}`)
+            }
+            amountForScroll={3}
+            itemExtraClasses="min-w-[calc(12vw+12vh/2)]"
+          />
+        )}
       </div>
 
-      <div>
-        <h3 className="text-lg font-semibold">Users</h3>
-        <ul>
-          {searchResults.users.map((user: any, index: number) => (
-            <li
-              key={index}
-              className="border p-2 rounded my-2 cursor-pointer"
-              onClick={() => window.location.href = `/user/${user.username}`}
-            >
-              {user.is_live ? "🔴" : ""} {user.username}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold">Streams</h3>
-        <ul>
-          {searchResults.streams.map((stream: any, index: number) => (
-            <li
-              key={index}
-              className="border p-2 rounded my-2 cursor-pointer"
-              onClick={() => window.location.href = `/${stream.username}`}
-            >
-              {stream.title} - {stream.username} - {stream.num_viewers} viewers
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <button
-        onClick={() => navigate(-1)}
-        className="mt-4 px-4 py-2 bg-purple-500 text-white rounded"
+      <div
+        className={`${
+          overflow && "absolute top-[5vh] right-[2vw]"
+        } flex gap-[2vw]`}
       >
-        Go Back
-      </button>
+        <Button
+          extraClasses="text-[2vw]"
+          onClick={() => (window.location.href = "/")}
+        >
+          Go Home
+        </Button>
+        <Button extraClasses="text-[2vw]" onClick={() => navigate(-1)}>
+          Go Back
+        </Button>
+      </div>
     </div>
   );
 };

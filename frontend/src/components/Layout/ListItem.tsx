@@ -1,10 +1,10 @@
 import React from "react";
 
 export interface ListItemProps {
-  type: "stream" | "category";
+  type: "stream" | "category" | "user";
   id: number;
   title: string;
-  streamer?: string;
+  username?: string;
   streamCategory?: string;
   viewers: number;
   thumbnail?: string;
@@ -15,13 +15,38 @@ export interface ListItemProps {
 const ListItem: React.FC<ListItemProps> = ({
   type,
   title,
-  streamer,
+  username,
   streamCategory,
   viewers,
   thumbnail,
   onItemClick,
   extraClasses = "",
 }) => {
+  if (type === "user") {
+    return (
+      <div className="p-4 pb-10">
+        <div
+          className={`group relative w-fit flex flex-col bg-blue-600 rounded-tl-xl rounded-xl min-h-[calc((20vw+20vh)/3)] max-w-[calc((20vw+20vh)/2)] justify-end items-center cursor-pointer mx-auto hover:bg-blue-800 z-50`}
+          onClick={onItemClick}
+        >
+          <img
+            src="/images/monkey.png"
+            alt={`user ${username}`}
+            className="rounded-xl max-w-[calc((20vw+20vh)/2)] border-[0.15em] border-purple-500 cursor-pointer"
+          />
+          <button className="text-[calc((2vw+2vh)/2)] font-bold hover:underline w-full py-2">
+            {title}
+          </button>
+
+          {title.includes("🔴") && (
+            <p className="absolute font-black bottom-5 opacity-0 group-hover:translate-y-full group-hover:opacity-100 group-hover:-bottom-1 transition-all">
+              Currently Live!
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="p-4">
       <div
@@ -41,7 +66,7 @@ const ListItem: React.FC<ListItemProps> = ({
         </div>
         <div className="p-3">
           <h3 className="font-semibold text-lg text-center">{title}</h3>
-          {type === "stream" && <p className="font-bold">{streamer}</p>}
+          {type === "stream" && <p className="font-bold">{username}</p>}
           {type === "stream" && (
             <p className="text-sm text-gray-300">{streamCategory}</p>
           )}

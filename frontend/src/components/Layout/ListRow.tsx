@@ -5,32 +5,41 @@ import {
 } from "lucide-react";
 import "../../assets/styles/listRow.css";
 import ListItem, { ListItemProps } from "./ListItem";
+import { useNavigate } from "react-router-dom";
 
 interface ListRowProps {
+  variant?: "default" | "search";
   type: "stream" | "category" | "user";
   title?: string;
   description?: string;
   items: ListItemProps[];
-  wrap: boolean;
+  wrap?: boolean;
   onClick: (itemName: string) => void;
+  titleClickable?: boolean;
   extraClasses?: string;
   itemExtraClasses?: string;
+  amountForScroll?: number;
   children?: React.ReactNode;
 }
 
 // Row of entries
 const ListRow: React.FC<ListRowProps> = ({
+  variant = "default",
+  type,
   title = "",
   description = "",
   items,
-  wrap,
+  wrap = false,
+  titleClickable = false,
   onClick,
   extraClasses = "",
   itemExtraClasses = "",
+  amountForScroll = 4,
   children,
 }) => {
   const slider = useRef<HTMLDivElement>(null);
   const scrollAmount = window.innerWidth * 0.3;
+  const navigate = useNavigate();
 
   const slideRight = () => {
     if (!wrap && slider.current) {
@@ -44,17 +53,46 @@ const ListRow: React.FC<ListRowProps> = ({
     }
   };
 
+  const handleTitleClick = (type: string) => {
+    switch (type) {
+      case "stream":
+        break;
+      case "category":
+        navigate("/categories");
+        break;
+      case "user":
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div
-      className={`flex flex-col w-full space-y-4 py-6 text-white px-5 mx-2 mt-5 rounded-[1.5rem] transition-all ${extraClasses}`}
+      className={`${extraClasses} flex w-full rounded-[1.5rem] text-white transition-all ${
+        variant === "search"
+          ? "items-center"
+          : "flex-col space-y-4 py-6 px-5 mx-2 mt-5"
+      }`}
     >
-      <div className="space-y-1">
-        <h2 className="text-2xl font-bold">{title}</h2>
+      <div
+        className={`text-center ${
+          variant === "search" ? "min-w-fit px-auto w-[15vw]" : ""
+        }`}
+      >
+        <h2
+          className={`${
+            titleClickable ? "cursor-pointer hover:underline" : "cursor-default"
+          } text-2xl font-bold`}
+          onClick={titleClickable ? () => handleTitleClick(type) : undefined}
+        >
+          {title}
+        </h2>
         <p>{description}</p>
       </div>
 
-      <div className="relative overflow-hidden flex items-center z-0">
-        {!wrap && items.length > 4 && (
+      <div className="relative overflow-hidden flex flex-grow items-center z-0">
+        {!wrap && items.length > amountForScroll && (
           <>
             <ArrowLeftIcon
               onClick={slideLeft}
@@ -73,24 +111,24 @@ const ListRow: React.FC<ListRowProps> = ({
           ref={slider}
           className={`flex ${
             wrap ? "flex-wrap" : "overflow-x-scroll whitespace-nowrap"
-          } max-w-[95%] items-center justify-between scroll-smooth scrollbar-hide gap-5 mx-auto`}
+          } max-w-[95%] items-center justify-evenly w-full mx-auto scroll-smooth scrollbar-hide gap-5`}
         >
-
           {items.map((item) => (
             <ListItem
               key={`${item.type}-${item.id}`}
               id={item.id}
-              type={item.type}
+              type={type}
               title={item.title}
-              streamer={item.type === "stream" ? item.streamer : undefined}
+              username={item.type === "category" ? undefined : item.username}
               streamCategory={
                 item.type === "stream" ? item.streamCategory : undefined
               }
               viewers={item.viewers}
               thumbnail={item.thumbnail}
               onItemClick={() =>
-                item.type === "stream" && item.streamer
-                  ? onClick?.(item.streamer)
+                (item.type === "stream" || item.type === "user") &&
+                item.username
+                  ? onClick?.(item.username)
                   : onClick?.(item.title)
               }
               extraClasses={`${itemExtraClasses} min-w-[20vw]`}

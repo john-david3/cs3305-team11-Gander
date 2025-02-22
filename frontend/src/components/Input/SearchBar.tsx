@@ -3,8 +3,12 @@ import Input from "./Input";
 import { Search as SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const SearchBar: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+interface SearchBarProps {
+  value?: string;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ value = "" }) => {
+  const [searchQuery, setSearchQuery] = useState(value);
   //const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
   const navigate = useNavigate();
 
@@ -21,7 +25,6 @@ const SearchBar: React.FC = () => {
       });
 
       const data = await response.json();
-      console.log("Search results:", data);
 
       navigate("/results", {
         state: { searchResults: data, query: searchQuery },

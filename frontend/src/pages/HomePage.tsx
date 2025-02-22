@@ -66,6 +66,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         items={categories}
         wrap={false}
         onClick={handleCategoryClick}
+        titleClickable={true}
         extraClasses="bg-[var(--recommend)]"
       >
         <Button

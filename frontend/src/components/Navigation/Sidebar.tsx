@@ -104,7 +104,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
           <ul className="mt-2 space-y-2">
             {followedStreamers.map((streamer) => (
               <li
-                key={streamer.user_id}
+                key={`streamer-${streamer.user_id}`}
                 className="cursor-pointer bg-black py-2 rounded-lg text-white hover:text-purple-500 transition-colors"
                 onClick={() => navigate(`/user/${streamer.username}`)}
               >

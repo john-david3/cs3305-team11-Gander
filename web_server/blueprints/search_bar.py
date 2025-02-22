@@ -41,10 +41,11 @@ def search_results():
 
     # 3 streams
     streams = db.fetchall("""
-                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, s.category_id, u.username
+                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, c.category_name, u.username
                     FROM streams AS s
                     INNER JOIN stream_fts AS f ON s.user_id = f.user_id
                     INNER JOIN users AS u ON s.user_id = u.user_id
+                    INNER JOIN categories AS c ON s.category_id = c.category_id
                     WHERE f.title LIKE '%' || ? || '%'
                     ORDER BY score ASC
                     LIMIT 3;
@@ -54,7 +55,7 @@ def search_results():
 
     print(query, streams, users, categories, flush=True)
     
-    return jsonify({"categories": categories, "users": users, "streams": streams})
+    return jsonify({"streams": streams, "categories": categories, "users": users})
 
 @search_bp.route("/search/categories", methods=["GET", "POST"])
 def search_categories():
