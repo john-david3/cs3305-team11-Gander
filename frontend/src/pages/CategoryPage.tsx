@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ListRow from "../components/Layout/ListRow";
-import { useNavigate } from "react-router-dom";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 
 interface StreamData {
@@ -18,7 +17,6 @@ const CategoryPage: React.FC = () => {
   const { category_name } = useParams<{ category_name: string }>();
   const [streams, setStreams] = useState<StreamData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategoryStreams = async () => {
@@ -54,7 +52,7 @@ const CategoryPage: React.FC = () => {
   }, [category_name]);
 
   const handleStreamClick = (streamerName: string) => {
-    navigate(`/${streamerName}`);
+    window.location.href = `/${streamerName}`;
   };
 
   if (isLoading) {

@@ -16,7 +16,6 @@ import { useAuth } from "../../context/AuthContext";
 import QuickSettings from "../Settings/QuickSettings";
 import { useSidebar } from "../../context/SidebarContext";
 import { useQuickSettings } from "../../context/QuickSettingsContext";
-import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   variant?: "home" | "default";
@@ -27,7 +26,6 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { showSideBar, setShowSideBar } = useSidebar();
   const { showQuickSettings, setShowQuickSettings } = useQuickSettings();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -152,7 +150,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
           extraClasses={`${
             variant === "home" ? "absolute top-[2vh] right-[10vw]" : ""
           } flex flex-row items-center`}
-          onClick={() => navigate("/go-live")}
+          onClick={() => window.location.href = "/go-live"}
         >
           <LiveIcon className="h-15 w-15 mr-2" />
           Go Live

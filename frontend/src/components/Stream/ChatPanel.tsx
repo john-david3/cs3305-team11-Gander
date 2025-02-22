@@ -5,7 +5,6 @@ import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
-import { useNavigate } from "react-router-dom";
 
 interface ChatMessage {
   chatter_username: string;
@@ -28,7 +27,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   // Join chat room when component mounts
   useEffect(() => {
@@ -147,7 +145,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               onClick={() =>
                 msg.chatter_username === username
                   ? null
-                  : navigate(`/user/${msg.chatter_username}`)
+                  : window.location.href = `/user/${msg.chatter_username}`
               }
             >
               <img
@@ -170,7 +168,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                   onClick={() =>
                     msg.chatter_username === username
                       ? null
-                      : navigate(`/user/${msg.chatter_username}`)
+                      : window.location.href = `/user/${msg.chatter_username}`
                   }
                 >
                   {msg.chatter_username}

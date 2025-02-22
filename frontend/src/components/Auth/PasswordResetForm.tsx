@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Input from "../Input/Input";
 import Button from "../Input/Button";
-import { useAuth } from "../../context/AuthContext";
 
 interface ResetPasswordData {
   newPassword: string;
@@ -14,7 +13,7 @@ interface ResetPasswordErrors {
 }
 
 interface SubmitProps {
-  onSubmit: () => void;
+  onSubmit: (success: boolean) => void;
   token: string;
 }
 
@@ -56,7 +55,6 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
 
     if (validateResetForm()) {
       try {
@@ -74,6 +72,7 @@ const PasswordResetForm: React.FC<SubmitProps> = ({ onSubmit, token }) => {
 
         if (!response.ok) {
           const data = await response.json();
+          onSubmit(false);
           throw new Error(
             data.error || "An error has occurred while resetting"
           );

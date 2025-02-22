@@ -1,16 +1,18 @@
 import React from "react";
 import PasswordResetForm from "../components/Auth/PasswordResetForm";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ResetPasswordPage: React.FC = () => {
     const { token } = useParams<{ token: string }>();
-    const navigate = useNavigate();
 
     const handlePasswordReset = (success: boolean) => {
         if (success) {
             alert("Password reset successful!");
-            navigate("/");
-        } 
+            window.location.href = "/";
+        }
+        else {
+            alert("Password reset failed.");
+        }
     };
 
     if (!token) {

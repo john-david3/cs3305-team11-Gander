@@ -48,7 +48,7 @@ const ResultsPage: React.FC = ({}) => {
             <li
               key={index}
               className="border p-2 rounded my-2 cursor-pointer"
-              onClick={() => navigate(`/user/${user.username}`)}
+              onClick={() => window.location.href = `/user/${user.username}`}
             >
               {user.is_live ? "🔴" : ""} {user.username}
             </li>
@@ -63,7 +63,7 @@ const ResultsPage: React.FC = ({}) => {
             <li
               key={index}
               className="border p-2 rounded my-2 cursor-pointer"
-              onClick={() => navigate(`/${stream.username}`)}
+              onClick={() => window.location.href = `/${stream.username}`}
             >
               {stream.title} - {stream.username} - {stream.num_viewers} viewers
             </li>

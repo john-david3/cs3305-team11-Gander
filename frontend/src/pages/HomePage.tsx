@@ -15,11 +15,11 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   const navigate = useNavigate();
 
   const handleStreamClick = (streamerName: string) => {
-    navigate(`/${streamerName}`);
+    window.location.href = `/${streamerName}`;
   };
 
   const handleCategoryClick = (categoryName: string) => {
-    navigate(`category/${categoryName}`);
+    navigate(`/category/${categoryName}`);
   };
 
   return (
