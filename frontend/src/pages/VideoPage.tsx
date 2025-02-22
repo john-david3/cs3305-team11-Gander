@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ToggleButton } from "../components/Input/Button";
-import ChatPanel from "../components/Video/ChatPanel";
+import ChatPanel from "../components/Stream/ChatPanel";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthModal } from "../hooks/useAuthModal";
 import { useAuth } from "../context/AuthContext";
 import { useFollow } from "../hooks/useFollow";
-import VideoPlayer from "../components/Video/VideoPlayer";
+import VideoPlayer from "../components/Stream/VideoPlayer";
 import { SocketProvider } from "../context/SocketContext";
 import AuthModal from "../components/Auth/AuthModal";
 import CheckoutForm, { Return } from "../components/Checkout/CheckoutForm";

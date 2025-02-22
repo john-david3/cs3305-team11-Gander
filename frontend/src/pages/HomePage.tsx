@@ -44,10 +44,9 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         wrap={false}
         onClick={handleStreamClick}
         extraClasses="bg-[var(--liveNow)]"
-
       >
         {/* <Button extraClasses="absolute right-10" onClick={() => navigate("/")}>
-          Show More . . .
+          Show More
         </Button> */}
       </ListRow>
 
@@ -73,7 +72,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
           extraClasses="absolute right-10"
           onClick={() => navigate("/categories")}
         >
-          Show More . . .
+          Show More
         </Button>
       </ListRow>
     </DynamicPageContent>

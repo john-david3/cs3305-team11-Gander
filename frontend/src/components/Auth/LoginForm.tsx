@@ -148,7 +148,7 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
                   errors.password ? "border-red-500" : ""
                 }`}
               ></Input>
-              <div className="flex flex-row">
+              <div className="flex">
                 <label className="flex w-full items-center justify-start cursor-pointer w-10px">
                   <input
                     type="checkbox"

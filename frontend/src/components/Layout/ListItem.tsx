@@ -28,7 +28,7 @@ const ListItem: React.FC<ListItemProps> = ({
         className={`${extraClasses} overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg cursor-pointer mx-auto hover:bg-pink-700 hover:scale-105 transition-all`}
         onClick={onItemClick}
       >
-        <div className="relative w-full pt-[56.25%] overflow-hidden rounded-t-lg">
+        <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
           {thumbnail ? (
             <img
               src={thumbnail}
