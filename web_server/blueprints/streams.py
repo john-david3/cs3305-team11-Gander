@@ -72,7 +72,7 @@ def stream_data(streamer_id) -> dict:
     Returns a streamer's current stream data
     """
     data = get_current_stream_data(streamer_id)
-    
+
     if session.get('user_id') == streamer_id:
         with Database() as db:
             stream_key = db.fetchone(
@@ -163,10 +163,39 @@ def vods(username):
 
 
 # RTMP Server Routes
+
+@stream_bp.route("/init_stream", methods=["POST"])
+def init_stream():
+    """
+    Called by NGINX when OBS starts streaming.
+    Creates necessary directories and validates stream key.
+    """
+    stream_key = request.form.get("name")
+
+    print(f"Stream initialization requested in nginx with key: {stream_key}")
+
+    with Database() as db:
+        # Check if valid stream key and user is allowed to stream
+        user_info = db.fetchone("""SELECT user_id, username, is_live 
+                                FROM users 
+                                WHERE stream_key = ?""", (stream_key,))
+
+        if not user_info:
+            print("Unauthorized - Invalid stream key", flush=True)
+            return "Unauthorized - Invalid stream key", 403
+
+        # Create necessary directories
+        username = user_info["username"]
+        create_local_directories(username)
+
+        return "OK", 200
+
+
 @stream_bp.route("/publish_stream", methods=["POST"])
 def publish_stream():
     """
-    Authenticates stream from streamer and publishes it to the site
+    Called when user clicks Start Stream in dashboard.
+    Sets up stream in database and starts thumbnail generation.
 
     step-by-step:
     fetch user info from stream key
@@ -174,27 +203,26 @@ def publish_stream():
     set user as streaming
     periodically update thumbnail
     """
-    stream_key = request.form.get("key")
-    print("Stream request received")
+    data = request.form.get("data")
 
-    # Open database connection
     with Database() as db:
-        # Get user info from stream key
-        user_info = db.fetchone("""SELECT user_id, username, current_stream_title, current_selected_category_id, is_live
+        user_info = db.fetchone("""SELECT user_id, username, current_stream_title, 
+                                current_selected_category_id, is_live
                                 FROM users 
-                                WHERE stream_key = ?""", (stream_key,))
+                                WHERE stream_key = ?""", (data['stream_key'],))
 
-        # If stream key is invalid, return unauthorized
         if not user_info or user_info["is_live"]:
+            print(
+                "Unauthorized. No user found from Stream key or user is already streaming.", flush=True)
             return "Unauthorized", 403
 
         # Insert stream into database
         db.execute("""INSERT INTO streams (user_id, title, start_time, num_viewers, category_id)
                     VALUES (?, ?, ?, ?, ?)""", (user_info["user_id"],
-                                                user_info["current_stream_title"],
+                                                data["title"],
                                                 datetime.now(),
                                                 0,
-                                                1))
+                                                get_category_id(data['category_name'])))
 
         # Set user as streaming
         db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""",
@@ -203,16 +231,41 @@ def publish_stream():
     username = user_info["username"]
     user_id = user_info["user_id"]
 
-    # Local file creation
-    create_local_directories(username)
-
     # Update thumbnail periodically
     update_thumbnail.delay(user_id,
                            path_manager.get_stream_file_path(username),
                            path_manager.get_thumbnail_file_path(username),
                            THUMBNAIL_GENERATION_INTERVAL)
 
-    return redirect(f"/{user_info['username']}/stream/")
+    return "OK", 200
+
+
+@stream_bp.route("/update_stream", methods=["POST"])
+def update_stream():
+    """
+    Called by StreamDashboard to update stream info
+    """
+    # TODO: Add thumbnails (paths) to table, allow user to update thumbnail
+
+    stream_key = request.form.get("key")
+    title = request.form.get("title")
+    category_name = request.form.get("category_name")
+
+    with Database() as db:
+        user_info = db.fetchone("""SELECT user_id, username, is_live 
+                                FROM users 
+                                WHERE stream_key = ?""", (stream_key,))
+
+        if not user_info or not user_info["is_live"]:
+            print(
+                "Unauthorized - No user found from stream key or user is not streaming", flush=True)
+            return "Unauthorized", 403
+
+        db.execute("""UPDATE streams 
+                   SET title = ?, category_id = ?
+                   WHERE user_id = ?""", (title, get_category_id(category_name), user_info["user_id"]))
+        
+    return "Stream updated", 200
 
 
 @stream_bp.route("/end_stream", methods=["POST"])
@@ -230,6 +283,12 @@ def end_stream():
     """
 
     stream_key = request.form.get("key")
+    if stream_key is None:
+        stream_key = request.form.get("name")
+
+    if stream_key is None:
+        print("Unauthorized - No stream key provided", flush=True)
+        return "Unauthorized", 403
 
     # Open database connection
     with Database() as db:
@@ -244,6 +303,7 @@ def end_stream():
 
         # If stream key is invalid, return unauthorized
         if not user_info:
+            print("Unauthorized - No user found from stream key", flush=True)
             return "Unauthorized", 403
 
         # Remove stream from database
@@ -256,9 +316,9 @@ def end_stream():
 
         db.execute("""INSERT INTO vods (user_id, title, datetime, category_id, length, views)
                     VALUES (?, ?, ?, ?, ?, ?)""", (user_info["user_id"],
-                                                   user_info["current_stream_title"],
+                                                   stream_info["title"],
                                                    stream_info["start_time"],
-                                                   user_info["current_selected_category_id"],
+                                                   stream_info["category_id"],
                                                    stream_length,
                                                    0))
 

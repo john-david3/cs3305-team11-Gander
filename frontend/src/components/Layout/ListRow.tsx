@@ -73,7 +73,7 @@ const ListRow: React.FC<ListRowProps> = ({
           ref={slider}
           className={`flex ${
             wrap ? "flex-wrap" : "overflow-x-scroll whitespace-nowrap"
-          } items-center justify-between scroll-smooth scrollbar-hide gap-5 py-[10px] px=[30px] mx-[30px]`}
+          } max-w-[95%] items-center justify-between scroll-smooth scrollbar-hide gap-5 mx-auto`}
         >
 
           {items.map((item) => (
@@ -93,7 +93,7 @@ const ListRow: React.FC<ListRowProps> = ({
                   ? onClick?.(item.streamer)
                   : onClick?.(item.title)
               }
-              extraClasses={`${itemExtraClasses} min-w-[25vw]`}
+              extraClasses={`${itemExtraClasses} min-w-[20vw]`}
             />
           ))}
         </div>

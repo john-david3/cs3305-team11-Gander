@@ -6,7 +6,7 @@ import ListItem from "../components/Layout/ListItem";
 import { X as XIcon, Eye as ShowIcon, EyeOff as HideIcon } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { debounce } from "lodash";
-import VideoPlayer from "../components/Video/VideoPlayer";
+import VideoPlayer from "../components/Stream/VideoPlayer";
 
 interface StreamData {
   title: string;
@@ -66,70 +66,69 @@ const StreamDashboardPage: React.FC = () => {
   }, [categories, thumbnailPreview.isCustom]);
 
   useEffect(() => {
-    const checkStreamStatus = async () => {
-      try {
-        const response = await fetch(`/api/user/${username}/status`);
-        const data = await response.json();
-        setIsStreaming(data.is_live);
-
-        if (data.is_live) {
-          const streamResponse = await fetch(
-            `/api/streams/${data.user_id}/data`,
-            { credentials: "include" }
-          );
-          const streamData = await streamResponse.json();
-          setStreamData({
-            title: streamData.title,
-            category_name: streamData.category_name,
-            viewer_count: streamData.num_viewers,
-            start_time: streamData.start_time,
-            stream_key: streamData.stream_key,
-          });
-
-          console.log("Stream data:", streamData);
-
-          const time = Math.floor(
-            (Date.now() - new Date(streamData.start_time).getTime()) / 60000 // Convert to minutes
-          );
-
-          if (time < 60) setTimeStarted(`${time}m ago`);
-          else if (time < 1440)
-            setTimeStarted(`${Math.floor(time / 60)}h ${time % 60}m ago`);
-          else
-            setTimeStarted(
-              `${Math.floor(time / 1440)}d ${Math.floor((time % 1440) / 60)}h ${
-                time % 60
-              }m ago`
-            );
-        } else {
-          const response = await fetch(`/api/user/${username}/stream_key`);
-          const keyData = await response.json();
-          setStreamData((prev) => ({
-            ...prev,
-            stream_key: keyData.stream_key,
-          }));
-
-          console.log("Stream key:", keyData.stream_key);
-        }
-      } catch (error) {
-        console.error("Error checking stream status:", error);
-      }
-    };
-
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("/api/categories/popular/100");
-        const data = await response.json();
-        setCategories(data);
-        setFilteredCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
     checkStreamStatus();
     fetchCategories();
   }, [username]);
+
+  const checkStreamStatus = async () => {
+    try {
+      const response = await fetch(`/api/user/${username}/status`);
+      const data = await response.json();
+      setIsStreaming(data.is_live);
+
+      if (data.is_live) {
+        const streamResponse = await fetch(
+          `/api/streams/${data.user_id}/data`,
+          { credentials: "include" }
+        );
+        const streamData = await streamResponse.json();
+        setStreamData({
+          title: streamData.title,
+          category_name: streamData.category_name,
+          viewer_count: streamData.num_viewers,
+          start_time: streamData.start_time,
+          stream_key: streamData.stream_key,
+        });
+
+        console.log("Stream data:", streamData);
+
+        const time = Math.floor(
+          (Date.now() - new Date(streamData.start_time).getTime()) / 60000 // Convert to minutes
+        );
+
+        if (time < 60) setTimeStarted(`${time}m ago`);
+        else if (time < 1440)
+          setTimeStarted(`${Math.floor(time / 60)}h ${time % 60}m ago`);
+        else
+          setTimeStarted(
+            `${Math.floor(time / 1440)}d ${Math.floor((time % 1440) / 60)}h ${
+              time % 60
+            }m ago`
+          );
+      } else {
+        // Just need the stream key if not streaming
+        const response = await fetch(`/api/user/${username}/stream_key`);
+        const keyData = await response.json();
+        setStreamData((prev) => ({
+          ...prev,
+          stream_key: keyData.stream_key,
+        }));
+      }
+    } catch (error) {
+      console.error("Error checking stream status:", error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories/popular/100");
+      const data = await response.json();
+      setCategories(data);
+      setFilteredCategories(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -201,11 +200,11 @@ const StreamDashboardPage: React.FC = () => {
     );
   };
 
-  const handleStartStream = async () => {
+  const handlePublishStream = async () => {
     console.log("Starting stream with data:", streamData);
 
     const formData = new FormData();
-    formData.append("key", streamData.stream_key);
+    formData.append("data", JSON.stringify(streamData));
 
     try {
       const response = await fetch("/api/publish_stream", {
@@ -228,6 +227,30 @@ const StreamDashboardPage: React.FC = () => {
 
   const handleUpdateStream = async () => {
     console.log("Updating stream with data:", streamData);
+
+    const formData = new FormData();
+    formData.append("key", streamData.stream_key);
+    formData.append("title", streamData.title);
+    formData.append("category_name", streamData.category_name);
+    if (thumbnail) {
+      formData.append("thumbnail", thumbnail);
+    }
+    
+    try {
+      const response = await fetch("/api/update_stream", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log("Stream updated successfully");
+        window.location.reload();
+      } else {
+        console.error("Failed to update stream");
+      }
+    } catch (error) {
+      console.error("Error updating stream:", error);
+    }
   };
 
   const handleEndStream = async () => {
@@ -392,7 +415,7 @@ const StreamDashboardPage: React.FC = () => {
                 <div className="flex gap-8">
                   <Button
                     onClick={
-                      isStreaming ? handleUpdateStream : handleStartStream
+                      isStreaming ? handleUpdateStream : handlePublishStream
                     }
                     disabled={!isFormValid()}
                     extraClasses="text-2xl px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
