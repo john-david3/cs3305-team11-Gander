@@ -19,6 +19,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
   const [username, setUsername] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/user/login_status")
@@ -31,8 +32,15 @@ function App() {
       .catch((error) => {
         console.error("Error fetching login status:", error);
         setIsLoggedIn(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
+
+  if (isLoading) {
+    return <div className="flex w-full h-full">Loading...</div>;
+  }
 
   return (
     <Brightness>
