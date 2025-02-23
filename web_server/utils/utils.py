@@ -37,6 +37,19 @@ def get_most_popular_category() -> Optional[List[dict]]:
     
     return category
 
+def get_category_id(category_name: str):
+    """
+    Returns category_id given category_name
+    """
+    with Database() as db:
+        category = db.fetchone("""
+            SELECT category_id
+            FROM categories
+            WHERE category_name = ?
+        """, (category_name,))
+
+    return category["category_id"]
+
 def sanitize(user_input: str, input_type="default") -> str:
     """
     Sanitizes user input based on the specified input type.
