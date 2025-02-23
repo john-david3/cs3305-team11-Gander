@@ -65,7 +65,7 @@ const ListItem: React.FC<ListItemProps> = ({
           )}
         </div>
         <div className="p-3">
-          <h3 className="font-semibold text-lg text-center">{title}</h3>
+          <h3 className="font-semibold text-lg text-center truncate max-w-full">{title}</h3>
           {type === "stream" && <p className="font-bold">{username}</p>}
           {type === "stream" && (
             <p className="text-sm text-gray-300">{streamCategory}</p>

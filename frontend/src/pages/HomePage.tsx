@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
 import { useStreams, useCategories } from "../context/ContentContext";
@@ -22,13 +22,16 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
     navigate(`/category/${categoryName}`);
   };
 
+  if (!categories || categories.length === 0) {
+    return <div>Loading categories...</div>;
+  }
+
   return (
     <DynamicPageContent
       navbarVariant="home"
       className="h-full min-h-screen animate-moving_bg"
       style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
     >
-      {/* If Personalised_HomePage, display Streams recommended for the logged-in user. Else, live streams with the most viewers. */}
       <ListRow
         type="stream"
         title={
@@ -44,11 +47,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         wrap={false}
         onClick={handleStreamClick}
         extraClasses="bg-[var(--liveNow)]"
-      >
-        {/* <Button extraClasses="absolute right-10" onClick={() => navigate("/")}>
-          Show More
-        </Button> */}
-      </ListRow>
+      />
 
       {/* If Personalised_HomePage, display Categories the logged-in user follows. Else, trending categories. */}
       <ListRow

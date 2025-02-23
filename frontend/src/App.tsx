@@ -62,7 +62,7 @@ function App() {
                   element={<ResetPasswordPage />}
                 ></Route>
                 <Route
-                  path="/category/:category_name"
+                  path="/category/:categoryName"
                   element={<CategoryPage />}
                 ></Route>
                 <Route path="/categories" element={<CategoriesPage />}></Route>

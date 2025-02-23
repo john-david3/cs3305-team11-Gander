@@ -21,7 +21,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   streamId,
   onViewerCountChange,
 }) => {
-  const { isLoggedIn, username, userId} = useAuth();
+  const { isLoggedIn, username, userId } = useAuth();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -40,10 +40,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
       // Handle beforeunload event
       const handleBeforeUnload = () => {
-        socket.emit("leave", {         
+        socket.emit("leave", {
           userId: userId ? userId : null,
           username: username ? username : "Guest",
-          stream_id: streamId, });
+          stream_id: streamId,
+        });
         socket.disconnect();
       };
 
@@ -135,13 +136,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         {messages.map((msg, index) => (
           <div
             key={index}
-            className="flex items-start space-x-2 bg-gray-800 rounded p-2 text-white"
+            className="flex items-start space-x-2 bg-gray-800 rounded p-2 text-white relative"
           >
             {/* User avatar with image */}
             <div
-              className={`w-2em h-2em rounded-full overflow-hidden flex-shrink-0 ${
-                msg.chatter_username === username ? "" : "cursor-pointer"
-              }`}
+              className={`w-2em h-2em rounded-full overflow-hidden flex-shrink-0 ${msg.chatter_username === username ? "" : "cursor-pointer"
+                }`}
               onClick={() =>
                 msg.chatter_username === username
                   ? null
@@ -160,11 +160,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               <div className="flex items-center space-x-0.5em">
                 {/* Username */}
                 <span
-                  className={`font-bold text-[1em] ${
-                    msg.chatter_username === username
+                  className={`font-bold text-[1em] ${msg.chatter_username === username
                       ? "text-purple-600"
                       : "text-green-400 cursor-pointer"
-                  }`}
+                    }`}
                   onClick={() =>
                     msg.chatter_username === username
                       ? null
@@ -181,8 +180,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             </div>
 
             {/* Time sent */}
-            <div className="text-gray-500 text-[0.8em] self-start">
-              {new Date(msg.time_sent).toLocaleTimeString()}
+            <div className="text-gray-500 text-[0.8em] absolute top-0 right-0 p-2">
+            {new Date(msg.time_sent).toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' })}
             </div>
           </div>
         ))}
