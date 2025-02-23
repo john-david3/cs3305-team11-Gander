@@ -106,6 +106,49 @@ def unfollow(user_id: int, followed_id: int):
         """, (user_id, followed_id))
     return {"success": True}
 
+def is_following_category(user_id: int, category_id: str):
+    """
+    Checks if user is following category
+    """
+    with Database() as db:
+        result = db.fetchone("""
+            SELECT 1 
+            FROM followed_categories 
+            WHERE user_id = ? 
+            AND category_id = ?
+        """, (user_id, category_id))
+    return bool(result)
+
+def follow_category(user_id: int, category_id: str):
+    """
+    Follows category given user_id
+    """
+    if is_following_category(user_id, category_id):
+        return {"success": False, "error": "Already following category"}, 400
+    
+    with Database() as db:
+        db.execute("""
+        INSERT INTO followed_categories (user_id, category_id)
+        VALUES(?,?);
+    """, (user_id, category_id))
+    return {"success": True}
+
+
+def unfollow_category(user_id: int, category_id: str):
+    """
+    Unfollows category given user_id
+    """
+    if not is_following_category(user_id, category_id):
+        return {"success": False, "error": "Not following category"}, 400
+    
+    with Database() as db:
+        db.execute("""
+            DELETE FROM followed_categories
+            WHERE user_id = ?
+            AND category_id = ?
+        """, (user_id, category_id))
+    return {"success": True}
+
 def subscribe(user_id: int, streamer_id: int):
     """
     Subscribes user_id to streamer_id

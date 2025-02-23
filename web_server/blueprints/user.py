@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, session
 from utils.user_utils import *
 from utils.auth import *
+from utils.utils import get_category_id
 from blueprints.middleware import login_required
 from utils.email import send_email, forgot_password_body
 import redis
@@ -100,6 +101,37 @@ def user_followed_streamers():
 
     live_following_streams = get_followed_streamers(user_id)
     return live_following_streams
+
+@login_required
+@user_bp.route('/user/category/follow/<string:category_name>')
+def user_follow_category(category_name):
+    """
+    Follows a category
+    """
+    user_id = session.get("user_id")
+    category_id = get_category_id(category_name)
+    return follow_category(user_id, category_id)
+
+@login_required
+@user_bp.route('/user/category/unfollow/<string:category_name>')
+def user_unfollow_category(category_name):
+    """
+    Unfollows a category
+    """
+    user_id = session.get("user_id")
+    category_id = get_category_id(category_name)
+    return unfollow_category(user_id, category_id)
+
+@user_bp.route('/user/category/following/<string:category_name>')
+def user_category_following(category_name: str):
+    """
+    Checks to see if user is following a category
+    """
+    user_id = session.get("user_id")
+    category_id = get_category_id(category_name)
+    if is_following_category(user_id, category_id):
+        return jsonify({"following": True})
+    return jsonify({"following": False})
 
 ## Login Routes
 @user_bp.route('/user/login_status')
