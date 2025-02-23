@@ -11,7 +11,7 @@ interface Item {
 
 interface StreamItem extends Item {
   type: "stream";
-  streamer: string;
+  username: string;
   streamCategory: string;
 }
 
@@ -56,7 +56,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
           type: "stream",
           id: stream.user_id,
           title: stream.title,
-          streamer: stream.username,
+          username: stream.username,
           streamCategory: stream.category_name,
           viewers: stream.num_viewers,
           thumbnail:

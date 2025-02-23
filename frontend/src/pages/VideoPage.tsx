@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { ToggleButton } from "../components/Input/Button";
 import ChatPanel from "../components/Stream/ChatPanel";
 import { useNavigate, useParams } from "react-router-dom";
@@ -8,9 +8,11 @@ import { useFollow } from "../hooks/useFollow";
 import VideoPlayer from "../components/Stream/VideoPlayer";
 import { SocketProvider } from "../context/SocketContext";
 import AuthModal from "../components/Auth/AuthModal";
-import CheckoutForm, { Return } from "../components/Checkout/CheckoutForm";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { useSidebar } from "../context/SidebarContext";
+
+// Lazy load the CheckoutForm component
+const CheckoutForm = lazy(() => import("../components/Checkout/CheckoutForm"));
 
 interface VideoPageProps {
   streamerId: number;
@@ -33,6 +35,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const { isFollowing, checkFollowStatus, followUser, unfollowUser } =
     useFollow();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
+  const [isStripeReady, setIsStripeReady] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const showReturn = window.location.search.includes("session_id");
   const navigate = useNavigate();
@@ -105,6 +108,15 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
+  }, []);
+
+  // Load Stripe in the background when component mounts
+  useEffect(() => {
+    const loadStripe = async () => {
+      await import("@stripe/stripe-js");
+      setIsStripeReady(true);
+    };
+    loadStripe();
   }, []);
 
   const toggleChat = () => {
@@ -235,26 +247,31 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             {/* Subscribe Button */}
             <div className="flex flex-col items-center">
               <button
-                className="bg-red-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-700 text-sm"
+                className={`bg-red-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md 
+    ${
+      isStripeReady ? "hover:bg-red-700" : "opacity-20 cursor-not-allowed"
+    } transition-all`}
                 onClick={() => {
                   if (!isLoggedIn) {
                     setShowAuthModal(true);
-                  } else {
+                  } else if (isStripeReady) {
                     setShowCheckout(true);
                   }
                 }}
               >
-                Subscribe
+                {isStripeReady ? "Subscribe" : "Loading..."}
               </button>
             </div>
           </div>
           {showCheckout && (
-            <CheckoutForm
-              onClose={() => setShowCheckout(false)}
-              streamerID={streamerId}
-            />
+            <Suspense fallback={<div>Loading checkout...</div>}>
+              <CheckoutForm
+                onClose={() => setShowCheckout(false)}
+                streamerID={streamerId}
+              />
+            </Suspense>
           )}
-          {showReturn && <Return />}
+          {/* {showReturn && <Return />} */}
           {showAuthModal && (
             <AuthModal onClose={() => setShowAuthModal(false)} />
           )}

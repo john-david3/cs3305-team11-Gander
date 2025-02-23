@@ -49,7 +49,7 @@ const CategoryPage: React.FC = () => {
 
       setStreamOffset((prev) => prev + data.length);
 
-      const processedStreams = data.map((stream: any) => ({
+      const processedStreams: StreamData[] = data.map((stream: any) => ({
         type: "stream",
         id: stream.user_id,
         title: stream.title,
@@ -80,9 +80,10 @@ const CategoryPage: React.FC = () => {
   const logOnScroll = async () => {
     if (hasMoreData && listRowRef.current) {
       const newCategories = await fetchCategoryStreams();
-      if (newCategories?.length > 0) {
+      if (newCategories && newCategories.length > 0) {
         listRowRef.current.addMoreItems(newCategories);
       }
+      else console.log("No more data to fetch");
     }
   };
 

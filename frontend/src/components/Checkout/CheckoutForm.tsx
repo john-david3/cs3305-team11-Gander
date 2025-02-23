@@ -1,63 +1,68 @@
 import React, { useState, useEffect } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+import type { Stripe } from "@stripe/stripe-js";
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
-import { Navigate } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL;
+//! Unsure whether this component is used/needed in the project
+// export const Return: React.FC = () => {
+//   const [status, setStatus] = useState<string | null>(null);
+//   const [customerEmail, setCustomerEmail] = useState("");
 
-// Initialize Stripe once
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+//   useEffect(() => {
+//     const queryString = window.location.search;
+//     const urlParams = new URLSearchParams(queryString);
+//     const sessionId = urlParams.get("session_id");
 
-export const Return: React.FC = () => {
-  const [status, setStatus] = useState<string | null>(null);
-  const [customerEmail, setCustomerEmail] = useState("");
+//     if (sessionId) {
+//       console.log("1");
+//       fetch(`/api/session-status?session_id=${sessionId}`)
+//         .then((res) => res.json())
+//         .then((data) => {
+//           console.log("Response Data:", data);
+//           setStatus(data.status);
+//           setCustomerEmail(data.customer_email);
+//         });
+//     }
+//   }, []);
 
-  useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const sessionId = urlParams.get("session_id");
+//   if (status === "open") {
+//     return <Navigate to="/checkout" />;
+//   }
 
-    if (sessionId) {
-      console.log("1");
-      fetch(`/api/session-status?session_id=${sessionId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Response Data:", data);
-          setStatus(data.status);
-          setCustomerEmail(data.customer_email);
-        });
-    }
-  }, []);
+//   if (status === "complete") {
+//     return (
+//       <section id="success">
+//         <p>
+//           We appreciate your business! A confirmation email will be sent to{" "}
+//           {customerEmail}. If you have any questions, please email{" "}
+//           <a href="mailto:orders@example.com">orders@example.com</a>.
+//         </p>
+//       </section>
+//     );
+//   }
 
-  if (status === "open") {
-    return <Navigate to="/checkout" />;
-  }
+//   return null;
+// };
 
-  if (status === "complete") {
-    return (
-      <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to{" "}
-          {customerEmail}. If you have any questions, please email{" "}
-          <a href="mailto:orders@example.com">orders@example.com</a>.
-        </p>
-      </section>
-    );
-  }
-
-  return null;
-};
-
-// Main CheckoutForm component
 interface CheckoutFormProps {
   streamerID: number;
   onClose: () => void;
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ onClose, streamerID }) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ streamerID, onClose }) => {
+  const [stripePromise, setStripePromise] =
+    useState<Promise<Stripe | null> | null>(null);
+
+  useEffect(() => {
+    const initializeStripe = async () => {
+      const { loadStripe } = await import("@stripe/stripe-js");
+      setStripePromise(loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY));
+    };
+    initializeStripe();
+  }, []);
+
   const fetchClientSecret = () => {
     return fetch(`/api/create-checkout-session?streamer_id=${streamerID}`, {
       method: "POST",
