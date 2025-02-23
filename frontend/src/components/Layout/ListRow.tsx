@@ -71,6 +71,7 @@ const ListRow = forwardRef<{ addMoreItems: (newItems: ListItemProps[]) => void }
             : "flex-col space-y-4 py-6 px-5 mx-2 mt-5"
         }`}
       >
+        {/* List Details */}
         <div
           className={`text-center ${
             variant === "search" ? "min-w-fit px-auto w-[15vw]" : ""
@@ -87,6 +88,7 @@ const ListRow = forwardRef<{ addMoreItems: (newItems: ListItemProps[]) => void }
           <p>{description}</p>
         </div>
 
+        {/* List Items */}
         <div className="relative overflow-hidden flex flex-grow items-center z-0">
           {!wrap && currentItems.length > (amountForScroll || 0) && (
             <>

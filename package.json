@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "html2canvas": "^1.4.1",
-    "react": "^19.0.0",
-    "use-react-screenshot": "^4.0.0"
-  }
-}
