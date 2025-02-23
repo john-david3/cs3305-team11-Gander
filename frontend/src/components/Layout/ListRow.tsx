@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import {
   ArrowLeft as ArrowLeftIcon,
   ArrowRight as ArrowRightIcon,
@@ -18,90 +18,73 @@ interface ListRowProps {
   children?: React.ReactNode;
 }
 
-// Row of entries
-const ListRow: React.FC<ListRowProps> = ({
-  title = "",
-  description = "",
-  items,
-  wrap,
-  onClick,
-  extraClasses = "",
-  itemExtraClasses = "",
-  children,
-}) => {
-  const slider = useRef<HTMLDivElement>(null);
-  const scrollAmount = window.innerWidth * 0.3;
+const ListRow = forwardRef<{ addMoreItems: (newItems: ListItemProps[]) => void }, ListRowProps>(
+  ({ title = "", description = "", items, wrap, onClick, extraClasses = "", itemExtraClasses = "", children }, ref) => {
+    const [currentItems, setCurrentItems] = useState(items);
+    const slider = useRef<HTMLDivElement>(null);
+    const scrollAmount = window.innerWidth * 0.3;
 
-  const slideRight = () => {
-    if (!wrap && slider.current) {
-      slider.current.scrollBy({ left: +scrollAmount, behavior: "smooth" });
-    }
-  };
+    const addMoreItems = (newItems: ListItemProps[]) => {
+      setCurrentItems((prevItems) => [...prevItems, ...newItems]);
+    };
 
-  const slideLeft = () => {
-    if (!wrap && slider.current) {
-      slider.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    }
-  };
+    useImperativeHandle(ref, () => ({
+      addMoreItems,
+    }));
 
-  return (
-    <div
-      className={`flex flex-col w-full space-y-4 py-6 text-white px-5 mx-2 mt-5 rounded-[1.5rem] transition-all ${extraClasses}`}
-    >
-      <div className="space-y-1">
-        <h2 className="text-2xl font-bold">{title}</h2>
-        <p>{description}</p>
-      </div>
+    const slideRight = () => {
+      if (!wrap && slider.current) {
+        slider.current.scrollBy({ left: +scrollAmount, behavior: "smooth" });
+      }
+    };
 
-      <div className="relative overflow-hidden flex items-center z-0">
-        {!wrap && items.length > 4 && (
-          <>
-            <ArrowLeftIcon
-              onClick={slideLeft}
-              size={30}
-              className="absolute left-0 cursor-pointer z-[999]"
-            />
-            <ArrowRightIcon
-              onClick={slideRight}
-              size={30}
-              className="absolute right-0 cursor-pointer z-[999]"
-            />
-          </>
-        )}
+    const slideLeft = () => {
+      if (!wrap && slider.current) {
+        slider.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      }
+    };
 
-        <div
-          ref={slider}
-          className={`flex ${
-            wrap ? "flex-wrap" : "overflow-x-scroll whitespace-nowrap"
-          } max-w-[95%] items-center justify-between scroll-smooth scrollbar-hide gap-5 mx-auto`}
-        >
-
-          {items.map((item) => (
-            <ListItem
-              key={`${item.type}-${item.id}`}
-              id={item.id}
-              type={item.type}
-              title={item.title}
-              streamer={item.type === "stream" ? item.streamer : undefined}
-              streamCategory={
-                item.type === "stream" ? item.streamCategory : undefined
-              }
-              viewers={item.viewers}
-              thumbnail={item.thumbnail}
-              onItemClick={() =>
-                item.type === "stream" && item.streamer
-                  ? onClick?.(item.streamer)
-                  : onClick?.(item.title)
-              }
-              extraClasses={`${itemExtraClasses} min-w-[20vw]`}
-            />
-          ))}
+    return (
+      <div className={`flex flex-col w-full space-y-4 py-6 text-white px-5 mx-2 mt-5 rounded-[1.5rem] transition-all ${extraClasses}`}>
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold">{title}</h2>
+          <p>{description}</p>
         </div>
-      </div>
 
-      {children}
-    </div>
-  );
-};
+        <div className="relative overflow-hidden flex items-center z-0">
+          {!wrap && items.length > 4 && (
+            <>
+              <ArrowLeftIcon onClick={slideLeft} size={30} className="absolute left-0 cursor-pointer z-[999]" />
+              <ArrowRightIcon onClick={slideRight} size={30} className="absolute right-0 cursor-pointer z-[999]" />
+            </>
+          )}
+
+          <div ref={slider} className={`flex ${wrap ? "flex-wrap" : "overflow-x-scroll whitespace-nowrap"} max-w-[95%] items-center justify-between scroll-smooth scrollbar-hide gap-5 mx-auto`}>
+            {currentItems.map((item) => (
+              <ListItem
+                key={`${item.type}-${item.id}`}
+                id={item.id}
+                type={item.type}
+                title={item.title}
+                streamer={item.type === "stream" ? item.streamer : undefined}
+                streamCategory={item.type === "stream" ? item.streamCategory : undefined}
+                viewers={item.viewers}
+                thumbnail={item.thumbnail}
+                onItemClick={() =>
+                  item.type === "stream" && item.streamer
+                    ? onClick?.(item.streamer)
+                    : onClick?.(item.title)
+                }
+                extraClasses={`${itemExtraClasses} min-w-[20vw] max-w-[20vw]`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {children}
+      </div>
+    );
+  }
+);
 
 export default ListRow;
