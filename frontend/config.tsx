@@ -1,5 +1,5 @@
 export const paths = {
-    pfps:'',
-    category_thumbnails:'',
-    icons:''
-  };
+  pfps: "",
+  category_thumbnails: "",
+  icons: "",
+};

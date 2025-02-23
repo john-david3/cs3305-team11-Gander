@@ -85,22 +85,30 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
             className="font-black text-[1.4rem] hover:underline"
             onClick={() => navigate(`/user/${username}`)}
           >
-            <div className="text-[var(--sideBar-profile-text)]">
-            {username}
-            </div>
+            <div className="text-[var(--sideBar-profile-text)]">{username}</div>
           </button>
         </div>
       </div>
 
-      <div id="following" className="flex flex-col flex-grow justify-evenly gap-4 p-[1rem]">
-        <div className="bg-[var(--follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300"
-            onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
-            onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+      <div
+        id="following"
+        className="flex flex-col flex-grow justify-evenly gap-4 p-[1rem]"
+      >
+        <div
+          className="bg-[var(--follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300"
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.boxShadow = "var(--follow-shadow)")
+          }
+          onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
         >
-        <h1 className="text-[var(--follow-text)] font-bold text-2xl p-[0.75rem] cursor-default">Following</h1>
+          <h1 className="text-[var(--follow-text)] font-bold text-2xl p-[0.75rem] cursor-default">
+            Following
+          </h1>
         </div>
         <div id="streamers-followed" className="flex-grow">
-          <h2 className="border-b-4 border-t-4 text-2xl cursor-default">Streamers</h2>
+          <h2 className="border-b-4 border-t-4 text-2xl cursor-default">
+            Streamers
+          </h2>
           <ul className="mt-2 space-y-2">
             {followedStreamers.map((streamer) => (
               <li
@@ -115,7 +123,9 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses }) => {
         </div>
 
         <div id="categories-followed" className="flex-grow">
-          <h2 className="border-b-4 border-t-4 text-[1.5rem] cursor-default">Categories</h2>
+          <h2 className="border-b-4 border-t-4 text-[1.5rem] cursor-default">
+            Categories
+          </h2>
           <ul className="mt-2 space-y-2">
             {followedCategories.map((category) => (
               <li

@@ -6,16 +6,7 @@ import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import Button from "../components/Input/Button";
 import { useAuth } from "../context/AuthContext";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
-
-interface StreamData {
-  type: "stream";
-  id: number;
-  title: string;
-  streamer: string;
-  streamCategory: string;
-  viewers: number;
-  thumbnail?: string;
-}
+import { ListItemProps as StreamData } from "../components/Layout/ListItem";
 
 const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -26,10 +17,15 @@ const CategoryPage: React.FC = () => {
   const [noStreams, setNoStreams] = useState(12);
   const [hasMoreData, setHasMoreData] = useState(true);
   const { isLoggedIn } = useAuth();
-  const { isCategoryFollowing, checkCategoryFollowStatus, followCategory, unfollowCategory } = useCategoryFollow()
+  const {
+    isCategoryFollowing,
+    checkCategoryFollowStatus,
+    followCategory,
+    unfollowCategory,
+  } = useCategoryFollow();
 
   useEffect(() => {
-    checkCategoryFollowStatus(categoryName);
+    if (categoryName) checkCategoryFollowStatus(categoryName);
   }, [categoryName]);
 
   const fetchCategoryStreams = async () => {
@@ -38,7 +34,9 @@ const CategoryPage: React.FC = () => {
 
     isLoading.current = true;
     try {
-      const response = await fetch(`/api/streams/popular/${categoryName}/${noStreams}/${streamOffset}`);
+      const response = await fetch(
+        `/api/streams/popular/${categoryName}/${noStreams}/${streamOffset}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch category streams");
       }
@@ -49,13 +47,13 @@ const CategoryPage: React.FC = () => {
         return [];
       }
 
-      setStreamOffset(prev => prev + data.length);
+      setStreamOffset((prev) => prev + data.length);
 
       const processedStreams = data.map((stream: any) => ({
         type: "stream",
         id: stream.user_id,
         title: stream.title,
-        streamer: stream.username,
+        username: stream.username,
         streamCategory: categoryName,
         viewers: stream.num_viewers,
         thumbnail:
@@ -66,8 +64,8 @@ const CategoryPage: React.FC = () => {
               .replace(/ /g, "_")}.webp`),
       }));
 
-      setStreams(prev => [...prev, ...processedStreams]);
-      return processedStreams
+      setStreams((prev) => [...prev, ...processedStreams]);
+      return processedStreams;
     } catch (error) {
       console.error("Error fetching category streams:", error);
     } finally {
@@ -89,7 +87,6 @@ const CategoryPage: React.FC = () => {
   };
 
   fetchContentOnScroll(logOnScroll, hasMoreData);
-
 
   const handleStreamClick = (streamerName: string) => {
     window.location.href = `/${streamerName}`;
@@ -115,14 +112,18 @@ const CategoryPage: React.FC = () => {
           description={`Live streams in the ${categoryName} category`}
           items={streams}
           wrap={true}
-          onClick={handleStreamClick}
+          onItemClick={handleStreamClick}
           extraClasses="bg-[var(--recommend)]"
         >
           {isLoggedIn && (
             <Button
               extraClasses="absolute right-10"
               onClick={() => {
-                isCategoryFollowing ? unfollowCategory(categoryName) : followCategory(categoryName)
+                if (categoryName) {
+                  isCategoryFollowing
+                    ? unfollowCategory(categoryName)
+                    : followCategory(categoryName);
+                }
               }}
             >
               {isCategoryFollowing ? "Unfollow" : "Follow"}

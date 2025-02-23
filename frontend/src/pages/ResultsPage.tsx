@@ -70,7 +70,7 @@ const ResultsPage: React.FC = ({}) => {
               thumbnail: stream.thumbnail_url,
             }))}
             title="Streams"
-            onClick={(streamer_name: string) =>
+            onItemClick={(streamer_name: string) =>
               (window.location.href = `/${streamer_name}`)
             }
             itemExtraClasses="min-w-[calc(12vw+12vh/2)]"
@@ -92,7 +92,7 @@ const ResultsPage: React.FC = ({}) => {
                 .replace(/ /g, "_")}.webp`,
             }))}
             title="Categories"
-            onClick={(category_name: string) =>
+            onItemClick={(category_name: string) =>
               navigate(`/category/${category_name}`)
             }
             titleClickable={true}
@@ -114,7 +114,7 @@ const ResultsPage: React.FC = ({}) => {
               thumbnail: user.profile_picture,
             }))}
             title="Users"
-            onClick={(username: string) =>
+            onItemClick={(username: string) =>
               (window.location.href = `/user/${username}`)
             }
             amountForScroll={3}

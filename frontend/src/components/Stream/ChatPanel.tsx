@@ -140,12 +140,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           >
             {/* User avatar with image */}
             <div
-              className={`w-2em h-2em rounded-full overflow-hidden flex-shrink-0 ${msg.chatter_username === username ? "" : "cursor-pointer"
-                }`}
+              className={`w-2em h-2em rounded-full overflow-hidden flex-shrink-0 ${
+                msg.chatter_username === username ? "" : "cursor-pointer"
+              }`}
               onClick={() =>
                 msg.chatter_username === username
                   ? null
-                  : window.location.href = `/user/${msg.chatter_username}`
+                  : (window.location.href = `/user/${msg.chatter_username}`)
               }
             >
               <img
@@ -160,28 +161,33 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               <div className="flex items-center space-x-0.5em">
                 {/* Username */}
                 <span
-                  className={`font-bold text-[1em] ${msg.chatter_username === username
+                  className={`font-bold text-[1em] ${
+                    msg.chatter_username === username
                       ? "text-purple-600"
                       : "text-green-400 cursor-pointer"
-                    }`}
+                  }`}
                   onClick={() =>
                     msg.chatter_username === username
                       ? null
-                      : window.location.href = `/user/${msg.chatter_username}`
+                      : (window.location.href = `/user/${msg.chatter_username}`)
                   }
                 >
                   {msg.chatter_username}
                 </span>
               </div>
               {/* Message content */}
-              <div className="message w-full text-[0.9em] mt-0.5em flex flex-col overflow-hidden" >
+              <div className="message w-full text-[0.9em] mt-0.5em flex flex-col overflow-hidden">
                 {msg.message}
               </div>
             </div>
 
             {/* Time sent */}
             <div className="text-gray-500 text-[0.8em] absolute top-0 right-0 p-2">
-            {new Date(msg.time_sent).toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' })}
+              {new Date(msg.time_sent).toLocaleTimeString("en-GB", {
+                hour12: false,
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           </div>
         ))}

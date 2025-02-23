@@ -21,7 +21,7 @@ export const Return: React.FC = () => {
     const sessionId = urlParams.get("session_id");
 
     if (sessionId) {
-      console.log("1")
+      console.log("1");
       fetch(`/api/session-status?session_id=${sessionId}`)
         .then((res) => res.json())
         .then((data) => {

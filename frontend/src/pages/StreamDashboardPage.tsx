@@ -235,7 +235,7 @@ const StreamDashboardPage: React.FC = () => {
     if (thumbnail) {
       formData.append("thumbnail", thumbnail);
     }
-    
+
     try {
       const response = await fetch("/api/update_stream", {
         method: "POST",
@@ -461,7 +461,7 @@ const StreamDashboardPage: React.FC = () => {
                   type="stream"
                   id={1}
                   title={streamData.title || "Stream Title"}
-                  streamer={username || ""}
+                  username={username || ""}
                   streamCategory={streamData.category_name || "Category"}
                   viewers={streamData.viewer_count}
                   thumbnail={thumbnailPreview.url || ""}

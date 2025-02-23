@@ -5,6 +5,6 @@ import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
-  <App />
+    <App />
   </ThemeProvider>
 );

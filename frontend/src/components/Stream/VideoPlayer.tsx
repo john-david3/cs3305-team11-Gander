@@ -32,7 +32,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const setupPlayer = async () => {
       const streamKey = await fetchStreamKey();
       const streamUrl = `/stream/${streamKey}/index.m3u8`;
-      console.log("Player created with src:", streamUrl);
 
       if (!playerRef.current) {
         const videoElement = document.createElement("video");

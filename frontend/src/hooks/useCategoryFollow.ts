@@ -15,7 +15,7 @@ export function useCategoryFollow() {
     }
   };
 
-  const followCategory = async (categoryName: number) => {
+  const followCategory = async (categoryName: string) => {
     if (!isLoggedIn) {
       return;
     }
@@ -34,7 +34,7 @@ export function useCategoryFollow() {
     }
   };
 
-  const unfollowCategory = async (categoryName: number) => {
+  const unfollowCategory = async (categoryName: string) => {
     if (!isLoggedIn) {
       return;
     }

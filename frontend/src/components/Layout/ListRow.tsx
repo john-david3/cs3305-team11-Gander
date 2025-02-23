@@ -1,11 +1,16 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import {
   ArrowLeft as ArrowLeftIcon,
   ArrowRight as ArrowRightIcon,
 } from "lucide-react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { useNavigate } from "react-router-dom";
 import "../../assets/styles/listRow.css";
 import ListItem, { ListItemProps } from "./ListItem";
-import { useNavigate } from "react-router-dom";
 
 interface ListRowProps {
   variant?: "default" | "search";
@@ -14,7 +19,7 @@ interface ListRowProps {
   description?: string;
   items: ListItemProps[];
   wrap?: boolean;
-  onClick: (itemName: string) => void;
+  onItemClick: (itemName: string) => void;
   titleClickable?: boolean;
   extraClasses?: string;
   itemExtraClasses?: string;
@@ -22,8 +27,27 @@ interface ListRowProps {
   children?: React.ReactNode;
 }
 
-const ListRow = forwardRef<{ addMoreItems: (newItems: ListItemProps[]) => void }, ListRowProps>(
-  ({ variant, type, title = "", description = "", items, wrap, onClick, titleClickable, extraClasses = "", itemExtraClasses = "", amountForScroll, children }, ref) => {
+const ListRow = forwardRef<
+  { addMoreItems: (newItems: ListItemProps[]) => void },
+  ListRowProps
+>(
+  (
+    {
+      variant = "default",
+      type,
+      title = "",
+      description = "",
+      items,
+      onItemClick,
+      titleClickable = false,
+      wrap = false,
+      extraClasses = "",
+      itemExtraClasses = "",
+      amountForScroll = 4,
+      children,
+    },
+    ref
+  ) => {
     const [currentItems, setCurrentItems] = useState(items);
     const slider = useRef<HTMLDivElement>(null);
     const scrollAmount = window.innerWidth * 0.3;
@@ -79,7 +103,9 @@ const ListRow = forwardRef<{ addMoreItems: (newItems: ListItemProps[]) => void }
         >
           <h2
             className={`${
-              titleClickable ? "cursor-pointer hover:underline" : "cursor-default"
+              titleClickable
+                ? "cursor-pointer hover:underline"
+                : "cursor-default"
             } text-2xl font-bold`}
             onClick={titleClickable ? () => handleTitleClick(type) : undefined}
           >
@@ -90,7 +116,7 @@ const ListRow = forwardRef<{ addMoreItems: (newItems: ListItemProps[]) => void }
 
         {/* List Items */}
         <div className="relative overflow-hidden flex flex-grow items-center z-0">
-          {!wrap && currentItems.length > (amountForScroll || 0) && (
+          {!wrap && currentItems.length > amountForScroll && (
             <>
               <ArrowLeftIcon
                 onClick={slideLeft}
@@ -126,10 +152,10 @@ const ListRow = forwardRef<{ addMoreItems: (newItems: ListItemProps[]) => void }
                 onItemClick={() =>
                   (item.type === "stream" || item.type === "user") &&
                   item.username
-                    ? onClick?.(item.username)
-                    : onClick?.(item.title)
+                    ? onItemClick?.(item.username)
+                    : onItemClick?.(item.title)
                 }
-                extraClasses={`${itemExtraClasses} min-w-[20vw] max-w-[20vw]`}
+                extraClasses={`${itemExtraClasses} w-[20vw]`}
               />
             ))}
           </div>

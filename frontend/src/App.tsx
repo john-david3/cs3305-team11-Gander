@@ -36,45 +36,64 @@ function App() {
 
   return (
     <Brightness>
-    <AuthContext.Provider
-      value={{ isLoggedIn, username, userId, setIsLoggedIn, setUsername, setUserId }}
-    >
-      <ContentProvider>
-        <SidebarProvider>
-          <QuickSettingsProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    isLoggedIn ? (
-                      <HomePage variant="personalised" />
-                    ) : (
-                      <HomePage />
-                    )
-                  }
-                />
-                <Route path="/go-live" element={isLoggedIn ? <StreamDashboardPage /> : <Navigate to="/" replace />} />
-                <Route path="/:streamerName" element={<StreamerRoute />} />
-                <Route path="/user/:username" element={<UserPage />} />
-                <Route
-                  path="/reset_password/:token"
-                  element={<ResetPasswordPage />}
-                ></Route>
-                <Route
-                  path="/category/:categoryName"
-                  element={<CategoryPage />}
-                ></Route>
-                <Route path="/categories" element={<CategoriesPage />}></Route>
-                <Route path="/results" element={<ResultsPage />}></Route>
-                <Route path="/404" element={<NotFoundPage />} />
-                <Route path="*" element={<Navigate to="/404" replace />} />
-              </Routes>
-            </BrowserRouter>
-          </QuickSettingsProvider>
-        </SidebarProvider>
-      </ContentProvider>
-    </AuthContext.Provider>
+      <AuthContext.Provider
+        value={{
+          isLoggedIn,
+          username,
+          userId,
+          setIsLoggedIn,
+          setUsername,
+          setUserId,
+        }}
+      >
+        <ContentProvider>
+          <SidebarProvider>
+            <QuickSettingsProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      isLoggedIn ? (
+                        <HomePage variant="personalised" />
+                      ) : (
+                        <HomePage />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/go-live"
+                    element={
+                      isLoggedIn ? (
+                        <StreamDashboardPage />
+                      ) : (
+                        <Navigate to="/" replace />
+                      )
+                    }
+                  />
+                  <Route path="/:streamerName" element={<StreamerRoute />} />
+                  <Route path="/user/:username" element={<UserPage />} />
+                  <Route
+                    path="/reset_password/:token"
+                    element={<ResetPasswordPage />}
+                  ></Route>
+                  <Route
+                    path="/category/:categoryName"
+                    element={<CategoryPage />}
+                  ></Route>
+                  <Route
+                    path="/categories"
+                    element={<CategoriesPage />}
+                  ></Route>
+                  <Route path="/results" element={<ResultsPage />}></Route>
+                  <Route path="/404" element={<NotFoundPage />} />
+                  <Route path="*" element={<Navigate to="/404" replace />} />
+                </Routes>
+              </BrowserRouter>
+            </QuickSettingsProvider>
+          </SidebarProvider>
+        </ContentProvider>
+      </AuthContext.Provider>
     </Brightness>
   );
 }

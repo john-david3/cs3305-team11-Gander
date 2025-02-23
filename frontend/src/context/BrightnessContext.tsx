@@ -5,9 +5,13 @@ interface BrightnessContextType {
   setBrightness: (value: number) => void;
 }
 
-const BrightnessContext = createContext<BrightnessContextType | undefined>(undefined);
+const BrightnessContext = createContext<BrightnessContextType | undefined>(
+  undefined
+);
 
-export const Brightness: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const Brightness: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [brightness, setBrightness] = useState<number>(100);
 
   useEffect(() => {

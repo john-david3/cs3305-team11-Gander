@@ -9,18 +9,23 @@ interface DynamicPageContentProps {
   style?: React.CSSProperties;
 }
 
-const DynamicPageContent: React.FC<DynamicPageContentProps> = ({ 
-  children, 
+const DynamicPageContent: React.FC<DynamicPageContentProps> = ({
+  children,
   navbarVariant = "default",
   className = "",
-  style
+  style,
 }) => {
   const { showSideBar } = useSidebar();
 
   return (
     <div className={className} style={style}>
       <Navbar variant={navbarVariant} />
-      <div id="content" className={`${showSideBar ? "w-[85vw] translate-x-[15vw]" : "w-[100vw]"} transition-all duration-[500ms] ease-in-out`}>
+      <div
+        id="content"
+        className={`${
+          showSideBar ? "w-[85vw] translate-x-[15vw]" : "w-[100vw]"
+        } transition-all duration-[500ms] ease-in-out`}
+      >
         {children}
       </div>
     </div>

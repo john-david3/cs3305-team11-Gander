@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
 import { useStreams, useCategories } from "../context/ContentContext";
@@ -45,7 +45,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         }
         items={streams}
         wrap={false}
-        onClick={handleStreamClick}
+        onItemClick={handleStreamClick}
         extraClasses="bg-[var(--liveNow)]"
       />
 
@@ -64,7 +64,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         }
         items={categories}
         wrap={false}
-        onClick={handleCategoryClick}
+        onItemClick={handleCategoryClick}
         titleClickable={true}
         extraClasses="bg-[var(--recommend)]"
       >

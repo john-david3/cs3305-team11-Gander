@@ -23,8 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-interface EditButtonProps extends ButtonProps {
-}
+interface EditButtonProps extends ButtonProps {}
 
 export const EditButton: React.FC<EditButtonProps> = ({
   children = "",
@@ -39,7 +38,7 @@ export const EditButton: React.FC<EditButtonProps> = ({
       {children}
     </button>
   );
-};  
+};
 
 interface ToggleButtonProps extends ButtonProps {
   toggled?: boolean;

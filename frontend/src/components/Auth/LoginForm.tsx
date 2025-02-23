@@ -102,9 +102,10 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
   return (
     <>
       <div className="flex flex-col items-center p-10">
-        <h1 className="flex flex-col text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">Login</h1>
+        <h1 className="flex flex-col text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">
+          Login
+        </h1>
         <div className="mt-10 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-[10em] min-w-[14em] border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
-
           <form
             onSubmit={handleSubmit}
             id="login-form"

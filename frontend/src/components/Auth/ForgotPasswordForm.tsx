@@ -4,6 +4,7 @@ import Button from "../Input/Button";
 
 interface ForgotPasswordProps {
   email?: string;
+  general?: string;
 }
 
 interface SubmitProps {
@@ -51,7 +52,9 @@ const ForgotPasswordForm: React.FC<SubmitProps> = ({ onSubmit }) => {
 
         if (!response.ok) {
           const data = await response.json();
-          throw new Error(data.message || "An error has occurred while resetting");
+          throw new Error(
+            data.message || "An error has occurred while resetting"
+          );
         } else {
           confirmPasswordReset();
         }
@@ -68,8 +71,10 @@ const ForgotPasswordForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   return (
     <div className="mb-2">
       <div className="flex flex-col items-center p-[2.5rem]">
-      <h1 className="text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">Forgot Password</h1>
-      <div className="mt-10 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-[10em] min-w-[14em] border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
+        <h1 className="text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">
+          Forgot Password
+        </h1>
+        <div className="mt-10 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-[10em] min-w-[14em] border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
           <form
             onSubmit={handleSubmit}
             id="forgot-password-form"
@@ -93,7 +98,9 @@ const ForgotPasswordForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={handleEmailChange}
-                extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${errors.email ? "border-red-500" : ""}`}
+                extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                  errors.email ? "border-red-500" : ""
+                }`}
               />
             </div>
             <Button type="submit">Send Link</Button>

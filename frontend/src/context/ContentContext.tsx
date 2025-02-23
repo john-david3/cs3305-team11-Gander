@@ -45,40 +45,45 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Fetch streams
-    const streamsUrl = isLoggedIn 
-      ? "/api/streams/recommended" 
+    const streamsUrl = isLoggedIn
+      ? "/api/streams/recommended"
       : "/api/streams/popular/4";
 
     fetch(streamsUrl)
       .then((response) => response.json())
       .then((data: any[]) => {
-        const processedStreams: StreamItem[] = data.map(stream => ({
+        const processedStreams: StreamItem[] = data.map((stream) => ({
           type: "stream",
           id: stream.user_id,
           title: stream.title,
           streamer: stream.username,
           streamCategory: stream.category_name,
           viewers: stream.num_viewers,
-          thumbnail: stream.thumbnail ||
-            `/images/category_thumbnails/${stream.category_name.toLowerCase().replace(/ /g, "_")}.webp`
+          thumbnail:
+            stream.thumbnail ||
+            `/images/category_thumbnails/${stream.category_name
+              .toLowerCase()
+              .replace(/ /g, "_")}.webp`,
         }));
         setStreams(processedStreams);
       });
 
     // Fetch categories
-    const categoriesUrl = isLoggedIn 
-      ? "/api/categories/recommended" 
+    const categoriesUrl = isLoggedIn
+      ? "/api/categories/recommended"
       : "/api/categories/popular/4";
 
     fetch(categoriesUrl)
       .then((response) => response.json())
       .then((data: any[]) => {
-        const processedCategories: CategoryItem[] = data.map(category => ({
+        const processedCategories: CategoryItem[] = data.map((category) => ({
           type: "category",
           id: category.category_id,
           title: category.category_name,
           viewers: category.num_viewers,
-          thumbnail: `/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`,
+          thumbnail: `/images/category_thumbnails/${category.category_name
+            .toLowerCase()
+            .replace(/ /g, "_")}.webp`,
         }));
         setCategories(processedCategories);
       });
@@ -114,7 +119,10 @@ export function useCategories() {
   if (!context) {
     throw new Error("useCategories must be used within a ContentProvider");
   }
-  return { categories: context.categories, setCategories: context.setCategories };
+  return {
+    categories: context.categories,
+    setCategories: context.setCategories,
+  };
 }
 
 export function useUsers() {

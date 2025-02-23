@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { ToggleButton } from "../Input/Button";
-import {
-  LogIn as LogInIcon,
-  User as UserIcon,
-} from "lucide-react";
+import { LogIn as LogInIcon, User as UserIcon } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
@@ -93,7 +90,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
               >
                 ✕
               </button>
-              <div id="login-methods" className="w-full flex flex-row items-center justify-evenly">
+              <div
+                id="login-methods"
+                className="w-full flex flex-row items-center justify-evenly"
+              >
                 {authSwitch()}
               </div>
             </div>

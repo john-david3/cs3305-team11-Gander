@@ -4,7 +4,9 @@ import Button from "../components/Input/Button";
 import ChromeDinoGame from "react-chrome-dino";
 
 const NotFoundPage: React.FC = () => {
-  const [stars, setStars] = useState<{ x: number; y: number, xChange: number, yChange: number }[]>([]);
+  const [stars, setStars] = useState<
+    { x: number; y: number; xChange: number; yChange: number }[]
+  >([]);
   const starSize = 30;
 
   const [score, setScore] = useState(0);
@@ -16,9 +18,15 @@ const NotFoundPage: React.FC = () => {
     const loop = setInterval(() => {
       if (Math.random() < 0.1) {
         const newStar = {
-          x: score > 20000 ? (window.innerWidth + starSize) : Math.random() * (window.innerWidth - starSize),
-          y: score > 20000 ? Math.random() * (window.innerHeight - starSize) : -starSize,
-          xChange: score * .001,
+          x:
+            score > 20000
+              ? window.innerWidth + starSize
+              : Math.random() * (window.innerWidth - starSize),
+          y:
+            score > 20000
+              ? Math.random() * (window.innerHeight - starSize)
+              : -starSize,
+          xChange: score * 0.001,
           yChange: 5,
         };
         setStars((prev) => [...prev, newStar]);
@@ -39,7 +47,7 @@ const NotFoundPage: React.FC = () => {
         return newStars.map((star) => ({
           x: star.x - star.xChange,
           y: star.y + star.yChange,
-          xChange: score * .001,
+          xChange: score * 0.001,
           yChange: star.yChange,
         }));
       });
@@ -68,7 +76,15 @@ const NotFoundPage: React.FC = () => {
   }, []);
 
   return (
-    <div className={`h-screen w-screen ${score > 25000 ? "bg-black" : score > 10000 ? "bg-[#0f0024]" : "bg-slate-900"} text-white overflow-hidden relative transition-colors duration-[5s]`}>
+    <div
+      className={`h-screen w-screen ${
+        score > 25000
+          ? "bg-black"
+          : score > 10000
+          ? "bg-[#0f0024]"
+          : "bg-slate-900"
+      } text-white overflow-hidden relative transition-colors duration-[5s]`}
+    >
       <div>
         {stars.map((star, index) => (
           <div
@@ -81,7 +97,11 @@ const NotFoundPage: React.FC = () => {
         ))}
       </div>
       <div className="absolute flex justify-center items-center h-full z-0 inset-0 bg-[radial-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] bg-[length:50px_50px]">
-        <div className={`${score > 30000 && "drop-shadow-[0_0_5px_rgb(220,20,60)]" } w-full text-center animate-floating transition-all duration-[5s]`}>
+        <div
+          className={`${
+            score > 30000 && "drop-shadow-[0_0_5px_rgb(220,20,60)]"
+          } w-full text-center animate-floating transition-all duration-[5s]`}
+        >
           <h1 className="text-6xl font-bold mb-4">404</h1>
           <p className="text-2xl mb-8">Page Not Found</p>
           <ChromeDinoGame />

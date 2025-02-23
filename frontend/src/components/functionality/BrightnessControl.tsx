@@ -4,15 +4,19 @@ import { useBrightness } from "../../context/BrightnessContext";
 const BrightnessControl: React.FC = () => {
   const { brightness, setBrightness } = useBrightness();
 
-  const handleBrightnessChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    {/* Set brightness based on the value. Calls BrightnessContext too */}
+  const handleBrightnessChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    {
+      /* Set brightness based on the value. Calls BrightnessContext too */
+    }
     setBrightness(Number(event.target.value));
   };
 
   return (
     <div className="flex flex-col items-center p-4">
       <h2 className="text-lg font-semibold mb-2">Brightness Control</h2>
-        {/* Changes based on the range of input */}
+      {/* Changes based on the range of input */}
       <input
         type="range"
         min="0"

@@ -44,12 +44,12 @@ const StreamerRoute: React.FC = () => {
   if (isLive) {
     return <VideoPage streamerId={streamId} />;
   }
-  
+
   if (streamerName) {
     navigate(`/user/${streamerName}`);
     return null;
   }
-  
+
   return <div>Streamer not found</div>;
 };
 

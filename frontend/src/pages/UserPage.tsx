@@ -116,7 +116,6 @@ const UserPage: React.FC = () => {
       } text-white flex flex-col`}
     >
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
-
         <div className="grid grid-cols-4 grid-rows-[0.1fr_4fr] w-full gap-8">
           {/* Profile Section - TOP  */}
 
@@ -129,9 +128,9 @@ const UserPage: React.FC = () => {
             {/* Border Overlay (Always on Top) */}
             <div className="absolute left-[0px] inset-0 border-[5px] border-[var(--user-borderBg)] rounded-[20px] z-20"></div>
 
-
             {/* Background Box */}
-            <div className="absolute flex top-0 left-[0.55px] w-[99.9%] h-[5vh] min-h-[1em] max-h-[10em] rounded-t-[25.5px] 
+            <div
+              className="absolute flex top-0 left-[0.55px] w-[99.9%] h-[5vh] min-h-[1em] max-h-[10em] rounded-t-[25.5px] 
                  bg-[var(--user-box)] z-10 flex-shrink justify-center"
               style={{ boxShadow: "var(--user-box-shadow)" }}
             >
@@ -197,7 +196,9 @@ const UserPage: React.FC = () => {
             className="col-span-1 bg-[var(--user-sideBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
           >
             {/* User Type (e.g., "USER") */}
-            <small className="text-green-400">{userPageVariant.toUpperCase()}</small>
+            <small className="text-green-400">
+              {userPageVariant.toUpperCase()}
+            </small>
 
             <div className="mt-6 text-center">
               <h2 className="text-xl font-semibold mb-3">
@@ -258,7 +259,6 @@ const UserPage: React.FC = () => {
                 </div>
               </>
             )}
-
           </div>
 
           <div
@@ -269,31 +269,39 @@ const UserPage: React.FC = () => {
             <div
               className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
                  flex items-center justify-center w-full p-4 content-start"
-              onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
-              onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.boxShadow = "var(--follow-shadow)")
+              }
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <li className="text-[var(--follow-text)] whitespace-pre-wrap">Following</li>
-
+              <li className="text-[var(--follow-text)] whitespace-pre-wrap">
+                Following
+              </li>
             </div>
             <div
               className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
                  flex items-center justify-center w-full p-4 content-start"
-              onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
-              onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.boxShadow = "var(--follow-shadow)")
+              }
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <li className="text-[var(--follow-text)] whitespace-pre-wrap">Streamers</li>
-
+              <li className="text-[var(--follow-text)] whitespace-pre-wrap">
+                Streamers
+              </li>
             </div>
             <div
               className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
                  flex items-center justify-center w-full p-4 content-start"
-              onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--follow-shadow)"}
-              onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.boxShadow = "var(--follow-shadow)")
+              }
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <li className="text-[var(--follow-text)] whitespace-pre-wrap">Category</li>
-
+              <li className="text-[var(--follow-text)] whitespace-pre-wrap">
+                Category
+              </li>
             </div>
-
           </div>
         </div>
       </div>

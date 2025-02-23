@@ -145,12 +145,12 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
       <SearchBar />
 
       {/* Stream Button */}
-      {isLoggedIn && !window.location.pathname.includes('go-live') && (
+      {isLoggedIn && !window.location.pathname.includes("go-live") && (
         <Button
           extraClasses={`${
             variant === "home" ? "absolute top-[2vh] right-[10vw]" : ""
           } flex flex-row items-center`}
-          onClick={() => window.location.href = "/go-live"}
+          onClick={() => (window.location.href = "/go-live")}
         >
           <LiveIcon className="h-15 w-15 mr-2" />
           Go Live

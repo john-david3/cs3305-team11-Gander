@@ -17,29 +17,31 @@ const AllCategoriesPage: React.FC = () => {
   const [categoryOffset, setCategoryOffset] = useState(0);
   const [noCategories, setNoCategories] = useState(12);
   const [hasMoreData, setHasMoreData] = useState(true);
-  
+
   const listRowRef = useRef<any>(null);
   const isLoading = useRef(false);
-  
+
   const fetchCategories = async () => {
     // If already loading, skip this fetch
     if (isLoading.current) return;
-    
+
     isLoading.current = true;
-    
+
     try {
-      const response = await fetch(`/api/categories/popular/${noCategories}/${categoryOffset}`);
+      const response = await fetch(
+        `/api/categories/popular/${noCategories}/${categoryOffset}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch categories");
       }
       const data = await response.json();
-      
+
       if (data.length === 0) {
         setHasMoreData(false);
         return [];
       }
 
-      setCategoryOffset(prev => prev + data.length);
+      setCategoryOffset((prev) => prev + data.length);
 
       const processedCategories = data.map((category: any) => ({
         type: "category" as const,
@@ -51,7 +53,7 @@ const AllCategoriesPage: React.FC = () => {
           .replace(/ /g, "_")}.webp`,
       }));
 
-      setCategories(prev => [...prev, ...processedCategories]);
+      setCategories((prev) => [...prev, ...processedCategories]);
       return processedCategories;
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -99,7 +101,7 @@ const AllCategoriesPage: React.FC = () => {
         type="category"
         title="All Categories"
         items={categories}
-        onClick={handleCategoryClick}
+        onItemClick={handleCategoryClick}
         extraClasses="bg-[var(--recommend)] text-center"
         wrap={true}
       />
