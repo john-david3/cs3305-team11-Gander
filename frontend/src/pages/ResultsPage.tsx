@@ -36,13 +36,14 @@ const ResultsPage: React.FC = ({}) => {
       <DynamicPageContent
         id="results-page"
         navbarVariant="no-navbar"
-        className="flex flex-col items-center justify-evenly min-h-[70vh] my-[15vh] p-4"
+        className="flex flex-col items-stretch justify-stretch h-[70vh] my-[15vh] p-4"
+        contentClassName="flex flex-col items-center h-full p-4"
       >
         <h1 className="text-3xl font-bold mb-4">
           Search results for "{query}"
         </h1>
         <SearchBar value={query} />
-        <h3 className="text-2xl text-gray-400">Nothing Found</h3>
+        <h3 className="flex items-center flex-grow text-2xl text-gray-400">Nothing Found</h3>
         <div className="flex gap-8">
           <Button onClick={() => navigate(-1)}>Go Back</Button>
         </div>
