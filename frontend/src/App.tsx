@@ -10,11 +10,12 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CategoryPage from "./pages/CategoryPage";
 import CategoriesPage from "./pages/AllCategoriesPage";
 import ResultsPage from "./pages/ResultsPage";
-import { SidebarProvider, useSidebar } from "./context/SidebarContext";
+import { SidebarProvider } from "./context/SidebarContext";
 import { QuickSettingsProvider } from "./context/QuickSettingsContext";
 import StreamDashboardPage from "./pages/StreamDashboardPage";
 import { Brightness } from "./context/BrightnessContext";
 import Sidebar from "./components/Navigation/Sidebar";
+import LoadingScreen from "./components/Layout/LoadingScreen";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -40,7 +41,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <div className="flex w-full h-full">Loading...</div>;
+    return <LoadingScreen />;
   }
 
   return (

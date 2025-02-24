@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ListRow from "../components/Layout/ListRow";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
+import LoadingScreen from "../components/Layout/LoadingScreen";
 
 interface categoryData {
   type: "category";
@@ -78,13 +79,7 @@ const AllCategoriesPage: React.FC = () => {
 
   fetchContentOnScroll(loadOnScroll, hasMoreData);
 
-  if (hasMoreData && !categories.length) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center text-white">
-        Loading...
-      </div>
-    );
-  }
+  if (hasMoreData && !categories.length) return <LoadingScreen />;
 
   const handleCategoryClick = (categoryName: string) => {
     console.log(categoryName);

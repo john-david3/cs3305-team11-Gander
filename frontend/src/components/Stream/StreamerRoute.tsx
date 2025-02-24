@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import VideoPage from "../../pages/VideoPage";
+import LoadingScreen from "../Layout/LoadingScreen";
 
 const StreamerRoute: React.FC = () => {
   const { streamerName } = useParams();
@@ -32,13 +33,7 @@ const StreamerRoute: React.FC = () => {
     return () => clearInterval(interval);
   }, [streamerName]);
 
-  if (isLoading) {
-    return (
-      <div className="h-screen w-screen flex text-6xl items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingScreen />;
 
   // streamId=0 is a special case for the streamer's latest stream
   if (isLive) {

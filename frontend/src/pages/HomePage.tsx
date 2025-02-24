@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useStreams, useCategories } from "../context/ContentContext";
 import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
+import LoadingScreen from "../components/Layout/LoadingScreen";
 
 interface HomePageProps {
   variant?: "default" | "personalised";
@@ -23,7 +24,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   };
 
   if (!categories || categories.length === 0) {
-    return <div>Loading categories...</div>;
+    return <LoadingScreen>Loading Categories...</LoadingScreen>;
   }
 
   return (

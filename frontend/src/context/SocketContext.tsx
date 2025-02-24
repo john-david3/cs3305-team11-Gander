@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import LoadingScreen from "../components/Layout/LoadingScreen";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -86,13 +87,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <div className="text-4xl text-white">Connecting to socket...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingScreen>Connecting to Socket...</LoadingScreen>;
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>

@@ -8,6 +8,7 @@ import { useFollow } from "../hooks/useFollow";
 import { useNavigate } from "react-router-dom";
 import Button, { EditButton } from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
+import LoadingScreen from "../components/Layout/LoadingScreen";
 
 interface UserProfileData {
   id: number;
@@ -100,13 +101,8 @@ const UserPage: React.FC = () => {
     if (loggedInUsername && username) checkFollowStatus(username);
   }, [username]);
 
-  if (!profileData) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center text-white">
-        Loading...
-      </div>
-    );
-  }
+  if (!profileData) return <LoadingScreen />;
+
   return (
     <DynamicPageContent
       className={`min-h-screen ${
@@ -226,7 +222,7 @@ const UserPage: React.FC = () => {
                       id={profileData.id}
                       type="stream"
                       title={profileData.currentStreamTitle || ""}
-                      streamer=""
+                      username=""
                       viewers={profileData.currentStreamViewers || 0}
                       thumbnail={profileData.currentStreamThumbnail}
                       onItemClick={() => {

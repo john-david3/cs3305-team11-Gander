@@ -72,6 +72,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     const categoriesUrl = isLoggedIn
       ? "/api/categories/recommended"
       : "/api/categories/popular/4";
+    console.log("Fetching categories from", categoriesUrl);
 
     fetch(categoriesUrl)
       .then((response) => response.json())
@@ -86,6 +87,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
             .replace(/ /g, "_")}.webp`,
         }));
         setCategories(processedCategories);
+        console.log("Categories fetched", processedCategories);
       });
   }, [isLoggedIn]);
 

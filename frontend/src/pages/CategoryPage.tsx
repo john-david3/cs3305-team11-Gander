@@ -7,6 +7,7 @@ import Button from "../components/Input/Button";
 import { useAuth } from "../context/AuthContext";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
 import { ListItemProps as StreamData } from "../components/Layout/ListItem";
+import LoadingScreen from "../components/Layout/LoadingScreen";
 
 const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -92,13 +93,7 @@ const CategoryPage: React.FC = () => {
     window.location.href = `/${streamerName}`;
   };
 
-  if (hasMoreData && !streams.length) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center text-white">
-        Loading...
-      </div>
-    );
-  }
+  if (hasMoreData && !streams.length) return <LoadingScreen />;
 
   return (
     <DynamicPageContent className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000] bg-[url(/images/background-pattern.svg)]">

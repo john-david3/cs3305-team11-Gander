@@ -37,7 +37,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const [isStripeReady, setIsStripeReady] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  const showReturn = window.location.search.includes("session_id");
+  // const showReturn = window.location.search.includes("session_id"); //! Not used
   const navigate = useNavigate();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [timeStarted, setTimeStarted] = useState("");
