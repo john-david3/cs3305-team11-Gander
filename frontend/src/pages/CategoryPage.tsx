@@ -82,8 +82,7 @@ const CategoryPage: React.FC = () => {
       const newCategories = await fetchCategoryStreams();
       if (newCategories && newCategories.length > 0) {
         listRowRef.current.addMoreItems(newCategories);
-      }
-      else console.log("No more data to fetch");
+      } else console.log("No more data to fetch");
     }
   };
 
@@ -102,10 +101,7 @@ const CategoryPage: React.FC = () => {
   }
 
   return (
-    <DynamicPageContent
-      className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]"
-      style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
-    >
+    <DynamicPageContent className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000] bg-[url(/images/background-pattern.svg)]">
       <div className="pt-8">
         <ListRow
           type="stream"

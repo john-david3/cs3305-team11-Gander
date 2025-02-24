@@ -21,7 +21,7 @@ const Logo: React.FC<LogoProps> = ({
       <h6 className="text-sm bg-gradient-to-br from-blue-400 via-green-500 to-indigo-500 font-black text-transparent bg-clip-text">
         Go on, have a...
       </h6>
-      <div className="flex w-fit min-w-[30vw] bg-logo bg-clip-text animate-moving_text_colour bg-[length:300%_300%] justify-center leading-none transition-all">
+      <div className="flex w-fit min-w-[calc(12vw+6rem)] bg-logo bg-clip-text animate-moving_text_colour bg-[length:300%_300%] justify-center leading-none transition-all">
         <span className={gradient}>G</span>
         <span className={gradient}>A</span>
         <span className={gradient}>N</span>

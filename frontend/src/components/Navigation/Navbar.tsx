@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import Logo from "../Layout/Logo";
 import Button, { ToggleButton } from "../Input/Button";
-import Sidebar from "./Sidebar";
-import { Sidebar as SidebarIcon } from "lucide-react";
 import {
   LogIn as LogInIcon,
   LogOut as LogOutIcon,
@@ -24,7 +22,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const { isLoggedIn } = useAuth();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
-  const { showSideBar, setShowSideBar } = useSidebar();
+  const { showSideBar } = useSidebar();
   const { showQuickSettings, setShowQuickSettings } = useQuickSettings();
 
   const handleLogout = () => {
@@ -41,23 +39,11 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
     setShowQuickSettings(!showQuickSettings);
   };
 
-  const handleSideBar = () => {
-    setShowSideBar(!showSideBar);
-  };
-
   // Keyboard shortcut to toggle sidebar
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (
-        e.key === "s" &&
-        document.activeElement == document.body &&
-        isLoggedIn
-      ) {
-        handleSideBar();
-      }
-      if (e.key === "q" && document.activeElement == document.body) {
+      if (e.key === "q" && document.activeElement == document.body)
         handleQuickSettings();
-      }
     };
 
     document.addEventListener("keydown", handleKeyPress);
@@ -65,12 +51,12 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [showSideBar, showQuickSettings, setShowSideBar, isLoggedIn]);
+  }, [showQuickSettings]);
 
   return (
     <div
       id="navbar"
-      className={`flex justify-center items-center w-full ${
+      className={`flex justify-evenly items-center mx-[15vw] ${
         variant === "home"
           ? "h-[45vh] flex-col"
           : "h-[15vh] col-span-2 flex-row"
@@ -84,7 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
           showSideBar
             ? "left-[16vw] duration-[0.5s]"
             : "left-[20px] duration-[1s]"
-        } text-[1rem] flex items-center flex-nowrap`}
+        } text-[1rem] flex items-center flex-nowrap z-[99]`}
         onClick={() => (isLoggedIn ? handleLogout() : setShowAuthModal(true))}
       >
         {isLoggedIn ? (
@@ -100,30 +86,6 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         )}
       </Button>
 
-      {/* Sidebar */}
-      {isLoggedIn && (
-        <>
-          <ToggleButton
-            onClick={() => handleSideBar()}
-            extraClasses={`absolute group text-[1rem] top-[9vh] ${
-              showSideBar
-                ? "left-[16vw] duration-[0.5s]"
-                : "left-[20px] duration-[1s]"
-            } ease-in-out cursor-pointer`}
-            toggled={showSideBar}
-          >
-            <SidebarIcon className="top-[0.20em] left-[10em] z-[90]" />
-
-            {showSideBar && (
-              <small className="absolute flex items-center top-0 ml-4 left-0 h-full w-full my-auto group-hover:left-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
-                Press S
-              </small>
-            )}
-          </ToggleButton>
-          <Sidebar />
-        </>
-      )}
-
       {/* Quick Settings Sidebar */}
       <ToggleButton
         extraClasses={`absolute group text-[1rem] top-[2vh] ${
@@ -132,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
         onClick={() => handleQuickSettings()}
         toggled={showQuickSettings}
       >
-        <SettingsIcon className="h-15 w-15" />
+        <SettingsIcon className="h-[2vw] w-[2vw]" />
 
         {showQuickSettings && (
           <small className="absolute flex items-center top-0 mr-4 right-0 h-full w-full my-auto group-hover:right-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">

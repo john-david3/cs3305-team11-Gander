@@ -11,7 +11,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   streamer,
-  extraClasses,
+  extraClasses = "",
   onStreamDetected,
 }) => {
   const { streamerName: urlStreamerName } = useParams<{

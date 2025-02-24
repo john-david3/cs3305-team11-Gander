@@ -10,10 +10,11 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CategoryPage from "./pages/CategoryPage";
 import CategoriesPage from "./pages/AllCategoriesPage";
 import ResultsPage from "./pages/ResultsPage";
-import { SidebarProvider } from "./context/SidebarContext";
+import { SidebarProvider, useSidebar } from "./context/SidebarContext";
 import { QuickSettingsProvider } from "./context/QuickSettingsContext";
 import StreamDashboardPage from "./pages/StreamDashboardPage";
 import { Brightness } from "./context/BrightnessContext";
+import Sidebar from "./components/Navigation/Sidebar";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -58,6 +59,7 @@ function App() {
           <SidebarProvider>
             <QuickSettingsProvider>
               <BrowserRouter>
+                {isLoggedIn && window.innerWidth > 900 && <Sidebar />}
                 <Routes>
                   <Route
                     path="/"

@@ -89,7 +89,7 @@ const ListRow = forwardRef<
 
     return (
       <div
-        className={`${extraClasses} flex w-full rounded-[1.5rem] text-white transition-all ${
+        className={`${extraClasses} flex w-full relative rounded-[1.5rem] text-white transition-all ${
           variant === "search"
             ? "items-center"
             : "flex-col space-y-4 py-6 px-5 mx-2 mt-5"

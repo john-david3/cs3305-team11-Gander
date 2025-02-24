@@ -29,8 +29,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   return (
     <DynamicPageContent
       navbarVariant="home"
-      className="h-full min-h-screen animate-moving_bg"
-      style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
+      className="h-full min-h-screen bg-[url(/images/background-pattern.svg)] animate-moving_bg"
     >
       <ListRow
         type="stream"

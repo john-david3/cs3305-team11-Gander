@@ -142,7 +142,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
       <ToggleButton
         onClick={toggleChat}
         toggled={isChatOpen}
-        extraClasses="group cursor-pointer absolute top-[70px] right-[20px] text-[1rem] flex items-center flex-nowrap"
+        extraClasses="group cursor-pointer absolute top-[70px] right-[20px] text-[1rem] flex items-center flex-nowrap z-[50]"
       >
         {isChatOpen ? "Hide Chat" : "Show Chat"}
 

@@ -2,9 +2,9 @@ import React from "react";
 import Navbar from "../Navigation/Navbar";
 import { useSidebar } from "../../context/SidebarContext";
 
-interface DynamicPageContentProps {
+interface DynamicPageContentProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode;
-  navbarVariant?: "home" | "default";
+  navbarVariant?: "home" | "no-navbar" | "default";
   className?: string;
   style?: React.CSSProperties;
 }
@@ -19,12 +19,12 @@ const DynamicPageContent: React.FC<DynamicPageContentProps> = ({
 
   return (
     <div className={className} style={style}>
-      <Navbar variant={navbarVariant} />
+      {navbarVariant !== "no-navbar" && <Navbar variant={navbarVariant} />}
       <div
         id="content"
-        className={`${
+        className={`min-w-[850px] ${
           showSideBar ? "w-[85vw] translate-x-[15vw]" : "w-[100vw]"
-        } transition-all duration-[500ms] ease-in-out`}
+        } items-start transition-all duration-[500ms] ease-in-out`}
       >
         {children}
       </div>
