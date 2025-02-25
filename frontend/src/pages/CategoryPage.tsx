@@ -96,7 +96,16 @@ const CategoryPage: React.FC = () => {
   if (hasMoreData && !streams.length) return <LoadingScreen />;
 
   return (
-    <DynamicPageContent className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000] bg-[url(/images/background-pattern.svg)]">
+    <DynamicPageContent className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000] bg-[url(/images/background-pattern.svg)]"style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+    >
+            {/* Hide Scrollbar for WebKit-based Browsers */}
+            <style>
+        {`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style>
       <div className="pt-8">
         <ListRow
           type="stream"

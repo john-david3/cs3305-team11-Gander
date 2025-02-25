@@ -5,7 +5,7 @@ import SearchBar from "../components/Input/SearchBar";
 import ListRow from "../components/Layout/ListRow";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 
-const ResultsPage: React.FC = ({}) => {
+const ResultsPage: React.FC = ({ }) => {
   const [overflow, setOverflow] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,7 +38,16 @@ const ResultsPage: React.FC = ({}) => {
         navbarVariant="no-navbar"
         className="flex flex-col items-stretch justify-stretch h-[70vh] my-[15vh] p-4"
         contentClassName="flex flex-col items-center h-full p-4"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
+        {/* Hide Scrollbar for WebKit-based Browsers */}
+        <style>
+          {`
+              ::-webkit-scrollbar {
+                display: none;
+              }
+            `}
+        </style>
         <h1 className="text-3xl font-bold mb-4">
           Search results for "{query}"
         </h1>
@@ -128,9 +137,8 @@ const ResultsPage: React.FC = ({}) => {
         </div>
 
         <div
-          className={`${
-            overflow && "absolute top-[5vh] right-[2vw]"
-          } flex gap-[2vw]`}
+          className={`${overflow && "absolute top-[5vh] right-[2vw]"
+            } flex gap-[2vw]`}
         >
           <Button
             extraClasses="text-[2vw]"
