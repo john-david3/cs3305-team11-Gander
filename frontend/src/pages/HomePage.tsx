@@ -5,6 +5,7 @@ import { useStreams, useCategories } from "../context/ContentContext";
 import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
+import Footer from "../components/Layout/Footer";
 
 interface HomePageProps {
   variant?: "default" | "personalised";
@@ -31,7 +32,16 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
     <DynamicPageContent
       navbarVariant="home"
       className="h-full min-h-screen bg-[url(/images/background-pattern.svg)] animate-moving_bg"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
+            {/* Hide Scrollbar for WebKit-based Browsers */}
+            <style>
+        {`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style>
       <ListRow
         type="stream"
         title={
@@ -75,6 +85,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
           Show More
         </Button>
       </ListRow>
+      <Footer/>
     </DynamicPageContent>
   );
 };

@@ -111,6 +111,7 @@ const UserPage: React.FC = () => {
           : bgColors[userPageVariant]
       } text-white flex flex-col`}
     >
+      
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
         <div className="grid grid-cols-4 grid-rows-[0.1fr_4fr] w-full gap-8">
           {/* Profile Section - TOP  */}
