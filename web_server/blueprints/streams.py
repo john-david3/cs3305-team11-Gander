@@ -317,7 +317,7 @@ def end_stream():
         
         # If stream never published, return
         if not stream_info:
-            print("Stream never began", flush=True)
+            print(f"Stream for stream key: {stream_key} never began", flush=True)
             return "Stream ended", 200
         
         # Remove stream from database
