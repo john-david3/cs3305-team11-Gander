@@ -22,6 +22,7 @@ def user_data(username: str):
     data = get_user(user_id)
     return jsonify(data)
 
+@login_required
 @user_bp.route('/user/<string:username>/stream_key')
 def user_stream_key(username: str):
     """

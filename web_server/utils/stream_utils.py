@@ -3,6 +3,7 @@ from typing import Optional
 import os, subprocess
 from typing import Optional, List
 from time import sleep
+from utils.path_manager import PathManager
 
 def get_streamer_live_status(user_id: int):
     """
@@ -147,9 +148,10 @@ def create_local_directories(username: str):
     Create directories for user stream data if they do not exist
     """
 
-    vods_path = f"stream_data/vods/{username}"
-    stream_path = f"stream_data/stream"
-    thumbnail_path = f"stream_data/thumbnails/{username}"
+    path_m = PathManager()
+
+    vods_path = path_m.get_vods_path(username)
+    stream_path = path_m.get_stream_path(username)
 
     if not os.path.exists(vods_path):
         os.makedirs(vods_path)
@@ -157,16 +159,11 @@ def create_local_directories(username: str):
     if not os.path.exists(stream_path):
         os.makedirs(stream_path)
 
-    if not os.path.exists(thumbnail_path):
-        os.makedirs(thumbnail_path)
-
     # Fix permissions
     os.chmod(vods_path, 0o777)
     os.chmod(stream_path, 0o777)
-    os.chmod(thumbnail_path, 0o777)
 
     return {
         "vod_path": vods_path,
-        "stream_path": stream_path,
-        "thumbnail_path": thumbnail_path
+        "stream_path": stream_path
     }

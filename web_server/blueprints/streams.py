@@ -185,11 +185,11 @@ def init_stream():
             print("Unauthorized - Invalid stream key", flush=True)
             return "Unauthorized - Invalid stream key", 403
 
-        # Create necessary directories
-        username = user_info["username"]
-        create_local_directories(username)
+    # Create necessary directories
+    username = user_info["username"]
+    create_local_directories(username)
 
-        return "OK", 200
+    return redirect(f"/stream/{username}")
 
 
 @stream_bp.route("/publish_stream", methods=["POST"])
@@ -243,7 +243,7 @@ def publish_stream():
     # Update thumbnail periodically
     update_thumbnail.delay(user_id,
                            path_manager.get_stream_file_path(username),
-                           path_manager.get_thumbnail_file_path(username),
+                           path_manager.get_current_stream_thumbnail_file_path(username),
                            THUMBNAIL_GENERATION_INTERVAL)
 
     return "OK", 200
