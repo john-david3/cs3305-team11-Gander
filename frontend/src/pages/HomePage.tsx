@@ -25,23 +25,15 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   };
 
   if (!categories || categories.length === 0) {
+    console.log("No categories found yet");
     return <LoadingScreen>Loading Categories...</LoadingScreen>;
   }
 
   return (
     <DynamicPageContent
       navbarVariant="home"
-      className="h-full min-h-screen bg-[url(/images/background-pattern.svg)] animate-moving_bg"
-      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      className="min-h-screen animate-moving_bg"
     >
-            {/* Hide Scrollbar for WebKit-based Browsers */}
-            <style>
-        {`
-          ::-webkit-scrollbar {
-            display: none;
-          }
-        `}
-      </style>
       <ListRow
         type="stream"
         title={
@@ -57,6 +49,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         wrap={false}
         onItemClick={handleStreamClick}
         extraClasses="bg-[var(--liveNow)]"
+        itemExtraClasses="w-[20vw]"
       />
 
       {/* If Personalised_HomePage, display Categories the logged-in user follows. Else, trending categories. */}
@@ -77,6 +70,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
         onItemClick={handleCategoryClick}
         titleClickable={true}
         extraClasses="bg-[var(--recommend)]"
+        itemExtraClasses="w-[20vw]"
       >
         <Button
           extraClasses="absolute right-10"

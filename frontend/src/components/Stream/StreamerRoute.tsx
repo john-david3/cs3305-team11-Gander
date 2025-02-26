@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import VideoPage from "../../pages/VideoPage";
 import LoadingScreen from "../Layout/LoadingScreen";
+import { ChatProvider } from "../../context/ChatContext";
 
 const StreamerRoute: React.FC = () => {
   const { streamerName } = useParams();
@@ -35,9 +36,12 @@ const StreamerRoute: React.FC = () => {
 
   if (isLoading) return <LoadingScreen />;
 
-  // streamId=0 is a special case for the streamer's latest stream
   if (isLive) {
-    return <VideoPage streamerId={streamId} />;
+    return (
+      <ChatProvider>
+        <VideoPage streamerId={streamId} />
+      </ChatProvider>
+    );
   }
 
   if (streamerName) {

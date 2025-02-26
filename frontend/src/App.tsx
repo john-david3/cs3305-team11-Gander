@@ -14,7 +14,6 @@ import { SidebarProvider } from "./context/SidebarContext";
 import { QuickSettingsProvider } from "./context/QuickSettingsContext";
 import StreamDashboardPage from "./pages/StreamDashboardPage";
 import { Brightness } from "./context/BrightnessContext";
-import Sidebar from "./components/Navigation/Sidebar";
 import LoadingScreen from "./components/Layout/LoadingScreen";
 import Following from "./pages/Following";
 
@@ -61,7 +60,6 @@ function App() {
           <SidebarProvider>
             <QuickSettingsProvider>
               <BrowserRouter>
-                {isLoggedIn && window.innerWidth > 900 && <Sidebar />}
                 <Routes>
                   <Route
                     path="/"

@@ -1,7 +1,7 @@
 import React from "react";
 
 interface LogoProps {
-  variant?: "home" | "default";
+  variant?: "home" | "no-searchbar" | "default";
   extraClasses?: string;
 }
 

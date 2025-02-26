@@ -4,7 +4,7 @@ import { useSidebar } from "../../context/SidebarContext";
 
 interface DynamicPageContentProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode;
-  navbarVariant?: "home" | "no-navbar" | "default";
+  navbarVariant?: "home" | "no-searchbar" | "default";
   className?: string;
   contentClassName?: string;
   style?: React.CSSProperties;
@@ -20,8 +20,8 @@ const DynamicPageContent: React.FC<DynamicPageContentProps> = ({
   const { showSideBar } = useSidebar();
 
   return (
-    <div className={className} style={style}>
-      {navbarVariant !== "no-navbar" && <Navbar variant={navbarVariant} />}
+    <div className={`${className} bg-[url(/images/background-pattern.svg)]`} style={style}>
+      <Navbar variant={navbarVariant} />
       <div
         id="content"
         className={`min-w-[850px] ${
