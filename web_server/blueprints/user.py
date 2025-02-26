@@ -3,7 +3,7 @@ from utils.user_utils import *
 from utils.auth import *
 from utils.utils import get_category_id
 from blueprints.middleware import login_required
-from utils.email import send_email, forgot_password_body
+from utils.email import send_email, forgot_password_body, newsletter_conf
 import redis
 
 redis_url = "redis://redis:6379/1"
@@ -151,6 +151,11 @@ def user_forgot_password(email):
     Initializes the function to handle password reset
     """
     send_email(email, lambda: forgot_password_body(email))
+    return email
+
+@user_bp.route("/send_newsletter/<string:email>", methods=["POST"])
+def send_newsletter(email):
+    send_email(email, lambda: newsletter_conf(email))
     return email
 
 

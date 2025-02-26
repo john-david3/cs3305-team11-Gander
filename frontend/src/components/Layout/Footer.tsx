@@ -1,15 +1,42 @@
+import { useState } from "react";
 import { Mail, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+
+  const handleKeyDown = async (event) => {
+    if (event.key === "Enter") {
+      if (email.trim() === "") return;
+      try {
+        const response = await fetch(`/api/send_newsletter/${email}`, 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to subscribe");
+        }
+        
+        setEmail("");
+        alert("Successfully added to newsletter");
+
+      } catch (error) {
+        console.error("Error subscribing:", error);
+      }
+
+    }
+  };
+
   return (
     <footer className="bg-gradient-to-r from-[#1a1a2e] to-[#3a0ca3] text-white p-10">
       <div className="flex flex-wrap justify-between gap-x-10 gap-y-6">
         {/* About Section */}
         <div className="flex-1 min-w-[250px]">
           <h2 className="text-2xl font-bold">Gander</h2>
-          <p className="text-sm mt-2">
-            Your very favourite streaming service
-          </p>
+          <p className="text-sm mt-2">Your very favourite streaming service</p>
         </div>
 
         {/* Office Section */}
@@ -44,8 +71,11 @@ const Footer = () => {
               type="email" 
               placeholder="Enter your email" 
               className="bg-transparent outline-none text-sm flex-1 px-2"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
-            <Mail className="text-white cursor-pointer" />
+            <Mail className="text-white cursor-pointer" onClick={() => handleKeyDown({ key: "Enter" })} />
           </div>
 
           {/* Social Icons */}
