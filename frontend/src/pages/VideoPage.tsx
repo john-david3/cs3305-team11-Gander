@@ -1,15 +1,15 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
-import { ToggleButton } from "../components/Input/Button";
-import ChatPanel from "../components/Stream/ChatPanel";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuthModal } from "../hooks/useAuthModal";
-import { useAuth } from "../context/AuthContext";
-import { useFollow } from "../hooks/useFollow";
-import VideoPlayer from "../components/Stream/VideoPlayer";
-import { SocketProvider } from "../context/SocketContext";
 import AuthModal from "../components/Auth/AuthModal";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
+import ChatPanel from "../components/Stream/ChatPanel";
+import VideoPlayer from "../components/Stream/VideoPlayer";
+import { useAuth } from "../context/AuthContext";
 import { useSidebar } from "../context/SidebarContext";
+import { SocketProvider } from "../context/SocketContext";
+import { useAuthModal } from "../hooks/useAuthModal";
+import { useFollow } from "../hooks/useFollow";
+import { useChat } from "../context/ChatContext";
 
 // Lazy load the CheckoutForm component
 const CheckoutForm = lazy(() => import("../components/Checkout/CheckoutForm"));
@@ -30,14 +30,13 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const { streamerName } = useParams<{ streamerName: string }>();
   const [streamData, setStreamData] = useState<StreamDataProps>();
   const [viewerCount, setViewerCount] = useState(0);
-  const [isChatOpen, setIsChatOpen] = useState(true);
   const { showSideBar } = useSidebar();
   const { isFollowing, checkFollowStatus, followUser, unfollowUser } =
     useFollow();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const [isStripeReady, setIsStripeReady] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  // const showReturn = window.location.search.includes("session_id"); //! Not used
+  const { showChat } = useChat();
   const navigate = useNavigate();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [timeStarted, setTimeStarted] = useState("");
@@ -54,6 +53,9 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
       document.body.style.overflow = "unset";
     };
   }, [showCheckout]);
+
+  // Increment minutes of stream time every minute
+  useEffect;
 
   useEffect(() => {
     // Fetch stream data for this streamer
@@ -72,20 +74,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
           };
           setStreamData(transformedData);
 
-          const time = Math.floor(
-            (Date.now() - new Date(data.start_time).getTime()) / 60000 // Convert to minutes
-          );
-
-          if (time < 60) setTimeStarted(`${time}m ago`);
-          else if (time < 1440)
-            setTimeStarted(`${Math.floor(time / 60)}h ${time % 60}m ago`);
-          else
-            setTimeStarted(
-              `${Math.floor(time / 1440)}d ${Math.floor((time % 1440) / 60)}h ${
-                time % 60
-              }m ago`
-            );
-
           // Check if the logged-in user is following this streamer
           if (isLoggedIn) checkFollowStatus(data.username);
         })
@@ -95,20 +83,42 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     });
   }, [streamerId]);
 
-  // Keyboard shortcut to toggle chat
+  // Time counter using DD:HH:MM:SS format
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "c" && document.activeElement == document.body) {
-        setIsChatOpen((prev) => !prev);
-      }
+    if (!streamData?.startTime) return;
+
+    // Initial calculation
+    const startTime = new Date(streamData.startTime).getTime();
+
+    const calculateTimeDifference = () => {
+      // Get the difference in seconds
+      const diffInSeconds = Math.floor((Date.now() - startTime) / 1000);
+
+      // Calculate days, hours, minutes, seconds
+      const days = Math.floor(diffInSeconds / 86400);
+      const hours = Math.floor((diffInSeconds % 86400) / 3600);
+      const minutes = Math.floor((diffInSeconds % 3600) / 60);
+      const seconds = diffInSeconds % 60;
+
+      // Format as DD:HH:MM:SS
+      setTimeStarted(
+        `${days.toString().padStart(2, "0")}:${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+          .toString()
+          .padStart(2, "0")}`
+      );
     };
 
-    document.addEventListener("keydown", handleKeyPress);
+    // Calculate immediately
+    calculateTimeDifference();
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, []);
+    // Set up interval to update every second
+    const intervalId = setInterval(calculateTimeDifference, 1000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [streamData?.startTime]); // Re-run if startTime changes
 
   // Load Stripe in the background when component mounts
   useEffect(() => {
@@ -118,10 +128,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     };
     loadStripe();
   }, []);
-
-  const toggleChat = () => {
-    setIsChatOpen((prev) => !prev);
-  };
 
   // Checks if user is subscribed
   useEffect(() => {
@@ -138,24 +144,11 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
   return (
     <SocketProvider>
-      {/* Toggle Button for Chat */}
-      <ToggleButton
-        onClick={toggleChat}
-        toggled={isChatOpen}
-        extraClasses="group cursor-pointer absolute top-[70px] right-[20px] text-[1rem] flex items-center flex-nowrap z-[50]"
-      >
-        {isChatOpen ? "Hide Chat" : "Show Chat"}
-
-        <small className="absolute right-0 left-0 -bottom-0 group-hover:-bottom-5 opacity-0 group-hover:opacity-100 text-white transition-all">
-          Press C
-        </small>
-      </ToggleButton>
-
       <DynamicPageContent className="w-full min-h-screen">
         <div
           id="container"
           className={`bg-gray-900 h-full grid ${
-            isChatOpen
+            showChat
               ? showSideBar
                 ? "w-[85vw] duration-[1s]"
                 : "w-[100vw] duration-[0.5s]"
@@ -206,7 +199,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 
             {/* Streamer Info */}
             <div className="flex items-center gap-[0.75em] flex-col lg:flex-row">
-              <div className="flex flex-col items-center lg:items-start">
+              <div className="group flex flex-col items-center lg:items-start">
                 {!isFollowing ? (
                   <button
                     className="bg-purple-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-purple-700 text-sm"
@@ -216,10 +209,11 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
                   </button>
                 ) : (
                   <button
-                    className="bg-gray-700 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-600 text-sm"
+                    className="bg-gray-700 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-600 text-sm transition-all"
                     onClick={() => unfollowUser(streamerId, setShowAuthModal)}
                   >
-                    Unfollow
+                    <span className="group-hover:hidden">Following</span>
+                    <span className="hidden group-hover:block">Unfollow</span>
                   </button>
                 )}
               </div>
@@ -237,8 +231,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
               </div>
             </div>
 
-            <div className="flex flex-col items-center">
-              <span className="text-gray-400 text-[0.75em]">Started</span>
+            <div className="flex flex-col items-center p-4 min-w-fit">
               <span className="text-[0.75em]">
                 {streamData ? timeStarted : "Loading..."}
               </span>

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import Input from "../Input/Input";
-import Button from "../Input/Button";
+import Button, { ToggleButton } from "../Input/Button";
 import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
+import { useChat } from "../../context/ChatContext";
+import { ArrowLeftFromLineIcon, ArrowRightFromLine } from "lucide-react";
 
 interface ChatMessage {
   chatter_username: string;
@@ -22,6 +24,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onViewerCountChange,
 }) => {
   const { isLoggedIn, username, userId } = useAuth();
+  const { showChat, setShowChat } = useChat();
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { socket, isConnected } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -94,6 +97,25 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   }, [messages]);
 
+  // Keyboard shortcut to toggle chat
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "c" && document.activeElement == document.body) {
+        toggleChat();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [showChat]);
+
+  const toggleChat = () => {
+    setShowChat(!showChat);
+  };
+
   const sendChat = () => {
     if (!inputMessage.trim() || !socket || !isConnected) {
       console.log("Invalid message or socket not connected");
@@ -119,11 +141,23 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   return (
     <div
       id="chat-panel"
-      className="max-w-[30vw] max-h-[83vh] flex flex-col rounded-lg p-[2vh] justify-between"
+      className="relative max-w-[30vw] max-h-[83vh] flex flex-col rounded-lg p-[2vh] justify-between"
       style={{ gridArea: "1 / 2 / 3 / 3" }}
     >
+      {/* Toggle Button for Chat */}
+      <button
+        onClick={toggleChat}
+        className={`group cursor-pointer p-2 hover:bg-gray-800 rounded-md absolute top-[1vh] left-[1vw] ${showChat ? "" : "delay-[0.75s] -translate-x-[3.3vw]"} text-[1rem] text-purple-500 flex items-center flex-nowrap z-[50] duration-[0.3s] transition-all`}
+      >
+        {showChat ? <ArrowRightFromLine /> : <ArrowLeftFromLineIcon />}
+
+        <small className={`absolute ${showChat ? "right-0 group-hover:-right-[4vw]" : "left-0 group-hover:-left-[4vw]"} p-1 rounded-md group-hover:bg-white/10 w-fit opacity-0 group-hover:opacity-100 text-white transition-all`}>
+          Press C
+        </small>
+      </button>
+
       {/* Chat Header */}
-      <h2 className="text-xl font-bold mb-4 text-white text-center flex-none">
+      <h2 className="cursor-default text-xl font-bold mb-4 text-white text-center flex-none">
         Stream Chat
       </h2>
 
