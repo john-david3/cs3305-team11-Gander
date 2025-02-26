@@ -173,7 +173,7 @@ def init_stream():
     """
     stream_key = request.form.get("name")
 
-    print(f"Stream initialization requested in nginx with key: {stream_key}")
+    print(f"Stream initialization requested in nginx with key: {stream_key}", flush=True)
 
     with Database() as db:
         # Check if valid stream key and user is allowed to stream
@@ -314,7 +314,12 @@ def end_stream():
         if not user_info:
             print("Unauthorized - No user found from stream key", flush=True)
             return "Unauthorized", 403
-
+        
+        # If stream never published, return
+        if not stream_info:
+            print("Stream never began", flush=True)
+            return "Stream ended", 200
+        
         # Remove stream from database
         db.execute("""DELETE FROM streams 
                    WHERE user_id = ?""", (user_info["user_id"],))
