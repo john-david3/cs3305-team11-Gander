@@ -8,6 +8,7 @@ from datetime import datetime
 from celery_tasks import update_thumbnail, combine_ts_stream
 from dateutil import parser
 from utils.path_manager import PathManager
+import json
 
 stream_bp = Blueprint("stream", __name__)
 
@@ -203,7 +204,15 @@ def publish_stream():
     set user as streaming
     periodically update thumbnail
     """
-    data = request.form.get("data")
+
+
+    try:
+        data = json.loads(request.form.get("data"))
+    except json.JSONDecodeError as ex:
+        print(f"Error: {ex}")
+    except KeyError as ex:
+        print(f"Error: {ex}")
+
 
     with Database() as db:
         user_info = db.fetchone("""SELECT user_id, username, current_stream_title, 

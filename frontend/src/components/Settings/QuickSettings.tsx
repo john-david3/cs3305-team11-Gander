@@ -2,8 +2,8 @@ import React from "react";
 import ThemeSetting from "./ThemeSetting";
 import { useTheme } from "../../context/ThemeContext";
 import { useQuickSettings } from "../../context/QuickSettingsContext";
-import Screenshot from "../functionality/Screenshot";
-import BrightnessControl from "../functionality/BrightnessControl";
+import Screenshot from "../Functionality/Screenshot";
+import BrightnessControl from "../Functionality/BrightnessControl";
 
 const QuickSettings: React.FC = () => {
   const { theme } = useTheme();
