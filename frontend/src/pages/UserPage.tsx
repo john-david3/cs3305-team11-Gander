@@ -105,13 +105,12 @@ const UserPage: React.FC = () => {
 
   return (
     <DynamicPageContent
-      className={`min-h-screen ${
-        profileData.isLive
-          ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
-          : bgColors[userPageVariant]
-      } text-white flex flex-col`}
+      className={`min-h-screen ${profileData.isLive
+        ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
+        : bgColors[userPageVariant]
+        } text-white flex flex-col`}
     >
-      
+
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
         <div className="grid grid-cols-4 grid-rows-[0.1fr_4fr] w-full gap-8">
           {/* Profile Section - TOP  */}
@@ -271,9 +270,11 @@ const UserPage: React.FC = () => {
               }
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <li className="text-[var(--follow-text)] whitespace-pre-wrap">
-                Following
-              </li>
+                <button className="text-[var(--follow-text)] whitespace-pre-wrap"
+                          onClick={() => navigate(`/user/${username}/following`)}
+                >
+                  Following
+                </button>
             </div>
             <div
               className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
@@ -283,9 +284,11 @@ const UserPage: React.FC = () => {
               }
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <li className="text-[var(--follow-text)] whitespace-pre-wrap">
-                Streamers
-              </li>
+              <ul className="list-none">
+                <li className="text-[var(--follow-text)] whitespace-pre-wrap list-none">
+                  Streamers
+                </li>
+              </ul>
             </div>
             <div
               className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
@@ -295,9 +298,11 @@ const UserPage: React.FC = () => {
               }
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <li className="text-[var(--follow-text)] whitespace-pre-wrap">
-                Category
-              </li>
+              <ul className="list-none">
+                <li className="text-[var(--follow-text)] list-none whitespace-pre-wrap">
+                  Category
+                </li>
+              </ul>
             </div>
           </div>
         </div>
