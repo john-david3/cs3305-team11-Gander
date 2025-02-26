@@ -9,6 +9,7 @@ from blueprints.stripe import stripe_bp
 from blueprints.user import user_bp
 from blueprints.streams import stream_bp
 from blueprints.chat import chat_bp
+from blueprints.admin import admin_bp
 from blueprints.oauth import oauth_bp, init_oauth
 from blueprints.socket import socketio
 from celery import Celery
@@ -73,6 +74,7 @@ def create_app():
         app.register_blueprint(chat_bp)
         app.register_blueprint(oauth_bp)
         app.register_blueprint(search_bp)
+        app.register_blueprint(admin_bp)
 
         socketio.init_app(app)
 

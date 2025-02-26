@@ -1,14 +1,14 @@
 -- Sample Data for users
-INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, current_stream_title, current_selected_category_id) VALUES 
-('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 1, 'Game On!', 1),
-('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.', 1, 'Live Music Jam', 2),
-('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.', 1, 'Sketching Live', 3),
-('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.', 1, 'Math Made Easy', 4),
-('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!', 1, 'Sports Highlights', 5);
+INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, is_admin, current_stream_title, current_selected_category_id) VALUES 
+('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 1, 0, 'Game On!', 1),
+('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.', 1, 0, 'Live Music Jam', 2),
+('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.', 1, 0, 'Sketching Live', 3),
+('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.', 1, 0, 'Math Made Easy', 4),
+('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!', 1, 0, 'Sports Highlights', 5);
 
-INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio) VALUES 
-('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!'),
-('dev', 'scrypt:32768:8:1$avr94c5cplosNUDc$f2ba0738080facada51a1ed370bf869199e121e547fe64a7094ef0330b5db2ab7fff87700898729977f4cd24f17c17b9e8c0c93e7241dcdf9aa522d5d1732626', 'dev@gmail.com', 1, '8080', 0, 'A test account to save that tedious signup each time!');
+INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, is_admin) VALUES 
+('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!', 0, 0),
+('dev', 'scrypt:32768:8:1$avr94c5cplosNUDc$f2ba0738080facada51a1ed370bf869199e121e547fe64a7094ef0330b5db2ab7fff87700898729977f4cd24f17c17b9e8c0c93e7241dcdf9aa522d5d1732626', 'dev@gmail.com', 1, '8080', 0, 'A test account to save that tedious signup each time!', 0, 0);
 
 -- Sample Data for follows
 INSERT INTO follows (user_id, followed_id, since) VALUES 
