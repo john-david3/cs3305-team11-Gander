@@ -5,7 +5,7 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 
-interface categoryData {
+interface CategoryData {
   type: "category";
   id: number;
   title: string;
@@ -13,20 +13,16 @@ interface categoryData {
   thumbnail: string;
 }
 const AllCategoriesPage: React.FC = () => {
-  const [categories, setCategories] = useState<categoryData[]>([]);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
   const navigate = useNavigate();
   const [categoryOffset, setCategoryOffset] = useState(0);
   const [noCategories, setNoCategories] = useState(12);
   const [hasMoreData, setHasMoreData] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(true);
   const listRowRef = useRef<any>(null);
-  const isLoading = useRef(false);
 
   const fetchCategories = async () => {
-    // If already loading, skip this fetch
-    if (isLoading.current) return;
-
-    isLoading.current = true;
+    if (isLoading) return;
 
     try {
       const response = await fetch(
@@ -60,7 +56,7 @@ const AllCategoriesPage: React.FC = () => {
       console.error("Error fetching categories:", error);
       return [];
     } finally {
-      isLoading.current = false;
+      setIsLoading(false);
     }
   };
 
@@ -87,7 +83,7 @@ const AllCategoriesPage: React.FC = () => {
   };
 
   return (
-    <DynamicPageContent className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]  bg-[url(/images/background-pattern.svg)]">
+    <DynamicPageContent className="min-h-screen">
       <ListRow
         ref={listRowRef}
         type="category"
@@ -95,6 +91,7 @@ const AllCategoriesPage: React.FC = () => {
         items={categories}
         onItemClick={handleCategoryClick}
         extraClasses="bg-[var(--recommend)] text-center"
+        itemExtraClasses="w-[20vw]"
         wrap={true}
       />
     </DynamicPageContent>

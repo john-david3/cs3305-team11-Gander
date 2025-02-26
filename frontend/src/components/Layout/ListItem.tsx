@@ -26,13 +26,13 @@ const ListItem: React.FC<ListItemProps> = ({
     return (
       <div className="p-4 pb-10">
         <div
-          className={`group relative w-fit flex flex-col bg-blue-600 rounded-tl-xl rounded-xl min-h-[calc((20vw+20vh)/3)] max-w-[calc((20vw+20vh)/2)] justify-end items-center cursor-pointer mx-auto hover:bg-blue-800 z-50`}
+          className={`group relative w-fit flex flex-col bg-purple-900 rounded-tl-xl rounded-xl min-h-[calc((20vw+20vh)/3)] max-w-[calc((27vw+27vh)/2)] justify-end items-center cursor-pointer mx-auto hover:bg-purple-600 hover:scale-105 z-50 transition-all`}
           onClick={onItemClick}
         >
           <img
             src="/images/monkey.png"
             alt={`user ${username}`}
-            className="rounded-xl max-w-[calc((20vw+20vh)/2)] border-[0.15em] border-purple-500 cursor-pointer"
+            className="rounded-xl border-[0.15em] border-[var(--bg-color)] cursor-pointer"
           />
           <button className="text-[calc((2vw+2vh)/2)] font-bold hover:underline w-full py-2">
             {title}
@@ -50,7 +50,7 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <div className="p-4">
       <div
-        className={`${extraClasses} overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg cursor-pointer mx-auto hover:bg-pink-700 hover:scale-105 transition-all`}
+        className={`${extraClasses} overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg cursor-pointer mx-auto hover:bg-purple-600 hover:scale-105 transition-all`}
         onClick={onItemClick}
       >
         <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">

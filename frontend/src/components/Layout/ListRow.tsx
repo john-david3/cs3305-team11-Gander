@@ -89,7 +89,7 @@ const ListRow = forwardRef<
 
     return (
       <div
-        className={`${extraClasses} flex w-full relative rounded-[1.5rem] text-white transition-all ${
+        className={`${extraClasses} flex relative rounded-[1.5rem] text-white transition-all ${
           variant === "search"
             ? "items-center"
             : "flex-col space-y-4 py-6 px-5 mx-2 mt-5"
@@ -134,30 +134,38 @@ const ListRow = forwardRef<
           <div
             ref={slider}
             className={`flex ${
-              wrap ? "flex-wrap" : "overflow-x-scroll whitespace-nowrap"
-            } max-w-[95%] items-center justify-evenly w-full mx-auto scroll-smooth scrollbar-hide gap-5`}
+              wrap ? "flex-wrap justify-between" : "overflow-x-scroll whitespace-nowrap"
+            } max-w-[95%] items-center w-full mx-auto scroll-smooth scrollbar-hide`}
           >
-            {currentItems.map((item) => (
-              <ListItem
-                key={`${item.type}-${item.id}`}
-                id={item.id}
-                type={type}
-                title={item.title}
-                username={item.type === "category" ? undefined : item.username}
-                streamCategory={
-                  item.type === "stream" ? item.streamCategory : undefined
-                }
-                viewers={item.viewers}
-                thumbnail={item.thumbnail}
-                onItemClick={() =>
-                  (item.type === "stream" || item.type === "user") &&
-                  item.username
-                    ? onItemClick?.(item.username)
-                    : onItemClick?.(item.title)
-                }
-                extraClasses={`${itemExtraClasses} w-[20vw]`}
-              />
-            ))}
+            {currentItems.length === 0 ? (
+              <h1 className="mx-auto">Nothing Found</h1>
+            ) : (
+              <>
+                {currentItems.map((item) => (
+                  <ListItem
+                    key={`${item.type}-${item.id}`}
+                    id={item.id}
+                    type={type}
+                    title={item.title}
+                    username={
+                      item.type === "category" ? undefined : item.username
+                    }
+                    streamCategory={
+                      item.type === "stream" ? item.streamCategory : undefined
+                    }
+                    viewers={item.viewers}
+                    thumbnail={item.thumbnail}
+                    onItemClick={() =>
+                      (item.type === "stream" || item.type === "user") &&
+                      item.username
+                        ? onItemClick?.(item.username)
+                        : onItemClick?.(item.title)
+                    }
+                    extraClasses={`${itemExtraClasses}`}
+                  />
+                ))}
+              </>
+            )}
           </div>
         </div>
         {children}
