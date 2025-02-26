@@ -270,11 +270,11 @@ const UserPage: React.FC = () => {
               }
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-                <button className="text-[var(--follow-text)] whitespace-pre-wrap"
-                          onClick={() => navigate(`/user/${username}/following`)}
-                >
-                  Following
-                </button>
+              <button className="text-[var(--follow-text)] whitespace-pre-wrap"
+                onClick={() => navigate(`/user/${username}/following`)}
+              >
+                Following
+              </button>
             </div>
             <div
               className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
@@ -298,11 +298,10 @@ const UserPage: React.FC = () => {
               }
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <ul className="list-none">
-                <li className="text-[var(--follow-text)] list-none whitespace-pre-wrap">
-                  Category
-                </li>
-              </ul>
+              <button onClick={() => navigate(`/user/${username}/yourCategories`)}>
+                Categories
+              </button>
+
             </div>
           </div>
         </div>

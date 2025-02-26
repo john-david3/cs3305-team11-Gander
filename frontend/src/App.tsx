@@ -16,6 +16,7 @@ import StreamDashboardPage from "./pages/StreamDashboardPage";
 import { Brightness } from "./context/BrightnessContext";
 import LoadingScreen from "./components/Layout/LoadingScreen";
 import Following from "./pages/Following";
+import FollowedCategories from "./pages/FollowedCategories";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -98,6 +99,7 @@ function App() {
                   <Route path="/results" element={<ResultsPage />}></Route>
                   <Route path="/404" element={<NotFoundPage />} />
                   <Route path="/user/:username/following" element={<Following />} />
+                  <Route path="/user/:username/yourCategories" element={<FollowedCategories />} />
                   <Route path="*" element={<Navigate to="/404" replace />} />
                 </Routes>
               </BrowserRouter>

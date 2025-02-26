@@ -20,7 +20,6 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
     const navigate = useNavigate();
     const { username, isLoggedIn } = useAuth();
     const [followedStreamers, setFollowedStreamers] = useState<Streamer[]>([]);
-    const [followedCategories, setFollowedCategories] = useState<Category[]>([]);
 
     // Fetch followed streamers
     useEffect(() => {
@@ -30,7 +29,6 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
                 if (!response.ok) throw new Error("Failed to fetch followed streamers");
                 const data = await response.json();
                 setFollowedStreamers(data.streamers || []);
-                setFollowedCategories(data.categories || []);
             } catch (error) {
                 console.error("Error fetching followed streamers:", error);
             }
