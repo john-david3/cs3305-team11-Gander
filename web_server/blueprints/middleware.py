@@ -1,13 +1,24 @@
 from flask import redirect, url_for, request, g, session
 from functools import wraps
 import logging
+from os import getenv
+from dotenv import load_dotenv
+from database.database import Database
+
+load_dotenv()
 
 def logged_in_user():
     """
     Validator to make sure a user is logged in.
     """
+    db = Database()
+    db.create_connection()
+
     g.user = session.get("username", None)
-    g.admin = session.get("username", None)
+    g.admin = db.fetchone("""SELECT is_admin FROM users
+                            WHERE username = ?;""",
+                            (session.get("username"),)
+                        )
 
 def login_required(view):
     """
@@ -16,7 +27,7 @@ def login_required(view):
     @wraps(view)
     def wrapped_view(*args, **kwargs):
         if g.user is None:
-            return redirect(url_for("login", next=request.url))
+            return redirect(getenv("HOMEPAGE_URL"))
         return view(*args, **kwargs)
     return wrapped_view
 
@@ -26,8 +37,8 @@ def admin_required(view):
     """
     @wraps(view)
     def wrapped_view(*args, **kwargs):
-        if g.admin != "admin":
-            return redirect(url_for("login", next=request.url))
+        if g.admin == 0:
+            return redirect(getenv("HOMEPAGE_URL"))
         return view(*args, **kwargs)
     return wrapped_view
 
