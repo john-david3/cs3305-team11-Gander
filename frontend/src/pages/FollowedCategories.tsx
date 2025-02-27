@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { CircleMinus, CirclePlus } from "lucide-react";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
-import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
-import { ListItemProps as StreamData } from "../components/Layout/ListItem";
-import LoadingScreen from "../components/Layout/LoadingScreen";
 import FollowButton from "../components/Input/FollowButton";
+
 
 interface Category {
     isFollowing: boolean;
@@ -30,7 +27,6 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
         if (categoryName) checkCategoryFollowStatus(categoryName);
     }, [categoryName]);
 
-
     useEffect(() => {
         if (!isLoggedIn) return;
 
@@ -48,50 +44,6 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
         fetchFollowedCategories();
     }, [isLoggedIn]);
 
-    useEffect(() => {
-        toggleFollow;
-    })
-
-    const toggleFollow = async (categoryId: number, categoryName: string) => {
-        // Find the current category state from followedCategories
-        const category = followedCategories.find(cat => cat.category_id === categoryId);
-        if (!category) return;
-
-        const currentFollowState = category.isFollowing; // Use the actual state instead of isCategoryFollowing
-
-        try {
-            // Set local state per category (independent button states)
-            setFollowedCategories(prevCategories =>
-                prevCategories.map(cat =>
-                    cat.category_id === categoryId ? { ...cat, isLoading: true } : cat
-                )
-            );
-
-            if (currentFollowState) {
-                await unfollowCategory(categoryName);
-            } else {
-                await followCategory(categoryName);
-            }
-
-            // Update only the clicked category
-            setFollowedCategories(prevCategories =>
-                prevCategories.map(cat =>
-                    cat.category_id === categoryId
-                        ? { ...cat, isFollowing: !currentFollowState, isLoading: false }
-                        : cat
-                )
-            );
-        } catch (error) {
-            console.error("Error toggling follow state:", error);
-
-            // Reset loading state in case of error
-            setFollowedCategories(prevCategories =>
-                prevCategories.map(cat =>
-                    cat.category_id === categoryId ? { ...cat, isLoading: false } : cat
-                )
-            );
-        }
-    };
 
     return (
         <DynamicPageContent>
