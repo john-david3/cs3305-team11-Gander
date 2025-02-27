@@ -150,11 +150,23 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       {/* Toggle Button for Chat */}
       <button
         onClick={toggleChat}
-        className={`group cursor-pointer p-2 hover:bg-gray-800 rounded-md absolute top-[1vh] left-[1vw] ${showChat ? "" : "delay-[0.75s] -translate-x-[4vw]"} text-[1rem] text-purple-500 flex items-center flex-nowrap z-[20] duration-[0.3s] transition-all`}
+        className={`group cursor-pointer p-2 hover:bg-gray-800 rounded-md absolute top-[1vh] left-[1vw] ${
+          showChat ? "" : "delay-[0.75s] -translate-x-[4vw]"
+        } text-[1rem] text-purple-500 flex items-center flex-nowrap z-[20] duration-[0.3s] transition-all`}
       >
         {showChat ? <ArrowRightFromLineIcon /> : <ArrowLeftFromLineIcon />}
 
-        <small className={`absolute ${showChat ? justToggled ? "left-0 group-hover:-left-[5vw] group-hover:bg-white/10" : "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80" : justToggled ? "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80" : "left-0 group-hover:-left-[5vw] group-hover:bg-white/10"} p-1 rounded-md w-fit text-nowrap font-bold opacity-0 group-hover:opacity-100 text-white transition-all`}>
+        <small
+          className={`absolute ${
+            showChat
+              ? justToggled
+                ? "left-0 group-hover:-left-[5vw] group-hover:bg-white/10"
+                : "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80"
+              : justToggled
+              ? "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80"
+              : "left-0 group-hover:-left-[5vw] group-hover:bg-white/10"
+          } p-1 rounded-md w-fit text-nowrap font-bold opacity-0 group-hover:opacity-100 text-white transition-all`}
+        >
           Press C
         </small>
       </button>

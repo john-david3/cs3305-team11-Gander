@@ -32,7 +32,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const [showCheckout, setShowCheckout] = useState(false);
   const { showChat } = useChat();
   const navigate = useNavigate();
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const [timeStarted, setTimeStarted] = useState("");
 
   useEffect(() => {
@@ -126,18 +125,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     loadStripe();
   }, []);
 
-  // Checks if user is subscribed
-  useEffect(() => {
-    fetch(`/api/user/subscription/${streamerName}/expiration`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.remaining_time > 0) {
-          setIsSubscribed(true);
-        }
-      })
-      .catch((error) => console.error("Error fetching subscription:", error));
-  }, [streamerName]);
-
   return (
     <SocketProvider>
       <DynamicPageContent className="w-full min-h-screen">
@@ -188,9 +175,9 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
               <h2 className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] font-bold">
                 {streamData ? streamData.title : "Loading..."}
               </h2>
-              <span className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] text-gray-400">
+              <a href={streamData ? `/category/${streamData.streamCategory}` : "#"} className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] text-gray-400">
                 {streamData ? streamData.streamCategory : "Loading..."}
-              </span>
+              </a>
             </div>
 
             {/* Streamer Info */}
