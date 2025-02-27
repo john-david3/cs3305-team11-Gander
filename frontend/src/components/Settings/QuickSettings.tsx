@@ -23,7 +23,7 @@ const QuickSettings: React.FC = () => {
       </div>
       <div
         id="quick-settings-menu"
-        className="flex flex-col flex-grow my-8 gap-4"
+        className="flex flex-col my-8 gap-4 mb-20"
       >
         <ThemeSetting />
       </div>

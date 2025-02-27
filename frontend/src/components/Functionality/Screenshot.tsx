@@ -40,7 +40,9 @@ const Screenshot: React.FC = () => {
   return (
     <button
       onClick={captureScreenshot}
-      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+      className="bg-[var(--screenshot-bg)] text-[var(--screenshot-text)] px-4 py-2 
+      rounded-md hover:bg-[var(--screenshot-bg-hover)] hover:text-[var(--screenshot-text-hover)] 
+      transition ease-in duration-250"
     >
       Capture Full Page Screenshot
     </button>

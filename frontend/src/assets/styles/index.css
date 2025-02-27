@@ -65,6 +65,12 @@ body[data-theme="light"] {
 
   --user-bg: rgb(255, 255, 255);
   --user-live-bg: rgb(127, 161, 5);
+
+  /* Screenshot */
+  --screenshot-bg: rgb(183, 149, 214);
+  --screenshot-bg-hover: rgb(65, 34, 93);
+  --screenshot-text: rgb(255, 255, 255);
+  --screenshot-text-hover: rgb(255, 255, 255);
 }
 
 body[data-theme="dark"] {
@@ -107,6 +113,12 @@ body[data-theme="dark"] {
 
   --user-bg: rgb(16, 16, 16);
   --user-live-bg: rgb(127, 161, 5);
+
+  /* Screenshot */
+  --screenshot-bg: rgb(78, 78, 78);
+  --screenshot-bg-hover: rgb(231, 231, 231);
+  --screenshot-text: rgb(255, 255, 255);
+  --screenshot-text-hover: rgb(78, 78, 78);
 }
 
 body[data-theme="blue"] {
@@ -149,7 +161,11 @@ body[data-theme="blue"] {
   --user-bg: rgba(167, 245, 244, 0.886);
   --user-live-bg: rgb(127, 161, 5);
 
-
+  /* Screenshot */
+  --screenshot-bg: rgb(74, 185, 250);
+  --screenshot-bg-hover: rgb(18, 137, 255);
+  --screenshot-text: rgb(255, 255, 255);
+  --screenshot-text-hover: rgb(255, 255, 255);
 }
 
 body[data-theme="green"] {
@@ -191,6 +207,12 @@ body[data-theme="green"] {
   --user-follow-bg: #ffffff;
   --user-bg: rgb(0, 78, 38);
   --user-live-bg: rgb(217, 240, 133);
+
+  /* Screenshot */
+  --screenshot-bg: rgb(250, 215, 74);
+  --screenshot-bg-hover: rgb(0, 151, 73);
+  --screenshot-text: rgb(1, 61, 30);
+  --screenshot-text-hover: rgb(255, 255, 0);
 }
 
 body[data-theme="orange"] {
@@ -232,6 +254,12 @@ body[data-theme="orange"] {
 
   --user-bg: rgb(255, 145, 0);
   --user-live-bg: rgb(127, 161, 5);
+
+  /* Screenshot */
+  --screenshot-bg: rgb(244, 160, 75);
+  --screenshot-bg-hover: rgb(255, 128, 0);
+  --screenshot-text: rgb(255, 255, 255);
+  --screenshot-text-hover: rgb(255, 255, 5);
 }
 
 body {
