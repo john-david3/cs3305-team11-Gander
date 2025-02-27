@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
-import { CircleMinus as RemoveIcon, CirclePlus as AddIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { CircleMinus, CirclePlus } from "lucide-react";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
-import Button from "../components/Input/Button";
+import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
 import { ListItemProps as StreamData } from "../components/Layout/ListItem";
 import LoadingScreen from "../components/Layout/LoadingScreen";
-import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 interface Category {
-    isFollowing: any;
+    isFollowing: boolean;
     category_id: number;
     category_name: string;
+    isLoading?: boolean;
 }
 
 interface FollowedCategoryProps {
@@ -25,41 +24,44 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
     const { username, isLoggedIn } = useAuth();
     const [followedCategories, setFollowedCategories] = useState<Category[]>([]);
     const { categoryName } = useParams<{ categoryName: string }>();
-    const [streams, setStreams] = useState<StreamData[]>([]);
-    const listRowRef = useRef<any>(null);
-    const isLoading = useRef(false);
-    const [streamOffset, setStreamOffset] = useState(0);
-    const [noStreams, setNoStreams] = useState(12);
-    const [hasMoreData, setHasMoreData] = useState(true);
-    const {
-        isCategoryFollowing,
-        checkCategoryFollowStatus,
-        followCategory,
-        unfollowCategory,
-    } = useCategoryFollow();
+    const { checkCategoryFollowStatus, followCategory, unfollowCategory } = useCategoryFollow();
 
-    const toggleFollow = async (categoryId: number, categoryName: string) => {
+    useEffect(() => {
+        if (categoryName) checkCategoryFollowStatus(categoryName);
+    }, [categoryName]);
+
+    const toggleFollow = async (categoryId: number, categoryName: string, currentFollowState: boolean) => {
         try {
-            setFollowedCategories((prevCategories) =>
-                prevCategories.map((category) =>
-                    category.category_id === categoryId
-                        ? {
-                            ...category,
-                            isFollowing: !category.isFollowing
-                        }
-                        : category
+            // Set local loading state per category
+            setFollowedCategories(prevCategories =>
+                prevCategories.map(cat =>
+                    cat.category_id === categoryId ? { ...cat, isLoading: true } : cat
                 )
             );
 
-            const category = followedCategories.find(cat => cat.category_id === categoryId);
-
-            if (category?.isFollowing) {
+            if (currentFollowState) {
                 await unfollowCategory(categoryName);
             } else {
                 await followCategory(categoryName);
             }
+
+            // Toggle only the clicked button state
+            setFollowedCategories(prevCategories =>
+                prevCategories.map(cat =>
+                    cat.category_id === categoryId
+                        ? { ...cat, isFollowing: !currentFollowState, isLoading: false }
+                        : cat
+                )
+            );
         } catch (error) {
             console.error("Error toggling follow state:", error);
+
+            // Reset loading state in case of error
+            setFollowedCategories(prevCategories =>
+                prevCategories.map(cat =>
+                    cat.category_id === categoryId ? { ...cat, isLoading: false } : cat
+                )
+            );
         }
     };
 
@@ -69,8 +71,7 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
         const fetchFollowedCategories = async () => {
             try {
                 const response = await fetch("/api/categories/following");
-                if (!response.ok)
-                    throw new Error("Failed to fetch followed categories");
+                if (!response.ok) throw new Error("Failed to fetch followed categories");
                 const data = await response.json();
                 setFollowedCategories(data);
             } catch (error) {
@@ -81,69 +82,50 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
         fetchFollowedCategories();
     }, [isLoggedIn]);
 
-    useEffect(() => {
-        if (categoryName) checkCategoryFollowStatus(categoryName);
-    }, [categoryName]);
-
-    if (hasMoreData && !streams.length) return <LoadingScreen />;
-
     return (
-        <>
-            <DynamicPageContent>
-                <div className={`top-0 left-0 w-screen h-screen flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide transition-all duration-500 ease-in-out ${extraClasses}`}>
-                    <div className="flex flex-row items-center border-b-4 border-[var(--profile-border)] justify-evenly bg-[var(--sideBar-profile-bg)] py-[1em]">
-                        <img
-                            src="/images/monkey.png"
-                            alt="profile picture"
-                            className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
-                            onClick={() => navigate(`/user/${username}`)}
-                        />
-                        <div className="text-center flex flex-col items-center justify-center">
-                            <h5 className="font-thin text-[0.85rem] cursor-default text-[var(--sideBar-profile-text)]">
-                                Logged in as
-                            </h5>
+        <DynamicPageContent>
+            <div
+                id="sidebar"
+                className={`top-0 left-0 w-screen h-screen overflow-x-hidden flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide transition-all duration-500 ease-in-out ${extraClasses}`}
+            >
+                {/* Followed Categories */}
+                <div id="categories-followed" className="grid grid-cols-3 gap-4 p-4 w-full">
+                    {followedCategories.map((category: Category) => (
+                        <div
+                            key={category.category_id}
+                            className="relative flex flex-col items-center justify-center border border-[--text-color] rounded-lg overflow-hidden hover:shadow-lg transition-all"
+                            onClick={() => navigate(`/category/${category.category_name}`)}
+                        >
                             <button
-                                className="font-black text-[1.4rem] hover:underline"
-                                onClick={() => navigate(`/user/${username}`)}
+                                className="absolute top-2 right-2 bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition z-[9999]"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleFollow(category.category_id, category.category_name, category.isFollowing);
+                                }}
+                                disabled={category.isLoading}
                             >
-                                <div className="text-[var(--sideBar-profile-text)]">
-                                    {username}
-                                </div>
+                                {category.isLoading ? (
+                                    <span className="text-white w-5 h-5">⏳</span>
+                                ) : category.isFollowing ? (
+                                    <CircleMinus className="text-white w-5 h-5" />
+                                ) : (
+                                    <CirclePlus className="text-white w-5 h-5" />
+                                )}
                             </button>
-                        </div>
-                    </div>
 
-                    <div id="categories-followed" className="grid grid-cols-3 gap-4 p-4 w-full">
-                        {followedCategories.map((category: Category) => (
-                            <div
-                                key={category.category_id}
-                                className="relative flex flex-col items-center justify-center border border-[--text-color] rounded-lg overflow-hidden hover:shadow-lg transition-all"
-                            >
-                                <Button
-                                    className="absolute top-2 right-2 bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition z-[9999]"
-                                    onClick={() => toggleFollow(category.category_id, category.category_name)}
-                                >
-                                    {category.isFollowing ? (
-                                        <RemoveIcon className="text-white w-5 h-5" />
-                                    ) : (
-                                        <AddIcon className="text-white w-5 h-5" />
-                                    )}
-                                </Button>
-
-                                <img
-                                    src={getCategoryThumbnail(category.category_name)}
-                                    alt={category.category_name}
-                                    className="w-full h-28 object-cover"
-                                />
-                                <div className="absolute bottom-2 bg-black bg-opacity-60 w-full text-center text-white py-1">
-                                    {category.category_name}
-                                </div>
+                            <img
+                                src={`/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`}
+                                alt={category.category_name}
+                                className="w-full h-28 object-cover"
+                            />
+                            <div className="absolute bottom-2 bg-black bg-opacity-60 w-full text-center text-white py-1">
+                                {category.category_name}
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
-            </DynamicPageContent>
-        </>
+            </div>
+        </DynamicPageContent>
     );
 };
 
