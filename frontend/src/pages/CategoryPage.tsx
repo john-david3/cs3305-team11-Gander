@@ -50,7 +50,7 @@ const CategoryPage: React.FC = () => {
 
       setStreamOffset((prev) => prev + data.length);
 
-      const processedStreams: StreamType[] = data.map((stream: any) => ({
+      const processedStreams = data.map((stream: any) => ({
         type: "stream",
         id: stream.user_id,
         title: stream.title,
@@ -78,16 +78,16 @@ const CategoryPage: React.FC = () => {
     fetchCategoryStreams();
   }, []);
 
-  const logOnScroll = async () => {
+  const loadOnScroll = async () => {
     if (hasMoreData && listRowRef.current) {
-      const newCategories = await fetchCategoryStreams();
-      if (newCategories && newCategories.length > 0) {
-        listRowRef.current.addMoreItems(newCategories);
+      const newStreams = await fetchCategoryStreams();
+      if (newStreams?.length > 0) {
+        listRowRef.current.addMoreItems(newStreams);
       } else console.log("No more data to fetch");
     }
   };
 
-  fetchContentOnScroll(logOnScroll, hasMoreData);
+  fetchContentOnScroll(loadOnScroll, hasMoreData);
 
   const handleStreamClick = (streamerName: string) => {
     window.location.href = `/${streamerName}`;
@@ -99,6 +99,7 @@ const CategoryPage: React.FC = () => {
     <DynamicPageContent className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]">
       <div className="pt-8">
         <ListRow
+          ref={listRowRef}
           type="stream"
           title={`${categoryName} Streams`}
           description={`Live streams in the ${categoryName} category`}
@@ -106,6 +107,7 @@ const CategoryPage: React.FC = () => {
           wrap={true}
           onItemClick={handleStreamClick}
           extraClasses="bg-[var(--recommend)]"
+          itemExtraClasses="w-[20vw]"
         >
           {isLoggedIn && (
             <Button
