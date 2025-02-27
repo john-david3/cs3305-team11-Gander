@@ -36,7 +36,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="absolute bottom-0 h-[12vh] w-full p-4 bg-gradient-to-b from-white/0 via-[#3a0ca3]/50 to-[#3a0ca3] text-white">
+    <footer className="mt-14 h-[12vh] w-full p-4 bg-gradient-to-b from-white/0 via-[#3a0ca3]/50 to-[#3a0ca3] text-white">
       <div className="flex flex-wrap justify-between gap-x-10 gap-y-6">
         {/* About Section */}
         <div className="flex-1 min-w-[250px]">

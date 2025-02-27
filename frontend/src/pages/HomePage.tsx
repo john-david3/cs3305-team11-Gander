@@ -79,7 +79,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
           Show More
         </Button>
       </ListRow>
-      <Footer />
+      <Footer/>
     </DynamicPageContent>
   );
 };
