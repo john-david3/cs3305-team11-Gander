@@ -56,7 +56,7 @@ def handle_leave(data) -> None:
         if user_id:
             remove_favourability_entry(data["user_id"], stream_id)
         num_viewers = len(list(socketio.server.manager.get_participants("/", stream_id)))
-        update_viewers(str(user_id), str(stream_id))
+        update_viewers(stream_id, num_viewers)
         emit("status", 
             {
                 "message": f"Welcome to the chat, stream_id: {stream_id}",

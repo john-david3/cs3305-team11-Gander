@@ -55,9 +55,9 @@ body[data-theme="light"] {
   --user-pfp-border: #ffffff;
   --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
 
-  --user-borderBg: rgb(123, 0, 0);
+  --user-borderBg: rgb(70, 0, 67);
   --user-box: rgb(128, 0, 255);
-  --user-box-strip: rgb(255, 0, 0);
+  --user-box-strip: rgb(120, 3, 120);
   --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
   --user-sideBox: rgb(149, 0, 255);
   --user-contentBox: rgb(255, 255, 253);

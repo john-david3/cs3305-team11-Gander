@@ -41,9 +41,6 @@ const Footer = () => {
         {/* About Section */}
         <div className="flex-1 min-w-[250px]">
           <h2 className="text-2xl font-bold">Gander</h2>
-          <p className="text-sm mt-2">
-            Your very favourite streaming service
-          </p>
         </div>
 
         {/* Office Section */}

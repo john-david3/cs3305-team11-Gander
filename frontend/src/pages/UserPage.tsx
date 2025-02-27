@@ -133,7 +133,7 @@ const UserPage: React.FC = () => {
                  bg-[var(--user-box)] z-10 flex-shrink justify-center"
               style={{ boxShadow: "var(--user-box-shadow)" }}
             >
-              <div className="absolute top-4 w-[99.8%] h-[1.5vh] min-h-[10px] max-h-[2em]  bg-[var(--user-box-strip)]"></div>
+              <div className="absolute top-4 w-[99.8%] h-[1vh] min-h-[1em] max-h-[2em]  bg-[var(--user-box-strip)]"></div>
             </div>
             {/* Profile Picture */}
             <div

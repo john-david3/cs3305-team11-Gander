@@ -79,8 +79,7 @@ const AllCategoriesPage: React.FC = () => {
 
   return (
     <DynamicPageContent
-      className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]"
-      style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
+      className="min-h-screen"
     >
       <ListRow
         ref={listRowRef}
