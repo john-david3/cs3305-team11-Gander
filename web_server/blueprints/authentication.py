@@ -145,7 +145,7 @@ def login():
     except ValueError as e:
         return jsonify({
             "account_created": False,
-            "error_fields": [username, password],
+            "error_fields": ["username", "password"],
             "message": "Invalid input received"
         }), 400
     

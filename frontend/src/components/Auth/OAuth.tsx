@@ -6,7 +6,7 @@ export default function GoogleLogin() {
   };
 
   return (
-    <div className="w-full">
+    <div className="mt-4 w-full hover:scale-105 transition-all ease-in">
       <div className="flex flex-wrap justify-center w-full">
         <button
           onClick={handleLoginClick}
@@ -20,7 +20,7 @@ export default function GoogleLogin() {
             alt="Google logo"
             className="w-[2em] h-[2em] mr-2"
           />
-          <span className="flex-grow text-[0.6em] lx:text-[0.75em] 2lg:text-[1em]">
+          <span className="flex-grow text-[calc((1.5vw+1.5vh)/2)]">
             Sign in with Google
           </span>
         </button>

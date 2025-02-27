@@ -136,7 +136,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                  extraClasses={`w-full focus:w-[120%] mb-[1.5em] p-[0.5rem] ${
                     errors.username ? "border-red-500" : ""
                   }`}
                 />
@@ -154,7 +154,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                  extraClasses={`w-full focus:w-[120%] mb-[1.5em] p-[0.5rem] ${
                     errors.email ? "border-red-500" : ""
                   }`}
                 />
@@ -172,7 +172,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                  extraClasses={`w-full focus:w-[120%] mb-[1.5em] p-[0.5rem] ${
                     errors.password ? "border-red-500" : ""
                   }`}
                 />
@@ -189,7 +189,7 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
                   placeholder="Confirm Password"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  extraClasses={`w-full mb-[1.5em] p-[0.5rem] ${
+                  extraClasses={`w-full focus:w-[120%] mb-[1.5em] p-[0.5rem] ${
                     errors.confirmPassword ? "border-red-500" : ""
                   }`}
                 />

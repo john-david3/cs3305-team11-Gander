@@ -71,7 +71,6 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
         const data = await response.json();
 
         if (data.logged_in) {
-          //TODO: Handle successful login (e.g., redirect to home page)
           console.log("Login successful! Details: ", data);
           setIsLoggedIn(true);
           window.location.reload();
@@ -101,15 +100,15 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
 
   return (
     <>
-      <div className="flex flex-col items-center p-10">
+      <div className="flex flex-col items-center h-full">
         <h1 className="flex flex-col text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">
           Login
         </h1>
-        <div className="mt-10 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-[10em] min-w-[14em] border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
+        <div className="flex flex-col justify-evenly flex-grow mt-[4vh] bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
           <form
             onSubmit={handleSubmit}
             id="login-form"
-            className="flex flex-col"
+            className="flex flex-col justify-evenly flex-grow"
           >
             {errors.general && (
               <p className="text-red-500 text-sm text-center text-[0.75em]">
@@ -127,7 +126,7 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
               placeholder="Username"
               value={formData.username}
               onChange={handleInputChange}
-              extraClasses={`w-full mb-[2em] p-3 ${
+              extraClasses={`w-full focus:w-[120%] p-3 ${
                 errors.username ? "border-red-500" : ""
               }`}
             />
@@ -138,43 +137,34 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
               </p>
             )}
 
-            <div className="mb-[2em]">
+            <div className="pb-4">
               <Input
                 name="password"
                 type="password"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
-                extraClasses={`w-full p-3 ${
+                extraClasses={`w-full focus:w-[120%] p-3 ${
                   errors.password ? "border-red-500" : ""
                 }`}
               ></Input>
-              <div className="flex">
-                <label className="flex w-full items-center justify-start cursor-pointer w-10px">
-                  <input
-                    type="checkbox"
-                    className="accent-purple-600 w-3 h-3 mr-1"
-                  />
-                  <span className="text-[0.5em] xl:text-[0.75em]">
-                    Remember me
-                  </span>
-                </label>
+              <div className="flex justify-end">
                 <button
                   type="button"
-                  className="flex w-full justify-end items-center justify-items-end text-[0.5em] xl:text-[0.75em] text-white font-semibold hover:scale-[1.05] transition-all ease-in"
+                  className="flex items-center w-fit text-white font-semibold hover:scale-105 mt-2 transition-all ease-in"
                   onClick={onForgotPassword}
                 >
                   <ForgotIcon size={16} className="flex flex-row mr-1" />
-                  <span> Forgot Password </span>
+                  <span className="text-[calc((1.5vw+1vh)/2)]">
+                    Forgot Password
+                  </span>
                 </button>
               </div>
             </div>
             <Button type="submit">Login</Button>
           </form>
 
-          <div className="flex flex-col flex-items justify-evenly items-center w-full h-[5em]">
-            <GoogleLogin />
-          </div>
+          <GoogleLogin />
         </div>
       </div>
     </>

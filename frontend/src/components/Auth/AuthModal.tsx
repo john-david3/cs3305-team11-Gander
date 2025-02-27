@@ -48,7 +48,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
         id="auth-modal"
         className="fixed inset-0 flex items-start justify-center z-[9000] h-[95vh] m-auto pt-[15vh] rounded-[5rem] transition-all animate-floating"
       >
-        <div className="relative w-full max-w-[300px] min-w-[28vw]">
+        <div className="relative w-[35vw] min-w-[300px]">
           {/* Login/Register Buttons Container */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-20 w-[250px] flex justify-center gap-8 transition-transform overflow-visible">
             {/* Login Toggle */}
@@ -75,14 +75,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           {/* Form Container */}
           <div
             className="container flex flex-col items-center justify-around z-[9999] 
-            h-[70vh] max-h-[75vh] m-auto py-[50px] rounded-[5rem] transition-all"
+            h-[70vh] m-auto rounded-[5rem] transition-all"
             style={{ "--spin-duration": spinDuration } as React.CSSProperties}
           >
             {/*Border Container*/}
             <div
               id="border-container"
-              className="front-content ml-[1px] mt-[0.5px] bg-authForm flex flex-col justify-center
-                z-50 h-full w-full py-[50px] rounded-[5rem] transition-all"
+              className="front-content bg-authForm flex flex-col justify-center
+                z-50 rounded-[5rem] transition-all"
             >
               <button
                 onClick={onClose}
@@ -92,7 +92,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
               </button>
               <div
                 id="login-methods"
-                className="w-full flex flex-row items-center justify-evenly"
+                className="flex flex-row items-center justify-evenly h-full py-[10%]"
               >
                 {authSwitch()}
               </div>
