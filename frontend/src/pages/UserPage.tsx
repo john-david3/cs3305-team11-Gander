@@ -3,12 +3,12 @@ import AuthModal from "../components/Auth/AuthModal";
 import { useAuthModal } from "../hooks/useAuthModal";
 import { useAuth } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
-import ListItem from "../components/Layout/ListItem";
 import { useFollow } from "../hooks/useFollow";
 import { useNavigate } from "react-router-dom";
 import Button, { EditButton } from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
+import { StreamListItem } from "../components/Layout/ListItem";
 
 interface UserProfileData {
   id: number;
@@ -218,10 +218,10 @@ const UserPage: React.FC = () => {
                     <h2 className="text-2xl bg-[#ff0000] border py-4 px-12 font-black mb-4 rounded-[4rem]">
                       Currently Live!
                     </h2>
-                    <ListItem
+                    <StreamListItem
                       id={profileData.id}
-                      type="stream"
                       title={profileData.currentStreamTitle || ""}
+                      streamCategory=""
                       username=""
                       viewers={profileData.currentStreamViewers || 0}
                       thumbnail={profileData.currentStreamThumbnail}

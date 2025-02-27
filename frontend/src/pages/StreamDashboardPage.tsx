@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import Button from "../components/Input/Button";
 import Input from "../components/Input/Input";
-import ListItem from "../components/Layout/ListItem";
+import { useCategories } from "../hooks/useContent";
 import { X as XIcon, Eye as ShowIcon, EyeOff as HideIcon } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { debounce } from "lodash";
 import VideoPlayer from "../components/Stream/VideoPlayer";
+import { CategoryType } from "../types/CategoryType";
+import { StreamListItem } from "../components/Layout/ListItem";
 
 interface StreamData {
   title: string;
@@ -14,11 +16,6 @@ interface StreamData {
   viewer_count: number;
   start_time: string;
   stream_key: string;
-}
-
-interface Category {
-  category_id: number;
-  category_name: string;
 }
 
 const StreamDashboardPage: React.FC = () => {
@@ -33,9 +30,8 @@ const StreamDashboardPage: React.FC = () => {
   });
   const [streamDetected, setStreamDetected] = useState(false);
   const [timeStarted, setTimeStarted] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isCategoryFocused, setIsCategoryFocused] = useState(false);
-  const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>([]);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<{
     url: string;
@@ -44,10 +40,23 @@ const StreamDashboardPage: React.FC = () => {
   const [debouncedCheck, setDebouncedCheck] = useState<Function | null>(null);
   const [showKey, setShowKey] = useState(false);
 
+  const { 
+    categories,
+    isLoading: categoriesLoading, 
+    error: categoriesError 
+  } = useCategories("/api/categories/popular/100");
+
+  useEffect(() => {
+    // Set filtered categories when categories load
+    if (categories.length > 0) {
+      setFilteredCategories(categories);
+    }
+  }, [categories]);
+
   useEffect(() => {
     const categoryCheck = debounce((categoryName: string) => {
       const isValidCategory = categories.some(
-        (cat) => cat.category_name.toLowerCase() === categoryName.toLowerCase()
+        (cat) => cat.title.toLowerCase() === categoryName.toLowerCase()
       );
 
       if (isValidCategory && !thumbnailPreview.isCustom) {
@@ -66,11 +75,14 @@ const StreamDashboardPage: React.FC = () => {
   }, [categories, thumbnailPreview.isCustom]);
 
   useEffect(() => {
-    checkStreamStatus();
-    fetchCategories();
+    if (username) {
+      checkStreamStatus();
+    }
   }, [username]);
 
   const checkStreamStatus = async () => {
+    if (!username) return;
+    
     try {
       const response = await fetch(`/api/user/${username}/status`);
       const data = await response.json();
@@ -119,24 +131,13 @@ const StreamDashboardPage: React.FC = () => {
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("/api/categories/popular/100");
-      const data = await response.json();
-      setCategories(data);
-      setFilteredCategories(data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setStreamData((prev) => ({ ...prev, [name]: value }));
 
     if (name === "category_name") {
       const filtered = categories.filter((cat) =>
-        cat.category_name.toLowerCase().includes(value.toLowerCase())
+        cat.title.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredCategories(filtered);
       if (debouncedCheck) {
@@ -193,7 +194,7 @@ const StreamDashboardPage: React.FC = () => {
       streamData.category_name.trim() !== "" &&
       categories.some(
         (cat) =>
-          cat.category_name.toLowerCase() ===
+          cat.title.toLowerCase() ===
           streamData.category_name.toLowerCase()
       ) &&
       streamDetected
@@ -325,13 +326,13 @@ const StreamDashboardPage: React.FC = () => {
                   <div className="absolute z-10 w-full bg-gray-700 mt-1 rounded-md shadow-lg max-h-48 overflow-y-auto">
                     {filteredCategories.map((category) => (
                       <div
-                        key={category.category_id}
+                        key={category.title}
                         className="px-4 py-2 hover:bg-gray-600 cursor-pointer text-white"
                         onClick={() =>
-                          handleCategorySelect(category.category_name)
+                          handleCategorySelect(category.title)
                         }
                       >
-                        {category.category_name}
+                        {category.title}
                       </div>
                     ))}
                   </div>
@@ -457,8 +458,7 @@ const StreamDashboardPage: React.FC = () => {
               </div>
               <div className="flex flex-col">
                 <p className="text-white text-center">List Item</p>
-                <ListItem
-                  type="stream"
+                <StreamListItem
                   id={1}
                   title={streamData.title || "Stream Title"}
                   username={username || ""}
