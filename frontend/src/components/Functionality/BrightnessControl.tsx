@@ -14,8 +14,9 @@ const BrightnessControl: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <h2 className="text-lg font-semibold mb-2">Brightness Control</h2>
+    
+    <div id="slider" className="flex flex-col items-center p-4 mt-7 bg-[var(--slider-bg)] rounded-xl">
+      <h2 className="text-lg font-semibold mb-2 text-[var(--slider-header)]">Brightness Control</h2>
       {/* Changes based on the range of input */}
       <input
         type="range"
@@ -26,7 +27,7 @@ const BrightnessControl: React.FC = () => {
         className="w-60 cursor-pointer"
       />
 
-      <p className="mt-2 text-sm">Brightness: {brightness}%</p>
+      <p className="mt-2 text-sm text-[var(--slider-text)]">Brightness: {brightness}%</p>
     </div>
   );
 };

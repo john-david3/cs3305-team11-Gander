@@ -71,6 +71,12 @@ body[data-theme="light"] {
   --screenshot-bg-hover: rgb(65, 34, 93);
   --screenshot-text: rgb(255, 255, 255);
   --screenshot-text-hover: rgb(255, 255, 255);
+
+  /* Brightness */
+  --slider-header: rgb(183, 149, 214);
+  --slider-text: rgb(183, 149, 214);
+  --slider-bg: #ffffff;
+
 }
 
 body[data-theme="dark"] {
@@ -119,6 +125,11 @@ body[data-theme="dark"] {
   --screenshot-bg-hover: rgb(231, 231, 231);
   --screenshot-text: rgb(255, 255, 255);
   --screenshot-text-hover: rgb(78, 78, 78);
+
+  /* Brightness */
+  --slider-header: rgb(255, 255, 255);
+  --slider-text: rgb(255, 255, 255);
+  --slider-bg: #000000;
 }
 
 body[data-theme="blue"] {
@@ -166,6 +177,11 @@ body[data-theme="blue"] {
   --screenshot-bg-hover: rgb(18, 137, 255);
   --screenshot-text: rgb(255, 255, 255);
   --screenshot-text-hover: rgb(255, 255, 255);
+
+  /* Brightness */
+  --slider-header: rgb(15, 103, 192);
+  --slider-text: rgb(15, 103, 192);
+  --slider-bg: #eefaff98;
 }
 
 body[data-theme="green"] {
@@ -213,6 +229,12 @@ body[data-theme="green"] {
   --screenshot-bg-hover: rgb(0, 151, 73);
   --screenshot-text: rgb(1, 61, 30);
   --screenshot-text-hover: rgb(255, 255, 0);
+
+
+  /* Brightness */
+  --slider-header: rgb(15, 192, 44);
+  --slider-text: rgb(15, 192, 15);
+  --slider-bg: #e8f5e9;
 }
 
 body[data-theme="orange"] {
@@ -260,6 +282,11 @@ body[data-theme="orange"] {
   --screenshot-bg-hover: rgb(255, 128, 0);
   --screenshot-text: rgb(255, 255, 255);
   --screenshot-text-hover: rgb(255, 255, 5);
+
+  /* Brightness */
+  --slider-header: rgb(255, 0, 0);
+  --slider-text: rgb(255, 0, 0);
+  --slider-bg: #fff3dc;
 }
 
 body {
@@ -270,8 +297,6 @@ body {
 .message {
   word-wrap: anywhere;
 }
-
-
 
 
 /* 
