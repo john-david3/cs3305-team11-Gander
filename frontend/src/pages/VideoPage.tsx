@@ -10,6 +10,7 @@ import { SocketProvider } from "../context/SocketContext";
 import { useAuthModal } from "../hooks/useAuthModal";
 import { useFollow } from "../hooks/useFollow";
 import { useChat } from "../context/ChatContext";
+import { StreamType } from "../types/StreamType";
 
 // Lazy load the CheckoutForm component
 const CheckoutForm = lazy(() => import("../components/Checkout/CheckoutForm"));
@@ -18,17 +19,10 @@ interface VideoPageProps {
   streamerId: number;
 }
 
-interface StreamDataProps {
-  streamTitle: string;
-  streamerName: string;
-  startTime: string;
-  categoryName: string;
-}
-
 const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const { isLoggedIn } = useAuth();
   const { streamerName } = useParams<{ streamerName: string }>();
-  const [streamData, setStreamData] = useState<StreamDataProps>();
+  const [streamData, setStreamData] = useState<StreamType>();
   const [viewerCount, setViewerCount] = useState(0);
   const { showSideBar } = useSidebar();
   const { isFollowing, checkFollowStatus, followUser, unfollowUser } =
@@ -66,11 +60,14 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
       res
         .json()
         .then((data) => {
-          const transformedData: StreamDataProps = {
-            streamerName: data.username,
-            streamTitle: data.title,
+          const transformedData: StreamType = {
+            type: "stream",
+            id: data.stream_id,
+            username: data.username,
+            title: data.title,
             startTime: data.start_time,
-            categoryName: data.category_name,
+            streamCategory: data.category_name,
+            viewers: data.viewers,
           };
           setStreamData(transformedData);
 
@@ -134,7 +131,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
     fetch(`/api/user/subscription/${streamerName}/expiration`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(streamData?.streamerName, data.remaining_time);
         if (data.remaining_time > 0) {
           setIsSubscribed(true);
         }
@@ -183,17 +179,17 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
                 className="text-white font-bold hover:underline mt-[0.5em]"
                 onClick={() => navigate(`/user/${streamerName}`)}
               >
-                {streamData ? streamData.streamerName : "Loading..."}
+                {streamerName}
               </button>
             </div>
 
             {/* Stream Title */}
             <div className="flex flex-col items-start flex-grow">
               <h2 className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] font-bold">
-                {streamData ? streamData.streamTitle : "Loading..."}
+                {streamData ? streamData.title : "Loading..."}
               </h2>
               <span className="text-[0.75em] lg:text-[0.85em] xl:text-[1em] text-gray-400">
-                {streamData ? streamData.categoryName : "Loading..."}
+                {streamData ? streamData.streamCategory : "Loading..."}
               </span>
             </div>
 
