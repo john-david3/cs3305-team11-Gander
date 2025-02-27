@@ -5,6 +5,7 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import { CategoryType } from "../types/CategoryType";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 const AllCategoriesPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
@@ -41,9 +42,7 @@ const AllCategoriesPage: React.FC = () => {
         id: category.category_id,
         title: category.category_name,
         viewers: category.num_viewers,
-        thumbnail: `/images/category_thumbnails/${category.category_name
-          .toLowerCase()
-          .replace(/ /g, "_")}.webp`,
+        thumbnail: getCategoryThumbnail(category.category_name)
       }));
 
       setCategories(prev => [...prev, ...processedCategories]);

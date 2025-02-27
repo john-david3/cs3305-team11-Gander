@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { StreamType } from "../types/StreamType";
 import { CategoryType } from "../types/CategoryType";
 import { UserType } from "../types/UserType";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 // Helper function to process API data into our consistent types
 const processStreamData = (data: any[]): StreamType[] => {
@@ -14,12 +15,8 @@ const processStreamData = (data: any[]): StreamType[] => {
     username: stream.username,
     streamCategory: stream.category_name,
     viewers: stream.num_viewers,
-    thumbnail:
-      stream.thumbnail ||
-      `/images/category_thumbnails/${stream.category_name
-        .toLowerCase()
-        .replace(/ /g, "_")}.webp`,
-  }));
+    thumbnail: getCategoryThumbnail(stream.category_name, stream.thumbnail),
+  }))
 };
 
 const processCategoryData = (data: any[]): CategoryType[] => {
@@ -28,9 +25,7 @@ const processCategoryData = (data: any[]): CategoryType[] => {
     id: category.category_id,
     title: category.category_name,
     viewers: category.num_viewers,
-    thumbnail: `/images/category_thumbnails/${category.category_name
-      .toLowerCase()
-      .replace(/ /g, "_")}.webp`,
+    thumbnail: getCategoryThumbnail(category.category_name)
   }));
 };
 

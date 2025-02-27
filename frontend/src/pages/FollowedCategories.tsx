@@ -8,6 +8,7 @@ import Button from "../components/Input/Button";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
 import { ListItemProps as StreamData } from "../components/Layout/ListItem";
 import LoadingScreen from "../components/Layout/LoadingScreen";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 interface Category {
     isFollowing: any;
@@ -130,7 +131,7 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
                                 </Button>
 
                                 <img
-                                    src={`/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`}
+                                    src={getCategoryThumbnail(category.category_name)}
                                     alt={category.category_name}
                                     className="w-full h-28 object-cover"
                                 />

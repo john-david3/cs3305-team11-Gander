@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Button from "../components/Input/Button";
 import SearchBar from "../components/Input/SearchBar";
 import ListRow from "../components/Layout/ListRow";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 const ResultsPage: React.FC = ({ }) => {
   const [overflow, setOverflow] = useState(false);
@@ -65,9 +65,7 @@ const ResultsPage: React.FC = ({ }) => {
               type: "category",
               title: category.category_name,
               viewers: 0,
-              thumbnail: `/images/category_thumbnails/${category.category_name
-                .toLowerCase()
-                .replace(/ /g, "_")}.webp`,
+              thumbnail: getCategoryThumbnail(category.category_name),
             }))}
             title="Categories"
             onItemClick={(category_name: string) =>

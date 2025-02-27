@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import { StreamType } from "../types/StreamType";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
@@ -57,12 +58,7 @@ const CategoryPage: React.FC = () => {
         username: stream.username,
         streamCategory: categoryName,
         viewers: stream.num_viewers,
-        thumbnail:
-          stream.thumbnail ||
-          (categoryName &&
-            `/images/category_thumbnails/${categoryName
-              .toLowerCase()
-              .replace(/ /g, "_")}.webp`),
+        thumbnail: getCategoryThumbnail(categoryName, stream.thumbnail),
       }));
 
       setStreams((prev) => [...prev, ...processedStreams]);

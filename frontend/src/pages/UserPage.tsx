@@ -10,6 +10,7 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import { StreamListItem } from "../components/Layout/ListItem";
 import { CameraIcon } from "lucide-react";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 interface UserProfileData {
   id: number;
@@ -78,11 +79,10 @@ const UserPage: React.FC = () => {
                   currentStreamCategory: streamData.category_id,
                   currentStreamViewers: streamData.num_viewers,
                   currentStreamStartTime: streamData.start_time,
-                  currentStreamThumbnail:
-                    streamData.thumbnail ||
-                    `/images/category_thumbnails/${streamData.category_name
-                      .toLowerCase()
-                      .replace(/ /g, "_")}.webp`,
+                  currentStreamThumbnail: getCategoryThumbnail(
+                    streamData.category_name,
+                    streamData.thumbnail
+                  ),
                 };
               });
               let variant: "user" | "streamer" | "personal" | "admin";

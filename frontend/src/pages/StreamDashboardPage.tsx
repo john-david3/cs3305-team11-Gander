@@ -3,12 +3,17 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import Button from "../components/Input/Button";
 import Input from "../components/Input/Input";
 import { useCategories } from "../hooks/useContent";
-import { X as CloseIcon, Eye as ShowIcon, EyeOff as HideIcon } from "lucide-react";
+import {
+  X as CloseIcon,
+  Eye as ShowIcon,
+  EyeOff as HideIcon,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { debounce } from "lodash";
 import VideoPlayer from "../components/Stream/VideoPlayer";
 import { CategoryType } from "../types/CategoryType";
 import { StreamListItem } from "../components/Layout/ListItem";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 interface StreamData {
   title: string;
@@ -31,7 +36,9 @@ const StreamDashboardPage: React.FC = () => {
   const [streamDetected, setStreamDetected] = useState(false);
   const [timeStarted, setTimeStarted] = useState("");
   const [isCategoryFocused, setIsCategoryFocused] = useState(false);
-  const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>(
+    []
+  );
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<{
     url: string;
@@ -40,10 +47,10 @@ const StreamDashboardPage: React.FC = () => {
   const [debouncedCheck, setDebouncedCheck] = useState<Function | null>(null);
   const [showKey, setShowKey] = useState(false);
 
-  const { 
+  const {
     categories,
-    isLoading: categoriesLoading, 
-    error: categoriesError 
+    isLoading: categoriesLoading,
+    error: categoriesError,
   } = useCategories("/api/categories/popular/100");
 
   useEffect(() => {
@@ -60,9 +67,7 @@ const StreamDashboardPage: React.FC = () => {
       );
 
       if (isValidCategory && !thumbnailPreview.isCustom) {
-        const defaultThumbnail = `/images/thumbnails/categories/${categoryName
-          .toLowerCase()
-          .replace(/ /g, "_")}.webp`;
+        const defaultThumbnail = getCategoryThumbnail(categoryName);
         setThumbnailPreview({ url: defaultThumbnail, isCustom: false });
       }
     }, 300);
@@ -82,7 +87,7 @@ const StreamDashboardPage: React.FC = () => {
 
   const checkStreamStatus = async () => {
     if (!username) return;
-    
+
     try {
       const response = await fetch(`/api/user/${username}/status`);
       const data = await response.json();
@@ -179,9 +184,7 @@ const StreamDashboardPage: React.FC = () => {
       console.log(
         "Clearing thumbnail as category is set and default category thumbnail will be used"
       );
-      const defaultThumbnail = `/images/thumbnails/categories/${streamData.category_name
-        .toLowerCase()
-        .replace(/ /g, "_")}.webp`;
+      const defaultThumbnail = getCategoryThumbnail(streamData.category_name);
       setThumbnailPreview({ url: defaultThumbnail, isCustom: false });
     } else {
       setThumbnailPreview({ url: "", isCustom: false });
@@ -194,8 +197,7 @@ const StreamDashboardPage: React.FC = () => {
       streamData.category_name.trim() !== "" &&
       categories.some(
         (cat) =>
-          cat.title.toLowerCase() ===
-          streamData.category_name.toLowerCase()
+          cat.title.toLowerCase() === streamData.category_name.toLowerCase()
       ) &&
       streamDetected
     );
@@ -328,9 +330,7 @@ const StreamDashboardPage: React.FC = () => {
                       <div
                         key={category.title}
                         className="px-4 py-2 hover:bg-gray-600 cursor-pointer text-white"
-                        onClick={() =>
-                          handleCategorySelect(category.title)
-                        }
+                        onClick={() => handleCategorySelect(category.title)}
                       >
                         {category.title}
                       </div>
