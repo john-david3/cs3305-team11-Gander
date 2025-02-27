@@ -49,7 +49,7 @@ const Footer = () => {
         {/* Office Section */}
         <div className="flex-1 min-w-[200px]">
           <h3 className="text-lg font-semibold mb-2">Contact Us!</h3>
-          <a href="mailto:xyzemail@gmail.com" className="underline">
+          <a href="mailto:response.gander@gmail.com" className="underline">
               response.gander@gmail.com
             </a>
         </div>
