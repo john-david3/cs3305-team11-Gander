@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Sidebar as SidebarIcon } from "lucide-react";
+import { SidebarIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useSidebar } from "../../context/SidebarContext";

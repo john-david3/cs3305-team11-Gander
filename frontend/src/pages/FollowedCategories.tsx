@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useSidebar } from "../context/SidebarContext";
-import { CircleMinus, CirclePlus, Sidebar as SidebarIcon } from "lucide-react";
+import { CircleMinus as RemoveIcon, CirclePlus as AddIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
-import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import Button from "../components/Input/Button";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
 import { ListItemProps as StreamData } from "../components/Layout/ListItem";
 import LoadingScreen from "../components/Layout/LoadingScreen";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 interface Category {
     isFollowing: any;
@@ -125,14 +124,14 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
                                     onClick={() => toggleFollow(category.category_id, category.category_name)}
                                 >
                                     {category.isFollowing ? (
-                                        <CircleMinus className="text-white w-5 h-5" />
+                                        <RemoveIcon className="text-white w-5 h-5" />
                                     ) : (
-                                        <CirclePlus className="text-white w-5 h-5" />
+                                        <AddIcon className="text-white w-5 h-5" />
                                     )}
                                 </Button>
 
                                 <img
-                                    src={`/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`}
+                                    src={getCategoryThumbnail(category.category_name)}
                                     alt={category.category_name}
                                     className="w-full h-28 object-cover"
                                 />

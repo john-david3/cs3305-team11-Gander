@@ -4,59 +4,54 @@ import ListRow from "../components/Layout/ListRow";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import LoadingScreen from "../components/Layout/LoadingScreen";
+import { CategoryType } from "../types/CategoryType";
+import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
-interface CategoryData {
-  type: "category";
-  id: number;
-  title: string;
-  viewers: number;
-  thumbnail: string;
-}
 const AllCategoriesPage: React.FC = () => {
-  const [categories, setCategories] = useState<CategoryData[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
   const navigate = useNavigate();
   const [categoryOffset, setCategoryOffset] = useState(0);
   const [noCategories, setNoCategories] = useState(12);
   const [hasMoreData, setHasMoreData] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  
   const listRowRef = useRef<any>(null);
-
+  const isLoading = useRef(false);
+  
   const fetchCategories = async () => {
-    if (isLoading) return;
-
+    // If already loading, skip this fetch
+    if (isLoading.current) return;
+    
+    isLoading.current = true;
+    
     try {
-      const response = await fetch(
-        `/api/categories/popular/${noCategories}/${categoryOffset}`
-      );
+      const response = await fetch(`/api/categories/popular/${noCategories}/${categoryOffset}`);
       if (!response.ok) {
         throw new Error("Failed to fetch categories");
       }
       const data = await response.json();
-
+      
       if (data.length === 0) {
         setHasMoreData(false);
         return [];
       }
 
-      setCategoryOffset((prev) => prev + data.length);
+      setCategoryOffset(prev => prev + data.length);
 
       const processedCategories = data.map((category: any) => ({
         type: "category" as const,
         id: category.category_id,
         title: category.category_name,
         viewers: category.num_viewers,
-        thumbnail: `/images/category_thumbnails/${category.category_name
-          .toLowerCase()
-          .replace(/ /g, "_")}.webp`,
+        thumbnail: getCategoryThumbnail(category.category_name)
       }));
 
-      setCategories((prev) => [...prev, ...processedCategories]);
+      setCategories(prev => [...prev, ...processedCategories]);
       return processedCategories;
     } catch (error) {
       console.error("Error fetching categories:", error);
       return [];
     } finally {
-      setIsLoading(false);
+      isLoading.current = false;
     }
   };
 
@@ -83,17 +78,25 @@ const AllCategoriesPage: React.FC = () => {
   };
 
   return (
-    <DynamicPageContent className="min-h-screen">
+    <DynamicPageContent
+      className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]"
+      style={{ backgroundImage: "url(/images/background-pattern.svg)" }}
+    >
       <ListRow
         ref={listRowRef}
         type="category"
         title="All Categories"
         items={categories}
-        onItemClick={handleCategoryClick}
+        onClick={handleCategoryClick}
         extraClasses="bg-[var(--recommend)] text-center"
         itemExtraClasses="w-[20vw]"
         wrap={true}
       />
+      {!hasMoreData && !categories.length && (
+        <div className="text-center text-gray-500 p-4">
+          No more categories to load
+        </div>
+      )}
     </DynamicPageContent>
   );
 };

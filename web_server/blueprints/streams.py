@@ -215,8 +215,7 @@ def publish_stream():
 
 
     with Database() as db:
-        user_info = db.fetchone("""SELECT user_id, username, current_stream_title, 
-                                current_selected_category_id, is_live
+        user_info = db.fetchone("""SELECT user_id, username, is_live
                                 FROM users 
                                 WHERE stream_key = ?""", (data['stream_key'],))
 

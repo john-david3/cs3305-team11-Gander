@@ -1,10 +1,10 @@
 -- Sample Data for users
-INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, is_admin, current_stream_title, current_selected_category_id) VALUES 
-('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 1, 0, 'Game On!', 1),
-('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.', 1, 0, 'Live Music Jam', 2),
-('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.', 1, 0, 'Sketching Live', 3),
-('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.', 1, 0, 'Math Made Easy', 4),
-('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!', 1, 0, 'Sports Highlights', 5);
+INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, is_admin) VALUES 
+('GamerDude', 'password123', 'gamerdude@example.com', 500, '1234', 0, 'Streaming my gaming adventures!', 1, 0),
+('MusicLover', 'music4life', 'musiclover@example.com', 1200, '2345', 0, 'I share my favorite tunes.', 1, 0),
+('ArtFan', 'artistic123', 'artfan@example.com', 300, '3456', 0, 'Exploring the world of art.', 1, 0),
+('EduGuru', 'learn123', 'eduguru@example.com', 800, '4567', 0, 'Teaching everything I know.', 1, 0),
+('SportsStar', 'sports123', 'sportsstar@example.com', 2000, '5678', 0, 'Join me for live sports updates!', 1, 0);
 
 INSERT INTO users (username, password, email, num_followers, stream_key, is_partnered, bio, is_live, is_admin) VALUES 
 ('GamerDude2', 'password123', 'gamerdude3@gmail.com', 3200, '7890', 0, 'Streaming my gaming adventures!', 0, 0),
@@ -45,35 +45,35 @@ INSERT INTO followed_categories (user_id, category_id) VALUES
 (5, 5);
 
 -- Sample Data for categories
-INSERT INTO categories (category_name) VALUES  
-('Gaming'),  
-('Music'),  
-('Art'),  
-('Education'),  
-('Sports'),  
-('League of Legends'),  
-('Fortnite'),  
-('Minecraft'),  
-('Call of Duty'),  
-('Counter-Strike 2'),  
-('Valorant'),  
-('Dota 2'),  
-('Apex Legends'),  
-('Grand Theft Auto V'),  
-('The Legend of Zelda Breath of the Wild'),  
-('Elden Ring'),  
-('Red Dead Redemption 2'),  
-('Cyberpunk 2077'),  
-('Super Smash Bros Ultimate'),  
-('Overwatch 2'),  
-('Genshin Impact'),  
-('World of Warcraft'),  
-('Rocket League'),  
-('FIFA 24'),  
-('The Sims 4'),  
-('Among Us'),  
-('Dead by Daylight'),  
-('Hogwarts Legacy');  
+INSERT INTO categories (category_name) VALUES
+('Gaming'),
+('Music'),
+('Art'),
+('Education'),
+('Sports'),
+('League of Legends'),
+('Fortnite'),
+('Minecraft'),
+('Call of Duty'),
+('Counter-Strike 2'),
+('Valorant'),
+('Dota 2'),
+('Apex Legends'),
+('Grand Theft Auto V'),
+('The Legend of Zelda: Tears of the Kingdom'),
+('Elden Ring'),
+('Red Dead Redemption 2'),
+('Cyberpunk 2077'),
+('Super Smash Bros. Ultimate'),
+('Overwatch 2'),
+('Genshin Impact'),
+('World of Warcraft'),
+('Rocket League'),
+('EA Sports FC 25'),
+('The Sims 4'),
+('Among Us'),
+('Dead by Daylight'),
+('Hogwarts Legacy');
 
 
 -- Sample Data for streams

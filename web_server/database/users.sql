@@ -10,10 +10,7 @@ CREATE TABLE users
     is_partnered BOOLEAN NOT NULL DEFAULT 0,
     is_live BOOLEAN NOT NULL DEFAULT 0,
     bio VARCHAR(1024) DEFAULT 'This user does not have a Bio.',
-    is_admin BOOLEAN NOT NULL DEFAULT 0,
-
-    current_stream_title VARCHAR(100) DEFAULT 'Stream',
-    current_selected_category_id INTEGER DEFAULT 1
+    is_admin BOOLEAN NOT NULL DEFAULT 0
 );
 
 SELECT * FROM users;

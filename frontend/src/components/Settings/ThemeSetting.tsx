@@ -1,38 +1,38 @@
 import React from "react";
-import { Sun, Moon, Droplet, Leaf, Flame } from "lucide-react";
+import { SunIcon, MoonIcon, DropletIcon, LeafIcon, FlameIcon } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
 const themeConfig = {
   light: {
-    icon: Sun,
+    icon: SunIcon,
     color: "text-yellow-400",
     background: "bg-white",
     hoverBg: "hover:bg-gray-100",
     label: "Light Theme",
   },
   dark: {
-    icon: Moon,
+    icon: MoonIcon,
     color: "text-white",
     background: "bg-gray-800",
     hoverBg: "hover:bg-gray-700",
     label: "Dark Theme",
   },
   blue: {
-    icon: Droplet,
+    icon: DropletIcon,
     color: "text-blue-500",
     background: "bg-blue-50",
     hoverBg: "hover:bg-blue-100",
     label: "Blue Theme",
   },
   green: {
-    icon: Leaf,
+    icon: LeafIcon,
     color: "text-green-500",
     background: "bg-green-50",
     hoverBg: "hover:bg-green-100",
     label: "Green Theme",
   },
   orange: {
-    icon: Flame,
+    icon: FlameIcon,
     color: "text-orange-500",
     background: "bg-orange-50",
     hoverBg: "hover:bg-orange-100",

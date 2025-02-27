@@ -1,6 +1,6 @@
 import {
-  ArrowLeft as ArrowLeftIcon,
-  ArrowRight as ArrowRightIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
 } from "lucide-react";
 import React, {
   forwardRef,
@@ -10,14 +10,19 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/listRow.css";
-import ListItem, { ListItemProps } from "./ListItem";
+import { StreamListItem, CategoryListItem, UserListItem } from "./ListItem";
+import { StreamType } from "../../types/StreamType";
+import { CategoryType } from "../../types/CategoryType";
+import { UserType } from "../../types/UserType";
+
+type ItemType = StreamType | CategoryType | UserType;
 
 interface ListRowProps {
   variant?: "default" | "search";
   type: "stream" | "category" | "user";
   title?: string;
   description?: string;
-  items: ListItemProps[];
+  items: ItemType[];
   wrap?: boolean;
   onItemClick: (itemName: string) => void;
   titleClickable?: boolean;
@@ -27,151 +32,179 @@ interface ListRowProps {
   children?: React.ReactNode;
 }
 
-const ListRow = forwardRef<
-  { addMoreItems: (newItems: ListItemProps[]) => void },
-  ListRowProps
->(
-  (
-    {
-      variant = "default",
-      type,
-      title = "",
-      description = "",
-      items,
-      onItemClick,
-      titleClickable = false,
-      wrap = false,
-      extraClasses = "",
-      itemExtraClasses = "",
-      amountForScroll = 4,
-      children,
-    },
-    ref
-  ) => {
-    const [currentItems, setCurrentItems] = useState(items);
-    const slider = useRef<HTMLDivElement>(null);
-    const scrollAmount = window.innerWidth * 0.3;
-    const navigate = useNavigate();
+interface ListRowRef {
+  addMoreItems: (newItems: ItemType[]) => void;
+}
 
-    const addMoreItems = (newItems: ListItemProps[]) => {
-      setCurrentItems((prevItems) => [...prevItems, ...newItems]);
-    };
+const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
+  const {
+    variant = "default",
+    type,
+    title = "",
+    description = "",
+    items,
+    onItemClick,
+    titleClickable = false,
+    wrap = false,
+    extraClasses = "",
+    itemExtraClasses = "",
+    amountForScroll = 4,
+    children,
+  } = props;
+  
+  const [currentItems, setCurrentItems] = useState<ItemType[]>(items);
+  const slider = useRef<HTMLDivElement>(null);
+  const scrollAmount = window.innerWidth * 0.3;
+  const navigate = useNavigate();
 
-    useImperativeHandle(ref, () => ({
-      addMoreItems,
-    }));
+  const addMoreItems = (newItems: ItemType[]) => {
+    setCurrentItems((prevItems) => [...prevItems, ...newItems]);
+  };
 
-    const slideRight = () => {
-      if (!wrap && slider.current) {
-        slider.current.scrollBy({ left: +scrollAmount, behavior: "smooth" });
-      }
-    };
+  useImperativeHandle(ref, () => ({
+    addMoreItems,
+  }));
 
-    const slideLeft = () => {
-      if (!wrap && slider.current) {
-        slider.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-      }
-    };
+  const slideRight = () => {
+    if (!wrap && slider.current) {
+      slider.current.scrollBy({ left: +scrollAmount, behavior: "smooth" });
+    }
+  };
 
-    const handleTitleClick = (type: string) => {
-      switch (type) {
-        case "stream":
-          break;
-        case "category":
-          navigate("/categories");
-          break;
-        case "user":
-          break;
-        default:
-          break;
-      }
-    };
+  const slideLeft = () => {
+    if (!wrap && slider.current) {
+      slider.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    }
+  };
 
-    return (
+  const handleTitleClick = () => {
+    switch (type) {
+      case "stream":
+        break;
+      case "category":
+        navigate("/categories");
+        break;
+      case "user":
+        break;
+      default:
+        break;
+    }
+  };
+
+  const isStreamType = (item: ItemType): item is StreamType => 
+    item.type === "stream";
+  
+  const isCategoryType = (item: ItemType): item is CategoryType => 
+    item.type === "category";
+  
+  const isUserType = (item: ItemType): item is UserType => 
+    item.type === "user";
+
+  return (
+    <div
+      className={`${extraClasses} flex relative rounded-[1.5rem] text-white transition-all ${
+        variant === "search"
+          ? "items-center"
+          : "flex-col space-y-4 py-6 px-5 mx-2 mt-5"
+      }`}
+    >
+      {/* List Details */}
       <div
-        className={`${extraClasses} flex relative rounded-[1.5rem] text-white transition-all ${
-          variant === "search"
-            ? "items-center"
-            : "flex-col space-y-4 py-6 px-5 mx-2 mt-5"
+        className={`text-center ${
+          variant === "search" ? "min-w-fit px-auto w-[15vw]" : ""
         }`}
       >
-        {/* List Details */}
-        <div
-          className={`text-center ${
-            variant === "search" ? "min-w-fit px-auto w-[15vw]" : ""
-          }`}
+        <h2
+          className={`${
+            titleClickable
+              ? "cursor-pointer hover:underline"
+              : "cursor-default"
+          } text-2xl font-bold`}
+          onClick={titleClickable ? handleTitleClick : undefined}
         >
-          <h2
-            className={`${
-              titleClickable
-                ? "cursor-pointer hover:underline"
-                : "cursor-default"
-            } text-2xl font-bold`}
-            onClick={titleClickable ? () => handleTitleClick(type) : undefined}
-          >
-            {title}
-          </h2>
-          <p>{description}</p>
-        </div>
+          {title}
+        </h2>
+        <p>{description}</p>
+      </div>
 
-        {/* List Items */}
-        <div className="relative overflow-hidden flex flex-grow items-center z-0">
-          {!wrap && currentItems.length > amountForScroll && (
+      {/* List Items */}
+      <div className="relative overflow-hidden flex flex-grow items-center z-0">
+        {!wrap && currentItems.length > amountForScroll && (
+          <>
+            <ArrowLeftIcon
+              onClick={slideLeft}
+              size={30}
+              className="absolute left-0 cursor-pointer z-[999]"
+            />
+            <ArrowRightIcon
+              onClick={slideRight}
+              size={30}
+              className="absolute right-0 cursor-pointer z-[999]"
+            />
+          </>
+        )}
+
+        <div
+          ref={slider}
+          className={`flex ${
+            wrap ? "flex-wrap justify-between" : "overflow-x-scroll whitespace-nowrap"
+          } max-w-[95%] items-center w-full mx-auto scroll-smooth scrollbar-hide`}
+        >
+          {currentItems.length === 0 ? (
+            <h1 className="mx-auto">Nothing Found</h1>
+          ) : (
             <>
-              <ArrowLeftIcon
-                onClick={slideLeft}
-                size={30}
-                className="absolute left-0 cursor-pointer z-[999]"
-              />
-              <ArrowRightIcon
-                onClick={slideRight}
-                size={30}
-                className="absolute right-0 cursor-pointer z-[999]"
-              />
+              {currentItems.map((item) => {
+                if (type === "stream" && isStreamType(item)) {
+                  return (
+                    <StreamListItem
+                      key={`stream-${item.id}`}
+                      id={item.id}
+                      title={item.title}
+                      username={item.username}
+                      streamCategory={item.streamCategory}
+                      viewers={item.viewers}
+                      thumbnail={item.thumbnail}
+                      onItemClick={() => onItemClick(item.username)}
+                      extraClasses={itemExtraClasses}
+                    />
+                  );
+                } else if (type === "category" && isCategoryType(item)) {
+                  return (
+                    <CategoryListItem
+                      key={`category-${item.id}`}
+                      id={item.id}
+                      title={item.title}
+                      viewers={item.viewers}
+                      thumbnail={item.thumbnail}
+                      onItemClick={() => onItemClick(item.title)}
+                      extraClasses={itemExtraClasses}
+                    />
+                  );
+                } else if (type === "user" && isUserType(item)) {
+                  return (
+                    <UserListItem
+                      key={`user-${item.id}`}
+                      id={item.id}
+                      title={item.title}
+                      username={item.username}
+                      isLive={item.isLive}
+                      viewers={item.viewers}
+                      thumbnail={item.thumbnail}
+                      onItemClick={() => onItemClick(item.username)}
+                      extraClasses={itemExtraClasses}
+                    />
+                  );
+                }
+                return null;
+              })}
             </>
           )}
-
-          <div
-            ref={slider}
-            className={`flex ${
-              wrap ? "flex-wrap justify-between" : "overflow-x-scroll whitespace-nowrap"
-            } max-w-[95%] items-center w-full mx-auto scroll-smooth scrollbar-hide`}
-          >
-            {currentItems.length === 0 ? (
-              <h1 className="mx-auto">Nothing Found</h1>
-            ) : (
-              <>
-                {currentItems.map((item) => (
-                  <ListItem
-                    key={`${item.type}-${item.id}`}
-                    id={item.id}
-                    type={type}
-                    title={item.title}
-                    username={
-                      item.type === "category" ? undefined : item.username
-                    }
-                    streamCategory={
-                      item.type === "stream" ? item.streamCategory : undefined
-                    }
-                    viewers={item.viewers}
-                    thumbnail={item.thumbnail}
-                    onItemClick={() =>
-                      (item.type === "stream" || item.type === "user") &&
-                      item.username
-                        ? onItemClick?.(item.username)
-                        : onItemClick?.(item.title)
-                    }
-                    extraClasses={`${itemExtraClasses}`}
-                  />
-                ))}
-              </>
-            )}
-          </div>
         </div>
-        {children}
       </div>
-    );
-  }
-);
+      {children}
+    </div>
+  );
+});
 
 export default ListRow;
