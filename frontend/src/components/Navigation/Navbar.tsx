@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const handleQuickSettings = () => {
     setShowQuickSettings(!showQuickSettings);
     setJustToggled(true);
-    setTimeout(() => setJustToggled(false), 750);
+    setTimeout(() => setJustToggled(false), 200);
   };
 
   // Keyboard shortcut to toggle sidebar
@@ -99,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
       >
         <SettingsIcon className="h-[2vw] w-[2vw]" />
         {!showQuickSettings && !justToggled && (
-          <small className="absolute flex items-center top-0 mr-4 right-0 h-full w-full my-auto group-hover:right-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
+          <small className="absolute flex items-center top-0 mr-2 right-0 h-full w-fit text-nowrap font-bold my-auto group-hover:right-full opacity-0 group-hover:opacity-100 group-hover:bg-black/30 p-1 rounded-md text-white transition-all">
             Press Q
           </small>
         )}

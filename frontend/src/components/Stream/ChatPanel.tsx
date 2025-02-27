@@ -116,7 +116,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const toggleChat = () => {
     setShowChat(!showChat);
     setJustToggled(true);
-    setTimeout(() => setJustToggled(false), 750);
+    setTimeout(() => setJustToggled(false), 200);
   };
 
   const sendChat = () => {
@@ -154,7 +154,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       >
         {showChat ? <ArrowRightFromLineIcon /> : <ArrowLeftFromLineIcon />}
 
-        <small className={`absolute ${showChat ? justToggled ? "left-0 group-hover:-left-[4vw] group-hover:bg-white/10" : "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80" : justToggled ? "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80" : "left-0 group-hover:-left-[4vw] group-hover:bg-white/10"} p-1 rounded-md w-fit opacity-0 group-hover:opacity-100 text-white transition-all`}>
+        <small className={`absolute ${showChat ? justToggled ? "left-0 group-hover:-left-[5vw] group-hover:bg-white/10" : "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80" : justToggled ? "right-0 group-hover:-right-[5vw] group-hover:bg-red-500/80" : "left-0 group-hover:-left-[5vw] group-hover:bg-white/10"} p-1 rounded-md w-fit text-nowrap font-bold opacity-0 group-hover:opacity-100 text-white transition-all`}>
           Press C
         </small>
       </button>

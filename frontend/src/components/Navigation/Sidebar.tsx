@@ -48,7 +48,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
   const handleSideBar = () => {
     setShowSideBar(!showSideBar);
     setJustToggled(true);
-    setTimeout(() => setJustToggled(false), 750);
+    setTimeout(() => setJustToggled(false), 200);
   };
 
   // Keyboard shortcut to toggle sidebar
@@ -102,7 +102,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
         <SidebarIcon className="h-[2vw] w-[2vw]" />
 
         {!showSideBar && !justToggled && (
-          <small className="absolute flex items-center top-0 ml-4 left-0 h-full w-full my-auto group-hover:left-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
+          <small className="absolute flex items-center top-0 ml-2 left-0 h-full my-auto w-fit text-nowrap font-bold my-auto group-hover:left-full opacity-0 group-hover:opacity-100 group-hover:bg-black/30 p-1 rounded-md text-white transition-all">
             Press S
           </small>
         )}
