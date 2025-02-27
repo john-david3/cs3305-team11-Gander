@@ -32,7 +32,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   return (
     <DynamicPageContent
       navbarVariant="home"
-      className="min-h-screen animate-moving_bg"
+      className="relative min-h-screen animate-moving_bg"
     >
       <ListRow
         type="stream"
