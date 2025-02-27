@@ -30,7 +30,7 @@ const DynamicPageContent: React.FC<DynamicPageContentProps> = ({
         id="content"
         className={`min-w-[850px] ${
           showSideBar ? "w-[85vw] translate-x-[15vw]" : "w-[100vw]"
-        } items-start pb-[12vh] transition-all duration-[500ms] ease-in-out ${contentClassName}`}
+        } items-start transition-all duration-[500ms] ease-in-out ${contentClassName}`}
       >
         {children}
       </div>

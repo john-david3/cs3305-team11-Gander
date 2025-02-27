@@ -87,7 +87,7 @@ const AllCategoriesPage: React.FC = () => {
         type="category"
         title="All Categories"
         items={categories}
-        onClick={handleCategoryClick}
+        onItemClick={handleCategoryClick}
         extraClasses="bg-[var(--recommend)] text-center"
         itemExtraClasses="w-[20vw]"
         wrap={true}

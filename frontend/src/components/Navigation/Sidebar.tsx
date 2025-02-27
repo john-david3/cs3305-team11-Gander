@@ -25,6 +25,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
   const { username, isLoggedIn } = useAuth();
   const [followedStreamers, setFollowedStreamers] = useState<Streamer[]>([]);
   const [followedCategories, setFollowedCategories] = useState<Category[]>([]);
+  const [justToggled, setJustToggled] = useState(false);
 
   // Fetch followed streamers
   useEffect(() => {
@@ -46,6 +47,8 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
 
   const handleSideBar = () => {
     setShowSideBar(!showSideBar);
+    setJustToggled(true);
+    setTimeout(() => setJustToggled(false), 750);
   };
 
   // Keyboard shortcut to toggle sidebar
@@ -98,7 +101,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
       >
         <SidebarIcon className="h-[2vw] w-[2vw]" />
 
-        {showSideBar && (
+        {!showSideBar && !justToggled && (
           <small className="absolute flex items-center top-0 ml-4 left-0 h-full w-full my-auto group-hover:left-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
             Press S
           </small>

@@ -25,6 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { showSideBar } = useSidebar();
   const { showQuickSettings, setShowQuickSettings } = useQuickSettings();
+  const [justToggled, setJustToggled] = React.useState(false);
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -38,6 +39,8 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
 
   const handleQuickSettings = () => {
     setShowQuickSettings(!showQuickSettings);
+    setJustToggled(true);
+    setTimeout(() => setJustToggled(false), 750);
   };
 
   // Keyboard shortcut to toggle sidebar
@@ -65,43 +68,43 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
     >
       {isLoggedIn && window.innerWidth > 900 && <Sidebar />}
       <Logo variant={variant} />
-          {/* Login / Logout Button */}
-          <Button
-            extraClasses={`absolute top-[2vh] ${
-              showSideBar
-                ? "left-[16vw] duration-[0.5s]"
-                : "left-[20px] duration-[1s]"
-            } text-[1rem] flex items-center flex-nowrap z-[99]`}
-            onClick={() => (isLoggedIn ? handleLogout() : setShowAuthModal(true))}
-          >
-            {isLoggedIn ? (
-              <>
-                <LogOutIcon className="h-15 w-15 mr-1" />
-                Logout
-              </>
-            ) : (
-              <>
-                <LogInIcon className="h-15 w-15 mr-1" />
-                Login / Register
-              </>
-            )}
-          </Button>
-          {/* Quick Settings Sidebar */}
-          <ToggleButton
-            extraClasses={`absolute group text-[1rem] top-[2vh] ${
-              showQuickSettings ? "right-[21vw]" : "right-[20px]"
-            } cursor-pointer`}
-            onClick={() => handleQuickSettings()}
-            toggled={showQuickSettings}
-          >
-            <SettingsIcon className="h-[2vw] w-[2vw]" />
-            {showQuickSettings && (
-              <small className="absolute flex items-center top-0 mr-4 right-0 h-full w-full my-auto group-hover:right-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
-                Press Q
-              </small>
-            )}
-          </ToggleButton>
-          <QuickSettings />
+      {/* Login / Logout Button */}
+      <Button
+        extraClasses={`absolute top-[2vh] ${
+          showSideBar
+            ? "left-[16vw] duration-[0.5s]"
+            : "left-[20px] duration-[1s]"
+        } text-[1rem] flex items-center flex-nowrap z-[99]`}
+        onClick={() => (isLoggedIn ? handleLogout() : setShowAuthModal(true))}
+      >
+        {isLoggedIn ? (
+          <>
+            <LogOutIcon className="h-15 w-15 mr-1" />
+            Logout
+          </>
+        ) : (
+          <>
+            <LogInIcon className="h-15 w-15 mr-1" />
+            Login / Register
+          </>
+        )}
+      </Button>
+      {/* Quick Settings Sidebar */}
+      <ToggleButton
+        extraClasses={`absolute group text-[1rem] top-[2vh] ${
+          showQuickSettings ? "right-[21vw]" : "right-[20px]"
+        } cursor-pointer`}
+        onClick={() => handleQuickSettings()}
+        toggled={showQuickSettings}
+      >
+        <SettingsIcon className="h-[2vw] w-[2vw]" />
+        {!showQuickSettings && !justToggled && (
+          <small className="absolute flex items-center top-0 mr-4 right-0 h-full w-full my-auto group-hover:right-full opacity-0 group-hover:opacity-100 text-white transition-all delay-200">
+            Press Q
+          </small>
+        )}
+      </ToggleButton>
+      <QuickSettings />
 
       {variant != "no-searchbar" && <SearchBar />}
 

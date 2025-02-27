@@ -5,5 +5,6 @@ export interface StreamType {
 	username: string;
 	streamCategory: string;
 	viewers: number;
+	startTime?: string;
 	thumbnail?: string;
   }
