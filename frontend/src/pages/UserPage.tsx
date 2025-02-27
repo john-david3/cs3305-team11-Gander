@@ -108,11 +108,11 @@ const UserPage: React.FC = () => {
 
   return (
     <DynamicPageContent
-      className={`min-h-screen ${
+      className={`min-h-screen ${/*
         profileData.isLive
           ? "bg-gradient-radial from-[#1a6600] via-[#66ff66] to-[#003900]"
           : bgColors[userPageVariant]
-      } text-white flex flex-col`}
+      */ ""} text-white flex flex-col`}
     >
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
         <div className="grid grid-cols-4 grid-rows-[0.1fr_4fr] w-full gap-8">
@@ -133,7 +133,7 @@ const UserPage: React.FC = () => {
                  bg-[var(--user-box)] z-10 flex-shrink justify-center"
               style={{ boxShadow: "var(--user-box-shadow)" }}
             >
-              <div className="absolute top-4 w-[99.8%] h-[1vh] min-h-[1em] max-h-[2em]  bg-[var(--user-box-strip)]"></div>
+              {/* <div className="absolute top-4 w-[99.8%] h-[1vh] min-h-[1em] max-h-[2em]  bg-[var(--user-box-strip)]"></div> */}
             </div>
             {/* Profile Picture */}
             <div

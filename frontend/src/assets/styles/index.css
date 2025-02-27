@@ -45,7 +45,7 @@ body[data-theme="light"] {
   --recommend: rgba(5, 46, 22, 0.6);
 
   --quickBar-title: #ffffff;
-  --quickBar-title-bg: rgb(183, 149, 214);
+  --quickBar-title-bg: rgb(158, 94, 217);
   --quickBar-bg: #ffffff;
   --quickBar-text: #000000;
   --quickBar-border: #ffffff;
@@ -55,25 +55,25 @@ body[data-theme="light"] {
   --user-pfp-border: #ffffff;
   --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
 
-  --user-borderBg: rgb(70, 0, 67);
+  --user-borderBg: rgb(38, 0, 36);
   --user-box: rgb(128, 0, 255);
   --user-box-strip: rgb(120, 3, 120);
   --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
-  --user-sideBox: rgb(149, 0, 255);
-  --user-contentBox: rgb(255, 255, 253);
-  --user-follow-bg: #ff0000;
+  --user-sideBox: rgba(149, 0, 255, 0.9);
+  --user-contentBox: rgb(255, 255, 253, 0.75);
+  --user-follow-bg: #dbb2ff;
 
   --user-bg: rgb(255, 255, 255);
   --user-live-bg: rgb(127, 161, 5);
 
   /* Screenshot */
-  --screenshot-bg: rgb(183, 149, 214);
-  --screenshot-bg-hover: rgb(65, 34, 93);
+  --screenshot-bg: rgba(138, 78, 195, 0.75);
+  --screenshot-bg-hover: rgba(138, 78, 195);
   --screenshot-text: rgb(255, 255, 255);
   --screenshot-text-hover: rgb(255, 255, 255);
 
   /* Brightness */
-  --slider-header: rgb(183, 149, 214);
+  --slider-header: rgb(160, 103, 214);
   --slider-text: rgb(183, 149, 214);
   --slider-bg: #ffffff;
 
@@ -89,7 +89,7 @@ body[data-theme="dark"] {
   --sideBar-profile-text: #ffffff;
   --profile-border: #ffffff;
 
-  --follow-bg: #a50000c6;
+  --follow-bg: #dbb2ff;
   --follow-text: rgb(255, 255, 255);
   --follow-shadow: 0px 0px 15px rgba(255, 255, 255, 0.966);
 
@@ -98,7 +98,7 @@ body[data-theme="dark"] {
 
 
   --quickBar-title: rgb(255, 255, 255);
-  --quickBar-title-bg: rgb(0, 0, 0);
+  --quickBar-title-bg: rgb(0, 0, 0,);
   --quickBar-bg: #000000d3;
   --quickBar-text: #ffffff;
   --quickBar-border: #ffffff;
@@ -109,27 +109,27 @@ body[data-theme="dark"] {
   --user-pfp-border: #ffffff;
   --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
 
-  --user-borderBg: rgb(123, 0, 0);
-  --user-box: rgb(75, 0, 150);
+  --user-borderBg: rgb(0, 0, 0);
+  --user-box: rgb(27, 0, 54);
   --user-box-strip: rgb(165, 0, 0);
   --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
-  --user-sideBox: rgba(25, 25, 25, 0.938);
-  --user-contentBox: rgba(108, 0, 0, 0.764);
-  --user-follow-bg: #9a0000;
+  --user-sideBox: rgba(0, 0, 0, 0.9);
+  --user-contentBox: rgba(14, 12, 12, 0.75);
+  --user-follow-bg: #5c139b;
 
   --user-bg: rgb(16, 16, 16);
   --user-live-bg: rgb(127, 161, 5);
 
   /* Screenshot */
-  --screenshot-bg: rgb(78, 78, 78);
-  --screenshot-bg-hover: rgb(231, 231, 231);
+  --screenshot-bg: rgba(64, 64, 64, 0.75);
+  --screenshot-bg-hover: rgb(64, 64, 64);
   --screenshot-text: rgb(255, 255, 255);
-  --screenshot-text-hover: rgb(78, 78, 78);
+  --screenshot-text-hover: rgb(255, 255, 255);
 
   /* Brightness */
   --slider-header: rgb(255, 255, 255);
   --slider-text: rgb(255, 255, 255);
-  --slider-bg: #000000;
+  --slider-bg: rgb(0,0,0);
 }
 
 body[data-theme="blue"] {
@@ -162,11 +162,11 @@ body[data-theme="blue"] {
   --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
 
   --user-borderBg: rgb(0, 29, 92);
-  --user-box: rgb(246, 255, 0);
+  --user-box: rgb(0, 38, 87);
   --user-box-strip: rgb(68, 160, 218);
   --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
-  --user-sideBox: #00525c;
-  --user-contentBox: rgba(161, 254, 252, 0.691);
+  --user-sideBox: rgba(9, 40, 97, 0.9);
+  --user-contentBox: rgba(161, 254, 252, 0.75);
   --user-follow-bg: #78baeddf;
 
   --user-bg: rgba(167, 245, 244, 0.886);
@@ -195,7 +195,7 @@ body[data-theme="green"] {
   --sideBar-profile-text: #ffffff;
   --profile-border: #ffffff;
 
-  --follow-bg: #ffffff;
+  --follow-bg: #b5ffb5;
   --follow-text: #2e7d32;
   --follow-shadow: 0px 0px 15px rgba(84, 255, 92, 0.754);
 
@@ -214,21 +214,21 @@ body[data-theme="green"] {
   --user-pfp-border: #ffffff;
   --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
 
-  --user-borderBg: rgb(255, 237, 123);
+  --user-borderBg: rgb(0, 51, 19);
   --user-box: rgb(1, 136, 66);
   --user-box-strip: rgb(217, 240, 133);
   --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
-  --user-sideBox: rgb(1, 61, 30);
-  --user-contentBox: rgba(213, 197, 141, 0.982);
-  --user-follow-bg: #ffffff;
+  --user-sideBox: rgba(1, 61, 30, 0.9);
+  --user-contentBox: rgba(103, 161, 99, 0.75);
+  --user-follow-bg: #cfffcf;
   --user-bg: rgb(0, 78, 38);
   --user-live-bg: rgb(217, 240, 133);
 
   /* Screenshot */
-  --screenshot-bg: rgb(250, 215, 74);
-  --screenshot-bg-hover: rgb(0, 151, 73);
+  --screenshot-bg: rgba(31, 103, 44, 0.75);
+  --screenshot-bg-hover: rgb(31, 103, 44);
   --screenshot-text: rgb(1, 61, 30);
-  --screenshot-text-hover: rgb(255, 255, 0);
+  --screenshot-text-hover: rgb(1, 35, 17);
 
 
   /* Brightness */
@@ -266,26 +266,26 @@ body[data-theme="orange"] {
   --user-pfp-border: #ffffff;
   --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
   --user-name: #000000;
-  --user-borderBg: rgb(255, 237, 123);
-  --user-box: rgb(157, 149, 0);
+  --user-borderBg: rgb(118, 98, 0);
+  --user-box: rgb(200, 122, 14);
   --user-box-strip: rgb(216, 255, 73);
   --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
-  --user-sideBox: rgb(189, 116, 43);
-  --user-contentBox: rgba(229, 244, 92, 0.877);
+  --user-sideBox: rgba(158, 109, 64, 0.9);
+  --user-contentBox: rgb(180, 192, 77, 0.75);
   --user-follow-bg: #fff59c;
 
-  --user-bg: rgb(255, 145, 0);
+  --user-bg: rgb(244, 168, 69);
   --user-live-bg: rgb(127, 161, 5);
 
   /* Screenshot */
-  --screenshot-bg: rgb(244, 160, 75);
-  --screenshot-bg-hover: rgb(255, 128, 0);
+  --screenshot-bg: rgba(244, 159, 75, 0.75);
+  --screenshot-bg-hover: rgb(244, 159, 75);
   --screenshot-text: rgb(255, 255, 255);
-  --screenshot-text-hover: rgb(255, 255, 5);
+  --screenshot-text-hover: rgb(255, 255, 255);
 
   /* Brightness */
-  --slider-header: rgb(255, 0, 0);
-  --slider-text: rgb(255, 0, 0);
+  --slider-header: rgb(193, 144, 0);
+  --slider-text: rgb(193, 144, 0);
   --slider-bg: #fff3dc;
 }
 

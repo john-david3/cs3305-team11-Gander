@@ -60,7 +60,7 @@ INSERT INTO categories (category_name) VALUES
 ('Dota 2'),
 ('Apex Legends'),
 ('Grand Theft Auto V'),
-('The Legend of Zelda: Tears of the Kingdom'),
+('The Legend of Zelda Breath of the Wild'),
 ('Elden Ring'),
 ('Red Dead Redemption 2'),
 ('Cyberpunk 2077'),
