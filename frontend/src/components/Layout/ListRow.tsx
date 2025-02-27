@@ -1,6 +1,6 @@
 import {
-  ArrowLeft as ArrowLeftIcon,
-  ArrowRight as ArrowRightIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
 } from "lucide-react";
 import React, {
   forwardRef,

@@ -3,7 +3,7 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import Button from "../components/Input/Button";
 import Input from "../components/Input/Input";
 import { useCategories } from "../hooks/useContent";
-import { X as XIcon, Eye as ShowIcon, EyeOff as HideIcon } from "lucide-react";
+import { X as CloseIcon, Eye as ShowIcon, EyeOff as HideIcon } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { debounce } from "lodash";
 import VideoPlayer from "../components/Stream/VideoPlayer";
@@ -365,7 +365,7 @@ const StreamDashboardPage: React.FC = () => {
                       onClick={clearThumbnail}
                       className="absolute right-0 top-0 p-1 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
                     >
-                      <XIcon size={16} className="text-white" />
+                      <CloseIcon size={16} className="text-white" />
                     </button>
                   )}
                 </div>

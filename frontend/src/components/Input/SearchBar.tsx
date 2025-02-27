@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Input from "./Input";
-import { Search as SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface SearchBarProps {

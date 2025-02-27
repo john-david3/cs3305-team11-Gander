@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ToggleButton } from "../Input/Button";
-import { LogIn as LogInIcon, User as UserIcon } from "lucide-react";
+import { LogInIcon, UserIcon } from "lucide-react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";

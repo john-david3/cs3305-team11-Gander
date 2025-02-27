@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import Logo from "../Layout/Logo";
 import Button, { ToggleButton } from "../Input/Button";
 import {
-  LogIn as LogInIcon,
-  LogOut as LogOutIcon,
-  Settings as SettingsIcon,
+  LogInIcon,
+  LogOutIcon,
+  SettingsIcon,
   Radio as LiveIcon,
 } from "lucide-react";
 import SearchBar from "../Input/SearchBar";

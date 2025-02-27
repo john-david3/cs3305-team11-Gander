@@ -1,4 +1,4 @@
-import { Mail as MailIcon } from "lucide-react";
+import { MailIcon } from "lucide-react";
 import { useState } from "react";
 
 const Footer = () => {

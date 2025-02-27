@@ -6,7 +6,7 @@ import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
 import { useChat } from "../../context/ChatContext";
-import { ArrowLeftFromLineIcon, ArrowRightFromLine } from "lucide-react";
+import { ArrowLeftFromLineIcon, ArrowRightFromLineIcon } from "lucide-react";
 
 interface ChatMessage {
   chatter_username: string;
@@ -149,7 +149,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         onClick={toggleChat}
         className={`group cursor-pointer p-2 hover:bg-gray-800 rounded-md absolute top-[1vh] left-[1vw] ${showChat ? "" : "delay-[0.75s] -translate-x-[3.3vw]"} text-[1rem] text-purple-500 flex items-center flex-nowrap z-[50] duration-[0.3s] transition-all`}
       >
-        {showChat ? <ArrowRightFromLine /> : <ArrowLeftFromLineIcon />}
+        {showChat ? <ArrowRightFromLineIcon /> : <ArrowLeftFromLineIcon />}
 
         <small className={`absolute ${showChat ? "right-0 group-hover:-right-[4vw]" : "left-0 group-hover:-left-[4vw]"} p-1 rounded-md group-hover:bg-white/10 w-fit opacity-0 group-hover:opacity-100 text-white transition-all`}>
           Press C
