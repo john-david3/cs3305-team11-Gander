@@ -92,7 +92,7 @@ const CategoryPage: React.FC = () => {
   if (hasMoreData && !streams.length) return <LoadingScreen />;
 
   return (
-    <DynamicPageContent className="min-h-screen bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]">
+    <DynamicPageContent className="min-h-screen">
       <div className="pt-8">
         <ListRow
           ref={listRowRef}
