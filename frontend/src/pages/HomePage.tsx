@@ -1,7 +1,7 @@
 import React from "react";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
-import { useStreams, useCategories } from "../context/ContentContext";
+import { useStreams, useCategories } from "../hooks/useContent";
 import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
@@ -12,8 +12,8 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
-  const { streams } = useStreams();
-  const { categories } = useCategories();
+  const { streams, isLoading: isLoadingStreams } = useStreams();
+  const { categories, isLoading: isLoadingCategories } = useCategories();
   const navigate = useNavigate();
 
   const handleStreamClick = (streamerName: string) => {
@@ -24,9 +24,9 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
     navigate(`/category/${categoryName}`);
   };
 
-  if (!categories || categories.length === 0) {
-    console.log("No categories found yet");
-    return <LoadingScreen>Loading Categories...</LoadingScreen>;
+  if (isLoadingStreams || isLoadingCategories) {
+    console.log("No content found yet");
+    return <LoadingScreen>Loading Content...</LoadingScreen>;
   }
 
   return (
@@ -79,7 +79,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
           Show More
         </Button>
       </ListRow>
-      <Footer/>
+      <Footer />
     </DynamicPageContent>
   );
 };

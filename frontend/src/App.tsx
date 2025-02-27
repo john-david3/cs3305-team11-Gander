@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
-import { ContentProvider } from "./context/ContentContext";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import StreamerRoute from "./components/Stream/StreamerRoute";
@@ -57,7 +56,6 @@ function App() {
           setUserId,
         }}
       >
-        <ContentProvider>
           <SidebarProvider>
             <QuickSettingsProvider>
               <BrowserRouter>
@@ -105,7 +103,6 @@ function App() {
               </BrowserRouter>
             </QuickSettingsProvider>
           </SidebarProvider>
-        </ContentProvider>
       </AuthContext.Provider>
     </Brightness>
   );

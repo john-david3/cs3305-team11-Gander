@@ -4,6 +4,7 @@ import { useSidebar } from "../context/SidebarContext";
 import { ToggleButton } from "../components/Input/Button";
 import { Sidebar as SidebarIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { CategoryType } from "../types/CategoryType";
 
 // Define TypeScript interfaces
 interface Streamer {

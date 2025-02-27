@@ -6,12 +6,12 @@ import { fetchContentOnScroll } from "../hooks/fetchContentOnScroll";
 import Button from "../components/Input/Button";
 import { useAuth } from "../context/AuthContext";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
-import { ListItemProps as StreamData } from "../components/Layout/ListItem";
 import LoadingScreen from "../components/Layout/LoadingScreen";
+import { StreamType } from "../types/StreamType";
 
 const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
-  const [streams, setStreams] = useState<StreamData[]>([]);
+  const [streams, setStreams] = useState<StreamType[]>([]);
   const listRowRef = useRef<any>(null);
   const isLoading = useRef(false);
   const [streamOffset, setStreamOffset] = useState(0);
@@ -50,7 +50,7 @@ const CategoryPage: React.FC = () => {
 
       setStreamOffset((prev) => prev + data.length);
 
-      const processedStreams: StreamData[] = data.map((stream: any) => ({
+      const processedStreams: StreamType[] = data.map((stream: any) => ({
         type: "stream",
         id: stream.user_id,
         title: stream.title,
