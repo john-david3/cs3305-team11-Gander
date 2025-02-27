@@ -24,15 +24,14 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
     navigate(`/category/${categoryName}`);
   };
 
-  if (isLoadingStreams || isLoadingCategories) {
-    console.log("No content found yet");
+  if (isLoadingStreams || isLoadingCategories)
     return <LoadingScreen>Loading Content...</LoadingScreen>;
-  }
 
   return (
     <DynamicPageContent
       navbarVariant="home"
       className="relative min-h-screen animate-moving_bg"
+      contentClassName="pb-[12vh]"
     >
       <ListRow
         type="stream"
@@ -76,7 +75,7 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
           extraClasses="absolute right-10"
           onClick={() => navigate("/categories")}
         >
-          Show More
+          Show All
         </Button>
       </ListRow>
       <Footer />

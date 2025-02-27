@@ -30,8 +30,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     const setupPlayer = async () => {
-      const streamKey = await fetchStreamKey();
-      const streamUrl = `/stream/${streamKey}/index.m3u8`;
+      const streamUrl = `/stream/${streamerName}/index.m3u8`;
 
       if (!playerRef.current) {
         const videoElement = document.createElement("video");
@@ -85,12 +84,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         });
         playerRef.current.play();
       }
-    };
-
-    const fetchStreamKey = async () => {
-      const response = await fetch(`/api/user/${streamerName}/stream_key`);
-      const keyData = await response.json();
-      return keyData.stream_key;
     };
 
     setupPlayer();
