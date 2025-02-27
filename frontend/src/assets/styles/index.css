@@ -33,11 +33,11 @@ body[data-theme="light"] {
 
   --sideBar-bg: rgb(255, 255, 255);
   --sideBar-text: black;
-  --sideBar-profile-bg: rgb(132, 0, 255);
+  --sideBar-profile-bg: rgb(224, 205, 241);
   --sideBar-profile-text: #ffffff;
   --profile-border: #ffffff;
 
-  --follow-bg: #ff0000;
+  --follow-bg: #aa00ff;
   --follow-text: white;
   --follow-shadow: 0px 0px 15px rgba(94, 94, 94, 0.754);
 
@@ -45,7 +45,7 @@ body[data-theme="light"] {
   --recommend: rgba(5, 46, 22, 0.6);
 
   --quickBar-title: #ffffff;
-  --quickBar-title-bg: rgb(132, 0, 255);
+  --quickBar-title-bg: rgb(183, 149, 214);
   --quickBar-bg: #ffffff;
   --quickBar-text: #000000;
   --quickBar-border: #ffffff;

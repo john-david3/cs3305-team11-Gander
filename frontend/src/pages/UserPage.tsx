@@ -9,6 +9,7 @@ import Button, { EditButton } from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import { StreamListItem } from "../components/Layout/ListItem";
+import { Camera } from "lucide-react";
 
 interface UserProfileData {
   id: number;
@@ -34,14 +35,15 @@ const UserPage: React.FC = () => {
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { username: loggedInUsername } = useAuth();
   const { username } = useParams();
+  const [isUser, setIsUser] = useState(true);
   const navigate = useNavigate();
 
   const bgColors = {
     personal: "",
-    streamer: "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff0000]", // offline streamer
-    user: "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#ff00f1]",
+    streamer: "bg-gradient-radial from-[rgba(255, 0, 241, 0.5)] via-[rgba(4, 0, 255, 0.5)] to-[rgba(255, 0, 0, 0.5)]",  // offline streamer
+    user: "bg-gradient-radial from-[rgba(255, 0, 241, 0.5)] via-[rgba(4, 0, 255, 0.5)] to-[rgba(255, 0, 241, 0.5)]",    
     admin:
-      "bg-gradient-to-r from-[rgb(255,0,0)] via-transparent to-[rgb(0,0,255)]",
+      "bg-gradient-to-r from-[rgba(255,100,100,0.5)] via-transparent to-[rgba(100,100,255,0.5)]",
   };
 
   useEffect(() => {
@@ -106,7 +108,7 @@ const UserPage: React.FC = () => {
   return (
     <DynamicPageContent
       className={`min-h-screen ${profileData.isLive
-        ? "bg-gradient-radial from-[#ff00f1] via-[#0400ff] to-[#2efd2d]"
+        ? "bg-gradient-radial from-[#1a6600] via-[#66ff66] to-[#003900]"
         : bgColors[userPageVariant]
         } text-white flex flex-col`}
     >
@@ -138,12 +140,24 @@ const UserPage: React.FC = () => {
                rounded-full overflow-hidden flex-shrink-0 border-4 border-[var(--user-pfp-border)] inset-0 z-20"
               style={{ boxShadow: "var(--user-pfp-border-shadow)" }}
             >
-              <img
-                src="/images/monkey.png"
-                alt={`${profileData.username}'s profile`}
-                className="sm:w-[full] h-full object-cover rounded-full
-                "
-              />
+              <label className={`relative ${isUser ? 'cursor-pointer group' : ''}`}>
+                <img
+                  src="/images/monkey.png"
+                  alt={`${profileData.username}'s profile`}
+                  className="sm:w-full h-full object-cover rounded-full"
+                />
+
+                {isUser && (
+                  <>
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"></div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <Camera size={32} className="text-white bg-black/50 p-1 rounded-full" />
+                    </div>
+                    <input type="file" className="hidden" />
+                  </>
+                )}
+              </label>
+
             </div>
 
             {/* Username - Now Directly Below PFP */}
