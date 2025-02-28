@@ -131,13 +131,6 @@ def newsletter_conf(email):
     """
     Handles sending a confirmation email that a user has joined a newsletter
     """
-    salt = token_hex(32)
-
-    token = generate_token(email, salt)
-    token += "CrEaTe"
-    r.setex(token, 3600, salt)
-
-    full_url = url + "/confirm_account_creation/" + token
 
     content = f"""
     <html>
@@ -158,7 +151,7 @@ def newsletter_conf(email):
             <h2>Welcome to the Official Gander Newsletter!</h2>
             <p>If you are receiving this email, it means that you have been officially added to the Monthly Gander newsletter.</p>
             <p>In this newsletter, you will receive updates about: your favourite streamers; important Gander updates; and more!</p>
-            <small><a href="{url}" class="btn">unsubscribe</a></small>
+            <small><a href="{url}">Unsubscribe?</a></small>
         </div>
     </body>
     </html>
