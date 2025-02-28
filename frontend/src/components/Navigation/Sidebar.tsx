@@ -69,15 +69,13 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
     };
   }, [showSideBar, setShowSideBar, isLoggedIn]);
 
-  // Fetch followed categories
   useEffect(() => {
     if (!isLoggedIn) return;
 
     const fetchFollowedCategories = async () => {
       try {
         const response = await fetch("/api/categories/following");
-        if (!response.ok)
-          throw new Error("Failed to fetch followed categories");
+        if (!response.ok) throw new Error("Failed to fetch followed categories");
         const data = await response.json();
         setFollowedCategories(data);
       } catch (error) {
@@ -92,11 +90,10 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
     <>
       <ToggleButton
         onClick={() => handleSideBar()}
-        extraClasses={`absolute group text-[1rem] top-[9vh] ${
-          showSideBar
-            ? "left-[16vw] duration-[0.5s]"
-            : "left-[20px] duration-[1s]"
-        } ease-in-out cursor-pointer z-[50]`}
+        extraClasses={`absolute group text-[1rem] top-[9vh] ${showSideBar
+          ? "left-[16vw] duration-[0.5s]"
+          : "left-[20px] duration-[1s]"
+          } ease-in-out cursor-pointer z-[50]`}
         toggled={showSideBar}
       >
         <SidebarIcon className="h-[2vw] w-[2vw]" />
@@ -110,9 +107,8 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
       <div
         id="sidebar"
         className={`fixed top-0 left-0 w-[15vw] h-screen overflow-x-hidden flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide
-        transition-all duration-500 ease-in-out ${
-          showSideBar ? "translate-x-0" : "-translate-x-full"
-        } ${extraClasses}`}
+        transition-all duration-500 ease-in-out ${showSideBar ? "translate-x-0" : "-translate-x-full"
+          } ${extraClasses}`}
       >
         {/* Profile Info */}
         <div className="flex flex-row items-center border-b-4 border-[var(--profile-border)] justify-evenly bg-[var(--sideBar-profile-bg)] py-[1em]">
@@ -179,18 +175,28 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
             <h2 className="border-b-4 border-t-4 w-[125%] text-2xl cursor-default">
               Categories
             </h2>
-            <div className="flex flex-col flex-grow justify-evenly w-full">
-              {followedCategories.map((category: any) => (
-                <button
-                  key={`category-${category.category_name}`}
-                  className="cursor-pointer bg-black w-full py-2 border border-[--text-color] rounded-lg text-white hover:text-purple-500 transition-colors"
-                  onClick={() =>
-                    navigate(`/category/${category.category_name}`)
-                  }
-                >
-                  {category.category_name}
-                </button>
-              ))}
+
+            {/* Followed Categories */}
+            <div id="categories-followed" className="grid grid-cols-1 gap-4 p-4 w-full">
+              {followedCategories.map((category) => {
+                return (
+                  <div
+                    key={category.category_id}
+                    className="relative flex flex-col items-center justify-center h-full max-h-[50px] border border-[--text-color]
+                     rounded-lg overflow-hidden hover:shadow-lg transition-all hover:opacity-50"
+                    onClick={() => navigate(`/category/${category.category_name}`)}
+                  >
+                    <img
+                      src={`/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`}
+                      alt={category.category_name}
+                      className="w-full h-28 object-cover"
+                    />
+                    <div className="absolute bottom-2 bg-black bg-opacity-60 w-full text-center text-white py-1">
+                      {category.category_name}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
