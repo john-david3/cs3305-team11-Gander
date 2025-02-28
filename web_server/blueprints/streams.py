@@ -213,31 +213,37 @@ def publish_stream():
     except KeyError as ex:
         print(f"Error: {ex}")
 
+    stream_key = data.get("stream_key")
+    stream_title = data.get("title")
+    stream_category = data.get("category_name")
+
+    user_id = None
+    username = None
 
     with Database() as db:
         user_info = db.fetchone("""SELECT user_id, username, is_live
                                 FROM users 
-                                WHERE stream_key = ?""", (data['stream_key'],))
+                                WHERE stream_key = ?""", (stream_key,))
 
-        if not user_info or user_info["is_live"]:
+        if not user_info or user_info.get("is_live"):
             print(
                 "Unauthorized. No user found from Stream key or user is already streaming.", flush=True)
             return "Unauthorized", 403
 
+        user_id = user_info.get("user_id")
+        username = user_info.get("username")
+
         # Insert stream into database
         db.execute("""INSERT INTO streams (user_id, title, start_time, num_viewers, category_id)
-                    VALUES (?, ?, ?, ?, ?)""", (user_info["user_id"],
-                                                data["title"],
+                    VALUES (?, ?, ?, ?, ?)""", (user_id,
+                                                stream_title,
                                                 datetime.now(),
                                                 0,
-                                                get_category_id(data['category_name'])))
+                                                get_category_id(stream_category)))
 
         # Set user as streaming
         db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""",
-                   (user_info["user_id"],))
-
-    username = user_info["username"]
-    user_id = user_info["user_id"]
+                   (user_id,))
 
     # Update thumbnail periodically
     update_thumbnail.delay(user_id,
@@ -255,24 +261,33 @@ def update_stream():
     """
     # TODO: Add thumbnails (paths) to table, allow user to update thumbnail
 
-    stream_key = request.form.get("key")
-    title = request.form.get("title")
-    category_name = request.form.get("category_name")
+    print("Updating stream info", flush=True)
+
+    data = request.get_json()
+    stream_key = data.get("key")
+    stream_title = data.get("title")
+    stream_category = data.get("category_name")
+    # TODO stream_thumbnail = data.get("thumbnail")
+
+    user_id = None
 
     with Database() as db:
         user_info = db.fetchone("""SELECT user_id, username, is_live 
                                 FROM users 
                                 WHERE stream_key = ?""", (stream_key,))
 
-        if not user_info or not user_info["is_live"]:
+        if not user_info or not user_info.get("is_live"):
             print(
                 "Unauthorized - No user found from stream key or user is not streaming", flush=True)
             return "Unauthorized", 403
 
+        user_id = user_info.get("user_id")
+
+        # TODO: Add update to thumbnail here
         db.execute("""UPDATE streams 
                    SET title = ?, category_id = ?
-                   WHERE user_id = ?""", (title, get_category_id(category_name), user_info["user_id"]))
-        
+                   WHERE user_id = ?""", (stream_title, get_category_id(stream_category), user_id))
+
     return "Stream updated", 200
 
 
@@ -290,8 +305,14 @@ def end_stream():
     end thumbnail generation
     """
 
-    stream_key = request.form.get("key")
-    if stream_key is None:
+    print("Ending stream", flush=True)
+
+    stream_key = request.get_json().get("key")
+    user_id = None
+    username = None
+
+    if not stream_key:
+        # Try getting stream_key from form data (for nginx in the case that the stream is ended on OBS's end)
         stream_key = request.form.get("name")
 
     if stream_key is None:
@@ -300,6 +321,9 @@ def end_stream():
 
     # Open database connection
     with Database() as db:
+        initial_streams = db.fetchall("""SELECT title FROM streams""")
+        print("Initial streams:", initial_streams, flush=True)
+
         # Get user info from stream key
         user_info = db.fetchone("""SELECT *
                                 FROM users 
@@ -307,31 +331,34 @@ def end_stream():
 
         stream_info = db.fetchone("""SELECT *
                                 FROM streams
-                                WHERE user_id = ?""", (user_info["user_id"],))
+                                WHERE user_id = ?""", (user_id,))
+
+        print("Got stream_info", stream_info, flush=True)
 
         # If stream key is invalid, return unauthorized
         if not user_info:
             print("Unauthorized - No user found from stream key", flush=True)
             return "Unauthorized", 403
-        
         # If stream never published, return
         if not stream_info:
             print(f"Stream for stream key: {stream_key} never began", flush=True)
             return "Stream ended", 200
-        
+
         # Remove stream from database
         db.execute("""DELETE FROM streams 
-                   WHERE user_id = ?""", (user_info["user_id"],))
+                   WHERE user_id = ?""", (user_id,))
 
         # Move stream to vod table
         stream_length = int(
-            (datetime.now() - parser.parse(stream_info["start_time"])).total_seconds())
+            (datetime.now() - parser.parse(stream_info.get("start_time"))).total_seconds())
 
         db.execute("""INSERT INTO vods (user_id, title, datetime, category_id, length, views)
-                    VALUES (?, ?, ?, ?, ?, ?)""", (user_info["user_id"],
-                                                   stream_info["title"],
-                                                   stream_info["start_time"],
-                                                   stream_info["category_id"],
+                    VALUES (?, ?, ?, ?, ?, ?)""", (user_id,
+                                                   stream_info.get("title"),
+                                                   stream_info.get(
+                                                       "start_time"),
+                                                   stream_info.get(
+                                                       "category_id"),
                                                    stream_length,
                                                    0))
 
@@ -340,12 +367,12 @@ def end_stream():
         # Set user as not streaming
         db.execute("""UPDATE users 
                    SET is_live = 0 
-                   WHERE user_id = ?""", (user_info["user_id"],))
+                   WHERE user_id = ?""", (user_id,))
 
-    # Get username
-    username = user_info["username"]
+        current_streams = db.fetchall("""SELECT title FROM streams""")
 
     combine_ts_stream.delay(path_manager.get_stream_path(
         username), path_manager.get_vods_path(username), vod_id)
 
+    print("Stream ended. Current streams now:", current_streams, flush=True)
     return "Stream ended", 200

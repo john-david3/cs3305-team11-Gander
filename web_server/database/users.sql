@@ -6,7 +6,7 @@ CREATE TABLE users
     password VARCHAR(256),
     email VARCHAR(128) NOT NULL,
     num_followers INTEGER NOT NULL DEFAULT 0,
-    stream_key VARCHAR(60) NOT NULL,
+    stream_key VARCHAR(64) NOT NULL,
     is_partnered BOOLEAN NOT NULL DEFAULT 0,
     is_live BOOLEAN NOT NULL DEFAULT 0,
     bio VARCHAR(1024) DEFAULT 'This user does not have a Bio.',

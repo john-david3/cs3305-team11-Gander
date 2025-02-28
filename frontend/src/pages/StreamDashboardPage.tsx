@@ -206,13 +206,13 @@ const StreamDashboardPage: React.FC = () => {
   const handlePublishStream = async () => {
     console.log("Starting stream with data:", streamData);
 
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(streamData));
-
     try {
       const response = await fetch("/api/publish_stream", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(streamData),
       });
 
       if (response.ok) {
@@ -231,18 +231,18 @@ const StreamDashboardPage: React.FC = () => {
   const handleUpdateStream = async () => {
     console.log("Updating stream with data:", streamData);
 
-    const formData = new FormData();
-    formData.append("key", streamData.stream_key);
-    formData.append("title", streamData.title);
-    formData.append("category_name", streamData.category_name);
-    if (thumbnail) {
-      formData.append("thumbnail", thumbnail);
-    }
-
     try {
       const response = await fetch("/api/update_stream", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: streamData.stream_key,
+          title: streamData.title,
+          category_name: streamData.category_name,
+          thumbnail: thumbnail,
+        }),
       });
 
       if (response.ok) {
@@ -258,14 +258,14 @@ const StreamDashboardPage: React.FC = () => {
 
   const handleEndStream = async () => {
     console.log("Ending stream...");
-
-    const formData = new FormData();
-    formData.append("key", streamData.stream_key);
-
+    
     try {
       const response = await fetch("/api/end_stream", {
         method: "POST",
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ key: streamData.stream_key }),
       });
 
       if (response.ok) {
