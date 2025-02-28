@@ -38,7 +38,7 @@ class PathManager():
         return os.path.join(self.get_stream_path(username), "index.m3u8")
     
     def get_current_stream_thumbnail_file_path(self, username):
-        return os.path.join(self.get_stream_path(username), "index.jpg")
+        return os.path.join(self.get_stream_path(username), "index.png")
     
     def get_vod_file_path(self, username, vod_id):
         return os.path.join(self.get_vods_path(username), f"{vod_id}.mp4")
