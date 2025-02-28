@@ -76,19 +76,32 @@ def get_past_chat(stream_id: int):
     # Connect to the database
     db = Database()
 
-    # fetched in format: [(username, message, time_sent)]
+    # fetched in format: [(username, message, time_sent, is_subscribed)]
     all_chats = db.fetchall("""
-                            SELECT username, message, time_sent
-                            FROM chat
-                            JOIN users ON chat.chatter_id = users.user_id
-                            WHERE stream_id = ?
-                            ORDER BY time_sent ASC
+                            SELECT 
+                                u.username, 
+                                c.message, 
+                                c.time_sent,
+                                CASE
+                                    WHEN s.user_id IS NOT NULL AND s.expires > CURRENT_TIMESTAMP THEN 1
+                                    ELSE 0
+                                END AS is_subscribed
+                            FROM chat c
+                            JOIN users u ON c.chatter_id = u.user_id
+                            LEFT JOIN subscribes s ON c.chatter_id = s.user_id AND s.subscribed_id = ?
+                            WHERE c.stream_id = ?
+                            ORDER BY c.time_sent ASC
                             LIMIT 50;
-                            """, (stream_id,))
+                            """, (stream_id, stream_id))
+
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
-    chat_history = [{"chatter_username": chat["username"], "message": chat["message"], "time_sent": chat["time_sent"]} for chat in all_chats]
+    chat_history = [{"chatter_username": chat["username"], 
+                    "message": chat["message"], 
+                    "time_sent": chat["time_sent"],
+                    "is_subscribed": bool(chat["is_subscribed"])} for chat in all_chats]
+    print(chat_history)
 
     # Pass the chat history to the proxy
     return jsonify({"chat_history": chat_history}), 200

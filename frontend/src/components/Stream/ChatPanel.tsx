@@ -6,12 +6,17 @@ import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
 import { useChat } from "../../context/ChatContext";
-import { ArrowLeftFromLineIcon, ArrowRightFromLineIcon } from "lucide-react";
+import {
+  ArrowLeftFromLineIcon,
+  ArrowRightFromLineIcon,
+  CrownIcon,
+} from "lucide-react";
 
 interface ChatMessage {
   chatter_username: string;
   message: string;
   time_sent: string;
+  is_subscribed: boolean;
 }
 
 interface ChatPanelProps {
@@ -210,7 +215,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               <div className="flex items-center space-x-0.5em">
                 {/* Username */}
                 <span
-                  className={`font-bold text-[1em] ${
+                  className={`flex items-center gap-2 font-bold text-[1em] ${
                     msg.chatter_username === username
                       ? "text-purple-600"
                       : "text-green-400 cursor-pointer"
@@ -221,7 +226,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                       : (window.location.href = `/user/${msg.chatter_username}`)
                   }
                 >
-                  {msg.chatter_username}
+                  {msg.chatter_username} 
+                  {msg.is_subscribed && <CrownIcon size={20} color="gold" />}
                 </span>
               </div>
               {/* Message content */}

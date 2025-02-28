@@ -93,7 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
       <ToggleButton
         extraClasses={`absolute group text-[1rem] top-[2vh] ${
           showQuickSettings ? "right-[21vw]" : "right-[20px]"
-        } cursor-pointer`}
+        } cursor-pointer z-[20]`}
         onClick={() => handleQuickSettings()}
         toggled={showQuickSettings}
       >

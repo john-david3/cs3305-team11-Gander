@@ -1,12 +1,10 @@
 import React from "react";
 import ThemeSetting from "./ThemeSetting";
-import { useTheme } from "../../context/ThemeContext";
 import { useQuickSettings } from "../../context/QuickSettingsContext";
 import Screenshot from "../Functionality/Screenshot";
 import BrightnessControl from "../Functionality/BrightnessControl";
 
 const QuickSettings: React.FC = () => {
-  const { theme } = useTheme();
   const { showQuickSettings } = useQuickSettings();
 
   return (
@@ -21,10 +19,7 @@ const QuickSettings: React.FC = () => {
       >
         <h1 className="text-[2rem] font-black">Quick Settings</h1>
       </div>
-      <div
-        id="quick-settings-menu"
-        className="flex flex-col my-8 gap-4 mb-20"
-      >
+      <div id="quick-settings-menu" className="flex flex-col my-8 gap-4 mb-20">
         <ThemeSetting />
       </div>
       <Screenshot />
