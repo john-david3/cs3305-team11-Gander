@@ -48,9 +48,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
         id="auth-modal"
         className="fixed inset-0 flex items-start justify-center z-[9000] h-[95vh] m-auto pt-[15vh] rounded-[5rem] transition-all animate-floating"
       >
-        <div className="relative w-[35vw] min-w-[300px]">
+        <div className="relative min-w-[30em]">
           {/* Login/Register Buttons Container */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-20 w-[250px] flex justify-center gap-8 transition-transform overflow-visible">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-20 flex justify-center gap-8 transition-transform overflow-visible">
             {/* Login Toggle */}
             <ToggleButton
               toggled={selectedTab === "Login"}
@@ -75,13 +75,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
           {/* Form Container */}
           <div
             className="container flex flex-col items-center justify-around z-[9999] 
-            h-[70vh] m-auto rounded-[5rem] transition-all"
+            h-[70vh] m-auto w-full rounded-[5rem] transition-all"
             style={{ "--spin-duration": spinDuration } as React.CSSProperties}
           >
             {/*Border Container*/}
             <div
               id="border-container"
-              className="front-content bg-authForm flex flex-col justify-center
+              className="front-content bg-authForm flex flex-col justify-center items-center
                 z-50 rounded-[5rem] transition-all"
             >
               <button
@@ -92,7 +92,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
               </button>
               <div
                 id="login-methods"
-                className="flex flex-row items-center justify-evenly h-full py-[10%]"
+                className="flex flex-row items-center w-[20em] justify-evenly h-full py-[10%]"
               >
                 {authSwitch()}
               </div>

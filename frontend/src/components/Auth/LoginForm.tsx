@@ -100,72 +100,69 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
 
   return (
     <>
-      <div className="flex flex-col items-center h-full">
+      <div className="flex flex-col items-center h-full overflow-hidden">
         <h1 className="flex flex-col text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">
           Login
         </h1>
-        <div className="flex flex-col justify-evenly flex-grow mt-[4vh] bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
-          <form
-            onSubmit={handleSubmit}
-            id="login-form"
-            className="flex flex-col justify-evenly flex-grow"
-          >
-            {errors.general && (
-              <p className="text-red-500 text-sm text-center text-[0.75em]">
-                {errors.general}
-              </p>
-            )}
+        <form
+          onSubmit={handleSubmit}
+          id="login-form"
+          className="flex flex-col justify-evenly flex-grow mt-[4vh] bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em] overflow-auto"
+        >
+          {errors.general && (
+            <p className="text-red-500 text-sm text-center text-[0.75em]">
+              {errors.general}
+            </p>
+          )}
 
-            {errors.username && (
-              <p className="text-red-500 text-center text-[0.75em]">
-                {errors.username}
-              </p>
-            )}
+          {errors.username && (
+            <p className="text-red-500 text-center text-[0.75em]">
+              {errors.username}
+            </p>
+          )}
+          <Input
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleInputChange}
+            extraClasses={`w-full focus:w-[120%] p-3 ${
+              errors.username ? "border-red-500" : ""
+            }`}
+          />
+
+          {errors.password && (
+            <p className="text-red-500 text-center text-[0.75em]">
+              {errors.password}
+            </p>
+          )}
+
+          <div className="pb-4">
             <Input
-              name="username"
-              placeholder="Username"
-              value={formData.username}
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={formData.password}
               onChange={handleInputChange}
               extraClasses={`w-full focus:w-[120%] p-3 ${
-                errors.username ? "border-red-500" : ""
+                errors.password ? "border-red-500" : ""
               }`}
-            />
-
-            {errors.password && (
-              <p className="text-red-500 text-center text-[0.75em]">
-                {errors.password}
-              </p>
-            )}
-
-            <div className="pb-4">
-              <Input
-                name="password"
-                type="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleInputChange}
-                extraClasses={`w-full focus:w-[120%] p-3 ${
-                  errors.password ? "border-red-500" : ""
-                }`}
-              ></Input>
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="flex items-center w-fit text-white font-semibold hover:scale-105 mt-2 transition-all ease-in"
-                  onClick={onForgotPassword}
-                >
-                  <ForgotIcon size={16} className="flex flex-row mr-1" />
-                  <span className="text-[calc((1.5vw+1vh)/2)]">
-                    Forgot Password
-                  </span>
-                </button>
-              </div>
+            ></Input>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="flex items-center w-fit text-white font-semibold hover:scale-105 mt-2 transition-all ease-in"
+                onClick={onForgotPassword}
+              >
+                <ForgotIcon size={16} className="flex flex-row mr-1" />
+                <span className="text-[calc((1.5vw+1vh)/2)]">
+                  Forgot Password
+                </span>
+              </button>
             </div>
-            <Button type="submit">Login</Button>
-          </form>
-
+          </div>
+          <Button type="submit">Login</Button>
           <GoogleLogin />
-        </div>
+        </form>
       </div>
     </>
   );
