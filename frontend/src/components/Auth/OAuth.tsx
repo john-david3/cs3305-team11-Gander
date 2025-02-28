@@ -20,7 +20,7 @@ export default function GoogleLogin() {
             alt="Google logo"
             className="w-[2em] h-[2em] mr-2"
           />
-          <span className="flex-grow text-[calc((1.5vw+1.5vh)/2)]">
+          <span className="flex-grow text-[0.75rem] 2lg:text-[1rem]">
             Sign in with Google
           </span>
         </button>
