@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SidebarIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -26,6 +26,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
   const [followedStreamers, setFollowedStreamers] = useState<Streamer[]>([]);
   const [followedCategories, setFollowedCategories] = useState<Category[]>([]);
   const [justToggled, setJustToggled] = useState(false);
+  const sidebarId = useRef(Math.floor(Math.random() * 1000000));
 
   // Fetch followed streamers
   useEffect(() => {
@@ -107,7 +108,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
         )}
       </ToggleButton>
       <div
-        id="sidebar"
+        id={`sidebar-${sidebarId.current}`}
         className={`fixed top-0 left-0 w-[15vw] h-screen overflow-x-hidden flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide
         transition-all duration-500 ease-in-out ${
           showSideBar ? "translate-x-0" : "-translate-x-full"
@@ -161,7 +162,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
             <div className="flex flex-col flex-grow justify-evenly w-full">
               {followedStreamers.map((streamer: any) => (
                 <button
-                  key={`streamer-${streamer.username}`}
+                  key={`${sidebarId.current}-streamer-${streamer.username}`}
                   className="cursor-pointer bg-black w-full py-2 border border-[--text-color] rounded-lg text-white hover:text-purple-500 font-bold transition-colors"
                   onClick={() => navigate(`/user/${streamer.username}`)}
                 >
@@ -187,7 +188,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
               {followedCategories.map((category) => {
                 return (
                   <div
-                    key={category.category_id}
+                    key={`${sidebarId.current}-category-${category.category_id}`}
                     className="group relative flex flex-col items-center justify-center h-full max-h-[50px] border border-[--text-color]
                      rounded-lg overflow-hidden hover:shadow-lg transition-all text-white hover:text-purple-500 cursor-pointer"
                     onClick={() =>
