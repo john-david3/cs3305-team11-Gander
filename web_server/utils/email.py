@@ -7,6 +7,7 @@ from utils.auth import generate_token
 from secrets import token_hex
 from .user_utils import get_session_info_email
 import redis
+from database.database import Database
 
 redis_url = "redis://redis:6379/1"
 r = redis.from_url(redis_url, decode_responses=True)
@@ -157,4 +158,35 @@ def newsletter_conf(email):
     </html>
     """
 
+    add_to_newsletter(email)
+
     return content
+
+def add_to_newsletter(email):
+    """
+    Add a person to the newsletter database
+    """
+    # Create connection to the database
+    db = Database()
+    db.create_connection()
+
+    # Add the users email to the newsletter table
+    db.execute("""
+            INSERT INTO newsletter (email)
+            VALUES (?);
+            """, (email,))
+
+
+def remove_from_newsletter(email):
+    """
+    Remove a person from the newsletter database
+    """
+    # Create connection to the database
+    db = Database()
+    db.create_connection()
+
+    # Remove the users email from the newsletter table
+    db.execute("""
+            DELETE FROM newsletter
+            WHERE email = ?;
+            """, (email,))

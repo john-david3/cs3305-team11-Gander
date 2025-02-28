@@ -58,3 +58,10 @@ CREATE TABLE followed_categories
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
+
+DROP TABLE IF EXISTS newsletter;
+CREATE TABLE newsletter
+(
+    email VARCHAR(256) NOT NULL,
+    PRIMARY KEY(email)
+);
