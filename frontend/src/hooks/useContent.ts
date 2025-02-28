@@ -4,7 +4,27 @@ import { useAuth } from "../context/AuthContext";
 import { StreamType } from "../types/StreamType";
 import { CategoryType } from "../types/CategoryType";
 import { UserType } from "../types/UserType";
+import { VodType } from "../types/VodType"
 import { getCategoryThumbnail } from "../utils/thumbnailUtils";
+
+// Process API data into our VodType structure
+const processVodData = (data: any[]): VodType[] => {
+  console.log("Raw API VOD Data:", data); // Debugging
+  return data.map((vod) => ({
+    type: "vod",
+    id: vod.id,  // Ensure this matches API response
+    title: vod.title,
+    streamer: vod.streamer, // Ensure backend sends streamer name or ID
+    datetime: new Date(vod.datetime).toLocaleString(),
+    category: vod.category,
+    length: vod.length,
+    views: vod.views,
+    url: vod.url,
+    thumbnail: "../../images/category_thumbnails/abstract.webp",
+  }));
+};
+
+
 
 // Helper function to process API data into our consistent types
 const processStreamData = (data: any[]): StreamType[] => {
@@ -117,6 +137,24 @@ export function useCategories(customUrl?: string): {
 
   return { categories: data, isLoading, error };
 }
+
+export function useVods(customUrl?: string): { 
+  vods: VodType[]; 
+  isLoading: boolean; 
+  error: string | null 
+} {
+  const url = customUrl || "api/vods/all"; 
+  const { data, isLoading, error } = useFetchContent<VodType>(
+    url,
+    processVodData,
+    [customUrl]
+  );
+
+  console.log("Fetched VODs Data:", data);  // Debugging
+
+  return { vods: data, isLoading, error };
+}
+
 
 export function useUsers(customUrl?: string): { 
   users: UserType[]; 
