@@ -60,15 +60,6 @@ def user_profile_picture_save():
 
     return jsonify({"message": "Profile picture saved"})
 
-
-@user_bp.route('/user/profile_picture/<string:username>')
-def user_profile_picture(username: str):
-    """
-    Returns the profile picture of a user
-    """
-    user_id = get_user_id(username)
-    image = Image.open(f"/web_server/stream_data/{user_id}.jpg")
-
 @login_required
 @user_bp.route('/user/same/<string:username>')
 def user_is_same(username):
