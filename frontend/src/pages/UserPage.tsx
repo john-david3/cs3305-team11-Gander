@@ -11,6 +11,7 @@ import LoadingScreen from "../components/Layout/LoadingScreen";
 import { StreamListItem } from "../components/Layout/ListItem";
 import { CameraIcon } from "lucide-react";
 import { getCategoryThumbnail } from "../utils/thumbnailUtils";
+import { useSameUser } from "../hooks/useSameUser";
 
 interface UserProfileData {
   id: number;
@@ -36,16 +37,29 @@ const UserPage: React.FC = () => {
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { username: loggedInUsername } = useAuth();
   const { username } = useParams();
-  const [isUser, setIsUser] = useState(true);
+  const isUser = useSameUser({username});
   const navigate = useNavigate();
 
-  const bgColors = {
-    personal: "",
-    streamer:
-      "bg-gradient-radial from-[rgba(255, 0, 241, 0.5)] via-[rgba(4, 0, 255, 0.5)] to-[rgba(255, 0, 0, 0.5)]", // offline streamer
-    user: "bg-gradient-radial from-[rgba(255, 0, 241, 0.5)] via-[rgba(4, 0, 255, 0.5)] to-[rgba(255, 0, 241, 0.5)]",
-    admin:
-      "bg-gradient-to-r from-[rgba(255,100,100,0.5)] via-transparent to-[rgba(100,100,255,0.5)]",
+  // Saves uploaded image as profile picture for the user
+  const saveUploadedImage = async (event) => {
+    const img = event.target.files[0];
+    if (img) {
+      const formData = new FormData();
+      formData.append('image', img);
+  
+      try {
+        const response = await fetch('/api/user/profile_picture/upload', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        if (response.ok) {
+          console.log("Success");
+        }
+      } catch (error) {
+        console.log("Failure");
+      }
+    }
   };
 
   useEffect(() => {
@@ -108,11 +122,7 @@ const UserPage: React.FC = () => {
 
   return (
     <DynamicPageContent
-      className={`min-h-screen ${/*
-        profileData.isLive
-          ? "bg-gradient-radial from-[#1a6600] via-[#66ff66] to-[#003900]"
-          : bgColors[userPageVariant]
-      */ ""} text-white flex flex-col`}
+      className={`min-h-screen text-white flex flex-col`}
     >
       <div className="flex justify-evenly justify-self-center items-center h-full px-4 py-8 max-w-[80vw] w-full">
         <div className="grid grid-cols-4 grid-rows-[0.1fr_4fr] w-full gap-8">
@@ -138,18 +148,25 @@ const UserPage: React.FC = () => {
             {/* Profile Picture */}
             <div
               className="relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
-               rounded-full overflow-hidden flex-shrink-0 border-4 border-[var(--user-pfp-border)] inset-0 z-20"
+               rounded-full flex-shrink-0 border-4 border-[var(--user-pfp-border)] inset-0 z-20"
               style={{ boxShadow: "var(--user-pfp-border-shadow)" }}
             >
               <label
-                className={`relative ${isUser ? "cursor-pointer group" : ""}`}
+                className={`relative ${isUser ? "cursor-pointer group" : ""} overflow-visible`}
               >
+                {/* If user is live then displays a live div */}
+                {Boolean(profileData.isLive) && (
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-sm font-bold py-1 sm:px-5 px-4 z-30 flex items-center justify-center rounded-tr-xl rounded-bl-xl rounded-tl-xl rounded-br-xl">
+                    LIVE
+                  </div>
+                )}
                 <img
                   src="/images/monkey.png"
                   alt={`${profileData.username}'s profile`}
-                  className="sm:w-full h-full object-cover rounded-full"
+                  className="sm:w-full h-full object-cover rounded-full relative z-0"
                 />
 
+                {/* If current user is the profile user then allow profile picture swap */}
                 {isUser && (
                   <>
                     <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"></div>
@@ -159,7 +176,11 @@ const UserPage: React.FC = () => {
                         className="text-white bg-black/50 p-1 rounded-full"
                       />
                     </div>
-                    <input type="file" className="hidden" />
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={saveUploadedImage}
+                      accept="image/*" />
                   </>
                 )}
               </label>

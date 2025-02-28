@@ -1,10 +1,13 @@
-from flask import Blueprint, jsonify, session
+from flask import Blueprint, jsonify, session, request
 from utils.user_utils import *
 from utils.auth import *
 from utils.utils import get_category_id
 from blueprints.middleware import login_required
 from utils.email import send_email, forgot_password_body, newsletter_conf
 import redis
+
+from io import BytesIO
+from PIL import Image
 
 redis_url = "redis://redis:6379/1"
 r = redis.from_url(redis_url, decode_responses=True)
@@ -32,6 +35,31 @@ def user_stream_key(username: str):
     with Database() as db:
         data = db.fetchone("SELECT stream_key FROM users WHERE user_id = ?", (user_id,))
     return jsonify({"stream_key": data["stream_key"]})
+
+@login_required
+@user_bp.route('/user/profile_picture/upload', methods=['POST'])
+def user_profile_picture_save():
+    """
+    Saves user profile picture
+    """
+    user_id = session.get("user_id")
+    image = request.files['image']
+    ext = image.filename.split('.')[-1] 
+    
+    image.save(f"/web_server/stream_data/{user_id}.{ext}")
+
+    return "Success", 200  
+
+@login_required
+@user_bp.route('/user/same/<string:username>')
+def user_is_same(username):
+    """
+    Returns if given user is current user
+    """
+    current_username = session.get("username")
+    if username == current_username:
+        return jsonify({"same": True})
+    return jsonify({"same": False})
 
 ## Subscription Routes
 @login_required
@@ -146,7 +174,7 @@ def user_login_status():
                     'username': username,
                     'user_id': user_id})
 
-@user_bp.route('/user/forgot_password/<string:email>', methods=['GET','POST'])
+@user_bp.route('/user/forgot_password/<string:email>', methods=['POST'])
 def user_forgot_password(email):
     """
     Initializes the function to handle password reset
