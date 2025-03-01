@@ -216,6 +216,16 @@ def get_email(user_id: int) -> Optional[str]:
 def get_followed_streamers(user_id: int) -> Optional[List[dict]]:
     """
     Returns a list of streamers who the user follows
+
+    Returns:
+        List of dictionaries with the following structure:
+        [
+            {
+                "user_id": int,
+                "username": str
+            },
+            ...
+        ]
     """
     with Database() as db:
         followed_streamers = db.fetchall("""
@@ -224,6 +234,28 @@ def get_followed_streamers(user_id: int) -> Optional[List[dict]]:
             WHERE user_id IN (SELECT followed_id FROM follows WHERE user_id = ?);
         """, (user_id,))
     return followed_streamers
+
+def get_followed_categories(user_id: int) -> Optional[List[dict]]:
+    """
+    Returns a list of categories that the user follows
+
+    Returns:
+        List of dictionaries with the following structure:
+        [
+            {
+                "category_id": int,
+                "category_name": str
+            },
+            ...
+        ]
+    """
+    with Database() as db:
+        followed_categories = db.fetchall("""
+            SELECT category_id, category_name
+            FROM categories
+            WHERE category_id IN (SELECT category_id FROM followed_categories WHERE user_id = ?);
+        """, (user_id,))
+    return followed_categories
 
 def get_user(user_id: int) -> Optional[dict]:
     """

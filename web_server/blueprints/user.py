@@ -132,14 +132,15 @@ def user_unfollow(target_user_id: int):
 
 @login_required
 @user_bp.route('/user/following')
-def user_followed_streamers():
+def user_followed_content():
     """
-    Queries DB to get a list of followed streamers
+    Queries DB to get a dict of followed users and categories
     """
     user_id = session.get('user_id')
 
-    live_following_streams = get_followed_streamers(user_id)
-    return live_following_streams
+    streams = get_followed_streamers(user_id)
+    categories = get_followed_categories(user_id)
+    return jsonify({"streams": streams, "categories": categories})
 
 @login_required
 @user_bp.route('/user/category/follow/<string:category_name>')

@@ -28,22 +28,23 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
   const [justToggled, setJustToggled] = useState(false);
   const sidebarId = useRef(Math.floor(Math.random() * 1000000));
 
-  // Fetch followed streamers
+  // Fetch followed streamers & categories
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    const fetchFollowedStreamers = async () => {
+    const fetchFollowData = async () => {
       try {
         const response = await fetch("/api/user/following");
-        if (!response.ok) throw new Error("Failed to fetch followed streamers");
+        if (!response.ok) throw new Error("Failed to fetch followed content");
         const data = await response.json();
-        setFollowedStreamers(data);
+        setFollowedStreamers(data.streams);
+        setFollowedCategories(data.categories);
       } catch (error) {
-        console.error("Error fetching followed streamers:", error);
+        console.error("Error fetching followed content:", error);
       }
     };
 
-    fetchFollowedStreamers();
+    fetchFollowData();
   }, [isLoggedIn]);
 
   const handleSideBar = () => {
@@ -69,24 +70,6 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [showSideBar, setShowSideBar, isLoggedIn]);
-
-  useEffect(() => {
-    if (!isLoggedIn) return;
-
-    const fetchFollowedCategories = async () => {
-      try {
-        const response = await fetch("/api/categories/following");
-        if (!response.ok)
-          throw new Error("Failed to fetch followed categories");
-        const data = await response.json();
-        setFollowedCategories(data);
-      } catch (error) {
-        console.error("Error fetching followed categories:", error);
-      }
-    };
-
-    fetchFollowedCategories();
-  }, [isLoggedIn]);
 
   return (
     <>
@@ -160,7 +143,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
               Streamers
             </h2>
             <div className="flex flex-col flex-grow justify-evenly w-full">
-              {followedStreamers.map((streamer: any) => (
+              {followedStreamers.map((streamer) => (
                 <button
                   key={`${sidebarId.current}-streamer-${streamer.username}`}
                   className="cursor-pointer bg-black w-full py-2 border border-[--text-color] rounded-lg text-white hover:text-purple-500 font-bold transition-colors"
@@ -192,7 +175,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
                     className="group relative flex flex-col items-center justify-center h-full max-h-[50px] border border-[--text-color]
                      rounded-lg overflow-hidden hover:shadow-lg transition-all text-white hover:text-purple-500 cursor-pointer"
                     onClick={() =>
-                      window.location.href = `/category/${category.category_name}`
+                      (window.location.href = `/category/${category.category_name}`)
                     }
                   >
                     <img
