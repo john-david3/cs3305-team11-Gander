@@ -178,13 +178,3 @@ INSERT INTO followed_categories (user_id, category_id) VALUES
 INSERT INTO subscribes (user_id, subscribed_id, since, expires) VALUES 
 (7, 1, '2024-08-30', '2025-02-28 12:00:00'),
 (7, 2, '2024-08-30', '2025-02-15');
-
-SELECT * FROM users;
-SELECT * FROM follows;
-SELECT * FROM user_preferences;
-SELECT * FROM subscribes;
-SELECT * FROM categories;
-SELECT * FROM streams;
-SELECT * FROM chat;
-SELECT * FROM tags;
-SELECT * FROM stream_tags;
