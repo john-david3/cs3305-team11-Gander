@@ -162,6 +162,7 @@ def vods(username):
     vods = get_user_vods(user_id)
     return jsonify(vods)
 
+@stream_bp.route('/vods/all')
 def get_all_vods():
     """
     Returns data of all VODs by all streamers in a JSON-compatible format
@@ -169,10 +170,9 @@ def get_all_vods():
     with Database() as db:
         vods = db.fetchall("SELECT * FROM vods")
     
-    print("Fetched VODs from DB:", vods)  # ✅ Debugging line
+    print("Fetched VODs from DB:", vods)
     
     return jsonify(vods)
-
 
 # RTMP Server Routes
 
@@ -198,7 +198,7 @@ def init_stream():
 
     # Create necessary directories
     username = user_info["username"]
-    create_user_directories(username)
+    create_local_directories(username)
 
     return redirect(f"/stream/{username}")
 
@@ -215,6 +215,7 @@ def publish_stream():
     set user as streaming
     periodically update thumbnail
     """
+
 
     try:
         data = json.loads(request.form.get("data"))
