@@ -71,7 +71,7 @@ const ForgotPasswordForm: React.FC<SubmitProps> = ({ onSubmit }) => {
   return (
     <div className="mb-2">
       <div className="flex flex-col items-center p-[2.5rem]">
-        <h1 className="text-white text-[1.5em] font-[800] md:text-[1.75em] lg:text-[2em]">
+        <h1 className="text-white text-[1.4em] font-[800] md:text-[1.5em] lg:text-[1.75em]">
           Forgot Password
         </h1>
         <div className="mt-10 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-[10em] min-w-[14em] border border-white/10 sm:max-w-[16em] md:max-w-[18em] lg:max-w-[20em]">
