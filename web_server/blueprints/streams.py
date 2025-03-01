@@ -5,7 +5,7 @@ from utils.user_utils import get_user_id
 from blueprints.middleware import login_required
 from database.database import Database
 from datetime import datetime
-from celery_tasks import update_thumbnail, combine_ts_stream
+from celery_tasks.streaming import update_thumbnail, combine_ts_stream
 from dateutil import parser
 from utils.path_manager import PathManager
 import json
@@ -198,7 +198,7 @@ def init_stream():
 
     # Create necessary directories
     username = user_info["username"]
-    create_local_directories(username)
+    create_user_directories(username)
 
     return redirect(f"/stream/{username}")
 
@@ -215,7 +215,6 @@ def publish_stream():
     set user as streaming
     periodically update thumbnail
     """
-
 
     try:
         data = json.loads(request.form.get("data"))

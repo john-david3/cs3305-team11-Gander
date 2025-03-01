@@ -151,7 +151,7 @@ def get_vod_tags(vod_id: int):
         """, (vod_id,))
     return tags
 
-def create_local_directories(username: str):
+def create_user_directories(username: str):
     """
     Create directories for user stream data if they do not exist
     """
