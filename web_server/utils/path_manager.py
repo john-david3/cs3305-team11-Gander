@@ -10,23 +10,22 @@ class PathManager():
 
         self._create_root_directories()
 
+    def _create_directory(self, path):
+        """
+        Create a directory if it does not exist
+        """
+        if not os.path.exists(path):
+            os.makedirs(path)
+            os.chmod(path, 0o777)
+
     def _create_root_directories(self):
         """
         Create directories for stream data if they do not exist
         """
-        if not os.path.exists(self.vods_path):
-            os.makedirs(self.vods_path)
-
-        if not os.path.exists(self.stream_path):
-            os.makedirs(self.stream_path)
-
-        if not os.path.exists(self.profile_pictures_path):
-            os.makedirs(self.profile_pictures_path)
-
-        # Fix permissions
-        os.chmod(self.vods_path, 0o777)
-        os.chmod(self.stream_path, 0o777)
-        os.chmod(self.profile_pictures_path, 0o777)
+        self._create_directory(self.root_path)
+        self._create_directory(self.vods_path)
+        self._create_directory(self.stream_path)
+        self._create_directory(self.profile_pictures_path)
 
     def get_vods_path(self, username):
         return os.path.join(self.vods_path, username)
