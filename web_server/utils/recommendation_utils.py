@@ -33,6 +33,20 @@ def get_followed_categories_recommendations(user_id: int, no_streams: int = 4) -
         """, (user_id, no_streams))
     return streams
 
+def get_followed_your_categories(user_id: int) -> Optional[List[dict]]:
+    """
+    Returns all user followed categories
+    """
+    with Database() as db:
+        categories = db.fetchall("""
+            SELECT categories.category_name
+            FROM categories
+            JOIN followed_categories 
+            ON categories.category_id = followed_categories.category_id
+            WHERE followed_categories.user_id = ?;
+        """, (user_id,))
+    return categories
+
 
 def get_streams_based_on_category(category_id: int, no_streams: int = 4, offset: int = 0) -> Optional[List[dict]]:
     """

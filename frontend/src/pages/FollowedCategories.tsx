@@ -32,7 +32,7 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
 
         const fetchFollowedCategories = async () => {
             try {
-                const response = await fetch("/api/categories/following");
+                const response = await fetch("/api/categories/your_categories");
                 if (!response.ok) throw new Error("Failed to fetch followed categories");
                 const data = await response.json();
                 setFollowedCategories(data);
@@ -52,7 +52,7 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
                 className={`top-0 left-0 w-screen h-screen overflow-x-hidden flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide transition-all duration-500 ease-in-out ${extraClasses}`}
             >
                 {/* Followed Categories */}
-                <div id="categories-followed" className="grid grid-cols-3 gap-4 p-4 w-full">
+                <div id="categories-followed" className="grid grid-cols-4 gap-4 p-4 w-full">
                     {followedCategories.map((category) => {
                         return (
                             <div

@@ -126,6 +126,18 @@ def following_categories_streams():
     return jsonify(streams)
 
 
+@login_required
+@stream_bp.route('/categories/your_categories')
+def following_your_categories():
+    """
+    Returns categories which the user followed
+    """
+
+    streams = get_followed_your_categories(session.get('user_id'))
+    return jsonify(streams)
+
+
+
 # User Routes
 @stream_bp.route('/user/<string:username>/status')
 def user_live_status(username):
