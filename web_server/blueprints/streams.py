@@ -198,7 +198,7 @@ def init_stream():
 
     # Create necessary directories
     username = user_info["username"]
-    create_local_directories(username)
+    create_user_directories(username)
 
     return redirect(f"/stream/{username}")
 
