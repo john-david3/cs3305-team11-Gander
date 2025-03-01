@@ -1,12 +1,11 @@
 import React from "react";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
-import { useStreams, useCategories } from "../hooks/useContent";
+import { useStreams, useCategories, useVods } from "../hooks/useContent";
 import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import Footer from "../components/Layout/Footer";
-import { useVods } from "../hooks/useContent";  // Import useVods
 
 
 interface HomePageProps {
