@@ -60,7 +60,6 @@ def recommended_streams() -> list[dict]:
     """
 
     user_id = session.get("user_id")
-
     # Get the user's most popular categories
     category = get_user_preferred_category(user_id)
     streams = get_streams_based_on_category(category)
@@ -112,7 +111,7 @@ def recommended_categories() -> list | list[dict]:
 
     """
     user_id = session.get("user_id")
-    categories = get_user_category_recommendations(user_id)
+    categories = get_user_category_recommendations(1)
     return jsonify(categories)
 
 

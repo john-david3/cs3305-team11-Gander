@@ -9,7 +9,7 @@ import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 // Process API data into our VodType structure
 const processVodData = (data: any[]): VodType[] => {
-  console.log("Raw API VOD Data:", data); // Debugging
+  
   return data.map((vod) => ({
     type: "vod",
     id: vod.id,  // Ensure this matches API response
@@ -40,6 +40,7 @@ const processStreamData = (data: any[]): StreamType[] => {
 };
 
 const processCategoryData = (data: any[]): CategoryType[] => {
+  console.log("Raw API VOD Data:", data); // Debugging
   return data.map((category) => ({
     type: "category",
     id: category.category_id,
@@ -135,6 +136,9 @@ export function useCategories(customUrl?: string): {
     [isLoggedIn, customUrl]
   );
 
+  console.log("Fetched Cat Data:", data);  // Debugging
+
+
   return { categories: data, isLoading, error };
 }
 
@@ -150,7 +154,6 @@ export function useVods(customUrl?: string): {
     [customUrl]
   );
 
-  console.log("Fetched VODs Data:", data);  // Debugging
 
   return { vods: data, isLoading, error };
 }
