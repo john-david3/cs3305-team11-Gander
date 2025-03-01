@@ -162,6 +162,17 @@ def vods(username):
     vods = get_user_vods(user_id)
     return jsonify(vods)
 
+def get_all_vods():
+    """
+    Returns data of all VODs by all streamers in a JSON-compatible format
+    """
+    with Database() as db:
+        vods = db.fetchall("SELECT * FROM vods")
+    
+    print("Fetched VODs from DB:", vods)  # ✅ Debugging line
+    
+    return jsonify(vods)
+
 
 # RTMP Server Routes
 
