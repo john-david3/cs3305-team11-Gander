@@ -6,7 +6,7 @@ class PathManager():
     def __init__(self) -> None:
         self.root_path = "user_data"
         self.vod_directory_name = "vods"
-        self.stream_directory_name = "streams"
+        self.stream_directory_name = "stream"
         self.profile_picture_name = "index.png"
         self.stream_index_name = "index.m3u8"
         self.stream_thumbnail_name = "index.png"
