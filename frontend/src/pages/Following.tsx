@@ -7,8 +7,8 @@ import { useAuthModal } from "../hooks/useAuthModal";
 import FollowUserButton from "../components/Input/FollowUserButton";
 
 interface Streamer {
-  user_id: number;
-  username: string;
+	user_id: number;
+	username: string;
 }
 
 interface FollowingStreamerProps {
@@ -45,10 +45,10 @@ const Following: React.FC<FollowingStreamerProps> = ({ extraClasses = "" }) => {
       }
     };
 
-    if (isLoggedIn) {
-      fetchFollowedStreamers();
-    }
-  }, [isLoggedIn]);
+		if (isLoggedIn) {
+			fetchFollowedStreamers();
+		}
+	}, [isLoggedIn]);
 
 
   const handleFollowToggle = async (userId: number) => {

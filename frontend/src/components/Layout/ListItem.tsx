@@ -84,7 +84,11 @@ const UserListItem: React.FC<UserListItemProps> = ({ title, username, isLive, on
 				onClick={onItemClick}
 			>
 				<img
-          src="/images/monkey.png"
+					src={`/user/${username}/profile_picture`}
+					onError={(e) => {
+						e.currentTarget.src = "/images/pfps/default.png";
+						e.currentTarget.onerror = null;
+					}}
 					alt={`user ${username}`}
 					className="rounded-xl border-[0.15em] border-[var(--bg-color)] cursor-pointer"
 				/>

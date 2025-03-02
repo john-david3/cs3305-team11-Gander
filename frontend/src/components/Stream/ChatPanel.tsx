@@ -183,7 +183,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 							onClick={() => (msg.chatter_username === username ? null : (window.location.href = `/user/${msg.chatter_username}`))}
 						>
 							<img
-                src="/images/monkey.png"
+								src={`/user/${msg.chatter_username}/profile_picture`}
+								onError={(e) => {
+									e.currentTarget.src = "/images/pfps/default.png";
+									e.currentTarget.onerror = null;
+								}}
 								alt="User Avatar"
 								className="w-full h-full object-cover"
 								style={{ width: "2.5em", height: "2.5em" }}

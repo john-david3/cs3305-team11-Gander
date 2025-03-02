@@ -84,9 +84,7 @@ const ResultsPage: React.FC = ({ }) => {
               id: user.user_id,
               type: "user",
               title: `${user.is_live ? "🔴" : ""} ${user.username}`,
-              viewers: 0,
-              username: user.username,
-              thumbnail: user.profile_picture,
+              username: user.username
             }))}
             title="Users"
             onItemClick={(username: string) =>
