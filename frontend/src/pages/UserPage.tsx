@@ -9,7 +9,7 @@ import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import { StreamListItem } from "../components/Layout/ListItem";
-import { CameraIcon } from "lucide-react";
+import { EditIcon } from "lucide-react";
 import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 import { useSameUser } from "../hooks/useSameUser";
 
@@ -142,14 +142,16 @@ const UserPage: React.FC = () => {
 						</div>
 						{/* Profile Picture */}
 						<div
-							className="relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
-               rounded-full flex-shrink-0 border-4 border-[var(--user-pfp-border)] inset-0 z-20"
+							className={`relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
+               rounded-full flex-shrink-0 border-4 ${
+									profileData.isLive ? "border-[#ff0000]" : "border-[var(--user-pfp-border)]"
+								} inset-0 z-20`}
 							style={{ boxShadow: "var(--user-pfp-border-shadow)" }}
 						>
-							<label className={`relative ${isUser ? "cursor-pointer group" : ""} overflow-visible`}>
+							<label className={`w-full h-full ${isUser ? "group cursor-pointer" : ""} overflow-visible rounded-full`}>
 								{/* If user is live then displays a live div */}
-								{Boolean(profileData.isLive) && (
-									<div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-sm font-bold py-1 sm:px-5 px-4 z-30 flex items-center justify-center rounded-tr-xl rounded-bl-xl rounded-tl-xl rounded-br-xl">
+								{profileData.isLive && (
+									<div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-[#ff0000] text-white text-sm font-bold py-1 sm:px-5 px-4 z-30 flex items-center justify-center rounded-tr-xl rounded-bl-xl rounded-tl-xl rounded-br-xl">
 										LIVE
 									</div>
 								)}
@@ -160,18 +162,15 @@ const UserPage: React.FC = () => {
 										e.currentTarget.onerror = null;
 									}}
 									alt={`${profileData.username}'s profile`}
-									className="sm:w-full h-full object-cover rounded-full relative z-0"
+									className="sm:w-full h-full object-cover rounded-full group-hover:brightness-50 relative z-0 transition-all"
 								/>
 
 								{/* If current user is the profile user then allow profile picture swap */}
 								{isUser && (
-									<>
-										<div className="absolute top-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"></div>
-										<div className="absolute top-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-											<CameraIcon size={32} className="text-white bg-black/50 p-1 rounded-full" />
-										</div>
+									<div className="absolute top-0 bottom-0 left-0 right-0 m-auto flex items-center justify-center opacity-0 z-50 group-hover:opacity-100 transition-opacity duration-200">
+										<EditIcon size={75} className="text-white bg-black/50 p-1 rounded-3xl" />
 										<input type="file" className="hidden" onChange={saveUploadedImage} accept="image/*" />
-									</>
+									</div>
 								)}
 							</label>
 						</div>

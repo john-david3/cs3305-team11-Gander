@@ -68,11 +68,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamer, extraClasses = "", 
 
 						// Custom error UI
 						const errorElement = document.createElement("div");
-						errorElement.className = "absolute top-0 left-0 right-0 flex flex-col items-center justify-center h-full bg-gray-800 text-white p-4 rounded";
+						errorElement.className =
+							"absolute top-0 left-0 right-0 flex flex-col items-center justify-center h-full w-full bg-gray-800 text-white text-center p-4 rounded";
 						errorElement.innerHTML = `
-              <div class="text-xl mb-2">Stream Currently Unavailable</div>
-              <div class="mb-4">The streamer may be offline</div>
-            `;
+							<div class="text-xl mb-2">Stream Currently Unavailable</div>
+							${window.location.href.includes("dashboard") ? "" : "<div class='mb - 4'>The streamer may be offline</div>"}
+							<h2>Retrying...</h2>
+							`;
 						videoRef.current.appendChild(errorElement);
 					}
 
@@ -113,7 +115,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamer, extraClasses = "", 
 	}, [streamerName]);
 
 	return (
-		<div id="video-player" className={`${extraClasses} w-full h-full mx-auto flex justify-center items-center bg-gray-900 rounded-lg`}>
+		<div
+			id="video-player"
+			className={`relative ${extraClasses} w-full h-full mx-auto flex justify-center items-center bg-gray-900 rounded-lg`}
+		>
 			<div ref={videoRef} className="w-full max-w-[160vh] self-center" />
 		</div>
 	);
