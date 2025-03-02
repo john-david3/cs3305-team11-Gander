@@ -4,12 +4,12 @@ import os
 
 class PathManager():
     def __init__(self) -> None:
-        self.root_path = "stream_data"
-        self.vods_path = os.path.join(self.root_path, "vods")
-        self.stream_path = os.path.join(self.root_path, "stream")
-        self.profile_pictures_path = os.path.join(self.root_path, "profile_pictures")
-
-        self._create_root_directories()
+        self.root_path = "user_data"
+        self.vod_directory_name = "vods"
+        self.stream_directory_name = "streams"
+        self.profile_picture_name = "index.png"
+        self.stream_index_name = "index.m3u8"
+        self.stream_thumbnail_name = "index.png"
 
     def _create_directory(self, path):
         """
@@ -19,20 +19,33 @@ class PathManager():
             os.makedirs(path)
             os.chmod(path, 0o777)
 
-    def _create_root_directories(self):
+    def create_user(self, username):
         """
-        Create directories for stream data if they do not exist
+        Create directories for user stream data if they do not exist
         """
-        self._create_directory(self.root_path)
-        self._create_directory(self.vods_path)
-        self._create_directory(self.stream_path)
-        self._create_directory(self.profile_pictures_path)
+        self._create_directory(os.path.join(self.root_path, username))
+        vods_path = self.get_vods_path(username)
+        stream_path = self.get_stream_path(username)
+        
+        self._create_directory(vods_path)
+        self._create_directory(stream_path)
+
+    def delete_user(self, username):
+        """
+        Delete directories for user stream data
+        """
+        user_path = self.get_user_path(username)
+        if os.path.exists(user_path):
+            os.rmdir(user_path)
+
+    def get_user_path(self, username):
+        return os.path.join(self.root_path, username)
 
     def get_vods_path(self, username):
-        return os.path.join(self.vods_path, username)
+        return os.path.join(self.root_path, username, self.vod_directory_name)
     
     def get_stream_path(self, username):
-        return os.path.join(self.stream_path, username)
+        return os.path.join(self.root_path, username, self.stream_directory_name)
     
     def get_stream_file_path(self, username):
         return os.path.join(self.get_stream_path(username), "index.m3u8")
@@ -47,7 +60,4 @@ class PathManager():
         return os.path.join(self.get_vods_path(username), f"{vod_id}.png")
     
     def get_profile_picture_file_path(self, username):
-        return os.path.join(self.profile_pictures_path, f"{username}.png")
-    
-    def get_profile_picture_path(self):
-        return self.profile_pictures_path
+        return os.path.join(self.root_path, username, self.profile_picture_name)

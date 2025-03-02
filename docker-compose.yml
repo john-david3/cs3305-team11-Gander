@@ -11,7 +11,7 @@ services:
     networks:
       - app_network
     volumes:
-      - stream_data:/stream_data
+      - user_data:/user_data
   
   web_server:
     build:
@@ -26,7 +26,7 @@ services:
       - FLASK_APP=blueprints.__init__
       - FLASK_ENV=production
     volumes:
-      - stream_data:/web_server/stream_data
+      - user_data:/web_server/user_data
       - database_data:/web_server/database
 
   frontend:
@@ -58,7 +58,7 @@ services:
       - redis
     volumes:
       - .:/app
-      - stream_data:/web_server/stream_data
+      - user_data:/web_server/user_data
       - database_data:/web_server/database
     networks:
       - app_network
@@ -71,7 +71,7 @@ services:
       - redis
     volumes:
       - .:/app
-      - stream_data:/web_server/stream_data
+      - user_data:/web_server/user_data
       - database_data:/web_server/database
     networks:
       - app_network
@@ -81,7 +81,7 @@ networks:
     driver: bridge
 
 volumes:
-  stream_data:
+  user_data:
     driver: local
   database_data:
     driver: local
