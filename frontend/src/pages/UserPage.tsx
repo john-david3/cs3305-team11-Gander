@@ -12,6 +12,8 @@ import { StreamListItem } from "../components/Layout/ListItem";
 import { CameraIcon } from "lucide-react";
 import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 import { useSameUser } from "../hooks/useSameUser";
+import useFetchProfilePicture from "../hooks/useFetchProfilePicture";
+import { useSidebar } from "../context/SidebarContext";
 
 interface UserProfileData {
   id: number;
@@ -37,8 +39,17 @@ const UserPage: React.FC = () => {
   const { showAuthModal, setShowAuthModal } = useAuthModal();
   const { username: loggedInUsername } = useAuth();
   const { username } = useParams();
-  const isUser = useSameUser({username});
+  const isUser = useSameUser({ username });
   const navigate = useNavigate();
+  const [refreshImage, setRefreshImage] = useState(0);
+  const imageUrl = useFetchProfilePicture({ username: profileData?.username, refresh: refreshImage });
+  const { setProfileImageUrl } = useSidebar();
+
+  useEffect(() => {
+    if (imageUrl) {
+      setProfileImageUrl(imageUrl);
+    }
+  }, [imageUrl, setProfileImageUrl]);
 
   // Saves uploaded image as profile picture for the user
   const saveUploadedImage = async (event) => {
@@ -46,14 +57,15 @@ const UserPage: React.FC = () => {
     if (img) {
       const formData = new FormData();
       formData.append('image', img);
-  
+
       try {
         const response = await fetch('/api/user/profile_picture/upload', {
           method: 'POST',
           body: formData,
         });
-  
+
         if (response.ok) {
+          setRefreshImage(prev => prev + 1);
           console.log("Success");
         }
       } catch (error) {
@@ -119,7 +131,7 @@ const UserPage: React.FC = () => {
   }, [username]);
 
   if (!profileData) return <LoadingScreen />;
-  console.log(isUser)
+
   return (
     <DynamicPageContent
       className={`min-h-screen text-white flex flex-col`}
@@ -160,11 +172,13 @@ const UserPage: React.FC = () => {
                     LIVE
                   </div>
                 )}
-                <img
-                  src="/images/monkey.png"
-                  alt={`${profileData.username}'s profile`}
-                  className="sm:w-full h-full object-cover rounded-full relative z-0"
-                />
+                <div className="sm:w-full h-full rounded-full bg-white relative z-0 flex items-center justify-center overflow-hidden">
+                  <img
+                    src={imageUrl}
+                    alt={`${profileData.username}'s profile`}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
 
                 {/* If current user is the profile user then allow profile picture swap */}
                 {isUser && (

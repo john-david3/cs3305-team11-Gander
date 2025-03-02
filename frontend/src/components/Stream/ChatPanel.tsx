@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import Input from "../Input/Input";
-import Button, { ToggleButton } from "../Input/Button";
+import Button from "../Input/Button";
 import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
 import { useChat } from "../../context/ChatContext";
 import { ArrowLeftFromLineIcon, ArrowRightFromLineIcon } from "lucide-react";
+import useFetchProfilePicture from "../../hooks/useFetchProfilePicture";
+import getProfilePictures from "../../utils/getProfilePictures";
 
 interface ChatMessage {
   chatter_username: string;
@@ -31,6 +33,28 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const [inputMessage, setInputMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [justToggled, setJustToggled] = useState(false);
+  const [userProfilePics, setUserProfilePics] = useState<Record<string, string>>({});
+  
+  useEffect(() => {
+    const fetchProfilePictures = async () => {
+      const uniqueUsernames = Array.from(new Set(messages.map(msg => msg.chatter_username)))
+        .filter(username => !(username in userProfilePics));
+  
+      if (uniqueUsernames.length === 0) return;
+  
+      const profilePics = await getProfilePictures(uniqueUsernames);
+  
+      setUserProfilePics((prev) => ({ ...prev, ...profilePics }));
+    };
+  
+    if (messages.length > 0) {
+      fetchProfilePictures();
+    }
+  }, [messages]); 
+  
+  useEffect(() => {
+    console.log(userProfilePics);
+  }, [userProfilePics]);
 
   // Join chat room when component mounts
   useEffect(() => {
@@ -63,6 +87,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         .then((data) => {
           if (data.chat_history) {
             setMessages(data.chat_history);
+            console.log(data.chat_history);
           }
         })
         .catch((error) => {

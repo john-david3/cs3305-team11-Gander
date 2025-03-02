@@ -20,7 +20,7 @@ interface SideBarProps {
 }
 
 const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
-  const { showSideBar, setShowSideBar } = useSidebar();
+  const { showSideBar, setShowSideBar, profileImageUrl } = useSidebar();
   const navigate = useNavigate();
   const { username, isLoggedIn } = useAuth();
   const [followedStreamers, setFollowedStreamers] = useState<Streamer[]>([]);
@@ -91,11 +91,10 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
     <>
       <ToggleButton
         onClick={() => handleSideBar()}
-        extraClasses={`absolute group text-[1rem] top-[9vh] ${
-          showSideBar
+        extraClasses={`absolute group text-[1rem] top-[9vh] ${showSideBar
             ? "left-[16vw] duration-[0.5s]"
             : "left-[20px] duration-[1s]"
-        } ease-in-out cursor-pointer z-[50]`}
+          } ease-in-out cursor-pointer z-[50]`}
         toggled={showSideBar}
       >
         <SidebarIcon className="h-[2vw] w-[2vw]" />
@@ -109,16 +108,16 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
       <div
         id="sidebar"
         className={`fixed top-0 left-0 w-[15vw] h-screen overflow-x-hidden flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide
-        transition-all duration-500 ease-in-out ${
-          showSideBar ? "translate-x-0" : "-translate-x-full"
-        } ${extraClasses}`}
+        transition-all duration-500 ease-in-out ${showSideBar ? "translate-x-0" : "-translate-x-full"
+          } ${extraClasses}`}
       >
         {/* Profile Info */}
         <div className="flex flex-row items-center border-b-4 border-[var(--profile-border)] justify-evenly bg-[var(--sideBar-profile-bg)] py-[1em]">
           <img
-            src="/images/monkey.png"
+            src={profileImageUrl}
             alt="profile picture"
             className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
+            style={{ backgroundColor: 'white' }}
             onClick={() => navigate(`/user/${username}`)}
           />
           <div className="text-center flex flex-col items-center justify-center">

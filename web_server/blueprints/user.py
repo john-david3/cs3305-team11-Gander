@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, session, request
+from flask import Blueprint, jsonify, session, request, send_from_directory
 from utils.user_utils import *
 from utils.auth import *
 from utils.utils import get_category_id
@@ -8,8 +8,8 @@ from utils.path_manager import PathManager
 from celery_tasks.streaming import convert_image_to_png
 import redis
 
-from io import BytesIO
 from PIL import Image
+import os
 
 redis_url = "redis://redis:6379/1"
 r = redis.from_url(redis_url, decode_responses=True)
@@ -47,8 +47,8 @@ def user_profile_picture_save():
     Saves user profile picture
     """
     username = session.get("username")
-    thumbnail_path = path_manager.get_profile_picture_file_path(username)
-    
+    profile_picture_path = path_manager.get_profile_picture_file_path(username)
+    print(profile_picture_path, flush=True)
     # Check if the post request has the file part
     if 'image' not in request.files:
         return jsonify({"error": "No image found in request"}), 400
@@ -56,18 +56,25 @@ def user_profile_picture_save():
     # Fetch image, convert to png, and save
     image = Image.open(request.files['image'])
     image.convert('RGB')
-    image.save(thumbnail_path, "PNG")
+    image.save(profile_picture_path, "PNG")
 
     return jsonify({"message": "Profile picture saved"})
 
-
 @user_bp.route('/user/profile_picture/<string:username>')
-def user_profile_picture(username: str):
+def user_profile_picture(username):
     """
     Returns the profile picture of a user
     """
-    user_id = get_user_id(username)
-    image = Image.open(f"/web_server/stream_data/{user_id}.jpg")
+    # Get the absolute path inside the container
+    profile_picture_path = os.path.abspath(path_manager.get_profile_picture_file_path(username))
+    
+    # If image exists then return it else return not found
+    if os.path.exists(profile_picture_path):
+        directory = os.path.dirname(profile_picture_path)  
+        filename = os.path.basename(profile_picture_path) 
+        return send_from_directory(directory, filename) 
+    else:
+        return jsonify({"error": "image not found."}), 404
 
 @login_required
 @user_bp.route('/user/same/<string:username>')

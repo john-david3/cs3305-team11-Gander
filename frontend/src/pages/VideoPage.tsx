@@ -11,6 +11,7 @@ import { useAuthModal } from "../hooks/useAuthModal";
 import { useFollow } from "../hooks/useFollow";
 import { useChat } from "../context/ChatContext";
 import { StreamType } from "../types/StreamType";
+import useFetchProfilePicture from "../hooks/useFetchProfilePicture";
 
 // Lazy load the CheckoutForm component
 const CheckoutForm = lazy(() => import("../components/Checkout/CheckoutForm"));
@@ -33,6 +34,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
   const { showChat } = useChat();
   const navigate = useNavigate();
   const [timeStarted, setTimeStarted] = useState("");
+  const imageUrl = useFetchProfilePicture({ username: streamerName });
 
   useEffect(() => {
     // Prevent scrolling when checkout is open
@@ -101,8 +103,8 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
         `${days.toString().padStart(2, "0")}:${hours
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
-          .toString()
-          .padStart(2, "0")}`
+            .toString()
+            .padStart(2, "0")}`
       );
     };
 
@@ -130,15 +132,14 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
       <DynamicPageContent className="w-full min-h-screen">
         <div
           id="container"
-          className={`bg-gray-900 h-full grid ${
-            showChat
+          className={`bg-gray-900 h-full grid ${showChat
               ? showSideBar
                 ? "w-[85vw] duration-[1s]"
                 : "w-[100vw] duration-[0.5s]"
               : showSideBar
-              ? "w-[110vw] duration-[1s]"
-              : "w-[125vw] duration-[0.5s]"
-          } grid-rows-[auto_1fr] grid-cols-[auto_25vw] transition-all ease-in-out`}
+                ? "w-[110vw] duration-[1s]"
+                : "w-[125vw] duration-[0.5s]"
+            } grid-rows-[auto_1fr] grid-cols-[auto_25vw] transition-all ease-in-out`}
         >
           <div className="relative">
             <VideoPlayer />
@@ -156,12 +157,14 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
           >
             {/* Streamer Icon */}
             <div className="flex flex-col items-center mb-[1em]">
-              <img
-                src="/images/monkey.png"
-                alt="streamer"
-                className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
-                onClick={() => navigate(`/user/${streamerName}`)}
-              />
+              <div className="w-[3em] h-[3em] bg-white rounded-full flex items-center justify-center">
+                <img
+                  src={imageUrl}
+                  alt="streamer"
+                  className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
+                  onClick={() => navigate(`/user/${streamerName}`)}
+                />
+              </div>
               <button
                 className="text-white font-bold hover:underline mt-[0.5em]"
                 onClick={() => navigate(`/user/${streamerName}`)}
@@ -224,9 +227,8 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
             <div className="flex flex-col items-center">
               <button
                 className={`bg-red-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md 
-    ${
-      isStripeReady ? "hover:bg-red-700" : "opacity-20 cursor-not-allowed"
-    } transition-all`}
+    ${isStripeReady ? "hover:bg-red-700" : "opacity-20 cursor-not-allowed"
+                  } transition-all`}
                 onClick={() => {
                   if (!isLoggedIn) {
                     setShowAuthModal(true);
