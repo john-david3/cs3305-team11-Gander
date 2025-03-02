@@ -8,6 +8,7 @@ from datetime import datetime
 from celery_tasks.streaming import update_thumbnail, combine_ts_stream
 from dateutil import parser
 from utils.path_manager import PathManager
+from PIL import Image
 import json
 
 stream_bp = Blueprint("stream", __name__)
@@ -229,7 +230,6 @@ def publish_stream():
     periodically update thumbnail
     """
 
-
     try:
         data = json.loads(request.form.get("data"))
     except json.JSONDecodeError as ex:
@@ -270,10 +270,10 @@ def publish_stream():
                    (user_id,))
 
     # Update thumbnail periodically
-    update_thumbnail.delay(user_id,
+    update_thumbnail.apply_async((user_id,
                            path_manager.get_stream_file_path(username),
                            path_manager.get_current_stream_thumbnail_file_path(username),
-                           THUMBNAIL_GENERATION_INTERVAL)
+                           THUMBNAIL_GENERATION_INTERVAL), countdown=10)
 
     return "OK", 200
 
@@ -291,9 +291,7 @@ def update_stream():
     stream_key = data.get("key")
     stream_title = data.get("title")
     stream_category = data.get("category_name")
-    # TODO stream_thumbnail = data.get("thumbnail")
-
-    user_id = None
+    stream_thumbnail = data.get("thumbnail")
 
     with Database() as db:
         user_info = db.fetchone("""SELECT user_id, username, is_live 
@@ -306,11 +304,26 @@ def update_stream():
             return "Unauthorized", 403
 
         user_id = user_info.get("user_id")
+        username = user_info.get("username")
 
         # TODO: Add update to thumbnail here
         db.execute("""UPDATE streams 
                    SET title = ?, category_id = ?
                    WHERE user_id = ?""", (stream_title, get_category_id(stream_category), user_id))
+        
+        if stream_thumbnail:
+            # Set custom thumbnail status to true
+            db.execute("""UPDATE streams
+                        SET custom_thumbnail = ?
+                        WHERE user_id = ?""", (True, user_id))
+            
+            # Get thumbnail path
+            thumbnail_path = path_manager.get_current_stream_thumbnail_file_path(username)
+
+            # Fetch image, convert to png, and save
+            image = Image.open(stream_thumbnail)
+            image.convert('RGB')
+            image.save(thumbnail_path, "PNG")
 
     return "Stream updated", 200
 
