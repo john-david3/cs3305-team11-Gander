@@ -203,15 +203,17 @@ def init_stream():
                                 FROM users 
                                 WHERE stream_key = ?""", (stream_key,))
 
+        # No user found from stream key
         if not user_info:
             print("Unauthorized - Invalid stream key", flush=True)
             return "Unauthorized - Invalid stream key", 403
 
-    # Create necessary directories
     username = user_info["username"]
-    create_user_directories(username)
 
-    return redirect(f"/stream/{username}")
+    # FOR TESTING
+    path_manager.create_user(username)
+
+    return redirect(username + "/" + path_manager.stream_directory_name)
 
 
 @stream_bp.route("/publish_stream", methods=["POST"])

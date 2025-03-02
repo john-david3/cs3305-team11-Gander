@@ -7,8 +7,11 @@ from utils.email import send_email
 from utils.user_utils import get_user_id
 from utils.utils import sanitize
 from secrets import token_hex
+from utils.path_manager import PathManager
 
 auth_bp = Blueprint("auth", __name__)
+
+path_manager = PathManager()
 
 @auth_bp.route("/signup", methods=["POST"])
 @cross_origin(supports_credentials=True)
@@ -89,6 +92,9 @@ def signup():
                 token_hex(32)
             )
         )
+
+        # Create user directories for stream data
+        path_manager.create_user(username)
 
         # Create session for new user, to avoid them having unnecessary state info
         session.clear()
