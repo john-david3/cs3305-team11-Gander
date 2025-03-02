@@ -1,7 +1,6 @@
 from database.database import Database
 from typing import Optional, List
 
-
 def get_user_preferred_category(user_id: int) -> Optional[int]:
     """
     Queries user_preferences database to find users favourite streaming category and returns the category

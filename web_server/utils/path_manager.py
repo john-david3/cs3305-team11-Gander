@@ -1,5 +1,6 @@
+"""Description: This file contains the PathManager class which is responsible for managing the paths of the stream data."""
+
 import os
-# Description: This file contains the PathManager class which is responsible for managing the paths of the stream data.
 
 class PathManager():
     def __init__(self) -> None:

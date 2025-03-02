@@ -4,6 +4,7 @@ from typing import Optional
 from dotenv import load_dotenv
 from os import getenv
 from werkzeug.security import generate_password_hash
+
 load_dotenv()
 
 serializer = URLSafeTimedSerializer(getenv("AUTH_SECRET_KEY"))
