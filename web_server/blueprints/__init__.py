@@ -1,9 +1,8 @@
 from flask import Flask
 from flask_session import Session
 from flask_cors import CORS
-from blueprints.middleware import logged_in_user, register_error_handlers
-# from flask_wtf.csrf import CSRFProtect, generate_csrf
 
+from blueprints.middleware import logged_in_user, register_error_handlers
 from blueprints.authentication import auth_bp
 from blueprints.stripe import stripe_bp
 from blueprints.user import user_bp
@@ -12,13 +11,12 @@ from blueprints.chat import chat_bp
 from blueprints.admin import admin_bp
 from blueprints.oauth import oauth_bp, init_oauth
 from blueprints.socket import socketio
-from celery import Celery
-from celery_tasks import celery_init_app#
 from blueprints.search_bar import search_bp
 
-from os import getenv
+from celery import Celery
+from celery_tasks import celery_init_app
 
-# csrf = CSRFProtect()
+from os import getenv
 
 def create_app():
     """
@@ -49,20 +47,12 @@ def create_app():
 
     #! ↓↓↓ For development purposes only - Allow cross-origin requests for the frontend
     CORS(app, supports_credentials=True)
-    # csrf.init_app(app)
 
-    socketio.init_app(app)
-    
+    socketio.init_app(app)  # create socket connection
     Session(app)
-    app.before_request(logged_in_user)
+    app.before_request(logged_in_user)  # check user is logged in
     init_oauth(app)
-
-    # adds in error handlers
-    register_error_handlers(app)
-
-    # @app.route('/csrf-token')
-    # def get_csrf_token():
-    #     return jsonify({'csrf_token': generate_csrf()}), 200
+    register_error_handlers(app)       # adds in error handlers
 
     with app.app_context():
 

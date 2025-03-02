@@ -10,7 +10,6 @@ from secrets import token_hex
 
 auth_bp = Blueprint("auth", __name__)
 
-
 @auth_bp.route("/signup", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def signup():

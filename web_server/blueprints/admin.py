@@ -6,6 +6,12 @@ admin_bp = Blueprint("admin", __name__)
 
 @admin_bp.route('/ban_user/<int:banned_user>')
 def admin_delete_user(banned_user):
+    """
+    Only to be used by a user who has admin privileges.
+
+    Contacts the database to ban a user for violation Terms of Service.
+    """
+
     # Sanitise the user input
     banned_user = sanitize(banned_user)
 
