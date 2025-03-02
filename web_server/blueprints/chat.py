@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, session
+from flask import Blueprint, jsonify
 from database.database import Database
 from .socket import socketio
 from flask_socketio import emit, join_room, leave_room
@@ -10,8 +10,6 @@ import json
 redis_url = "redis://redis:6379/1"
 r = redis.from_url(redis_url, decode_responses=True)
 chat_bp = Blueprint("chat", __name__)
-
-#NOTE: <---------------------- ROUTES NEEDS TO BE CHANGED TO VIDEO OR DELETED AS DEEMED APPROPRIATE ---------------------->
 
 @socketio.on("connect")
 def handle_connection() -> None:
@@ -87,7 +85,6 @@ def get_past_chat(stream_id: int):
                             ORDER BY time_sent ASC
                             LIMIT 50;
                             """, (stream_id,))
-
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
@@ -145,6 +142,7 @@ def update_viewers(user_id, num_viewers):
                 WHERE user_id = ?;
                 """, (num_viewers, user_id))
     db.close_connection
+    
 #TODO: Make sure that users entry within Redis is removed if they disconnect from socket
 def add_favourability_entry(user_id, stream_id):
     """

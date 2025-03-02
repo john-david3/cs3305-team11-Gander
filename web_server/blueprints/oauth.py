@@ -16,6 +16,9 @@ url = getenv("HOMEPAGE_URL")
 
 
 def init_oauth(app):
+    """
+    Initialise the OAuth functionality.
+    """
     oauth = OAuth(app)
     global google
     google = oauth.register(

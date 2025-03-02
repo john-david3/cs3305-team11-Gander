@@ -1,4 +1,4 @@
-from flask import redirect, url_for, request, g, session
+from flask import redirect, g, session
 from functools import wraps
 import logging
 from os import getenv
