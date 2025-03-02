@@ -52,6 +52,7 @@ CREATE TABLE streams
     start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     num_viewers INTEGER NOT NULL DEFAULT 0,
     category_id INTEGER NOT NULL,
+    custom_thumbnail BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (category_id) REFERENCES categories(category_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
