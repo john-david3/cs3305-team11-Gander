@@ -1,7 +1,7 @@
 from celery import Celery, shared_task, Task
 from datetime import datetime
 from celery_tasks.preferences import user_preferences
-from utils.stream_utils import generate_thumbnail, get_streamer_live_status
+from utils.stream_utils import generate_thumbnail, get_streamer_live_status, get_custom_thumbnail_status
 from time import sleep
 from os import listdir, remove
 import subprocess
@@ -12,12 +12,13 @@ def update_thumbnail(user_id, stream_file, thumbnail_file, sleep_time) -> None:
     Updates the thumbnail of a stream periodically
     """
 
-    if get_streamer_live_status(user_id)['is_live']:
+    # Check if stream is still live and custom thumbnail has not been set
+    if get_streamer_live_status(user_id)['is_live'] and not get_custom_thumbnail_status(user_id)['custom_thumbnail']:
         print("Updating thumbnail...")
         generate_thumbnail(stream_file, thumbnail_file)
         update_thumbnail.apply_async((user_id, stream_file, thumbnail_file, sleep_time), countdown=sleep_time)
     else:
-        print("Stream has ended, stopping thumbnail updates")
+        print(f"Stopping thumbnail updates for stream of {user_id}")
 
 @shared_task
 def combine_ts_stream(stream_path, vods_path, vod_file_name):

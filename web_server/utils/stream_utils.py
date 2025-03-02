@@ -60,6 +60,18 @@ def get_category_id(category_name: str) -> Optional[int]:
         """, (category_name,))
     return data['category_id'] if data else None
 
+def get_custom_thumbnail_status(user_id: int) -> Optional[dict]:
+    """
+    Returns the custom thumbnail status of a streamer
+    """
+    with Database() as db:
+        custom_thumbnail = db.fetchone("""
+            SELECT custom_thumbnail 
+            FROM users 
+            WHERE user_id = ?;
+        """, (user_id,))
+    return custom_thumbnail
+
 def get_vod(vod_id: int) -> dict:
     """
     Returns data of a streamers vod
@@ -92,7 +104,7 @@ def get_all_vods():
         vods = db.fetchall("""SELECT * FROM vods""")
     return vods
 
-def generate_thumbnail(stream_file: str, thumbnail_file: str, retry_time=5, retry_count=3) -> None:
+def generate_thumbnail(stream_file: str, thumbnail_file: str) -> None:
     """
     Generates the thumbnail of a stream
     """
@@ -109,21 +121,11 @@ def generate_thumbnail(stream_file: str, thumbnail_file: str, retry_time=5, retr
         f"{thumbnail_file}"
     ]
 
-    attempts = retry_count
-
-    while attempts > 0:
-        try:
-            subprocess.run(thumbnail_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-            print(f"Thumbnail generated for {stream_file}")
-            break
-        except subprocess.CalledProcessError as e:
-            attempts -= 1
-            print(f"No information available, retrying in {retry_time} seconds...")
-            sleep(retry_time)
-            continue
-
-    if attempts == 0:
-        print(f"Failed to generate thumbnail for {stream_file}, skipping...")
+    try:
+        subprocess.run(thumbnail_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        print(f"Thumbnail generated for {stream_file}")
+    except subprocess.CalledProcessError as e:
+        print(f"No information available for {stream_file}, aborting thumbnail generation")
 
 def get_stream_tags(user_id: int) -> Optional[List[str]]:
     """
