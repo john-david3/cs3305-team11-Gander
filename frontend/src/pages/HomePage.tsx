@@ -1,30 +1,29 @@
 import React from "react";
 import ListRow from "../components/Layout/ListRow";
 import { useNavigate } from "react-router-dom";
-import { useStreams, useCategories } from "../hooks/useContent";
+import { useStreams, useCategories, useVods } from "../hooks/useContent";
 import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import Footer from "../components/Layout/Footer";
 
+
 interface HomePageProps {
   variant?: "default" | "personalised";
 }
 
+
 const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
   const { streams, isLoading: isLoadingStreams } = useStreams();
   const { categories, isLoading: isLoadingCategories } = useCategories();
+  const { vods, isLoading: isLoadingVods } = useVods();  // Fetch VODs
   const navigate = useNavigate();
 
-  const handleStreamClick = (streamerName: string) => {
-    window.location.href = `/${streamerName}`;
+  const handleVodClick = (vodUrl: string) => {
+    window.open(vodUrl, "_blank");  // Open VOD in new tab
   };
 
-  const handleCategoryClick = (categoryName: string) => {
-    navigate(`/category/${categoryName}`);
-  };
-
-  if (isLoadingStreams || isLoadingCategories)
+  if (isLoadingStreams || isLoadingCategories || isLoadingVods)
     return <LoadingScreen>Loading Content...</LoadingScreen>;
 
   return (
@@ -33,52 +32,47 @@ const HomePage: React.FC<HomePageProps> = ({ variant = "default" }) => {
       className="relative min-h-screen animate-moving_bg"
       contentClassName="pb-[12vh]"
     >
+      {/* Streams Section */}
       <ListRow
         type="stream"
-        title={
-          "Streams - Live Now" +
-          (variant === "personalised" ? " - Recommended" : "")
-        }
-        description={
-          variant === "personalised"
-            ? "We think you might like these streams - Streamers recommended for you"
-            : "Popular streamers that are currently live!"
-        }
+        title="Streams - Live Now"
+        description="Popular streamers that are currently live!"
         items={streams}
         wrap={false}
-        onItemClick={handleStreamClick}
+        onItemClick={(streamerName) => navigate(`/${streamerName}`)}
         extraClasses="bg-[var(--liveNow)]"
         itemExtraClasses="w-[20vw]"
       />
 
-      {/* If Personalised_HomePage, display Categories the logged-in user follows. Else, trending categories. */}
+      {/* Categories Section */}
       <ListRow
         type="category"
-        title={
-          variant === "personalised"
-            ? "Followed Categories"
-            : "Trending Categories"
-        }
-        description={
-          variant === "personalised"
-            ? "Current streams from your followed categories"
-            : "Recently popular categories lately!"
-        }
+        title="Trending Categories"
+        description="Recently popular categories lately!"
         items={categories}
         wrap={false}
-        onItemClick={handleCategoryClick}
+        onItemClick={(categoryName) => navigate(`/category/${categoryName}`)}
         titleClickable={true}
         extraClasses="bg-[var(--recommend)]"
         itemExtraClasses="w-[20vw]"
       >
-        <Button
-          extraClasses="absolute right-10"
-          onClick={() => navigate("/categories")}
-        >
+        <Button extraClasses="absolute right-10" onClick={() => navigate("/categories")}>
           Show All
         </Button>
       </ListRow>
-      <Footer/>
+
+      {/* VODs Section */}
+      <ListRow
+        type="vod"  
+        title="Recent VODs"
+        description="Watch the latest recorded streams!"
+        items={vods} 
+        wrap={false}
+        onItemClick={handleVodClick}
+        extraClasses="bg-black/50"
+        itemExtraClasses="w-[20vw]"
+      />
+      <Footer />
     </DynamicPageContent>
   );
 };

@@ -84,6 +84,14 @@ def get_user_vods(user_id: int):
         vods = db.fetchall("""SELECT * FROM vods WHERE user_id = ?;""", (user_id,))
     return vods
 
+def get_all_vods():
+    """
+    Returns data of all VODs by all streamers in a JSON-compatible format
+    """
+    with Database() as db:
+        vods = db.fetchall("""SELECT * FROM vods""")
+    return vods
+
 def generate_thumbnail(stream_file: str, thumbnail_file: str, retry_time=5, retry_count=3) -> None:
     """
     Generates the thumbnail of a stream
@@ -143,7 +151,7 @@ def get_vod_tags(vod_id: int):
         """, (vod_id,))
     return tags
 
-def create_local_directories(username: str):
+def create_user_directories(username: str):
     """
     Create directories for user stream data if they do not exist
     """

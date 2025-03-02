@@ -154,7 +154,7 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
                 onClick={onForgotPassword}
               >
                 <ForgotIcon size={16} className="flex flex-row mr-1" />
-                <span className="text-[calc((1.5vw+1vh)/2)]">
+                <span className="text-[0.6rem] 2lg:text-[0.75rem]">
                   Forgot Password
                 </span>
               </button>

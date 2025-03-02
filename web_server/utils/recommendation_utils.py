@@ -33,6 +33,20 @@ def get_followed_categories_recommendations(user_id: int, no_streams: int = 4) -
         """, (user_id, no_streams))
     return streams
 
+def get_followed_your_categories(user_id: int) -> Optional[List[dict]]:
+    """
+    Returns all user followed categories
+    """
+    with Database() as db:
+        categories = db.fetchall("""
+            SELECT categories.category_name
+            FROM categories
+            JOIN followed_categories 
+            ON categories.category_id = followed_categories.category_id
+            WHERE followed_categories.user_id = ?;
+        """, (user_id,))
+    return categories
+
 
 def get_streams_based_on_category(category_id: int, no_streams: int = 4, offset: int = 0) -> Optional[List[dict]]:
     """
@@ -81,7 +95,7 @@ def get_highest_view_categories(no_categories: int = 4, offset: int = 0) -> Opti
         """, (no_categories, offset))
     return categories
 
-def get_user_category_recommendations(user_id: int, no_categories: int = 4) -> Optional[List[dict]]:
+def get_user_category_recommendations(user_id: 1, no_categories: int = 4) -> Optional[List[dict]]:
     """
     Queries user_preferences database to find users top favourite streaming category and returns the category
     """
@@ -90,8 +104,8 @@ def get_user_category_recommendations(user_id: int, no_categories: int = 4) -> O
             SELECT categories.category_id, categories.category_name
             FROM categories 
             JOIN user_preferences ON categories.category_id = user_preferences.category_id
-            WHERE user_id = ? 
-            ORDER BY favourability DESC 
+            WHERE user_preferences.user_id = ? 
+            ORDER BY user_preferences.favourability DESC 
             LIMIT ?
         """, (user_id, no_categories))
     return categories

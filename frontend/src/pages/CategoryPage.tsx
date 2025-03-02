@@ -97,7 +97,7 @@ const CategoryPage: React.FC = () => {
         <ListRow
           ref={listRowRef}
           type="stream"
-          title={`${categoryName} Streams`}
+          title={`${categoryName}`}
           description={`Live streams in the ${categoryName} category`}
           items={streams}
           wrap={true}

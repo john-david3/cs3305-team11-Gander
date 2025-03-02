@@ -5,7 +5,7 @@ from utils.user_utils import get_user_id
 from blueprints.middleware import login_required
 from database.database import Database
 from datetime import datetime
-from celery_tasks import update_thumbnail, combine_ts_stream
+from celery_tasks.streaming import update_thumbnail, combine_ts_stream
 from dateutil import parser
 from utils.path_manager import PathManager
 import json
@@ -60,7 +60,6 @@ def recommended_streams() -> list[dict]:
     """
 
     user_id = session.get("user_id")
-
     # Get the user's most popular categories
     category = get_user_preferred_category(user_id)
     streams = get_streams_based_on_category(category)
@@ -112,7 +111,7 @@ def recommended_categories() -> list | list[dict]:
 
     """
     user_id = session.get("user_id")
-    categories = get_user_category_recommendations(user_id)
+    categories = get_user_category_recommendations(1)
     return jsonify(categories)
 
 
@@ -125,6 +124,18 @@ def following_categories_streams():
 
     streams = get_followed_categories_recommendations(session.get('user_id'))
     return jsonify(streams)
+
+
+@login_required
+@stream_bp.route('/categories/your_categories')
+def following_your_categories():
+    """
+    Returns categories which the user followed
+    """
+
+    streams = get_followed_your_categories(session.get('user_id'))
+    return jsonify(streams)
+
 
 
 # User Routes
@@ -162,6 +173,17 @@ def vods(username):
     vods = get_user_vods(user_id)
     return jsonify(vods)
 
+@stream_bp.route('/vods/all')
+def get_all_vods():
+    """
+    Returns data of all VODs by all streamers in a JSON-compatible format
+    """
+    with Database() as db:
+        vods = db.fetchall("SELECT * FROM vods")
+    
+    print("Fetched VODs from DB:", vods)
+    
+    return jsonify(vods)
 
 # RTMP Server Routes
 
@@ -187,7 +209,7 @@ def init_stream():
 
     # Create necessary directories
     username = user_info["username"]
-    create_local_directories(username)
+    create_user_directories(username)
 
     return redirect(f"/stream/{username}")
 

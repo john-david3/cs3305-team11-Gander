@@ -4,6 +4,8 @@ from utils.auth import *
 from utils.utils import get_category_id
 from blueprints.middleware import login_required
 from utils.email import send_email, forgot_password_body, newsletter_conf
+from utils.path_manager import PathManager
+from celery_tasks.streaming import convert_image_to_png
 import redis
 
 from io import BytesIO
@@ -13,6 +15,8 @@ redis_url = "redis://redis:6379/1"
 r = redis.from_url(redis_url, decode_responses=True)
 
 user_bp = Blueprint("user", __name__)
+
+path_manager = PathManager()
 
 @user_bp.route('/user/<string:username>')
 def user_data(username: str):
@@ -42,13 +46,19 @@ def user_profile_picture_save():
     """
     Saves user profile picture
     """
-    user_id = session.get("user_id")
-    image = request.files['image']
-    ext = image.filename.split('.')[-1] 
+    username = session.get("username")
+    thumbnail_path = path_manager.get_profile_picture_file_path(username)
     
-    image.save(f"/web_server/stream_data/{user_id}.{ext}")
+    # Check if the post request has the file part
+    if 'image' not in request.files:
+        return jsonify({"error": "No image found in request"}), 400
+    
+    # Fetch image, convert to png, and save
+    image = Image.open(request.files['image'])
+    image.convert('RGB')
+    image.save(thumbnail_path, "PNG")
 
-    return "Success", 200  
+    return jsonify({"message": "Profile picture saved"})
 
 @login_required
 @user_bp.route('/user/same/<string:username>')

@@ -119,7 +119,7 @@ const UserPage: React.FC = () => {
   }, [username]);
 
   if (!profileData) return <LoadingScreen />;
-
+  console.log(isUser)
   return (
     <DynamicPageContent
       className={`min-h-screen text-white flex flex-col`}

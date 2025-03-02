@@ -10,16 +10,17 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/listRow.css";
-import { StreamListItem, CategoryListItem, UserListItem } from "./ListItem";
+import { StreamListItem, CategoryListItem, UserListItem, VodListItem } from "./ListItem";
 import { StreamType } from "../../types/StreamType";
 import { CategoryType } from "../../types/CategoryType";
 import { UserType } from "../../types/UserType";
+import { VodType } from "../../types/VodType"
 
-type ItemType = StreamType | CategoryType | UserType;
+type ItemType = StreamType | CategoryType | UserType | VodType;
 
 interface ListRowProps {
   variant?: "default" | "search";
-  type: "stream" | "category" | "user";
+  type: "stream" | "category" | "user" | "vod";
   title?: string;
   description?: string;
   items: ItemType[];
@@ -99,6 +100,9 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
   
   const isUserType = (item: ItemType): item is UserType => 
     item.type === "user";
+
+  const isVodType = (item: ItemType): item is VodType => 
+    item.type === "vod";
 
   return (
     <div
@@ -192,6 +196,24 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
                       viewers={item.viewers}
                       thumbnail={item.thumbnail}
                       onItemClick={() => onItemClick(item.username)}
+                      extraClasses={itemExtraClasses}
+                    />
+                  );
+                }
+                else if (type === "vod" && isVodType(item)) {
+                  return (
+                    <VodListItem
+                      key={`vod-${item.id}`}
+                      id={item.id}
+                      title={item.title}
+                      streamer={item.streamer}
+                      datetime={item.datetime}
+                      category={item.category}
+                      length={item.length}
+                      views={item.views}
+                      url={item.url}
+                      thumbnail={item.thumbnail}
+                      onItemClick={() => window.open(item.url, "_blank")}
                       extraClasses={itemExtraClasses}
                     />
                   );
