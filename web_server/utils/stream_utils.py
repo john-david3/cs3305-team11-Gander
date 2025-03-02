@@ -150,28 +150,3 @@ def get_vod_tags(vod_id: int):
             WHERE vod_id = ?;    
         """, (vod_id,))
     return tags
-
-def create_user_directories(username: str):
-    """
-    Create directories for user stream data if they do not exist
-    """
-
-    path_m = PathManager()
-
-    vods_path = path_m.get_vods_path(username)
-    stream_path = path_m.get_stream_path(username)
-
-    if not os.path.exists(vods_path):
-        os.makedirs(vods_path)
-
-    if not os.path.exists(stream_path):
-        os.makedirs(stream_path)
-
-    # Fix permissions
-    os.chmod(vods_path, 0o777)
-    os.chmod(stream_path, 0o777)
-
-    return {
-        "vod_path": vods_path,
-        "stream_path": stream_path
-    }
