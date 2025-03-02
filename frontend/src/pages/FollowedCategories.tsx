@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { useCategoryFollow } from "../hooks/useCategoryFollow";
 import FollowButton from "../components/Input/FollowButton";
+import { useAuthModal } from "../hooks/useAuthModal";
 
 
 interface Category {
@@ -22,6 +23,7 @@ const FollowedCategories: React.FC<FollowedCategoryProps> = ({ extraClasses = ""
     const [followedCategories, setFollowedCategories] = useState<Category[]>([]);
     const { categoryName } = useParams<{ categoryName: string }>();
     const { checkCategoryFollowStatus, followCategory, unfollowCategory } = useCategoryFollow();
+    
 
     useEffect(() => {
         if (categoryName) checkCategoryFollowStatus(categoryName);
