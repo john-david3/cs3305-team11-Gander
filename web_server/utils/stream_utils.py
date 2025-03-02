@@ -67,7 +67,7 @@ def get_custom_thumbnail_status(user_id: int) -> Optional[dict]:
     with Database() as db:
         custom_thumbnail = db.fetchone("""
             SELECT custom_thumbnail 
-            FROM users 
+            FROM streams
             WHERE user_id = ?;
         """, (user_id,))
     return custom_thumbnail

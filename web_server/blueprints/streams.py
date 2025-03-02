@@ -220,8 +220,6 @@ def init_stream():
     """
     stream_key = request.form.get("name")
 
-    print(f"Stream initialization requested in nginx with key: {stream_key}", flush=True)
-
     with Database() as db:
         # Check if valid stream key and user is allowed to stream
         user_info = db.fetchone("""SELECT user_id, username, is_live 
@@ -237,6 +235,8 @@ def init_stream():
 
     # FOR TESTING
     path_manager.create_user(username)
+
+    print(f"Stream initialization requested in nginx with key: {stream_key}", flush=True)
 
     return redirect(username + "/" + path_manager.stream_directory_name)
 
@@ -366,9 +366,9 @@ def end_stream():
     end thumbnail generation
     """
 
-    print("Ending stream", flush=True)
-
+    print("TEST END STREAM")
     stream_key = request.get_json().get("key")
+    print(stream_key, flush=True)
     user_id = None
     username = None
 
