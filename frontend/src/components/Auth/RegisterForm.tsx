@@ -78,7 +78,6 @@ const RegisterForm: React.FC<SubmitProps> = ({ onSubmit }) => {
         const data = await response.json();
 
         if (data.account_created) {
-          //TODO Handle successful registration (e.g., redirect or show success message)
           console.log("Registration Successful! Account created successfully");
           setIsLoggedIn(true);
           window.location.reload();

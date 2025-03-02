@@ -85,7 +85,7 @@ def get_latest_vod(user_id: int):
     Returns data of the most recent stream by a streamer
     """
     with Database() as db:
-        latest_vod = db.fetchone("""SELECT * FROM vods WHERE user_id = ? ORDER BY vod_id DESC;""", (user_id,))
+        latest_vod = db.fetchone("""SELECT vods.*, category_name FROM vods JOIN categories ON vods.category_id = categories.category_id WHERE user_id = ? ORDER BY vod_id DESC;""", (user_id,))
     return latest_vod
 
 def get_user_vods(user_id: int):
@@ -93,7 +93,7 @@ def get_user_vods(user_id: int):
     Returns data of all vods by a streamer
     """
     with Database() as db:
-        vods = db.fetchall("""SELECT * FROM vods WHERE user_id = ?;""", (user_id,))
+        vods = db.fetchall("""SELECT vods.*, category_name FROM vods JOIN categories ON vods.category_id = categories.category_id WHERE user_id = ? ORDER BY vod_id DESC;""", (user_id,))
     return vods
 
 def get_all_vods():

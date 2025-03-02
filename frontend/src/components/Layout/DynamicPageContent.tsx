@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "../Navigation/Navbar";
 import { useSidebar } from "../../context/SidebarContext";
-import Footer from "./Footer";
 
 interface DynamicPageContentProps extends React.HTMLProps<HTMLDivElement> {
   children: React.ReactNode;
@@ -28,7 +27,7 @@ const DynamicPageContent: React.FC<DynamicPageContentProps> = ({
       <Navbar variant={navbarVariant} />
       <div
         id="content"
-        className={`min-w-[850px] ${
+        className={`flex-grow min-w-[850px] ${
           showSideBar ? "w-[85vw] translate-x-[15vw]" : "w-[100vw]"
         } items-start transition-all duration-[500ms] ease-in-out ${contentClassName}`}
       >

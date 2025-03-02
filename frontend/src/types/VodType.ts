@@ -1,12 +1,11 @@
 export interface VodType {
     type: "vod";
-    id: number;
+    vod_id: number;
     title: string;
-    streamer: string;
+    username: string;
     datetime: string;
-    category: string;
-    length: number;
+    category_name: string;
+    length: string;
     views: number;
-    url: string;
     thumbnail: string;
-  }
+}
