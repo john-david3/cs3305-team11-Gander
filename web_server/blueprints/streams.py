@@ -144,6 +144,12 @@ def following_your_categories():
 def user_live_status(username):
     """
     Returns a streamer's status, if they are live or not and their most recent stream (as a vod) (their current stream if live)
+    Returns:
+    {
+        "is_live": bool,
+        "most_recent_stream": dict,
+        "user_id": int
+    }
     """
     user_id = get_user_id(username)
 
@@ -154,8 +160,6 @@ def user_live_status(username):
     # If there is no most recent vod, set it to None
     if not most_recent_vod:
         most_recent_vod = None
-    else:
-        most_recent_vod = most_recent_vod['vod_id']
 
     return jsonify({
         "is_live": is_live,
@@ -165,10 +169,30 @@ def user_live_status(username):
 
 
 # VOD Routes
+@stream_bp.route('/vods/<int:vod_id>')
+def vod(vod_id):
+    """
+    Returns a JSON of a vod
+    """
+    vod = get_vod(vod_id)
+    return jsonify(vod)
+
 @stream_bp.route('/vods/<string:username>')
 def vods(username):
     """
     Returns a JSON of all the vods of a streamer
+    Returns:
+    [
+        {
+            "vod_id": int,
+            "title": str,
+            "datetime": str,
+            "category_name": str,
+            "length": int (in seconds),
+            "views": int
+        }
+    ]
+    
     """
     user_id = get_user_id(username)
     vods = get_user_vods(user_id)

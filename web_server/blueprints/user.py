@@ -45,6 +45,7 @@ def user_stream_key(username: str):
 def user_profile_picture_save():
     """
     Saves user profile picture
+    Returns the path to the saved image
     """
     username = session.get("username")
     thumbnail_path = path_manager.get_profile_picture_file_path(username)
@@ -58,7 +59,7 @@ def user_profile_picture_save():
     image.convert('RGB')
     image.save(thumbnail_path, "PNG")
 
-    return jsonify({"message": "Profile picture saved"})
+    return jsonify({"message": "Profile picture saved", "path": thumbnail_path})
 
 @login_required
 @user_bp.route('/user/same/<string:username>')
