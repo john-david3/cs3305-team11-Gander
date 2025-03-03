@@ -15,9 +15,12 @@ import DashboardPage from "./pages/DashboardPage";
 import { Brightness } from "./context/BrightnessContext";
 import LoadingScreen from "./components/Layout/LoadingScreen";
 import Following from "./pages/Following";
+<<<<<<< HEAD
 import FollowedCategories from "./pages/FollowedCategories";
 import UnsubscribeForm from "./components/Auth/UnsubscribeForm";
 import UnsubscribePage from "./pages/UnsubscribePage";
+=======
+>>>>>>> 2494e40ffd09ee704397c812f63d03bb7ec156f1
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -79,7 +82,6 @@ function App() {
 								<Route path="/results" element={<ResultsPage />}></Route>
 								<Route path="/404" element={<NotFoundPage />} />
 								<Route path="/user/:username/following" element={<Following />} />
-								<Route path="/user/:username/yourCategories" element={<FollowedCategories />} />
 								<Route path="*" element={<Navigate to="/404" replace />} />
 							</Routes>
 						</BrowserRouter>

@@ -82,13 +82,13 @@ const UserPage: React.FC = () => {
 
 	const handleNavigation = (path: string) => {
 		if (profilePicture === initialProfilePicture.current) {
-		  // Variable hasn't changed - use React Router navigation
-		  navigate(path);
+			// Variable hasn't changed - use React Router navigation
+			navigate(path);
 		} else {
-		  // Variable has changed - use full page reload
-		  window.location.href = path;
+			// Variable has changed - use full page reload
+			window.location.href = path;
 		}
-	  };
+	};
 
 	// Store initial profile picture to know if it changes later
 	useEffect(() => {
@@ -138,8 +138,7 @@ const UserPage: React.FC = () => {
 						{/* Profile Picture */}
 						<div
 							className={`relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
-               rounded-full flex-shrink-0 border-4 ${
-									profileData.isLive ? "border-[#ff0000]" : "border-[var(--user-pfp-border)]"
+               rounded-full flex-shrink-0 border-4 ${profileData.isLive ? "border-[#ff0000]" : "border-[var(--user-pfp-border)]"
 								} inset-0 z-20`}
 							style={{ boxShadow: "var(--user-pfp-border-shadow)" }}
 						>
@@ -269,7 +268,7 @@ const UserPage: React.FC = () => {
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button className="text-[var(--follow-text)] whitespace-pre-wrap" onClick={() => handleNavigation(`/user/${username}/following`)}>
+							<button className="text-[var(--follow-text)] whitespace-pre-wrap" onClick={() => handleNavigation(`/user/${username}/following?tab=streamers`)}>
 								Following
 							</button>
 						</div>
@@ -289,7 +288,7 @@ const UserPage: React.FC = () => {
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button onClick={() => handleNavigation(`/user/${username}/followedCategories`)}>Categories</button>
+							<button onClick={() => handleNavigation(`/user/${username}/following?tab=categories`)}>Categories</button>
 						</div>
 					</div>
 				</div>
