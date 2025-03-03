@@ -67,9 +67,10 @@ def end_user_stream(stream_key, user_id, username):
     from utils.path_manager import PathManager
     
     path_manager = PathManager()
+    print(f"Ending stream for user {username} (ID: {user_id})", flush=True)
     
     if not stream_key or not user_id or not username:
-        current_app.logger.error("Cannot end stream - missing required information")
+        print("Cannot end stream - missing required information", flush=True)
         return False
         
     try:
@@ -82,7 +83,7 @@ def end_user_stream(stream_key, user_id, username):
                                     
             # If user is not streaming, just return
             if not stream_info:
-                current_app.logger.info(f"User {username} (ID: {user_id}) is not streaming")
+                print(f"User {username} (ID: {user_id}) is not streaming", flush=True)
                 return True, "User is not streaming"
                 
             # Remove stream from database
@@ -115,11 +116,11 @@ def end_user_stream(stream_key, user_id, username):
             vod_id
         )
         
-        current_app.logger.info(f"Stream ended for user {username} (ID: {user_id})")
+        print(f"Stream ended for user {username} (ID: {user_id})", flush=True)
         return True, "Stream ended successfully"
         
     except Exception as e:
-        current_app.logger.error(f"Error ending stream for user {username}: {str(e)}")
+        print(f"Error ending stream for user {username}: {str(e)}", flush=True)
         return False, f"Error ending stream: {str(e)}"
 
 def get_category_id(category_name: str) -> Optional[int]:

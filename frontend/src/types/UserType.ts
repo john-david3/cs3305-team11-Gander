@@ -6,5 +6,4 @@ export interface UserType {
 	username: string;
 	isLive: boolean;
 	viewers: number;
-	thumbnail?: string;
   }

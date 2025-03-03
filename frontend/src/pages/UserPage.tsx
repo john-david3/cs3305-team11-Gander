@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AuthModal from "../components/Auth/AuthModal";
 import { useAuthModal } from "../hooks/useAuthModal";
 import { useAuth } from "../context/AuthContext";
@@ -10,8 +10,8 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import { StreamListItem } from "../components/Layout/ListItem";
 import { EditIcon } from "lucide-react";
-import { getCategoryThumbnail } from "../utils/thumbnailUtils";
-import { useSameUser } from "../hooks/useSameUser";
+import ListRow from "../components/Layout/ListRow";
+import { useStreams, useVods } from "../hooks/useContent";
 
 interface UserProfileData {
 	id: number;
@@ -20,22 +20,38 @@ interface UserProfileData {
 	followerCount: number;
 	isPartnered: boolean;
 	isLive: boolean;
-	currentStreamTitle?: string;
-	currentStreamCategory?: string;
-	currentStreamViewers?: number;
-	currentStreamStartTime?: string;
-	currentStreamThumbnail?: string;
 }
 
 const UserPage: React.FC = () => {
-	const [userPageVariant, setUserPageVariant] = useState<"personal" | "streamer" | "user" | "admin">("user");
+	const [userPageVariant, setUserPageVariant] = useState<"personal" | "user" | "admin">("user");
 	const [profileData, setProfileData] = useState<UserProfileData>();
 	const { isFollowing, checkFollowStatus, followUser, unfollowUser } = useFollow();
 	const { showAuthModal, setShowAuthModal } = useAuthModal();
 	const { username: loggedInUsername } = useAuth();
 	const { username } = useParams();
-	const isUser = useSameUser({ username });
+	const { vods } = useVods(`/api/vods/${username}`);
 	const navigate = useNavigate();
+	const { streams } = useStreams(`/api/streams/${username}/data`);
+	const currentStream = streams[0];
+
+	const fetchProfileData = useCallback(async () => {
+		try {
+			// Profile data
+			const profileResponse = await fetch(`/api/user/${username}`);
+			const profileData = await profileResponse.json();
+			setProfileData({
+				id: profileData.user_id,
+				username: profileData.username,
+				bio: profileData.bio || "This user hasn't written a bio yet.",
+				followerCount: profileData.num_followers || 0,
+				isPartnered: profileData.isPartnered || false,
+				isLive: profileData.is_live,
+			});
+		} catch (err) {
+			console.error("Error fetching profile data:", err);
+			window.location.href = "/404";
+		}
+	}, [username]);
 
 	// Saves uploaded image as profile picture for the user
 	const saveUploadedImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,58 +78,20 @@ const UserPage: React.FC = () => {
 		}
 	};
 
+	// Check if the current user is the currently logged-in user
 	useEffect(() => {
-		// Fetch user profile data
-		fetch(`/api/user/${username}`)
-			.then((res) => res.json())
-			.then((data) => {
-				setProfileData({
-					id: data.user_id,
-					username: data.username,
-					bio: data.bio || "This user hasn't written a bio yet.",
-					followerCount: data.num_followers || 0,
-					isPartnered: data.isPartnered || false,
-					isLive: data.is_live,
-					currentStreamTitle: "",
-					currentStreamCategory: "",
-					currentStreamViewers: 0,
-					currentStreamThumbnail: "",
-				});
+		if (username === loggedInUsername) setUserPageVariant("personal");
+		// else if (data.isAdmin) setUserPageVariant("admin");
+		else setUserPageVariant("user");
 
-				if (data.is_live) {
-					// Fetch stream data for this streamer
-					fetch(`/api/streams/${data.user_id}/data`)
-						.then((res) => res.json())
-						.then((streamData) => {
-							setProfileData((prevData) => {
-								if (!prevData) return prevData;
-								return {
-									...prevData,
-									currentStreamTitle: streamData.title,
-									currentStreamCategory: streamData.category_id,
-									currentStreamViewers: streamData.num_viewers,
-									currentStreamStartTime: streamData.start_time,
-									currentStreamThumbnail: getCategoryThumbnail(streamData.category_name, streamData.thumbnail),
-								};
-							});
-							let variant: "user" | "streamer" | "personal" | "admin";
-							if (username === loggedInUsername) variant = "personal";
-							else if (streamData.title) variant = "streamer";
-							// else if (data.isAdmin) variant = "admin";
-							else variant = "user";
-							setUserPageVariant(variant);
-						})
-						.catch((err) => console.error("Error fetching stream data:", err));
-				}
-			})
-			.catch((err) => {
-				console.error("Error fetching profile data:", err);
-				navigate("/404");
-			});
-
-		// Check if the *logged-in* user is following this user
 		if (loggedInUsername && username) checkFollowStatus(username);
-	}, [username]);
+	}, [username, loggedInUsername, checkFollowStatus]);
+
+	// Fetch user profile data
+	useEffect(() => {
+		if (!username) return;
+		fetchProfileData();
+	}, [fetchProfileData]);
 
 	if (!profileData) return <LoadingScreen />;
 
@@ -148,16 +126,21 @@ const UserPage: React.FC = () => {
 								} inset-0 z-20`}
 							style={{ boxShadow: "var(--user-pfp-border-shadow)" }}
 						>
-							<label className={`w-full h-full ${isUser ? "group cursor-pointer" : ""} overflow-visible rounded-full`}>
+							<label
+								className={`w-full h-full ${userPageVariant === "personal" ? "group cursor-pointer" : ""} overflow-visible rounded-full`}
+							>
 								{/* If user is live then displays a live div */}
-								{profileData.isLive && (
+								{profileData.isLive ? (
 									<div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-[#ff0000] text-white text-sm font-bold py-1 sm:px-5 px-4 z-30 flex items-center justify-center rounded-tr-xl rounded-bl-xl rounded-tl-xl rounded-br-xl">
 										LIVE
 									</div>
+								) : (
+									""
 								)}
 								<img
 									src={`/user/${profileData.username}/profile_picture`}
 									onError={(e) => {
+										console.log("no error")
 										e.currentTarget.src = "/images/pfps/default.png";
 										e.currentTarget.onerror = null;
 									}}
@@ -166,7 +149,7 @@ const UserPage: React.FC = () => {
 								/>
 
 								{/* If current user is the profile user then allow profile picture swap */}
-								{isUser && (
+								{userPageVariant === "personal" && (
 									<div className="absolute top-0 bottom-0 left-0 right-0 m-auto flex items-center justify-center opacity-0 z-50 group-hover:opacity-100 transition-opacity duration-200">
 										<EditIcon size={75} className="text-white bg-black/50 p-1 rounded-3xl" />
 										<input type="file" className="hidden" onChange={saveUploadedImage} accept="image/*" />
@@ -181,34 +164,32 @@ const UserPage: React.FC = () => {
 						</h1>
 
 						{/* Follower Count  */}
-						{userPageVariant === "streamer" && (
-							<>
-								<div className="flex items-center space-x-2 mb-6">
-									<span className="text-gray-400">{profileData.followerCount.toLocaleString()} followers</span>
-									{profileData.isPartnered && <span className="bg-purple-600 text-white text-sm px-2 py-1 rounded">Partner</span>}
-								</div>
+						<div className="flex items-center space-x-2 mb-6">
+							<span className="text-gray-400">{profileData.followerCount.toLocaleString()} followers</span>
+							{profileData.isPartnered && <span className="bg-purple-600 text-white text-sm px-2 py-1 rounded">Partner</span>}
+						</div>
 
-								{/* (Un)Follow Button  */}
-								{!isFollowing ? (
-									<Button
-										extraClasses="w-full bg-purple-700 hover:bg-[#28005e]"
-										onClick={() => followUser(profileData.id, setShowAuthModal)}
-									>
-										Follow
-									</Button>
-								) : (
-									<Button extraClasses="w-full bg-[#a80000] z-50" onClick={() => unfollowUser(profileData?.id, setShowAuthModal)}>
-										Unfollow
-									</Button>
-								)}
-							</>
+						{/* (Un)Follow Button  */}
+						{userPageVariant != "personal" ? (
+							!isFollowing ? (
+								<Button
+									extraClasses="w-full bg-purple-700 z-50 hover:bg-[#28005e]"
+									onClick={() => followUser(profileData.id, setShowAuthModal)}
+								>
+									Follow
+								</Button>
+							) : (
+								<Button extraClasses="w-full bg-[#a80000] z-50" onClick={() => unfollowUser(profileData?.id, setShowAuthModal)}>
+									Unfollow
+								</Button>
+							)
+						) : (
+							""
 						)}
 					</div>
 
-					<div
-						id="settings"
-						className="col-span-1 bg-[var(--user-sideBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
-					>
+					{/* Bio */}
+					<div className="col-span-1 bg-[var(--user-sideBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center">
 						{/* User Type (e.g., "USER") */}
 						<small className="text-green-400">{userPageVariant.toUpperCase()}</small>
 
@@ -223,44 +204,42 @@ const UserPage: React.FC = () => {
 						id="content"
 						className="col-span-2 bg-[var(--user-contentBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
 					>
-						{userPageVariant === "streamer" && (
-							<>
-								{profileData.isLive ? (
-									<div className="mb-8">
-										<h2 className="text-2xl bg-[#ff0000] border py-4 px-12 font-black mb-4 rounded-[4rem]">Currently Live!</h2>
-										<StreamListItem
-											id={profileData.id}
-											title={profileData.currentStreamTitle || ""}
-											streamCategory=""
-											username=""
-											viewers={profileData.currentStreamViewers || 0}
-											thumbnail={profileData.currentStreamThumbnail}
-											onItemClick={() => {
-												navigate(`/${profileData.username}`);
-											}}
-										/>
-									</div>
-								) : (
-									<h1>Currently not live</h1>
-								)}
-
-								{/* ↓↓ VODS ↓↓ */}
-								<div>
-									<h2 className="text-2xl font-bold mb-4">Past Broadcasts</h2>
-									<div className="text-gray-400 rounded-none">No past broadcasts found</div>
-								</div>
-							</>
+						{/* Stream */}
+						{currentStream && (
+							<div className="mb-8">
+								<h2 className="text-2xl bg-[#ff0000] border py-4 px-12 font-black mb-4 rounded-[4rem]">Currently Live!</h2>
+								<StreamListItem
+									id={profileData.id}
+									title={currentStream.title || ""}
+									streamCategory=""
+									username=""
+									viewers={currentStream.viewers || 0}
+									thumbnail={currentStream.thumbnail}
+									onItemClick={() => {
+										navigate(`/${profileData.username}`);
+									}}
+								/>
+							</div>
 						)}
-
-						{userPageVariant === "user" && (
-							<>
-								{/* ↓↓ VODS ↓↓ */}
-								<div>
-									<h2 className="text-2xl font-bold mb-4">Past Broadcasts</h2>
-									<div className="text-gray-400 rounded-none">No past broadcasts found</div>
-								</div>
-							</>
+						{/* VODs */}
+						{vods.length > 0 && (
+							<div>
+								<h2 className="text-2xl font-bold mb-4"></h2>
+								<ListRow
+									type="vod"
+									title={`Past Broadcasts (${vods.length})`}
+									items={vods}
+									onItemClick={(vod) => {
+										console.log("VOD Clicked:", vod);
+									}}
+									extraClasses="w-fit max-w-[40vw] py-0 mt-0"
+									amountForScroll={2}
+									itemExtraClasses="w-[15vw]"
+								/>
+							</div>
 						)}
+						{/* No Content */}
+						{vods.length === 0 && currentStream && <h2 className="text-2xl font-bold mb-4">No Content Made Yet</h2>}
 					</div>
 
 					<div
@@ -294,7 +273,7 @@ const UserPage: React.FC = () => {
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button onClick={() => navigate(`/user/${username}/yourCategories`)}>Categories</button>
+							<button onClick={() => navigate(`/user/${username}/followedCategories`)}>Categories</button>
 						</div>
 					</div>
 				</div>
