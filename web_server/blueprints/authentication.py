@@ -95,12 +95,6 @@ def signup():
 
         # Create user directories for stream data
         path_manager.create_user(username)
-
-        # Create session for new user, to avoid them having unnecessary state info
-        session.clear()
-        session["username"] = username
-        session["user_id"] = get_user_id(username)
-        print(f"Logged in as {username}. session: {session.get('username')}. user_id: {session.get('user_id')}", flush=True)
         # send_email(username)
 
         return jsonify({
@@ -178,8 +172,11 @@ def login():
                 "error_fields": ["username", "password"],
                 "message": "Invalid username or password"
             }), 401
+        
+        # Add user directories for stream data in case they don't exist
+        path_manager.create_user(username)
 
-        # Set up session to avoid having unncessary state information
+        # Set up session
         session.clear()
         session["username"] = username
         session["user_id"] = get_user_id(username)
@@ -209,8 +206,27 @@ def logout() -> dict:
     """
     Log out and clear the users session.
     
+    If the user is currently streaming, end their stream first.
     Can only be accessed by a logged in user.
     """
+    from database.database import Database
+    from utils.stream_utils import end_user_stream
+    
+    # Check if user is currently streaming
+    user_id = session.get("user_id")
+    username = session.get("username")
+    
+    with Database() as db:
+        is_streaming = db.fetchone("""SELECT is_live FROM users WHERE user_id = ?""", (user_id,))
+        
+        if is_streaming and is_streaming.get("is_live") == 1:
+            # Get the user's stream key
+            stream_key_info = db.fetchone("""SELECT stream_key FROM users WHERE user_id = ?""", (user_id,))
+            stream_key = stream_key_info.get("stream_key") if stream_key_info else None
+            
+            if stream_key:
+                # End the stream
+                end_user_stream(stream_key, user_id, username)
     session.clear()
     return {"logged_in": False}
 
