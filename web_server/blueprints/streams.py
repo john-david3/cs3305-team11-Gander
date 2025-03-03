@@ -350,10 +350,11 @@ def end_stream():
     """
     print("Ending stream", flush=True)
 
-    stream_key = request.get_json().get("key")
-    
-    if not stream_key:
-        # Try getting stream_key from form data (for nginx in the case that the stream is ended on OBS's end)
+    if request.is_json:
+        # stream key from StreamDashboard
+        stream_key = request.get_json().get("key")
+    else:
+        # stream key from OBS
         stream_key = request.form.get("name")
 
     if stream_key is None:
