@@ -204,13 +204,16 @@ def user_reset_password(token, new_password):
         return jsonify({"message": "Password reset successful"}), 200
     return jsonify({"error": "Invalid token"}), 400
 
-@user_bp.route("/unsubscribe/<string:token>", methods=["POST"])
+@user_bp.route("/user/unsubscribe/<string:token>", methods=["POST"])
 def unsubscribe(token):
     salt = r.get(token)
     if salt:
         r.delete(token)
 
-    email = verify_token(token[:-5], salt)
+    # Derive the email from the given token
+    email = verify_token(token[:-6], salt)
+
+    # If email does exist, remove it from the newsletter database
     if email:
         remove_from_newsletter(email)
         return jsonify({"message": "unsubscribed from newsletter"}), 200
