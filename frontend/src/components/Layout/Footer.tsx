@@ -31,6 +31,7 @@ const Footer = () => {
 
       } catch (error) {
         console.error("Error subscribing:", error);
+        alert("Could not submit, already in newsletter");
       }
     }
   };
