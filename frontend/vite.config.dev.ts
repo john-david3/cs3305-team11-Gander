@@ -20,16 +20,20 @@ export default defineConfig({
 				target: "http://localhost:8080",
 				changeOrigin: true,
 				ws: true,
-      },
-      "/stream": {
-        target: "http://localhost:8080",
-        changeOrigin: true,
-      },
+			},
+			"/stream": {
+				target: "http://localhost:8080",
+				changeOrigin: true,
+			},
 			"/images": {
 				target: "http://localhost:8080",
 				changeOrigin: true,
 			},
 			"/user": {
+				target: "http://localhost:8080",
+				changeOrigin: true,
+			},
+			"/vods": {
 				target: "http://localhost:8080",
 				changeOrigin: true,
 			},

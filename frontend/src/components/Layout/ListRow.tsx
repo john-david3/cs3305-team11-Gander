@@ -164,7 +164,6 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
 											username={item.username}
 											isLive={item.isLive}
 											viewers={item.viewers}
-											thumbnail={item.thumbnail}
 											onItemClick={() => onItemClick(item.username)}
 											extraClasses={itemExtraClasses}
 										/>
