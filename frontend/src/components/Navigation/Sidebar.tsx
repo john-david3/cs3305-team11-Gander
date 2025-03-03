@@ -23,7 +23,7 @@ interface SideBarProps {
 const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
 	const { showSideBar, setShowSideBar } = useSidebar();
 	const navigate = useNavigate();
-	const { username, isLoggedIn } = useAuth();
+	const { username, isLoggedIn, profilePicture } = useAuth();
 	const [followedStreamers, setFollowedStreamers] = useState<Streamer[]>([]);
 	const [followedCategories, setFollowedCategories] = useState<Category[]>([]);
 	const [justToggled, setJustToggled] = useState(false);
@@ -92,13 +92,13 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
 				{/* Profile Info */}
 				<div className="flex flex-row items-center border-b-4 border-[var(--profile-border)] justify-evenly bg-[var(--sideBar-profile-bg)] py-[1em]">
 					<img
-						src={`/user/${username}/profile_picture`}
+						src={profilePicture || `/user/${username}/profile_picture`}
 						onError={(e) => {
 							e.currentTarget.src = "/images/pfps/default.png";
 							e.currentTarget.onerror = null;
 						}}
 						alt="profile picture"
-						className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
+						className="w-[3em] h-[3em] object-cover rounded-full border-[0.15em] border-purple-500 cursor-pointer"
 						onClick={() => navigate(`/user/${username}`)}
 					/>
 					<div className="text-center flex flex-col items-center justify-center">

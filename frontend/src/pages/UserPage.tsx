@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import AuthModal from "../components/Auth/AuthModal";
 import { useAuthModal } from "../hooks/useAuthModal";
 import { useAuth } from "../context/AuthContext";
@@ -27,7 +27,8 @@ const UserPage: React.FC = () => {
 	const [profileData, setProfileData] = useState<UserProfileData>();
 	const { isFollowing, checkFollowStatus, followUser, unfollowUser } = useFollow();
 	const { showAuthModal, setShowAuthModal } = useAuthModal();
-	const { username: loggedInUsername } = useAuth();
+	const { username: loggedInUsername, profilePicture, setProfilePicture } = useAuth();
+	const initialProfilePicture = useRef(profilePicture);
 	const { username } = useParams();
 	const { vods } = useVods(`/api/vods/${username}`);
 	const navigate = useNavigate();
@@ -70,13 +71,29 @@ const UserPage: React.FC = () => {
 
 				if (response.ok) {
 					console.log("Success");
-					window.location.reload();
+					console.log(URL.createObjectURL(img))
+					setProfilePicture(URL.createObjectURL(img));
 				}
 			} catch (error) {
 				console.log("Failure");
 			}
 		}
 	};
+
+	const handleNavigation = (path: string) => {
+		if (profilePicture === initialProfilePicture.current) {
+		  // Variable hasn't changed - use React Router navigation
+		  navigate(path);
+		} else {
+		  // Variable has changed - use full page reload
+		  window.location.href = path;
+		}
+	  };
+
+	// Store initial profile picture to know if it changes later
+	useEffect(() => {
+		initialProfilePicture.current = profilePicture;
+	}, []);
 
 	// Check if the current user is the currently logged-in user
 	useEffect(() => {
@@ -138,9 +155,8 @@ const UserPage: React.FC = () => {
 									""
 								)}
 								<img
-									src={`/user/${profileData.username}/profile_picture`}
+									src={userPageVariant === "personal" && profilePicture ? profilePicture : `/user/${profileData.username}/profile_picture`}
 									onError={(e) => {
-										console.log("no error")
 										e.currentTarget.src = "/images/pfps/default.png";
 										e.currentTarget.onerror = null;
 									}}
@@ -216,7 +232,7 @@ const UserPage: React.FC = () => {
 									viewers={currentStream.viewers || 0}
 									thumbnail={currentStream.thumbnail}
 									onItemClick={() => {
-										navigate(`/${profileData.username}`);
+										handleNavigation(`/${profileData.username}`);
 									}}
 								/>
 							</div>
@@ -253,7 +269,7 @@ const UserPage: React.FC = () => {
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button className="text-[var(--follow-text)] whitespace-pre-wrap" onClick={() => navigate(`/user/${username}/following`)}>
+							<button className="text-[var(--follow-text)] whitespace-pre-wrap" onClick={() => handleNavigation(`/user/${username}/following`)}>
 								Following
 							</button>
 						</div>
@@ -273,7 +289,7 @@ const UserPage: React.FC = () => {
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button onClick={() => navigate(`/user/${username}/followedCategories`)}>Categories</button>
+							<button onClick={() => handleNavigation(`/user/${username}/followedCategories`)}>Categories</button>
 						</div>
 					</div>
 				</div>

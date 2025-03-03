@@ -23,6 +23,7 @@ function App() {
 	const [userId, setUserId] = useState<number | null>(null);
 	const [isLive, setIsLive] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
 	useEffect(() => {
 		fetch("/api/user/login_status")
@@ -53,10 +54,12 @@ function App() {
 					username,
 					userId,
 					isLive,
+					profilePicture,
 					setIsLoggedIn,
 					setUsername,
 					setUserId,
 					setIsLive,
+					setProfilePicture,
 				}}
 			>
 				<SidebarProvider>

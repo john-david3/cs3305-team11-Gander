@@ -77,9 +77,8 @@ export function useFetchContent<T>(
 					throw new Error(`Error fetching data: ${response.status}`);
 				}
 
-				const rawData = await response.json();				
-				let processedData = processor(Array.isArray(rawData) ? rawData : (rawData ? [rawData] : []));
-				console.log("processedData", processedData);
+				const rawData = await response.json();
+				let processedData = processor(Array.isArray(rawData) ? rawData : rawData ? [rawData] : []);
 				setData(processedData);
 				setError(null);
 			} catch (err) {
