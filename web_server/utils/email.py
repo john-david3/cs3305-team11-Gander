@@ -29,10 +29,11 @@ def send_email(email, func) -> None:
     SMTP_PASSWORD = getenv("EMAIL_PASSWORD")
 
     # Setup up the receiver details
-    body = func()
+    body, subject = func()
+    print(subject, flush=True)
 
     msg = MIMEText(body, "html")
-    msg["Subject"] = "Reset Gander Login"
+    msg["Subject"] = subject
     msg["From"] = SMTP_EMAIL
     msg["To"] = email
 
@@ -87,7 +88,7 @@ def forgot_password_body(email) -> str:
     """
 
 
-    return content
+    return content, "Gander - Forgot Password"
 
 def confirm_account_creation_body(email) -> str:
     """
@@ -125,7 +126,7 @@ def confirm_account_creation_body(email) -> str:
     </html>
     """
 
-    return content
+    return content, "Gander - Confirm Account Creation"
 
 
 def newsletter_conf(email):
@@ -160,7 +161,7 @@ def newsletter_conf(email):
 
     add_to_newsletter(email)
 
-    return content
+    return content, "Gander - Newsletter"
 
 def add_to_newsletter(email):
     """
@@ -175,6 +176,8 @@ def add_to_newsletter(email):
             INSERT INTO newsletter (email)
             VALUES (?);
             """, (email,))
+    
+    db.close_connection()
 
 
 def remove_from_newsletter(email):
@@ -190,3 +193,5 @@ def remove_from_newsletter(email):
             DELETE FROM newsletter
             WHERE email = ?;
             """, (email,))
+
+    db.close_connection()
