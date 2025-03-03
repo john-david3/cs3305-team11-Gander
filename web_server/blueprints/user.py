@@ -3,7 +3,7 @@ from utils.user_utils import *
 from utils.auth import *
 from utils.utils import get_category_id
 from blueprints.middleware import login_required
-from utils.email import send_email, forgot_password_body, newsletter_conf
+from utils.email import send_email, forgot_password_body, newsletter_conf, remove_from_newsletter
 from utils.path_manager import PathManager
 from celery_tasks.streaming import convert_image_to_png
 import redis
@@ -196,10 +196,22 @@ def user_reset_password(token, new_password):
     """
     salt_value = r.get(token)
     if salt_value:
-            r.delete(token)
+        r.delete(token)
 
     email = verify_token(token[:-5], salt_value)
     if email:
         reset_password(new_password, email)
         return jsonify({"message": "Password reset successful"}), 200
+    return jsonify({"error": "Invalid token"}), 400
+
+@user_bp.route("/unsubscribe/<string:token>", methods=["POST"])
+def unsubscribe(token):
+    salt = r.get(token)
+    if salt:
+        r.delete(token)
+
+    email = verify_token(token[:-5], salt)
+    if email:
+        remove_from_newsletter(email)
+        return jsonify({"message": "unsubscribed from newsletter"}), 200
     return jsonify({"error": "Invalid token"}), 400
