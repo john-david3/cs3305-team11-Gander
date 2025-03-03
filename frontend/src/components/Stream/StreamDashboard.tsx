@@ -225,13 +225,13 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 	const handleEndStream = async () => {
 		console.log("Ending stream...");
 
-		const formData = new FormData();
-		formData.append("key", streamData.stream_key);
-
 		try {
 			const response = await fetch("/api/end_stream", {
 				method: "POST",
-				body: formData,
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ key: streamData.stream_key }),
 			});
 
 			if (response.ok) {
@@ -375,7 +375,9 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 								streamCategory={streamData.category_name || "Category"}
 								viewers={streamData.viewer_count}
 								thumbnail={thumbnailPreview.url || ""}
-								onItemClick={() => {}}
+								onItemClick={() => {
+									window.open(`/${username}`, "_blank");
+								}}
 								extraClasses="max-w-[20vw]"
 							/>
 						</div>

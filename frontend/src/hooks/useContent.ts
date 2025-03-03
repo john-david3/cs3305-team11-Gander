@@ -23,6 +23,7 @@ const processVodData = (data: any[]): VodType[] => {
 
 // Helper function to process API data into our consistent types
 const processStreamData = (data: any[]): StreamType[] => {
+	if (!data || data.length === 0 || !data[0] || !data[0].user_id) return [];
 	return data.map((stream) => ({
 		type: "stream",
 		id: stream.user_id,
@@ -76,8 +77,9 @@ export function useFetchContent<T>(
 					throw new Error(`Error fetching data: ${response.status}`);
 				}
 
-				const rawData = await response.json();
-				const processedData = processor(rawData);
+				const rawData = await response.json();				
+				let processedData = processor(Array.isArray(rawData) ? rawData : (rawData ? [rawData] : []));
+				console.log("processedData", processedData);
 				setData(processedData);
 				setError(null);
 			} catch (err) {
@@ -126,7 +128,7 @@ export function useVods(customUrl?: string): {
 	isLoading: boolean;
 	error: string | null;
 } {
-	const url = customUrl || "api/vods/all"; //TODO: Change this to the correct URL or implement it
+	const url = customUrl || "api/vods/all";
 	const { data, isLoading, error } = useFetchContent<VodType>(url, processVodData, [customUrl]);
 
 	return { vods: data, isLoading, error };
