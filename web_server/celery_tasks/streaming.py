@@ -50,12 +50,6 @@ def combine_ts_stream(stream_path, vods_path, vod_file_name):
 
     subprocess.run(vod_command)
 
-    # Remove ts files
-    for ts_file in ts_files:
-        remove(f"{stream_path}/{ts_file}")
-    # Remove m3u8 file
-    remove(f"{stream_path}/index.m3u8")
-
 @shared_task
 def convert_image_to_png(image_path, png_path):
     """
