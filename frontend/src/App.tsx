@@ -16,6 +16,8 @@ import { Brightness } from "./context/BrightnessContext";
 import LoadingScreen from "./components/Layout/LoadingScreen";
 import Following from "./pages/Following";
 import UnsubscribePage from "./pages/UnsubscribePage";
+import Vods from "./pages/Vods";
+import VodPlayer from "./pages/VodPlayer";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -77,6 +79,8 @@ function App() {
 								<Route path="/results" element={<ResultsPage />}></Route>
 								<Route path="/404" element={<NotFoundPage />} />
 								<Route path="/user/:username/following" element={<Following />} />
+								<Route path="/user/:username/vods" element={<Vods />} />
+								<Route path="/stream/:username/vods/:vod_id" element={<VodPlayer />} />
 								<Route path="*" element={<Navigate to="/404" replace />} />
 							</Routes>
 						</BrowserRouter>
