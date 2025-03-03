@@ -19,6 +19,7 @@ def logged_in_user():
                             WHERE username = ?;""",
                             (session.get("username"),)
                         )
+    db.close_connection()
 
 def login_required(view):
     """
