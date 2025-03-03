@@ -80,6 +80,9 @@ def end_user_stream(stream_key, user_id, username):
             stream_info = db.fetchone("""SELECT *
                                     FROM streams
                                     WHERE user_id = ?""", (user_id,))
+            
+            # Remove HLS files, even if user is not streaming
+            remove_hls_files(path_manager.get_stream_path(username))
                                     
             # If user is not streaming, just return
             if not stream_info:
@@ -193,6 +196,14 @@ def generate_thumbnail(stream_file: str, thumbnail_file: str) -> None:
         print(f"Thumbnail generated for {stream_file}")
     except subprocess.CalledProcessError as e:
         print(f"No information available for {stream_file}, aborting thumbnail generation")
+
+def remove_hls_files(stream_path: str) -> None:
+    """
+    Removes all hls files in a stream directory
+    """
+    for file in os.listdir(stream_path):
+        if file.endswith(".ts") or file.endswith(".m3u8"):
+            os.remove(os.path.join(stream_path, file))
 
 def get_stream_tags(user_id: int) -> Optional[List[str]]:
     """

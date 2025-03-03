@@ -159,6 +159,25 @@ def user_live_status(username):
         "user_id": user_id
     })
 
+@stream_bp.route('/user/<string:username>/direct_live_status')
+def user_live_status_direct(username):
+    """
+    Returns a streamer's status, if they are live or not
+    Returns:
+    {
+        "is_live": bool,
+        "user_id": int
+    }
+    """
+
+    user_id = get_user_id(username)
+    is_live = True if get_streamer_live_status(user_id)['is_live'] else False
+
+    if is_live:
+        return 'ok', 200
+    else:
+        return 'not live', 404
+
 
 # VOD Routes
 @stream_bp.route('/vods/<int:vod_id>')
