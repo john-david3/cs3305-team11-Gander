@@ -27,7 +27,7 @@ const Input: React.FC<InputProps> = ({
           onChange={onChange}
           onKeyDown={onKeyDown}
           {...props}
-          className={`${extraClasses} relative p-2 rounded-[1rem] w-[20vw] focus:w-[22vw] bg-black/40 border border-gray-300 focus:border-purple-500 focus:outline-purple-500 text-center text-white text-xl transition-all`}
+          className={`${extraClasses} relative p-2 rounded-[1rem] w-[20vw] focus:w-[110%] bg-black/40 border border-gray-300 focus:border-purple-500 focus:outline-purple-500 text-center text-white text-xl transition-all`}
         />
       </div>
     </>

@@ -125,7 +125,7 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
             placeholder="Username"
             value={formData.username}
             onChange={handleInputChange}
-            extraClasses={`w-full focus:w-[120%] p-3 ${
+            extraClasses={`w-full p-3 ${
               errors.username ? "border-red-500" : ""
             }`}
           />
@@ -143,7 +143,7 @@ const LoginForm: React.FC<SubmitProps> = ({ onSubmit, onForgotPassword }) => {
               placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
-              extraClasses={`w-full focus:w-[120%] p-3 ${
+              extraClasses={`w-full p-3 ${
                 errors.password ? "border-red-500" : ""
               }`}
             ></Input>

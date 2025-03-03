@@ -15,7 +15,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       type={type}
-      className={`${extraClasses} p-2 text-[clamp(1rem, 1.5vw, 1.25rem)] text-white hover:text-purple-600 bg-black/30 hover:bg-black/80 rounded-md border border-gray-300 hover:border-purple-500 hover:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all`}
+      className={`${extraClasses} p-2 text-[clamp(1rem, 1.5vw, 1.25rem)] text-white hover:text-purple-600 bg-black/30 hover:bg-black/80 rounded-md border border-gray-300 hover:border-purple-500 hover:border-b-4 hover:border-l-4 active:border-b-2 active:border-l-2 transition-all box-border`}
       {...props}
     >
       {children}
@@ -39,7 +39,7 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
         " cursor-pointer hover:text-purple-600 hover:bg-black/80 hover:border-purple-500 hover:border-b-4 hover:border-l-4");
   return (
     <button
-      className={`${extraClasses} p-2 text-[1.5rem] text-white bg-black/30 rounded-[1rem] border border-gray-300 transition-all`}
+      className={`${extraClasses} p-2 text-[1.5rem] text-white bg-black/30 rounded-[1rem] border border-gray-300 transition-all box-border`}
       onClick={onClick}
     >
       {children}
