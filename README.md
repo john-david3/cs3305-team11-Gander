@@ -1,10 +1,13 @@
-# **Team 11 - Live Streaming Platform**
+# **Team 11 - Gander - Live Streaming Platform**
 
-## Overview
+## Overview and Purpose
 
-Our project is a live streaming service that enables content creators to broadcast to viewers through a web-based platform. The application consists of a React-based frontend that users access to watch streams, and a Flask backend that manages the core functionality and business logic.
+For our project, we are creating a live streaming platform called Gander. The purpose of this project is to provide a source of entertainment to users and create a community for those with similar interests. In it, users will be able to watch live streams from other users, either gaming or in real life. Alternatively, users can stream themselves on the platform. If a user wants to go live, they can click the “Go Live” button when they are logged in. They will then be presented with a dashboard, so that they can choose their stream's title, category and thumbnail (if they wish to, otherwise a default thumbnail will be chosen). Users who are watching a live stream can interact with other viewers and the streamer through a chat feature. If a user likes a streamer enough, they can subscribe to them using the Stripe API on a monthly basis, for as many months as they wish.
+![Screenshot 2025-03-03 123446](https://github.com/user-attachments/assets/a23c2974-9500-492d-be07-91161606e805)
 
-### Access Control Levels
+![Screenshot 2025-03-03 125748](https://github.com/user-attachments/assets/ab2092a3-c599-4a90-a616-f08faa4c76ba)
+
+## Access Control Levels
 
 The platform implements three-tier access control:
 
@@ -24,6 +27,8 @@ The platform implements three-tier access control:
    - Content moderation tools
    - User account management
    - System configuration controls
+
+![Screenshot 2025-03-03 122943](https://github.com/user-attachments/assets/26b82756-3e39-41d3-8d30-b3a6cbda21a0)
 
 ## Technical Stack
 
@@ -46,6 +51,7 @@ The platform implements three-tier access control:
 - Docker for containerization and deployment
 - Docker Compose for multi-container orchestration
 - Nginx for reverse proxy and RTMP streaming server
+- Uses a microservices architecture
 
 ## Future Development
 
