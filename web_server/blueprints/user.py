@@ -61,17 +61,6 @@ def user_profile_picture_save():
 
     return jsonify({"message": "Profile picture saved", "path": thumbnail_path})
 
-@login_required
-@user_bp.route('/user/same/<string:username>')
-def user_is_same(username):
-    """
-    Returns if given user is current user
-    """
-    current_username = session.get("username")
-    if username == current_username:
-        return jsonify({"same": True})
-    return jsonify({"same": False})
-
 ## Subscription Routes
 @login_required
 @user_bp.route('/user/subscription/<string:streamer_name>')

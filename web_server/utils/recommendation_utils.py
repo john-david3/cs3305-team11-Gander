@@ -94,7 +94,7 @@ def get_highest_view_categories(no_categories: int = 4, offset: int = 0) -> Opti
         """, (no_categories, offset))
     return categories
 
-def get_user_category_recommendations(user_id: 1, no_categories: int = 4) -> Optional[List[dict]]:
+def get_user_category_recommendations(user_id = 1, no_categories: int = 4) -> Optional[List[dict]]:
     """
     Queries user_preferences database to find users top favourite streaming category and returns the category
     """

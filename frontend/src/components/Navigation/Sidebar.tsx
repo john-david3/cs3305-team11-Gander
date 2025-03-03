@@ -141,7 +141,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
 								return (
 									<div
 										key={`${sidebarId.current}-category-${category.category_id}`}
-										className="group relative flex flex-col items-center justify-center h-full max-h-[50px] border border-[--text-color]
+										className="group relative flex flex-col items-center justify-center w-full h-full max-h-[50px] border border-[--text-color]
                      rounded-lg overflow-hidden hover:shadow-lg transition-all text-white hover:text-purple-500 cursor-pointer"
 										onClick={() => (window.location.href = `/category/${category.category_name}`)}
 									>

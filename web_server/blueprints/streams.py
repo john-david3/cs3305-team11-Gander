@@ -67,13 +67,17 @@ def recommended_streams() -> list[dict]:
     return streams
 
 
+@stream_bp.route('/streams/<string:username>/data')
 @stream_bp.route('/streams/<int:streamer_id>/data')
-def stream_data(streamer_id) -> dict:
+def stream_data(username=None, streamer_id=None) -> dict:
     """
     Returns a streamer's current stream data
     """
+    if username and not streamer_id:
+        streamer_id = get_user_id(username)
     data = get_current_stream_data(streamer_id)
 
+    # If the user is the streamer, return the stream key also
     if session.get('user_id') == streamer_id:
         with Database() as db:
             stream_key = db.fetchone(
@@ -112,31 +116,19 @@ def recommended_categories() -> list | list[dict]:
 
     """
     user_id = session.get("user_id")
-    categories = get_user_category_recommendations(1)
+    categories = get_user_category_recommendations(user_id)
     return jsonify(categories)
 
 
 @login_required
-@stream_bp.route('/categories/following')
+@stream_bp.route('/streams/followed_categories')
 def following_categories_streams():
     """
-    Returns popular streams in categories which the user followed
+    Returns popular streams from categories the user is following
     """
 
     streams = get_followed_categories_recommendations(session.get('user_id'))
     return jsonify(streams)
-
-
-@login_required
-@stream_bp.route('/categories/your_categories')
-def following_your_categories():
-    """
-    Returns categories which the user followed
-    """
-
-    streams = get_followed_your_categories(session.get('user_id'))
-    return jsonify(streams)
-
 
 
 # User Routes
@@ -172,7 +164,7 @@ def user_live_status(username):
 @stream_bp.route('/vods/<int:vod_id>')
 def vod(vod_id):
     """
-    Returns a JSON of a vod
+    Returns details about a specific vod
     """
     vod = get_vod(vod_id)
     return jsonify(vod)
@@ -187,6 +179,7 @@ def vods(username):
             "vod_id": int,
             "title": str,
             "datetime": str,
+            "username": str,
             "category_name": str,
             "length": int (in seconds),
             "views": int
@@ -204,10 +197,8 @@ def get_all_vods():
     Returns data of all VODs by all streamers in a JSON-compatible format
     """
     with Database() as db:
-        vods = db.fetchall("SELECT * FROM vods")
-    
-    print("Fetched VODs from DB:", vods)
-    
+        vods = db.fetchall("""SELECT vods.*, username, category_name FROM vods JOIN users ON vods.user_id = users.user_id JOIN categories ON vods.category_id = categories.category_id;""")
+        
     return jsonify(vods)
 
 # RTMP Server Routes
@@ -355,23 +346,12 @@ def update_stream():
 @stream_bp.route("/end_stream", methods=["POST"])
 def end_stream():
     """
-    Ends a stream
-
-    step-by-step:
-    remove stream from database
-    move stream to vod table
-    set user as not streaming
-    convert ts files to mp4
-    clean up old ts files
-    end thumbnail generation
+    Ends a stream based on the HTTP request
     """
+    print("Ending stream", flush=True)
 
-    print("TEST END STREAM")
     stream_key = request.get_json().get("key")
-    print(stream_key, flush=True)
-    user_id = None
-    username = None
-
+    
     if not stream_key:
         # Try getting stream_key from form data (for nginx in the case that the stream is ended on OBS's end)
         stream_key = request.form.get("name")
@@ -380,60 +360,24 @@ def end_stream():
         print("Unauthorized - No stream key provided", flush=True)
         return "Unauthorized", 403
 
-    # Open database connection
+    # Get user info from stream key
     with Database() as db:
-        initial_streams = db.fetchall("""SELECT title FROM streams""")
-        print("Initial streams:", initial_streams, flush=True)
-
-        # Get user info from stream key
-        user_info = db.fetchone("""SELECT *
+        user_info = db.fetchone("""SELECT user_id, username
                                 FROM users 
                                 WHERE stream_key = ?""", (stream_key,))
-
-        stream_info = db.fetchone("""SELECT *
-                                FROM streams
-                                WHERE user_id = ?""", (user_id,))
-
-        print("Got stream_info", stream_info, flush=True)
-
-        # If stream key is invalid, return unauthorized
+        
         if not user_info:
             print("Unauthorized - No user found from stream key", flush=True)
             return "Unauthorized", 403
-        # If stream never published, return
-        if not stream_info:
-            print(f"Stream for stream key: {stream_key} never began", flush=True)
-            return "Stream ended", 200
-
-        # Remove stream from database
-        db.execute("""DELETE FROM streams 
-                   WHERE user_id = ?""", (user_id,))
-
-        # Move stream to vod table
-        stream_length = int(
-            (datetime.now() - parser.parse(stream_info.get("start_time"))).total_seconds())
-
-        db.execute("""INSERT INTO vods (user_id, title, datetime, category_id, length, views)
-                    VALUES (?, ?, ?, ?, ?, ?)""", (user_id,
-                                                   stream_info.get("title"),
-                                                   stream_info.get(
-                                                       "start_time"),
-                                                   stream_info.get(
-                                                       "category_id"),
-                                                   stream_length,
-                                                   0))
-
-        vod_id = db.get_last_insert_id()
-
-        # Set user as not streaming
-        db.execute("""UPDATE users 
-                   SET is_live = 0 
-                   WHERE user_id = ?""", (user_id,))
-
-        current_streams = db.fetchall("""SELECT title FROM streams""")
-
-    combine_ts_stream.delay(path_manager.get_stream_path(
-        username), path_manager.get_vods_path(username), vod_id)
-
-    print("Stream ended. Current streams now:", current_streams, flush=True)
-    return "Stream ended", 200
+            
+        user_id = user_info["user_id"]
+        username = user_info["username"]
+    
+    result, message = end_user_stream(stream_key, user_id, username)
+    
+    if result:
+        print(f"Stream ended: {message}", flush=True)
+        return "Stream ended", 200
+    else:
+        print(f"Error ending stream: {message}", flush=True)
+        return "Error ending stream", 500

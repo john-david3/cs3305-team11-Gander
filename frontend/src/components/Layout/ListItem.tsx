@@ -110,6 +110,7 @@ interface VodListItemProps extends BaseListItemProps, Omit<VodType, "type"> {
 }
 
 const VodListItem: React.FC<VodListItemProps> = ({
+	vod_id,
 	title,
 	username,
 	category_name,
@@ -137,7 +138,7 @@ const VodListItem: React.FC<VodListItemProps> = ({
 
 				<div className="p-3">
 					<h3 className="font-semibold text-lg text-white truncate max-w-full">{title}</h3>
-					<p className="text-sm text-gray-300">{username}</p>
+					{variant != "vodDashboard" && <p className="text-sm text-gray-300">{username}</p>}
 					<p className="text-sm text-gray-400">{category_name}</p>
 					<div className="flex justify-between items-center mt-2">
 						<p className="text-xs text-gray-500">{datetime}</p>
@@ -147,20 +148,21 @@ const VodListItem: React.FC<VodListItemProps> = ({
 			</div>
 			{variant === "vodDashboard" && (
 				<div className="flex justify-evenly items-stretch rounded-b-lg">
-					<button
+					{/* <button
 						className="flex justify-around w-full h-full bg-black/50 hover:bg-black/80 p-2 mx-1 font-semibold rounded-full border border-transparent hover:border-white"
 						onClick={() => console.log("Publish")}
 					>
 						<UploadIcon />
 						Publish
-					</button>
-					<button
+					</button> */}
+					<a
 						className="flex justify-around w-full h-full bg-black/50 hover:bg-black/80 p-2 mx-1 font-semibold rounded-full border border-transparent hover:border-white"
-						onClick={() => console.log("Download")}
+						href={`/vods/${username}/${vod_id}.mp4`}
+						download={`${username}_vod_${vod_id}.mp4`}
 					>
 						<DownloadIcon />
 						Download
-					</button>
+					</a>
 				</div>
 			)}
 		</div>

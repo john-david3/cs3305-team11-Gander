@@ -48,6 +48,81 @@ def get_current_stream_data(user_id: int) -> Optional[dict]:
         """, (user_id,))
     return most_recent_stream
 
+def end_user_stream(stream_key, user_id, username):
+    """
+    Utility function to end a user's stream
+    
+    Parameters:
+    stream_key: The stream key of the user
+    user_id: The ID of the user
+    username: The username of the user
+    
+    Returns:
+    bool: True if stream was ended successfully, False otherwise
+    """
+    from flask import current_app
+    from datetime import datetime
+    from dateutil import parser
+    from celery_tasks.streaming import combine_ts_stream
+    from utils.path_manager import PathManager
+    
+    path_manager = PathManager()
+    print(f"Ending stream for user {username} (ID: {user_id})", flush=True)
+    
+    if not stream_key or not user_id or not username:
+        print("Cannot end stream - missing required information", flush=True)
+        return False
+        
+    try:
+        # Open database connection
+        with Database() as db:
+            # Get stream info
+            stream_info = db.fetchone("""SELECT *
+                                    FROM streams
+                                    WHERE user_id = ?""", (user_id,))
+                                    
+            # If user is not streaming, just return
+            if not stream_info:
+                print(f"User {username} (ID: {user_id}) is not streaming", flush=True)
+                return True, "User is not streaming"
+                
+            # Remove stream from database
+            db.execute("""DELETE FROM streams 
+                       WHERE user_id = ?""", (user_id,))
+    
+            # Move stream to vod table
+            stream_length = int(
+                (datetime.now() - parser.parse(stream_info.get("start_time"))).total_seconds())
+    
+            db.execute("""INSERT INTO vods (user_id, title, datetime, category_id, length, views)
+                        VALUES (?, ?, ?, ?, ?, ?)""", (user_id,
+                                                       stream_info.get("title"),
+                                                       stream_info.get("start_time"),
+                                                       stream_info.get("category_id"),
+                                                       stream_length,
+                                                       0))
+    
+            vod_id = db.get_last_insert_id()
+    
+            # Set user as not streaming
+            db.execute("""UPDATE users 
+                       SET is_live = 0 
+                       WHERE user_id = ?""", (user_id,))
+        
+        # Queue task to combine TS files into MP4
+        combine_ts_stream.delay(
+            path_manager.get_stream_path(username), 
+            path_manager.get_vods_path(username), 
+            vod_id
+        )
+        
+        print(f"Stream ended for user {username} (ID: {user_id})", flush=True)
+        return True, "Stream ended successfully"
+        
+    except Exception as e:
+        print(f"Error ending stream for user {username}: {str(e)}", flush=True)
+        return False, f"Error ending stream: {str(e)}"
+
 def get_category_id(category_name: str) -> Optional[int]:
     """
     Returns the category_id given a category name
@@ -77,7 +152,7 @@ def get_vod(vod_id: int) -> dict:
     Returns data of a streamers vod
     """
     with Database() as db:
-        vod = db.fetchone("""SELECT * FROM vods WHERE vod_id = ?;""", (vod_id,))
+        vod = db.fetchone("""SELECT vods.*, username, category_name FROM vods JOIN users ON vods.user_id = users.user_id JOIN categories ON vods.category_id = categories.category_id WHERE vod_id = ?;""", (vod_id,))
     return vod
 
 def get_latest_vod(user_id: int):
@@ -85,7 +160,7 @@ def get_latest_vod(user_id: int):
     Returns data of the most recent stream by a streamer
     """
     with Database() as db:
-        latest_vod = db.fetchone("""SELECT vods.*, category_name FROM vods JOIN categories ON vods.category_id = categories.category_id WHERE user_id = ? ORDER BY vod_id DESC;""", (user_id,))
+        latest_vod = db.fetchone("""SELECT vods.*, username, category_name FROM vods JOIN users ON vods.user_id = users.user_id JOIN categories ON vods.category_id = categories.category_id WHERE vods.user_id = ? ORDER BY vod_id DESC;""", (user_id,))
     return latest_vod
 
 def get_user_vods(user_id: int):
@@ -93,15 +168,7 @@ def get_user_vods(user_id: int):
     Returns data of all vods by a streamer
     """
     with Database() as db:
-        vods = db.fetchall("""SELECT vods.*, category_name FROM vods JOIN categories ON vods.category_id = categories.category_id WHERE user_id = ? ORDER BY vod_id DESC;""", (user_id,))
-    return vods
-
-def get_all_vods():
-    """
-    Returns data of all VODs by all streamers in a JSON-compatible format
-    """
-    with Database() as db:
-        vods = db.fetchall("""SELECT * FROM vods""")
+        vods = db.fetchall("""SELECT vods.*, username, category_name FROM vods JOIN users ON vods.user_id = users.user_id JOIN categories ON vods.category_id = categories.category_id WHERE vods.user_id = ? ORDER BY vod_id DESC;""", (user_id,))
     return vods
 
 def generate_thumbnail(stream_file: str, thumbnail_file: str) -> None:
