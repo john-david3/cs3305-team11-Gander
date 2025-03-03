@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { useFollow } from "../hooks/useFollow";
 import FollowUserButton from "../components/Input/FollowUserButton";
+import FollowButton from "../components/Input/FollowButton";
 
 interface Streamer {
   user_id: number;
@@ -11,6 +12,7 @@ interface Streamer {
 }
 
 interface Category {
+  isFollowing: boolean;
   category_id: number;
   category_name: string;
 }
@@ -30,7 +32,7 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const initialTab = queryParams.get("tab") === "streamers" ? "streamers" : "categories";
+  const initialTab = queryParams.get("tab") === "streamers" ? "categories" : "categories";
 
   const [activeTab, setActiveTab] = useState<"categories" | "streamers">(initialTab);
   //const [followingStatus, setFollowingStatus] = useState<Record<number, boolean>>({});
@@ -103,8 +105,34 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
             ))}
           </div>
         )}
+
+        {activeTab === "categories" && (
+          <div id="categories-followed" className="grid grid-cols-4 gap-4 p-4 w-full">
+            {followedCategories.map((category) => {
+              return (
+                <div
+                  key={category.category_id}
+                  className="relative flex flex-col items-center justify-center border border-[--text-color] rounded-lg overflow-hidden hover:shadow-lg transition-all"
+                  onClick={() => navigate(`/category/${category.category_name}`)}
+                >
+                  <FollowButton category={category} />
+                  <img
+                    src={`/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`}
+                    alt={category.category_name}
+                    className="w-full h-28 object-cover"
+                  />
+                  <div className="absolute bottom-2 bg-black bg-opacity-60 w-full text-center text-white py-1">
+                    {category.category_name}
+                  </div>
+                </div>
+              );
+            })}
+
+          </div>
+        )};
+
       </div>
-  
+
 
 
     </DynamicPageContent >

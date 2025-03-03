@@ -15,7 +15,6 @@ import DashboardPage from "./pages/DashboardPage";
 import { Brightness } from "./context/BrightnessContext";
 import LoadingScreen from "./components/Layout/LoadingScreen";
 import Following from "./pages/Following";
-import FollowedCategories from "./pages/FollowedCategories";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
