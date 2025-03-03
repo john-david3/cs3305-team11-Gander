@@ -278,9 +278,8 @@ const UserPage: React.FC = () => {
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<ul className="list-none">
-								<li className="text-[var(--follow-text)] whitespace-pre-wrap list-none">Streamers</li>
-							</ul>
+							<button onClick={() => handleNavigation(`/user/${username}/vods`)}>Categories</button>
+
 						</div>
 						<div
 							className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
