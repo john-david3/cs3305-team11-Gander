@@ -30,7 +30,6 @@ def send_email(email, func) -> None:
 
     # Setup up the receiver details
     body, subject = func()
-    print(subject, flush=True)
 
     msg = MIMEText(body, "html")
     msg["Subject"] = subject
@@ -159,7 +158,20 @@ def newsletter_conf(email):
     </html>
     """
 
-    add_to_newsletter(email)
+    # Check if user is already in database
+    db = Database()
+    db.create_connection()
+
+    user_exists = db.fetchone("""
+                            SELECT *
+                            FROM newsletter
+                            WHERE email = ?;""", 
+                            (email,))
+    print(user_exists, flush=True)
+    db.close_connection()
+
+    if user_exists is None:
+        add_to_newsletter(email)
 
     return content, "Gander - Newsletter"
 
