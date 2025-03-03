@@ -76,7 +76,6 @@ function App() {
 								<Route path="/results" element={<ResultsPage />}></Route>
 								<Route path="/404" element={<NotFoundPage />} />
 								<Route path="/user/:username/following" element={<Following />} />
-								<Route path="/user/:username/yourCategories" element={<FollowedCategories />} />
 								<Route path="*" element={<Navigate to="/404" replace />} />
 							</Routes>
 						</BrowserRouter>
