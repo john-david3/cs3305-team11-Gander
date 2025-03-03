@@ -16,6 +16,8 @@ import { Brightness } from "./context/BrightnessContext";
 import LoadingScreen from "./components/Layout/LoadingScreen";
 import Following from "./pages/Following";
 import FollowedCategories from "./pages/FollowedCategories";
+import UnsubscribeForm from "./components/Auth/UnsubscribeForm";
+import UnsubscribePage from "./pages/UnsubscribePage";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -71,6 +73,7 @@ function App() {
 								<Route path="/:streamerName" element={<StreamerRoute />} />
 								<Route path="/user/:username" element={<UserPage />} />
 								<Route path="/reset_password/:token" element={<ResetPasswordPage />}></Route>
+								<Route path="user/unsubscribe/:token" element={<UnsubscribePage />}></Route>
 								<Route path="/category/:categoryName" element={<CategoryPage />}></Route>
 								<Route path="/categories" element={<CategoriesPage />}></Route>
 								<Route path="/results" element={<ResultsPage />}></Route>
