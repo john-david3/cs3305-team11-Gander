@@ -217,12 +217,12 @@ const UserPage: React.FC = () => {
 					{/* Content Section */}
 					<div
 						id="content"
-						className="col-span-2 bg-[var(--user-contentBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center"
-					>
+						className="col-span-2 bg-[var(--user-contentBox)] rounded-lg p-6 flex flex-col items-center w-full"
+						>
 						{/* Stream */}
 						{currentStream && (
 							<div className="mb-8">
-								<h2 className="text-2xl bg-[#ff0000] border py-4 px-12 font-black mb-4 rounded-[4rem]">Currently Live!</h2>
+								<h2 className="text-2xl bg-[#ff0000] border py-4 px-[9rem] font-black mb-4 rounded-[4rem]">Currently Live!</h2>
 								<StreamListItem
 									id={profileData.id}
 									title={currentStream.title || ""}

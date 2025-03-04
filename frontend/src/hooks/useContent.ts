@@ -105,6 +105,7 @@ export function useStreams(customUrl?: string): {
 	const [streams, setStreams] = useState<StreamType[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	console.log(streams)
 
 	useEffect(() => {
 		const fetchStreams = async () => {
@@ -158,7 +159,11 @@ export function useStreams(customUrl?: string): {
 					}
 
 					const data = await response.json();
-					setStreams(processStreamData(data));
+					console.log("Data: ", data)
+
+					// Make sure it is 100% ARRAY NOT OBJECT
+					const formattedData = Array.isArray(data) ? data : [data];
+					setStreams(processStreamData(formattedData));
 				}
 
 				setError(null);
@@ -184,7 +189,6 @@ export function useStreams(customUrl?: string): {
 
 		fetchStreams();
 	}, [isLoggedIn, customUrl]);
-
 	return { streams, isLoading, error };
 }
 

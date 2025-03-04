@@ -87,7 +87,7 @@ def stream_data(username=None, streamer_id=None) -> dict:
             else:
                 data = {"stream_key": stream_key["stream_key"]}
 
-    return jsonify(data)
+    return jsonify([data])
 
 
 # Category Routes
