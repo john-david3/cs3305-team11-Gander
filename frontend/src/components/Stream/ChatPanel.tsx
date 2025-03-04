@@ -29,6 +29,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 	const [inputMessage, setInputMessage] = useState("");
 	const chatContainerRef = useRef<HTMLDivElement>(null);
 	const [justToggled, setJustToggled] = useState(false);
+	const subscribedUsersRef = useRef<Record<string, boolean>>({});
 
 	// Join chat room when component mounts
 	useEffect(() => {
@@ -60,6 +61,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 				})
 				.then((data) => {
 					if (data.chat_history) {
+						// Store subscription status for each user
+						data.chat_history.forEach((msg: ChatMessage) => {
+							if (msg.is_subscribed) {
+								subscribedUsersRef.current[msg.chatter_username] = true;
+							}
+						});
 						setMessages(data.chat_history);
 					}
 				})
@@ -69,6 +76,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 
 			// Handle incoming messages
 			socket.on("new_message", (data: ChatMessage) => {
+				// If subscription info is missing, use our stored knowledge
+				if (data.is_subscribed === undefined) {
+					data.is_subscribed = !!subscribedUsersRef.current[data.chatter_username];
+				} else if (data.is_subscribed) {
+					// Update our subscription tracking
+					subscribedUsersRef.current[data.chatter_username] = true;
+				}
+				
 				setMessages((prev) => [...prev, data]);
 			});
 
