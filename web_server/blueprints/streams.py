@@ -388,18 +388,22 @@ def end_stream():
                                 FROM users 
                                 WHERE stream_key = ?""", (stream_key,))
         
+        # Return unauthorized if no user found
         if not user_info:
             print("Unauthorized - No user found from stream key", flush=True)
             return "Unauthorized", 403
             
+        # Get user info
         user_id = user_info["user_id"]
         username = user_info["username"]
     
+    # End stream
     result, message = end_user_stream(stream_key, user_id, username)
     
-    if result:
-        print(f"Stream ended: {message}", flush=True)
-        return "Stream ended", 200
-    else:
+    # Return error if stream could not be ended
+    if not result:
         print(f"Error ending stream: {message}", flush=True)
         return "Error ending stream", 500
+    
+    print(f"Stream ended: {message}", flush=True)
+    return "Stream ended", 200
