@@ -5,6 +5,7 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { useFollow } from "../hooks/useFollow";
 import FollowUserButton from "../components/Input/FollowUserButton";
 import FollowButton from "../components/Input/FollowButton";
+import Footer from "../components/Layout/Footer";
 
 interface Streamer {
   user_id: number;
@@ -78,63 +79,62 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
   }, [isLoggedIn]);
 
   return (
-    <DynamicPageContent>
-      <div
-        id="sidebar"
-        className={`top-0 left-0 w-screen h-screen overflow-x-hidden flex flex-col bg-[var(--sideBar-bg)] text-[var(--sideBar-text)] text-center overflow-y-auto scrollbar-hide transition-all duration-500 ease-in-out ${extraClasses}`}
-      >
-        {activeTab === "streamers" && (
-          <div
-            id="followed-users"
-            className={`grid grid-cols-2 gap-4 p-4 w-full`}>
-            {followedStreamers.map((streamer: any) => (
-              <div
-                key={`streamer-${streamer.username}`}
-                className="cursor-pointer bg-black w-full py-2 border border-[--text-color] rounded-lg text-white hover:text-purple-500 font-bold transition-colors"
-              /*onClick={() => navigate(`/user/${streamer.username}`)}*/
-              >
-                {streamer.username}
-                <FollowUserButton
-                  user={{
-                    user_id: streamer.user_id,
-                    username: streamer.username,
-                    isFollowing: followingStatus[streamer.user_id] || true,
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === "categories" && (
-          <div id="categories-followed" className="grid grid-cols-4 gap-4 p-4 w-full">
-            {followedCategories.map((category) => {
-              return (
+    <DynamicPageContent className="overflow-x-hidden h-full">
+      <div className="flex items-center justify-center mb-20">
+        <div
+          id="follow_page"
+          className={`w-[96vw] h-full bg-slate-50/35 rounded-lg overflow-x-hidden flex flex-col text-center scrollbar-hide transition-all duration-500 ease-in-out ${extraClasses}`}
+        >
+          {activeTab === "streamers" && (
+            <div
+              id="followed-users"
+              className={`grid grid-cols-2 gap-4 p-4 w-full`}>
+              {followedStreamers.map((streamer: any) => (
                 <div
-                  key={category.category_id}
-                  className="relative flex flex-col items-center justify-center border border-[--text-color] rounded-lg overflow-hidden hover:shadow-lg transition-all"
-                  onClick={() => navigate(`/category/${category.category_name}`)}
+                  key={`streamer-${streamer.username}`}
+                  className="h-full cursor-pointer bg-black w-full py-2 rounded-lg text-white hover:text-purple-500 font-bold transition-colors"
+                /*onClick={() => navigate(`/user/${streamer.username}`)}*/
                 >
-                  <FollowButton category={category} />
-                  <img
-                    src={`/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`}
-                    alt={category.category_name}
-                    className="w-full h-28 object-cover"
+                  {streamer.username}
+                  <FollowUserButton
+                    user={{
+                      user_id: streamer.user_id,
+                      username: streamer.username,
+                      isFollowing: followingStatus[streamer.user_id] || true,
+                    }}
                   />
-                  <div className="absolute bottom-2 bg-black bg-opacity-60 w-full text-center text-white py-1">
-                    {category.category_name}
-                  </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+          )}
 
-          </div>
-        )};
+          {activeTab === "categories" && (
+            <div id="categories-followed" className="grid grid-cols-3 gap-4 p-10 w-full">
+              {followedCategories.map((category) => {
+                return (
+                  <div
+                    key={category.category_id}
+                    className="relative flex flex-col items-center justify-center rounded-lg overflow-hidden hover:shadow-lg transition-all"
+                    onClick={() => navigate(`/category/${category.category_name}`)}
+                  >
+                    <FollowButton category={category} />
+                    <img
+                      src={`/images/category_thumbnails/${category.category_name.toLowerCase().replace(/ /g, "_")}.webp`}
+                      alt={category.category_name}
+                      className="w-full h-[200px] object-cover"
+                    />
+                    <div className="absolute bottom-2 bg-black bg-opacity-60 w-full text-center text-white py-1">
+                      {category.category_name}
+                    </div>
+                  </div>
+                )
+              })}
 
+            </div>
+          )};
+        </div>
       </div>
-
-
-
+      <Footer />
     </DynamicPageContent >
   );
 };
