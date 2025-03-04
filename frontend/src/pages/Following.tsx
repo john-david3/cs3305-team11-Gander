@@ -37,6 +37,7 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
 
   const [activeTab, setActiveTab] = useState<"categories" | "streamers">(initialTab);
   //const [followingStatus, setFollowingStatus] = useState<Record<number, boolean>>({});
+  const profileImageUrl = "/user/<streamer:username/index.png"
 
   useEffect(() => {
     const newTab = queryParams.get("tab") as "categories" | "streamers";
@@ -78,6 +79,8 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
     }
   }, [isLoggedIn]);
 
+
+
   return (
     <DynamicPageContent className="overflow-x-hidden h-full">
       <div className="flex items-center justify-center mb-20">
@@ -90,12 +93,27 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
               id="followed-users"
               className={`grid grid-cols-2 gap-4 p-4 w-full`}>
               {followedStreamers.map((streamer: any) => (
+
                 <div
                   key={`streamer-${streamer.username}`}
-                  className="h-full cursor-pointer bg-black w-full py-2 rounded-lg text-white hover:text-purple-500 font-bold transition-colors"
-                /*onClick={() => navigate(`/user/${streamer.username}`)}*/
+                  className="h-full cursor-pointer bg-black w-full py-2 rounded-lg text-white hover:text-purple-500 font-bold transition-colors flex items-center space-x-3 p-4"
                 >
-                  {streamer.username}
+                  
+                  {/* Profile Picture */}
+                  <img
+                    src={`/user/${streamer.username}/profile_picture`}
+                    alt={`${streamer.username}'s profile`}
+                    className="w-10 h-10 rounded-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/default-profile.png"; // Fallback if image fails to load
+                    }}
+                  />
+
+                  {/* Username */}
+                  <p className="text-lg">{streamer.username}</p>
+
+                  {/* Follow/Unfollow Button */}
                   <FollowUserButton
                     user={{
                       user_id: streamer.user_id,
