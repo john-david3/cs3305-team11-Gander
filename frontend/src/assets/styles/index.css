@@ -45,6 +45,9 @@ body[data-theme="light"] {
   --follow-bg: #aa00ff;
   --follow-text: white;
   --follow-shadow: 0px 0px 15px rgba(94, 94, 94, 0.754);
+  --streamer-box: #aa00ff;
+  --streamer-text: white;
+  --streamer-shadow: 0px 0px 10px rgba(0, 0, 0, 0.754);
 
   --liveNow: rgba(46, 16, 16, 0.6);
   --recommend: rgba(5, 46, 22, 0.6);
@@ -102,10 +105,13 @@ body[data-theme="dark"] {
   --follow-bg: #a50000c6;
   --follow-text: rgb(255, 255, 255);
   --follow-shadow: 0px 0px 15px rgba(255, 255, 255, 0.966);
+  --streamer-box: #8b1711;
+  --streamer-text: white;
+  --streamer-shadow: 0px 0px 25px rgb(255, 255, 255);
 
+  
   --liveNow: rgba(77, 29, 29, 0.6);
   --recommend: rgba(4, 63, 28, 0.6);
-
 
   --quickBar-title: rgb(255, 255, 255);
   --quickBar-title-bg: rgb(0, 0, 0);
@@ -160,7 +166,9 @@ body[data-theme="blue"] {
 
   --follow-bg: #ffffff;
   --follow-shadow: 0px 0px 15px rgba(161, 222, 255, 0.823);
-
+  --streamer-box: #00b3ff;
+  --streamer-text: white;
+  --streamer-shadow: 0px 0px 10px rgb(14, 18, 93);
   --liveNow: rgba(5, 59, 103, 0.801);
   --recommend: rgba(112, 116, 96, 0.6);
 
@@ -221,7 +229,9 @@ body[data-theme="green"] {
   --follow-bg: #b5ffb5;
   --follow-text: #2e7d32;
   --follow-shadow: 0px 0px 15px rgba(84, 255, 92, 0.754);
-
+  --streamer-box: #32b90dd4;
+  --streamer-text: rgb(255, 255, 255);
+  --streamer-shadow: 0px 0px 10px rgb(1, 112, 25);
   --liveNow: rgba(14, 173, 28, 0.491);
   --recommend: rgba(123, 94, 14, 0.6);
 
@@ -279,7 +289,9 @@ body[data-theme="orange"] {
   --follow-bg: #fdfd00af;
   --follow-text: #000000;
   --follow-shadow: 0px 0px 15px rgba(0, 229, 255, 0.754);
-
+  --streamer-box: #ffff00;
+  --streamer-text: rgb(0, 0, 0);
+  --streamer-shadow: 0px 0px 10px rgba(195, 75, 0, 0.754);
   --liveNow: #4c008285;
   --recommend: #c49c2da5;
 
