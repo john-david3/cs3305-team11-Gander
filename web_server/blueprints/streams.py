@@ -274,6 +274,7 @@ def publish_stream():
     stream_key = data.get("stream_key")
     stream_title = data.get("title")
     stream_category = data.get("category_name")
+    stream_thumbnail = data.get("thumbnail")
 
     user_id = None
     username = None
@@ -326,6 +327,7 @@ def update_stream():
     stream_title = data.get("title")
     stream_category = data.get("category_name")
     stream_thumbnail = data.get("thumbnail")
+
 
     with Database() as db:
         user_info = db.fetchone("""SELECT user_id, username, is_live 

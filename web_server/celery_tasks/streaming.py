@@ -1,7 +1,7 @@
 from celery import Celery, shared_task, Task
 from datetime import datetime
 from celery_tasks.preferences import user_preferences
-from utils.stream_utils import generate_thumbnail, get_streamer_live_status, get_custom_thumbnail_status
+from utils.stream_utils import generate_thumbnail, get_streamer_live_status, get_custom_thumbnail_status, remove_hls_files
 from time import sleep
 from os import listdir, remove
 import subprocess
@@ -49,6 +49,9 @@ def combine_ts_stream(stream_path, vods_path, vod_file_name):
     ]
 
     subprocess.run(vod_command)
+
+    # Remove HLS files, even if user is not streaming
+    remove_hls_files(stream_path)
 
 @shared_task
 def convert_image_to_png(image_path, png_path):

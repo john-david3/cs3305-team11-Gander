@@ -80,9 +80,6 @@ def end_user_stream(stream_key, user_id, username):
             stream_info = db.fetchone("""SELECT *
                                     FROM streams
                                     WHERE user_id = ?""", (user_id,))
-            
-            # Remove HLS files, even if user is not streaming
-            remove_hls_files(path_manager.get_stream_path(username))
                                     
             # If user is not streaming, just return
             if not stream_info:
