@@ -9,21 +9,21 @@
 
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(242, 100%, 10%);
+  background: transparent;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d5d5d5;
+  background: var(--scrollbar-color);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--scrollbar-hover);
 }
 
 
@@ -33,6 +33,8 @@ body[data-theme="light"] {
 
   /*Global Background Colour*/
   background: linear-gradient(to top right, #2043ba, #0026a6, #63007a);
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
 
   --sideBar-bg: rgb(255, 255, 255);
   --sideBar-text: black;
@@ -85,6 +87,8 @@ body[data-theme="light"] {
 body[data-theme="dark"] {
   /*Global Background Colour*/
   background: linear-gradient(to top right, #737787, #0d1e55, #567419);
+  --scrollbar-color: rgb(255, 255, 255);
+  --scrollbar-hover: rgb(255, 255, 255);
 
   --bg-color: black;
   --text-color: white;
@@ -144,6 +148,9 @@ body[data-theme="blue"] {
 
   /*Global Background Colour*/
   background: linear-gradient(to top right, #223b3b, #3e7bff, #170055);
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
+
 
   --sideBar-bg: #eefafffb;
   --sideBar-text: #002147;
@@ -197,6 +204,9 @@ body[data-theme="green"] {
 
   /*Global Background Colour*/
   background: linear-gradient(to top right, #2a0d0d, #183f29, #16631e);
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
+
 
   --bg-color: #e8f5e9;
   --text-color: #2e7d32;
@@ -254,7 +264,8 @@ body[data-theme="orange"] {
     
   /*Global Background Colour*/
   background: linear-gradient(to top right, #074a84, #a17e1c, #4f2b61);
-
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
 
   --bg-color: #ffe0b2;
   --text-color: #e65100;
