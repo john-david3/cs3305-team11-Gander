@@ -91,6 +91,7 @@ const UserListItem: React.FC<UserListItemProps> = ({ title, username, isLive, on
 					}}
 					alt={`user ${username}`}
 					className="rounded-xl border-[0.15em] border-[var(--bg-color)] cursor-pointer"
+					style={{ backgroundColor: 'white' }}
 				/>
 				<button className="text-[calc((2vw+2vh)/2)] font-bold hover:underline w-full py-2">{title}</button>
 

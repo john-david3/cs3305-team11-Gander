@@ -104,7 +104,6 @@ const Vods: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </DynamicPageContent>
   );
 };

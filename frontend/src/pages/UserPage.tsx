@@ -161,6 +161,7 @@ const UserPage: React.FC = () => {
 									}}
 									alt={`${profileData.username}'s profile`}
 									className="sm:w-full h-full object-cover rounded-full group-hover:brightness-50 relative z-0 transition-all"
+									style={{ backgroundColor: 'white' }}
 								/>
 
 								{/* If current user is the profile user then allow profile picture swap */}
@@ -268,30 +269,34 @@ const UserPage: React.FC = () => {
 					>
 						<div
 							className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
-                 flex items-center justify-center w-full p-4 content-start"
+         flex items-center justify-center w-full p-4 content-start cursor-pointer"
+							onClick={() => handleNavigation(`/user/${username}/following?tab=streamers`)}
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button className="text-[var(--follow-text)] whitespace-pre-wrap" onClick={() => handleNavigation(`/user/${username}/following?tab=streamers`)}>
+							<button className="text-[var(--follow-text)] whitespace-pre-wrap pointer-events-none">
 								Following
 							</button>
 						</div>
 						<div
 							className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
-                 flex items-center justify-center w-full p-4 content-start"
+         flex items-center justify-center w-full p-4 content-start cursor-pointer"
+							onClick={() => handleNavigation(`/user/${username}/vods`)}
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button onClick={() => handleNavigation(`/user/${username}/vods`)}>Categories</button>
-
+							<button className="pointer-events-none">Vods</button>
 						</div>
 						<div
 							className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
-                 flex items-center justify-center w-full p-4 content-start"
+         flex items-center justify-center w-full p-4 content-start cursor-pointer"
+							onClick={() => handleNavigation(`/user/${username}/following?tab=categories`)}
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button onClick={() => handleNavigation(`/user/${username}/following?tab=categories`)}>Categories</button>
+							<div className="w-full h-full flex items-center justify-center">
+								<button className="w-full h-full">Categories</button>
+							</div>
 						</div>
 					</div>
 				</div>

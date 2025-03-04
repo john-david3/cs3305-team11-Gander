@@ -159,6 +159,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 								alt="streamer"
 								className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
 								onClick={() => navigate(`/user/${streamerName}`)}
+								style={{ backgroundColor: 'white' }}
 							/>
 							<button className="text-white font-bold hover:underline mt-[0.5em]" onClick={() => navigate(`/user/${streamerName}`)}>
 								{streamerName}

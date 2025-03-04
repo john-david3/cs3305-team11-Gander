@@ -152,7 +152,6 @@ const Following: React.FC<FollowingProps> = ({ extraClasses = "" }) => {
           )};
         </div>
       </div>
-      <Footer />
     </DynamicPageContent >
   );
 };

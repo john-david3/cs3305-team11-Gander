@@ -205,7 +205,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 								}}
 								alt="User Avatar"
 								className="w-full h-full object-cover"
-								style={{ width: "2.5em", height: "2.5em" }}
+								style={{ width: "2.5em", height: "2.5em", backgroundColor: 'white'  }}
 							/>
 						</div>
 

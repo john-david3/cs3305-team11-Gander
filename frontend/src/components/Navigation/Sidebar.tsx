@@ -99,6 +99,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
                         alt="profile picture"
                         className="w-[3em] h-[3em] object-cover rounded-full border-[0.15em] border-purple-500 cursor-pointer"
                         onClick={() => navigate(`/user/${username}`)}
+                        style={{ backgroundColor: 'white' }}
                     />
                     <div className="text-center flex flex-col items-center justify-center">
                         <h5 className="font-thin text-[0.85rem] cursor-default text-[var(--sideBar-profile-text)]">Logged in as</h5>
@@ -117,7 +118,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
                         <h1 className="text-[2vw] font-bold text-2xl p-[0.75rem] cursor-default">Following</h1>
                     </div>
                     <div id="streamers-followed" className="flex flex-col flex-grow items-center">
-                        <h2 className="border-b-4 border-t-4 w-[125%] text-2xl cursor-default mb-5">Streamers</h2>
+                        <h2 className="border-b-2 border-t-2 w-[125%] text-2xl cursor-default mb-5">Streamers</h2>
                         <div className="flex flex-col flex-grow justify-evenly w-full">
                             {followedStreamers.map((streamer) => (
                                 <div
@@ -139,7 +140,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
                     </div>
 
                     <div id="categories-followed" className="flex flex-col flex-grow items-center">
-                        <h2 className="border-b-4 border-t-4 w-[125%] text-2xl cursor-default">Categories</h2>
+                        <h2 className="border-b-2 border-t-2 w-[125%] text-2xl cursor-default">Categories</h2>
 
                         {/* Followed Categories */}
                         <div id="categories-followed" className="grid grid-cols-1 gap-4 p-4 w-full">
