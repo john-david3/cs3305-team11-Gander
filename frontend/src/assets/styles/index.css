@@ -9,27 +9,32 @@
 
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(242, 100%, 10%);
+  background: transparent;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d5d5d5;
+  background: var(--scrollbar-color);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--scrollbar-hover);
 }
 
 
 body[data-theme="light"] {
   --bg-color: white;
   --text-color: black;
+
+  /*Global Background Colour*/
+  background: linear-gradient(to top right, #2043ba, #0026a6, #63007a);
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
 
   --sideBar-bg: rgb(255, 255, 255);
   --sideBar-text: black;
@@ -40,6 +45,9 @@ body[data-theme="light"] {
   --follow-bg: #aa00ff;
   --follow-text: white;
   --follow-shadow: 0px 0px 15px rgba(94, 94, 94, 0.754);
+  --streamer-box: #aa00ff;
+  --streamer-text: white;
+  --streamer-shadow: 0px 0px 10px rgba(0, 0, 0, 0.754);
 
   --liveNow: rgba(46, 16, 16, 0.6);
   --recommend: rgba(5, 46, 22, 0.6);
@@ -80,7 +88,12 @@ body[data-theme="light"] {
 }
 
 body[data-theme="dark"] {
-   --bg-color: black;
+  /*Global Background Colour*/
+  background: linear-gradient(to top right, #737787, #0d1e55, #567419);
+  --scrollbar-color: rgb(255, 255, 255);
+  --scrollbar-hover: rgb(255, 255, 255);
+
+  --bg-color: black;
   --text-color: white;
 
   --sideBar-bg: black;
@@ -92,10 +105,13 @@ body[data-theme="dark"] {
   --follow-bg: #a50000c6;
   --follow-text: rgb(255, 255, 255);
   --follow-shadow: 0px 0px 15px rgba(255, 255, 255, 0.966);
+  --streamer-box: #8b1711;
+  --streamer-text: white;
+  --streamer-shadow: 0px 0px 25px rgb(255, 255, 255);
 
+  
   --liveNow: rgba(77, 29, 29, 0.6);
   --recommend: rgba(4, 63, 28, 0.6);
-
 
   --quickBar-title: rgb(255, 255, 255);
   --quickBar-title-bg: rgb(0, 0, 0);
@@ -136,6 +152,12 @@ body[data-theme="blue"] {
   --bg-color: #e0f7fa;
   --text-color: #00539b;
 
+  /*Global Background Colour*/
+  background: linear-gradient(to top right, #223b3b, #3e7bff, #170055);
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
+
+
   --sideBar-bg: #eefafffb;
   --sideBar-text: #002147;
   --sideBar-profile-bg: #003571;
@@ -144,7 +166,9 @@ body[data-theme="blue"] {
 
   --follow-bg: #ffffff;
   --follow-shadow: 0px 0px 15px rgba(161, 222, 255, 0.823);
-
+  --streamer-box: #00b3ff;
+  --streamer-text: white;
+  --streamer-shadow: 0px 0px 10px rgb(14, 18, 93);
   --liveNow: rgba(5, 59, 103, 0.801);
   --recommend: rgba(112, 116, 96, 0.6);
 
@@ -185,6 +209,13 @@ body[data-theme="blue"] {
 }
 
 body[data-theme="green"] {
+
+  /*Global Background Colour*/
+  background: linear-gradient(to top right, #2a0d0d, #183f29, #16631e);
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
+
+
   --bg-color: #e8f5e9;
   --text-color: #2e7d32;
 
@@ -198,8 +229,10 @@ body[data-theme="green"] {
   --follow-bg: #b5ffb5;
   --follow-text: #2e7d32;
   --follow-shadow: 0px 0px 15px rgba(84, 255, 92, 0.754);
-
-  --liveNow: rgba(69, 150, 74, 0.6);
+  --streamer-box: #32b90dd4;
+  --streamer-text: rgb(255, 255, 255);
+  --streamer-shadow: 0px 0px 10px rgb(1, 112, 25);
+  --liveNow: rgba(14, 173, 28, 0.491);
   --recommend: rgba(123, 94, 14, 0.6);
 
   /*Quick Settings*/
@@ -238,6 +271,12 @@ body[data-theme="green"] {
 }
 
 body[data-theme="orange"] {
+    
+  /*Global Background Colour*/
+  background: linear-gradient(to top right, #074a84, #a17e1c, #4f2b61);
+  --scrollbar-color: white;
+  --scrollbar-hover: rgb(144, 144, 144);
+
   --bg-color: #ffe0b2;
   --text-color: #e65100;
 
@@ -250,9 +289,11 @@ body[data-theme="orange"] {
   --follow-bg: #fdfd00af;
   --follow-text: #000000;
   --follow-shadow: 0px 0px 15px rgba(0, 229, 255, 0.754);
-
-  --liveNow: rgba(202, 192, 53, 0.6);
-  --recommend: rgba(192, 111, 18, 0.6);
+  --streamer-box: #ffff00;
+  --streamer-text: rgb(0, 0, 0);
+  --streamer-shadow: 0px 0px 10px rgba(195, 75, 0, 0.754);
+  --liveNow: #4c008285;
+  --recommend: #c49c2da5;
 
 
   --quickBar-title-bg: #E67E22;

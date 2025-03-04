@@ -47,7 +47,7 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
 
 	const [currentItems, setCurrentItems] = useState<ItemType[]>(items);
 	const slider = useRef<HTMLDivElement>(null);
-	const scrollAmount = window.innerWidth * 0.3;
+	const scrollAmount = window.innerWidth * 0.4;
 	const navigate = useNavigate();
 
 	const addMoreItems = (newItems: ItemType[]) => {

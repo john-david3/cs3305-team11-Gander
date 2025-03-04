@@ -24,12 +24,19 @@ const DynamicPageContent: React.FC<DynamicPageContentProps> = ({
       className={`${className} bg-[url(/images/background-pattern.svg)]`}
       style={style}
     >
+      {/* Hide Scrollbar for WebKit-based Browsers
+      <style>
+        {`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style> */}
       <Navbar variant={navbarVariant} />
       <div
         id="content"
-        className={`flex-grow min-w-[850px] ${
-          showSideBar ? "w-[85vw] translate-x-[15vw]" : "w-[100vw]"
-        } items-start transition-all duration-[500ms] ease-in-out ${contentClassName}`}
+        className={`flex-grow min-w-[850px] ${showSideBar ? "w-[85vw] translate-x-[15vw]" : "w-[100vw]"
+          } items-start transition-all duration-[500ms] ease-in-out ${contentClassName}`}
       >
         {children}
       </div>
