@@ -1,8 +1,23 @@
-.hide-scrollbar::-webkit-scrollbar {
-    display: none; 
+:root {
+    --scrollbar-background: linear-gradient(to right, #6a11cb, #2575fc);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.6);
 }
-  
-.hide-scrollbar {
-    -ms-overflow-style: none; 
-    scrollbar-width: none; 
+
+::-webkit-scrollbar {
+    height: 4px;
 }
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
