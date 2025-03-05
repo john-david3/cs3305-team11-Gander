@@ -16,7 +16,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
-	const { isLoggedIn } = useAuth();
+	const { isLoggedIn, isLive } = useAuth();
 	const { showAuthModal, setShowAuthModal } = useAuthModal();
 	const { showSideBar } = useSidebar();
 	const { showQuickSettings, setShowQuickSettings } = useQuickSettings();
@@ -53,7 +53,10 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
 			className={`relative flex justify-evenly items-center ${variant === "home" ? "h-[45vh] flex-col" : "h-[15vh] col-span-2 flex-row"}`}
 		>
 			{isLoggedIn && window.innerWidth > 900 && <Sidebar />}
-			<Logo extraClasses={variant != "home" && showSideBar && !window.location.pathname.includes("dashboard") ? "scale-0" : "duration-[3s]"} variant={variant} />
+			<Logo
+				extraClasses={variant != "home" && showSideBar && !window.location.pathname.includes("dashboard") ? "scale-0" : "duration-[3s]"}
+				variant={variant}
+			/>
 			{/* Login / Logout Button */}
 			<Button
 				extraClasses={`absolute top-[2vh] ${
@@ -93,7 +96,9 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
 			{/* Stream Button */}
 			{isLoggedIn && !window.location.pathname.includes("dashboard") && (
 				<Button
-					extraClasses={`${variant === "home" ? "absolute top-[2vh] right-[10vw]" : ""} flex flex-row items-center`}
+					extraClasses={`${variant === "home" ? "absolute top-[2vh] right-[10vw]" : ""} ${
+						isLive ? "bg-red-600" : ""
+					} flex flex-row items-center`}
 					onClick={() => (window.location.href = "/dashboard")}
 				>
 					<LiveIcon className="h-15 w-15 mr-2" />
