@@ -29,6 +29,8 @@ const UserPage: React.FC = () => {
 	const { showAuthModal, setShowAuthModal } = useAuthModal();
 	const { username: loggedInUsername, profilePicture, setProfilePicture } = useAuth();
 	const initialProfilePicture = useRef(profilePicture);
+	const [isEditingBio, setIsEditingBio] = useState(false);
+	const [editedBio, setEditedBio] = useState("");
 	const { username } = useParams();
 	const { vods } = useVods(`/api/vods/${username}`);
 	const navigate = useNavigate();
@@ -109,6 +111,25 @@ const UserPage: React.FC = () => {
 		if (!username) return;
 		fetchProfileData();
 	}, [fetchProfileData]);
+
+	const saveBio = async () => {
+		try {
+			const response = await fetch("/api/user/bio/change", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ bio: editedBio }),
+			});
+
+			if (response.ok) {
+				setProfileData(prev => prev ? { ...prev, bio: editedBio } : undefined);
+				setIsEditingBio(false);
+			}
+		} catch (error) {
+			console.error("Error updating bio:", error);
+		}
+	};
 
 	if (!profileData) return <LoadingScreen />;
 
@@ -205,13 +226,52 @@ const UserPage: React.FC = () => {
 					</div>
 
 					{/* Bio */}
-					<div className="col-span-1 bg-[var(--user-sideBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] text-center items-center justify-center">
-						{/* User Type (e.g., "USER") */}
-						<small className="text-green-400">{userPageVariant.toUpperCase()}</small>
-
-						<div className="mt-6 text-center">
-							<h2 className="text-xl font-semibold mb-3">About {profileData.username}</h2>
-							<p className="text-gray-300 whitespace-pre-wrap">{profileData.bio}</p>
+					<div className="col-span-1 bg-[var(--user-sideBox)] rounded-lg p-6 grid grid-rows-[auto_1fr] w-full">
+						<div className="inline-block px-3 text-center p-1 border border-green-400 rounded-tr-xl rounded-bl-xl rounded-tl-xl rounded-br-xl mx-auto">
+							<small className="text-green-400 ">{userPageVariant.toUpperCase()}</small>
+						</div>
+						<div className="w-full mt-6 relative flex flex-col items-center">
+							<div className="w-full max-w-full relative flex items-center justify-center">
+								<h2 className="text-xl font-semibold mb-3 text-center w-full">About {profileData.username}</h2>
+								{!isEditingBio && userPageVariant === "personal" && (
+									<button
+										onClick={() => {
+											setEditedBio(profileData.bio);
+											setIsEditingBio(true);
+										}}
+										className="absolute right-0 top-0 text-gray-400 hover:text-white transition-colors"
+									>
+										<EditIcon size={20} />
+									</button>
+								)}
+							</div>
+							{!isEditingBio ? (
+								<p className="text-gray-300 whitespace-pre-wrap text-center w-full">{profileData.bio}</p>
+							) : (
+								<div className="w-full max-w-full">
+									<textarea
+										value={editedBio}
+										onChange={(e) => setEditedBio(e.target.value)}
+										className="w-full bg-white text-black p-2 rounded-lg mb-2 resize-none"
+										maxLength={1024}
+										rows={3}
+									/>
+									<div className="flex justify-end space-x-2 w-full">
+										<Button
+											extraClasses="bg-gray-600 hover:text-white hover:bg-gray-500 hover:border-none active:border-none"
+											onClick={() => setIsEditingBio(false)}
+										>
+											Cancel
+										</Button>
+										<Button
+											extraClasses="bg-red-700 hover:text-white hover:bg-red-600 hover:border-none active:border-none"
+											onClick={saveBio}
+										>
+											Save
+										</Button>
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 

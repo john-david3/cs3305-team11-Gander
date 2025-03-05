@@ -61,6 +61,22 @@ def user_profile_picture_save():
 
     return jsonify({"message": "Profile picture saved", "path": thumbnail_path})
 
+@login_required
+@user_bp.route('/user/bio/change', methods=['POST'])
+def user_change_bio():
+    """
+    Changes users bio
+    """
+    user_id = session.get("user_id")
+
+    try:
+        data = request.get_json()
+        bio = data.get("bio")
+        update_bio(user_id, bio)
+        return jsonify({"status": "Success"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 ## Subscription Routes
 @login_required
 @user_bp.route('/user/subscription/<string:streamer_name>')

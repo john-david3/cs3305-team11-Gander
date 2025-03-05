@@ -27,6 +27,17 @@ def get_username(user_id: str) -> Optional[str]:
         """, (user_id,))
     return data['username'] if data else None
 
+def update_bio(user_id: int, bio: str):
+    """
+    Updates users bio given their user_id
+    """
+    with Database() as db:
+        db.execute("""
+            UPDATE users
+            SET bio = ?
+            WHERE user_id = ?
+        """, (bio, user_id))
+
 def get_session_info_email(email: str) -> dict:
     """
     Returns username and user_id given email
