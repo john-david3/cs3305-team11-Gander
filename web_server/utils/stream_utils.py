@@ -113,7 +113,8 @@ def end_user_stream(stream_key, user_id, username):
         combine_ts_stream.delay(
             path_manager.get_stream_path(username), 
             path_manager.get_vods_path(username), 
-            vod_id
+            vod_id,
+            path_manager.get_vod_thumbnail_file_path(username, vod_id)
         )
         
         print(f"Stream ended for user {username} (ID: {user_id})", flush=True)

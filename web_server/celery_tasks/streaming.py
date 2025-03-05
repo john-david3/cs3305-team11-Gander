@@ -4,7 +4,10 @@ from celery_tasks.preferences import user_preferences
 from utils.stream_utils import generate_thumbnail, get_streamer_live_status, get_custom_thumbnail_status, remove_hls_files
 from time import sleep
 from os import listdir, remove
+from utils.path_manager import PathManager
 import subprocess
+
+path_manager = PathManager()
 
 @shared_task
 def update_thumbnail(user_id, stream_file, thumbnail_file, sleep_time) -> None:
@@ -21,7 +24,7 @@ def update_thumbnail(user_id, stream_file, thumbnail_file, sleep_time) -> None:
         print(f"Stopping thumbnail updates for stream of {user_id}")
 
 @shared_task
-def combine_ts_stream(stream_path, vods_path, vod_file_name):
+def combine_ts_stream(stream_path, vods_path, vod_file_name, thumbnail_file) -> None:
     """
     Combines all ts files into a single vod, and removes the ts files
     """
@@ -52,6 +55,9 @@ def combine_ts_stream(stream_path, vods_path, vod_file_name):
 
     # Remove HLS files, even if user is not streaming
     remove_hls_files(stream_path)
+
+    # Generate thumbnail for vod
+    generate_thumbnail(f"{vods_path}/{vod_file_name}.mp4", thumbnail_file)
 
 @shared_task
 def convert_image_to_png(image_path, png_path):
