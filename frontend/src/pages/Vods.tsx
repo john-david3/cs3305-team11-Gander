@@ -50,7 +50,7 @@ const Vods: React.FC = () => {
       <div className="mt-[3em] w-screen flex justify-center">
         <div
           id="vods-container"
-          className="w-[96vw] bg-slate-50/35 rounded-lg p-4 overflow-x-auto whitespace-nowrap scrollbar-hide"
+          className="w-[96vw] bg-slate-50/35 rounded-lg p-4 overflow-x-auto whitespace-nowrap scrollbar-hide pb-7"
         >
           <h1 className="text-2xl font-bold text-center mb-4">{username}'s VODs</h1>
           
