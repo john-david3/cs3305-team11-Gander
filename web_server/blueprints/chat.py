@@ -88,7 +88,7 @@ def get_past_chat(stream_id: int):
                             JOIN users u ON c.chatter_id = u.user_id
                             LEFT JOIN subscribes s ON c.chatter_id = s.user_id AND s.subscribed_id = ?
                             WHERE c.stream_id = ?
-                            ORDER BY c.time_sent ASC
+                            ORDER BY c.time_sent DESC
                             LIMIT 50;
                             """, (stream_id, stream_id))
 
