@@ -76,6 +76,18 @@ services:
     networks:
       - app_network
 
+  stripe-cli:
+    image: stripe/stripe-cli
+    container_name: stripe-cli
+    command: 
+      - listen
+      - --api-key
+      - ${STRIPE_SECRET_KEY}
+      - --forward-to
+      - http://web_server:8080/api/stripe/webhook
+    env_file:
+      - web_server/.env
+
 networks:
   app_network:
     driver: bridge
