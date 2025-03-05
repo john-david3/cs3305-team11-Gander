@@ -25,7 +25,7 @@ def create_app():
         And setup web sockets to be used throughout the project.
     """
     app = Flask(__name__)
-    app.config["SERVER_NAME"] = "127.0.0.1:8080"
+    app.config["SERVER_NAME"] = getenv("HOMEPAGE_URL")
     app.config["SECRET_KEY"] = getenv("FLASK_SECRET_KEY")
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
