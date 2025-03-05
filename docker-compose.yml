@@ -84,9 +84,11 @@ services:
       - --api-key
       - ${STRIPE_SECRET_KEY}
       - --forward-to
-      - http://web_server:8080/api/stripe/webhook
+      - http://web_server:5000/api/stripe/webhook
     env_file:
       - web_server/.env
+    networks:
+      - app_network
 
 networks:
   app_network:
