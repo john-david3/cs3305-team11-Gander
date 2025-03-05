@@ -20,7 +20,7 @@ interface VideoPageProps {
 }
 
 const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
-	const { isLoggedIn } = useAuth();
+	const { isLoggedIn, username } = useAuth();
 	const { streamerName } = useParams<{ streamerName: string }>();
 	const [streamData, setStreamData] = useState<StreamType>();
 	const [viewerCount, setViewerCount] = useState(0);
@@ -180,7 +180,7 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 						{/* Streamer Info */}
 						<div className="flex items-center gap-[0.75em] flex-col lg:flex-row">
 							<div className="group flex flex-col items-center lg:items-start">
-								{!isFollowing ? (
+								{!isFollowing && username === streamerName ? (
 									<button
 										className="bg-purple-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-purple-700 text-sm"
 										onClick={() => followUser(streamerId, setShowAuthModal)}

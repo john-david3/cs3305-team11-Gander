@@ -62,8 +62,8 @@ const ResultsPage: React.FC = () => {
 						title="Streams"
 						onItemClick={(streamer_name: string) => (window.location.href = `/${streamer_name}`)}
 						extraClasses="min-h-[calc((20vw+20vh)/4)] bg-[var(--liveNow)]"
-						itemExtraClasses="min-w-[calc(12vw+12vh/2)]"
-						amountForScroll={3}
+						itemExtraClasses="w-[calc(12vw+12vh/2)]"
+						amountForScroll={4}
 					/>
 
 					<ListRow
@@ -81,8 +81,8 @@ const ResultsPage: React.FC = () => {
 						onItemClick={(category_name: string) => navigate(`/category/${category_name}`)}
 						titleClickable={true}
 						extraClasses="min-h-[calc((20vw+20vh)/4)] bg-[var(--liveNow)]"
-						itemExtraClasses="min-w-[calc(12vw+12vh/2)]"
-						amountForScroll={3}
+						itemExtraClasses="w-[calc(12vw+12vh/2)]"
+						amountForScroll={4}
 					/>
 
 					<ListRow
@@ -97,9 +97,9 @@ const ResultsPage: React.FC = () => {
 						}))}
 						title="Users"
 						onItemClick={(username: string) => (window.location.href = `/user/${username}`)}
-						amountForScroll={3}
+						amountForScroll={4}
 						extraClasses="min-h-[calc((20vw+20vh)/4)] bg-[var(--liveNow)]"
-						itemExtraClasses="min-w-[calc(12vw+12vh/2)]"
+						itemExtraClasses="w-[calc(12vw+12vh/2)]"
 					/>
 				</div>
 			</div>
