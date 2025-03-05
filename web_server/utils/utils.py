@@ -77,7 +77,7 @@ def sanitize(user_input: str, input_type="default") -> str:
             "max_length": 256,
         },
         "default": {
-            "pattern": r"^[\S]+$",  # Non-whitespace characters only
+            "pattern": r"^[\w\s]+$",  # Non-whitespace characters only
             "min_length": 1,
             "max_length": 50,
         },
