@@ -36,7 +36,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 		if (socket && isConnected) {
 			// Add username check
 			socket.emit("join", {
-				userId: userId ? userId : null,
+				user_id: userId ? userId : null,
 				username: username ? username : "Guest",
 				stream_id: streamId,
 			});
@@ -44,7 +44,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 			// Handle beforeunload event
 			const handleBeforeUnload = () => {
 				socket.emit("leave", {
-					userId: userId ? userId : null,
+					user_id: userId ? userId : null,
 					username: username ? username : "Guest",
 					stream_id: streamId,
 				});
@@ -83,7 +83,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 					// Update our subscription tracking
 					subscribedUsersRef.current[data.chatter_username] = true;
 				}
-				
+
 				setMessages((prev) => [...prev, data]);
 			});
 
@@ -205,7 +205,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 								}}
 								alt="User Avatar"
 								className="w-full h-full object-cover"
-								style={{ width: "2.5em", height: "2.5em", backgroundColor: 'white'  }}
+								style={{ width: "2.5em", height: "2.5em", backgroundColor: "white" }}
 							/>
 						</div>
 

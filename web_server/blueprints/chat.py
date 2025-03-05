@@ -24,10 +24,9 @@ def handle_join(data) -> None:
     """
     Allow a user to join the chat of the stream they are watching.
     """
-    print(data, flush=True)
     stream_id = data.get("stream_id")
     if stream_id:
-        user_id = get_user_id(data["username"])
+        user_id = data["user_id"]
         if user_id:
             add_favourability_entry(str(user_id), str(stream_id))
         join_room(stream_id)
@@ -46,13 +45,12 @@ def handle_leave(data) -> None:
     """
     Handle what happens when a user leaves the stream they are watching in regards to the chat.
     """
-    print(data, flush=True)
     stream_id = data.get("stream_id")
     user_id = data.get("user_id")
     if stream_id:
         leave_room(stream_id)
         if user_id:
-            remove_favourability_entry(data["user_id"], stream_id)
+            remove_favourability_entry(str(data["user_id"]), str(stream_id))
         num_viewers = len(list(socketio.server.manager.get_participants("/", stream_id)))
         update_viewers(stream_id, num_viewers)
         emit("status", 
