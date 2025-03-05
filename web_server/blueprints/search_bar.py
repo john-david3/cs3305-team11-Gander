@@ -26,7 +26,7 @@ def search_results():
                     INNER JOIN category_fts AS f ON c.category_id = f.category_id
                     WHERE f.category_name LIKE '%' || ? || '%'
                     ORDER BY score ASC
-                    LIMIT 3;
+                    LIMIT 4;
         """, (query,))
     
     # 3 users
@@ -36,7 +36,7 @@ def search_results():
                     INNER JOIN user_fts AS f ON u.user_id = f.user_id
                     WHERE f.username LIKE '%' || ? || '%'
                     ORDER BY score ASC
-                    LIMIT 3;
+                    LIMIT 4;
         """, (query,))
 
     # 3 streams
@@ -48,7 +48,7 @@ def search_results():
                     INNER JOIN categories AS c ON s.category_id = c.category_id
                     WHERE f.title LIKE '%' || ? || '%'
                     ORDER BY score ASC
-                    LIMIT 3;
+                    LIMIT 4;
         """, (query,))
 
     db.close_connection()
