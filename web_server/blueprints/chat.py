@@ -76,20 +76,24 @@ def get_past_chat(stream_id: int):
 
     # fetched in format: [(username, message, time_sent, is_subscribed)]
     all_chats = db.fetchall("""
-                            SELECT 
-                                u.username, 
-                                c.message, 
-                                c.time_sent,
-                                CASE
-                                    WHEN s.user_id IS NOT NULL AND s.expires > CURRENT_TIMESTAMP THEN 1
-                                    ELSE 0
-                                END AS is_subscribed
-                            FROM chat c
-                            JOIN users u ON c.chatter_id = u.user_id
-                            LEFT JOIN subscribes s ON c.chatter_id = s.user_id AND s.subscribed_id = ?
-                            WHERE c.stream_id = ?
-                            ORDER BY c.time_sent DESC
-                            LIMIT 50;
+                            SELECT username, message, time_sent, is_subscribed
+                            FROM (
+                                SELECT 
+                                    u.username, 
+                                    c.message, 
+                                    c.time_sent,
+                                    CASE
+                                        WHEN s.user_id IS NOT NULL AND s.expires > CURRENT_TIMESTAMP THEN 1
+                                        ELSE 0
+                                    END AS is_subscribed
+                                FROM chat c
+                                JOIN users u ON c.chatter_id = u.user_id
+                                LEFT JOIN subscribes s ON c.chatter_id = s.user_id AND s.subscribed_id = ?
+                                WHERE c.stream_id = ?
+                                ORDER BY c.time_sent DESC
+                                LIMIT 50
+                            ) subquery
+                            ORDER BY time_sent ASC;
                             """, (stream_id, stream_id))
 
     db.close_connection()
