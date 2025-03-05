@@ -60,7 +60,7 @@ const Vods: React.FC = () => {
                 <p className="col-span-full text-center">No VODs available.</p>
               ) : (
                 ownedVods.map((vod) => {
-                  const thumbnailUrl = `/stream/${username}/vods/${vod.vod_id}.png`;
+                  const thumbnailUrl = `/vods/${username}/${vod.vod_id}.png`;
 
                   return (
                     <div
