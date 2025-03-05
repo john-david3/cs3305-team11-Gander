@@ -99,6 +99,9 @@ INSERT INTO categories (category_name) VALUES
 ('Dead by Daylight'),
 ('Hogwarts Legacy');
 
+DELETE FROM categories WHERE category_name = 'Gaming';
+UPDATE streams SET category_id = 6 WHERE category_id = 1;
+
 
 -- Sample Data for streams
 INSERT INTO streams (user_id, title, start_time, category_id) VALUES
