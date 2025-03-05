@@ -6,8 +6,10 @@ import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import Footer from "../components/Layout/Footer";
+import { useAuth } from "../context/AuthContext";
 
 const HomePage: React.FC = () => {
+	const { username } = useAuth();
 	const { streams, isLoading: isLoadingStreams } = useStreams();
 	const { categories, isLoading: isLoadingCategories } = useCategories();
 	const { vods, isLoading: isLoadingVods } = useVods();
@@ -18,6 +20,11 @@ const HomePage: React.FC = () => {
 	};
 
 	if (isLoadingStreams || isLoadingCategories || isLoadingVods) return <LoadingScreen>Loading Content...</LoadingScreen>;
+
+	const thumbnails = vods.map((vod) => ({
+		...vod,
+		thumbnail: `/vods/${vod.username}/${vod.vod_id}.png`,
+	  }));
 
 	return (
 		<DynamicPageContent navbarVariant="home" className="relative min-h-screen animate-moving_bg" contentClassName="pb-[12vh]">
@@ -55,7 +62,7 @@ const HomePage: React.FC = () => {
 				type="vod"
 				title="Recent VODs"
 				description="Watch the latest recorded streams!"
-				items={vods}
+				items={thumbnails}
 				wrap={false}
 				onItemClick={handleVodClick}
 				extraClasses="bg-black/50"
