@@ -39,7 +39,7 @@ const StreamListItem: React.FC<StreamListItemProps> = ({
 				<div className="p-3">
 					<h3 className="font-semibold text-lg text-center truncate max-w-full">{title}</h3>
 					<p className="font-bold">{username}</p>
-					<p className="text-sm text-gray-300">{streamCategory}</p>
+					<p className="text-sm text-gray-300">{!window.location.href.includes('/category/') ? streamCategory : ""}</p>
 					<p className="text-sm text-gray-300">{viewers} viewers</p>
 				</div>
 			</div>
@@ -149,13 +149,6 @@ const VodListItem: React.FC<VodListItemProps> = ({
 			</div>
 			{variant === "vodDashboard" && (
 				<div className="flex justify-evenly items-stretch rounded-b-lg">
-					{/* <button
-						className="flex justify-around w-full h-full bg-black/50 hover:bg-black/80 p-2 mx-1 font-semibold rounded-full border border-transparent hover:border-white"
-						onClick={() => console.log("Publish")}
-					>
-						<UploadIcon />
-						Publish
-					</button> */}
 					<a
 						className="flex justify-around w-full h-full bg-black/50 hover:bg-black/80 p-2 mx-1 font-semibold rounded-full border border-transparent hover:border-white"
 						href={`/vods/${username}/${vod_id}.mp4`}

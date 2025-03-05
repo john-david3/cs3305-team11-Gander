@@ -23,13 +23,9 @@ const Navbar: React.FC<NavbarProps> = ({ variant = "default" }) => {
 	const [justToggled, setJustToggled] = React.useState(false);
 
 	const handleLogout = () => {
-		console.log("Logging out...");
 		fetch("/api/logout")
 			.then((response) => response.json())
-			.then((data) => {
-				console.log(data);
-				window.location.reload();
-			});
+			.then(() => window.location.reload());
 	};
 
 	const handleQuickSettings = () => {

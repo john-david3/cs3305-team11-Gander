@@ -8,13 +8,10 @@ import VideoPlayer from "../../components/Stream/VideoPlayer";
 import { CategoryType } from "../../types/CategoryType";
 import { StreamListItem } from "../../components/Layout/ListItem";
 import { getCategoryThumbnail } from "../../utils/thumbnailUtils";
+import { StreamType } from "../../types/StreamType";
 
-interface StreamData {
-	title: string;
-	category_name: string;
-	viewer_count: number;
-	start_time: string;
-	stream_key: string;
+interface StreamData extends Omit<StreamType, "type" | "username" | "id"> {
+	streamKey: string;
 }
 
 interface StreamDashboardProps {
@@ -26,10 +23,10 @@ interface StreamDashboardProps {
 const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isLive }) => {
 	const [streamData, setStreamData] = useState<StreamData>({
 		title: "",
-		category_name: "",
-		viewer_count: 0,
-		start_time: "",
-		stream_key: "",
+		streamCategory: "",
+		viewers: 0,
+		startTime: "",
+		streamKey: "",
 	});
 	const [timeStarted, setTimeStarted] = useState("");
 	const [streamDetected, setStreamDetected] = useState(false);
@@ -79,17 +76,17 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 		try {
 			if (isLive) {
 				const streamResponse = await fetch(`/api/streams/${userId}/data`, { credentials: "include" });
-				const streamData = await streamResponse.json();
+				const data = await streamResponse.json();
 				setStreamData({
-					title: streamData.title,
-					category_name: streamData.category_name,
-					viewer_count: streamData.num_viewers,
-					start_time: streamData.start_time,
-					stream_key: streamData.stream_key,
+					title: data.title,
+					streamCategory: data.category_name,
+					viewers: data.num_viewers,
+					startTime: data.start_time,
+					streamKey: data.stream_key,
 				});
 
 				const time = Math.floor(
-					(Date.now() - new Date(streamData.start_time).getTime()) / 60000 // Convert to minutes
+					(Date.now() - new Date(data.startTime).getTime()) / 60000 // Convert to minutes
 				);
 
 				if (time < 60) setTimeStarted(`${time}m ago`);
@@ -101,7 +98,7 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 				const keyData = await response.json();
 				setStreamData((prev) => ({
 					...prev,
-					stream_key: keyData.stream_key,
+					streamKey: keyData.stream_key,
 				}));
 			}
 		} catch (error) {
@@ -113,7 +110,7 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 		const { name, value } = e.target;
 		setStreamData((prev) => ({ ...prev, [name]: value }));
 
-		if (name === "category_name") {
+		if (name === "streamCategory") {
 			const filtered = categories.filter((cat: CategoryType) => cat.title.toLowerCase().includes(value.toLowerCase()));
 			setFilteredCategories(filtered);
 			if (debouncedCheck) {
@@ -124,7 +121,7 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 
 	const handleCategorySelect = (categoryName: string) => {
 		console.log("Selected category:", categoryName);
-		setStreamData((prev) => ({ ...prev, category_name: categoryName }));
+		setStreamData((prev) => ({ ...prev, streamCategory: categoryName }));
 		setFilteredCategories([]);
 		if (debouncedCheck) {
 			debouncedCheck(categoryName);
@@ -141,8 +138,8 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 			});
 		} else {
 			setThumbnail(null);
-			if (streamData.category_name && debouncedCheck) {
-				debouncedCheck(streamData.category_name);
+			if (streamData.streamCategory && debouncedCheck) {
+				debouncedCheck(streamData.streamCategory);
 			} else {
 				setThumbnailPreview({ url: "", isCustom: false });
 			}
@@ -151,9 +148,9 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 
 	const clearThumbnail = () => {
 		setThumbnail(null);
-		if (streamData.category_name) {
+		if (streamData.streamCategory) {
 			console.log("Clearing thumbnail as category is set and default category thumbnail will be used");
-			const defaultThumbnail = getCategoryThumbnail(streamData.category_name);
+			const defaultThumbnail = getCategoryThumbnail(streamData.streamCategory);
 			setThumbnailPreview({ url: defaultThumbnail, isCustom: false });
 		} else {
 			setThumbnailPreview({ url: "", isCustom: false });
@@ -163,8 +160,8 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 	const isFormValid = () => {
 		return (
 			streamData.title.trim() !== "" &&
-			streamData.category_name.trim() !== "" &&
-			categories.some((cat: CategoryType) => cat.title.toLowerCase() === streamData.category_name.toLowerCase()) &&
+			streamData.streamCategory.trim() !== "" &&
+			categories.some((cat: CategoryType) => cat.title.toLowerCase() === streamData.streamCategory.toLowerCase()) &&
 			streamDetected
 		);
 	};
@@ -198,9 +195,9 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 		console.log("Updating stream with data:", streamData);
 
 		const formData = new FormData();
-		formData.append("key", streamData.stream_key);
+		formData.append("key", streamData.streamKey);
 		formData.append("title", streamData.title);
-		formData.append("category_name", streamData.category_name);
+		formData.append("streamCategory", streamData.streamCategory);
 		if (thumbnail) {
 			formData.append("thumbnail", thumbnail);
 		}
@@ -231,7 +228,7 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ key: streamData.stream_key }),
+				body: JSON.stringify({ key: streamData.streamKey }),
 			});
 
 			if (response.ok) {
@@ -267,8 +264,8 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 						<div className="relative">
 							<label className="block text-white mb-2">Category</label>
 							<Input
-								name="category_name"
-								value={streamData.category_name}
+								name="streamCategory"
+								value={streamData.streamCategory}
 								onChange={handleInputChange}
 								onFocus={() => setIsCategoryFocused(true)}
 								onBlur={() => setTimeout(() => setIsCategoryFocused(false), 200)}
@@ -321,16 +318,16 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 						{isLive && (
 							<div className="bg-gray-700 p-4 rounded-lg">
 								<h3 className="text-white font-semibold mb-2">Stream Info</h3>
-								<p className="text-gray-300">Viewers: {streamData.viewer_count}</p>
+								<p className="text-gray-300">Viewers: {streamData.viewers}</p>
 								<p className="text-gray-300">
-									Started: {new Date(streamData.start_time!).toLocaleTimeString()}
+									Started: {new Date(streamData.startTime!).toLocaleTimeString()}
 									{` (${timeStarted})`}
 								</p>
 							</div>
 						)}
 						<div className="flex items-center mx-auto p-10 bg-gray-900 w-fit rounded-xl py-4">
 							<label className="block text-white mr-8">Stream Key</label>
-							<Input type={showKey ? "text" : "password"} value={streamData.stream_key} readOnly extraClasses="w-fit pr-[30px]" disabled />
+							<Input type={showKey ? "text" : "password"} value={streamData.streamKey} readOnly extraClasses="w-fit pr-[30px]" disabled />
 							<button type="button" onClick={() => setShowKey(!showKey)} className="-translate-x-[30px] top-1/2 h-6 w-6 text-white">
 								{showKey ? <HideIcon className="h-6 w-6" /> : <ShowIcon className="h-6 w-6" />}
 							</button>
@@ -372,8 +369,8 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 								id={1}
 								title={streamData.title || "Stream Title"}
 								username={username || ""}
-								streamCategory={streamData.category_name || "Category"}
-								viewers={streamData.viewer_count}
+								streamCategory={streamData.streamCategory || "Category"}
+								viewers={streamData.viewers}
 								thumbnail={thumbnailPreview.url || ""}
 								onItemClick={() => {
 									window.open(`/${username}`, "_blank");

@@ -105,7 +105,6 @@ export function useStreams(customUrl?: string): {
 	const [streams, setStreams] = useState<StreamType[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	console.log(streams)
 
 	useEffect(() => {
 		const fetchStreams = async () => {
@@ -159,7 +158,6 @@ export function useStreams(customUrl?: string): {
 					}
 
 					const data = await response.json();
-					console.log("Data: ", data)
 
 					// Make sure it is 100% ARRAY NOT OBJECT
 					const formattedData = Array.isArray(data) ? data : [data];
@@ -196,94 +194,92 @@ export function useCategories(customUrl?: string): {
 	categories: CategoryType[];
 	isLoading: boolean;
 	error: string | null;
-  } {
+} {
 	const { isLoggedIn } = useAuth();
 	const [categories, setCategories] = useState<CategoryType[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-  
+
 	useEffect(() => {
-	  const fetchCategories = async () => {
-		setIsLoading(true);
-		try {
-		  // Always fetch the recommended categories if logged in
-		  if (isLoggedIn && !customUrl) {
-			const recommendedResponse = await fetch("/api/categories/recommended");
-			if (!recommendedResponse.ok) {
-			  throw new Error(`Error fetching recommended categories: ${recommendedResponse.status}`);
-			}
-			
-			const recommendedData = await recommendedResponse.json();
-			const processedRecommended = processCategoryData(recommendedData);
-			
-			// If we have at least 4 recommended categories, use just those
-			if (processedRecommended.length >= 4) {
-			  setCategories(processedRecommended);
-			} 
-			// If we have fewer than 4, fetch popular categories to fill the gap
-			else {
-			  const popularResponse = await fetch(`/api/categories/popular/8`);
-			  
-			  if (!popularResponse.ok) {
-				throw new Error(`Error fetching popular categories: ${popularResponse.status}`);
-			  }
-			  
-			  const popularData = await popularResponse.json();
-			  const processedPopular = processCategoryData(popularData);
-			  
-			  // Get IDs of recommended categories to avoid duplicates
-			  const recommendedIds = processedRecommended.map(cat => cat.id);
-			  
-			  // Filter popular categories to only include ones not in recommended
-			  const uniquePopularCategories = processedPopular.filter(
-				popularCat => !recommendedIds.includes(popularCat.id)
-			  );
-			  
-			  // Combine with recommended categories first to maintain priority
-			  const combinedCategories = [...processedRecommended, ...uniquePopularCategories];
-			  
-			  setCategories(combinedCategories);
-			}
-		  } 
-		  // For custom URL or not logged in, use the original approach
-		  else {
-			const url = customUrl || "/api/categories/popular/4";
-			const response = await fetch(url);
-			
-			if (!response.ok) {
-			  throw new Error(`Error fetching categories: ${response.status}`);
-			}
-			
-			const data = await response.json();
-			setCategories(processCategoryData(data));
-		  }
-		  
-		  setError(null);
-		} catch (err) {
-		  console.error("Error in useCategories:", err);
-		  setError(err instanceof Error ? err.message : "Unknown error");
-		  // Fallback to popular categories on error
-		  if (!customUrl) {
+		const fetchCategories = async () => {
+			setIsLoading(true);
 			try {
-			  const fallbackResponse = await fetch("/api/categories/popular/4");
-			  if (fallbackResponse.ok) {
-				const fallbackData = await fallbackResponse.json();
-				setCategories(processCategoryData(fallbackData));
-			  }
-			} catch (fallbackErr) {
-			  console.error("Error fetching fallback categories:", fallbackErr);
+				// Always fetch the recommended categories if logged in
+				if (isLoggedIn && !customUrl) {
+					const recommendedResponse = await fetch("/api/categories/recommended");
+					if (!recommendedResponse.ok) {
+						throw new Error(`Error fetching recommended categories: ${recommendedResponse.status}`);
+					}
+
+					const recommendedData = await recommendedResponse.json();
+					const processedRecommended = processCategoryData(recommendedData);
+
+					// If we have at least 4 recommended categories, use just those
+					if (processedRecommended.length >= 4) {
+						setCategories(processedRecommended);
+					}
+					// If we have fewer than 4, fetch popular categories to fill the gap
+					else {
+						const popularResponse = await fetch(`/api/categories/popular/8`);
+
+						if (!popularResponse.ok) {
+							throw new Error(`Error fetching popular categories: ${popularResponse.status}`);
+						}
+
+						const popularData = await popularResponse.json();
+						const processedPopular = processCategoryData(popularData);
+
+						// Get IDs of recommended categories to avoid duplicates
+						const recommendedIds = processedRecommended.map((cat) => cat.id);
+
+						// Filter popular categories to only include ones not in recommended
+						const uniquePopularCategories = processedPopular.filter((popularCat) => !recommendedIds.includes(popularCat.id));
+
+						// Combine with recommended categories first to maintain priority
+						const combinedCategories = [...processedRecommended, ...uniquePopularCategories];
+
+						setCategories(combinedCategories);
+					}
+				}
+				// For custom URL or not logged in, use the original approach
+				else {
+					const url = customUrl || "/api/categories/popular/4";
+					const response = await fetch(url);
+
+					if (!response.ok) {
+						throw new Error(`Error fetching categories: ${response.status}`);
+					}
+
+					const data = await response.json();
+					setCategories(processCategoryData(data));
+				}
+
+				setError(null);
+			} catch (err) {
+				console.error("Error in useCategories:", err);
+				setError(err instanceof Error ? err.message : "Unknown error");
+				// Fallback to popular categories on error
+				if (!customUrl) {
+					try {
+						const fallbackResponse = await fetch("/api/categories/popular/4");
+						if (fallbackResponse.ok) {
+							const fallbackData = await fallbackResponse.json();
+							setCategories(processCategoryData(fallbackData));
+						}
+					} catch (fallbackErr) {
+						console.error("Error fetching fallback categories:", fallbackErr);
+					}
+				}
+			} finally {
+				setIsLoading(false);
 			}
-		  }
-		} finally {
-		  setIsLoading(false);
-		}
-	  };
-  
-	  fetchCategories();
+		};
+
+		fetchCategories();
 	}, [isLoggedIn, customUrl]);
-  
+
 	return { categories, isLoading, error };
-  }
+}
 
 export function useVods(customUrl?: string): {
 	vods: VodType[];
