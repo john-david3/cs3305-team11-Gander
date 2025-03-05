@@ -87,7 +87,7 @@ def stream_data(username=None, streamer_id=None) -> dict:
             else:
                 data = {"stream_key": stream_key["stream_key"]}
 
-    return jsonify([data])
+    return jsonify(data)
 
 
 # Category Routes
@@ -321,6 +321,7 @@ def update_stream():
     # TODO: Add thumbnails (paths) to table, allow user to update thumbnail
 
     print("Updating stream info", flush=True)
+    print(request.is_json, flush=True)
 
     data = request.get_json()
     stream_key = data.get("key")
