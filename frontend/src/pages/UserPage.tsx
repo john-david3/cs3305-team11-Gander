@@ -232,7 +232,7 @@ const UserPage: React.FC = () => {
 						</div>
 						<div className="w-full mt-6 relative flex flex-col items-center">
 							<div className="w-full max-w-full relative flex items-center justify-center">
-								<h2 className="text-xl font-semibold mb-3 text-center w-full">About Me </h2>
+								<h2 className="text-xl font-semibold mb-3 text-center w-full">About Me</h2>
 								{!isEditingBio && userPageVariant === "personal" && (
 									<button
 										onClick={() => {
