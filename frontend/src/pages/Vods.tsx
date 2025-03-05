@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
-import Footer from "../components/Layout/Footer";
 
 interface Vod {
   vod_id: number;
@@ -48,59 +47,49 @@ const Vods: React.FC = () => {
 
   return (
     <DynamicPageContent className="h-full">
-      <div className="mt-[3em] w-screen h-[100vh] max-h-[500px] flex items-center justify-center">
+      <div className="mt-[3em] w-screen flex justify-center">
         <div
-          id="follow_page"
-          className={`w-[96vw] h-full bg-slate-50/35 rounded-lg overflow-x-hidden flex flex-col text-center scrollbar-hide transition-all duration-500 ease-in-out`}
+          id="vods-container"
+          className="w-[96vw] bg-slate-50/35 rounded-lg p-4 overflow-x-auto whitespace-nowrap scrollbar-hide"
         >
-          <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">{username}'s VODs</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {ownedVods.length === 0 ? (
-                <p className="col-span-full text-center">No VODs available.</p>
-              ) : (
-                ownedVods.map((vod) => {
-                  const thumbnailUrl = `/vods/${username}/${vod.vod_id}.png`;
+          <h1 className="text-2xl font-bold text-center mb-4">{username}'s VODs</h1>
+          
+          {/* Horizontal Scrollable VOD List */}
+          <div className="flex space-x-4 overflow-x-auto scrollbar-hide">
+            {ownedVods.length === 0 ? (
+              <p className="text-center w-full">No VODs available.</p>
+            ) : (
+              ownedVods.map((vod) => {
+                const thumbnailUrl = `/vods/${username}/${vod.vod_id}.png`;
 
-                  return (
-                    <div
-                      key={vod.vod_id}
-                      className="mt-5 h-full rounded-lg p-4 bg-gray-800 text-white cursor-pointer hover:bg-gray-700 transition"
-                      onClick={() => navigate(`/stream/${username}/vods/${vod.vod_id}`)}
-                    >
-                      {/* Thumbnail */}
-                      <img
-                        src={thumbnailUrl}
-                        alt={`Thumbnail for ${vod.title}`}
-                        className="w-full h-[200px] object-cover rounded-md mb-2"
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = "/default-thumbnail.png";
-                        }}
-                      />
-                      {/* Video Info */}
-                      <div className="flex flex-col space-y-1">
+                return (
+                  <div
+                    key={vod.vod_id}
+                    className="w-[30.8vw] h-[30vh] flex-shrink-0 bg-gray-800 text-white rounded-lg p-3 cursor-pointer hover:bg-gray-700 transition"
+                    onClick={() => navigate(`/stream/${username}/vods/${vod.vod_id}`)}
+                  >
+                    {/* Thumbnail */}
+                    <img
+                      src={thumbnailUrl}
+                      alt={`Thumbnail for ${vod.title}`}
+                      className="w-full h-[150px] object-cover rounded-md"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/default-thumbnail.png";
+                      }}
+                    />
 
-                        {/* Video Title */}
-                        <h2 className="text-white font-bold text-lg">{vod.title}</h2>
-
-                        {/* Channel Name */}
-                        <div className="flex items-center space-x-2">
-                          <p className="text-white text-sm">{username}</p>
-                        </div>
-
-                        {/* Views and Date */}
-                        <div className="flex space-x-2 text-white text-sm">
-                          <p>{vod.views} views</p>
-                          <p>{new Date(vod.datetime).toLocaleString()}</p>
-                        </div>
-                      </div>
-
+                    {/* Video Info */}
+                    <div className="mt-2">
+                      <h2 className="text-lg font-bold">{vod.title}</h2>
+                      <p className="text-sm text-gray-300">{username}</p>
+                      <p className="text-sm text-gray-400">{vod.views} views</p>
+                      <p className="text-xs text-gray-400">{new Date(vod.datetime).toLocaleString()}</p>
                     </div>
-                  );
-                })
-              )}
-            </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
