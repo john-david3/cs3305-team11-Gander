@@ -97,7 +97,7 @@ def popular_categories(no_categories=4, offset=0) -> list[dict]:
     """
     Returns a list of most popular categories
     """
-    print(no_categories, offset, flush=True)
+
     # Limit the number of categories to 100
     if no_categories < 1:
         return jsonify([])
@@ -321,7 +321,7 @@ def update_stream():
     # TODO: Add thumbnails (paths) to table, allow user to update thumbnail
 
     print("Updating stream info", flush=True)
-    print(request.is_json, flush=True)
+    print(f"request.json: {request.is_json}", flush=True)
 
     data = request.get_json()
     stream_key = data.get("key")

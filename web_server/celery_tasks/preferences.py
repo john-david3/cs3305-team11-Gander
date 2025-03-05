@@ -15,7 +15,6 @@ def user_preferences():
     # If there are any current viewers
     if stats:
         stats = json.loads(stats)
-        print(stats, flush=True)
         with Database() as db:
             # Loop over all users and their currently watching streams
             for user_id, stream_ids in stats.items():
@@ -32,5 +31,3 @@ def user_preferences():
                                     ON CONFLICT(user_id, category_id) 
                                     DO UPDATE SET favourability = favourability + 1
                                    """, (user_id, current_category["category_id"], 1))
-            data = db.fetchall("SELECT * FROM user_preferences")
-            print(data,flush=True)
