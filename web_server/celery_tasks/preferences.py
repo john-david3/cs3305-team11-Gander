@@ -24,7 +24,7 @@ def user_preferences():
                     # Retrieves category associated with stream
                     current_category = db.fetchone("""SELECT category_id FROM streams
                                                    WHERE user_id = ?
-                                                   """, (stream_id))
+                                                   """, (stream_id,))
                     # If stream is still live then update the user_preferences table to reflect their preferences
                     if current_category:
                         db.execute("""INSERT INTO user_preferences (user_id,category_id,favourability)
