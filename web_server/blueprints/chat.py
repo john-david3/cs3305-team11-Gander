@@ -3,7 +3,7 @@ from database.database import Database
 from .socket import socketio
 from flask_socketio import emit, join_room, leave_room
 from datetime import datetime
-from utils.user_utils import get_user_id
+from utils.user_utils import get_user_id, is_subscribed
 import redis
 import json
 
@@ -120,12 +120,13 @@ def send_chat(data) -> None:
     if not all([chatter_name, message, stream_id]):
         emit("error", {"error": f"Unable to send a chat. The following info was given: chatter_name={chatter_name}, message={message}, stream_id={stream_id}"}, broadcast=False)
         return
-
+    subscribed = is_subscribed(get_user_id(chatter_name), stream_id)
     # Send the chat message to the client so it can be displayed
     emit("new_message", {
         "chatter_username": chatter_name,
         "message": message,
-        "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "is_subscribed": subscribed
     }, room=stream_id)
 
     # Asynchronously save the chat
