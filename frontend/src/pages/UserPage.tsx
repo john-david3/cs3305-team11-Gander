@@ -36,6 +36,13 @@ const UserPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { streams } = useStreams(`/api/streams/${username}/data`);
 	const currentStream = streams[0];
+	console.log(vods)
+
+	const thumbnails = vods.map((vod) => ({
+		...vod,
+		thumbnail: `/vods/${vod.username}/${vod.vod_id}.png`,
+	  }));
+	
 
 	const fetchProfileData = useCallback(async () => {
 		try {
@@ -288,7 +295,8 @@ const UserPage: React.FC = () => {
     									font-black mb-4 rounded-full text-center"
 								>
 									Currently Live!
-								</h2>								<StreamListItem
+								</h2>								
+								<StreamListItem
 									id={profileData.id}
 									title={currentStream.title || ""}
 									streamCategory=""
@@ -308,7 +316,7 @@ const UserPage: React.FC = () => {
 								<ListRow
 									type="vod"
 									title={`Past Broadcasts (${vods.length})`}
-									items={vods}
+									items={thumbnails}
 									onItemClick={(vod) => {
 										console.log("VOD Clicked:", vod);
 									}}
