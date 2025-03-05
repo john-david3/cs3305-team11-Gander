@@ -99,10 +99,6 @@ INSERT INTO categories (category_name) VALUES
 ('Dead by Daylight'),
 ('Hogwarts Legacy');
 
-DELETE FROM categories WHERE category_name = 'Gaming';
-UPDATE streams SET category_id = 6 WHERE category_id = 1;
-
-
 -- Sample Data for streams
 INSERT INTO streams (user_id, title, start_time, category_id) VALUES
 (1, 'Game on!', '2025-02-16 17:00:00', 1),
@@ -181,3 +177,6 @@ INSERT INTO followed_categories (user_id, category_id) VALUES
 INSERT INTO subscribes (user_id, subscribed_id, since, expires) VALUES 
 (7, 1, '2024-08-30', '2025-02-28 12:00:00'),
 (7, 2, '2024-08-30', '2025-02-15');
+
+DELETE FROM categories WHERE category_name = 'Gaming';
+UPDATE streams SET category_id = 6 WHERE category_id = 1;
