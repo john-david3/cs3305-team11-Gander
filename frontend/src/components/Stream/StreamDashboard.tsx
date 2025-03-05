@@ -86,7 +86,7 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 				});
 
 				const time = Math.floor(
-					(Date.now() - new Date(data.startTime).getTime()) / 60000 // Convert to minutes
+					(Date.now() - new Date(data.start_time).getTime()) / 60000 // Convert to minutes
 				);
 
 				if (time < 60) setTimeStarted(`${time}m ago`);
@@ -371,7 +371,7 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 								username={username || ""}
 								streamCategory={streamData.streamCategory || "Category"}
 								viewers={streamData.viewers}
-								thumbnail={thumbnailPreview.url || ""}
+								thumbnail={thumbnailPreview.url || `/stream/${username}/index.png`}
 								onItemClick={() => {
 									window.open(`/${username}`, "_blank");
 								}}

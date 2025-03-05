@@ -304,8 +304,9 @@ def publish_stream():
         db.execute("""UPDATE users SET is_live = 1 WHERE user_id = ?""",
                    (user_id,))
 
-    # Update thumbnail periodically
-    update_thumbnail.apply_async((user_id,
+    # Update thumbnail periodically only if a custom thumbnail is not provided
+    if not stream_thumbnail:
+        update_thumbnail.apply_async((user_id,
                            path_manager.get_stream_file_path(username),
                            path_manager.get_current_stream_thumbnail_file_path(username),
                            THUMBNAIL_GENERATION_INTERVAL), countdown=10)
@@ -348,6 +349,8 @@ def update_stream():
                    SET title = ?, category_id = ?
                    WHERE user_id = ?""", (stream_title, get_category_id(stream_category), user_id))
         
+        print("GOT: " + stream_thumbnail, flush=True)
+        
         if stream_thumbnail:
             # Set custom thumbnail status to true
             db.execute("""UPDATE streams
@@ -361,6 +364,8 @@ def update_stream():
             image = Image.open(stream_thumbnail)
             image.convert('RGB')
             image.save(thumbnail_path, "PNG")
+
+            print(f"Should have saved it to {thumbnail_path}", flush=True)
 
     return "Stream updated", 200
 
