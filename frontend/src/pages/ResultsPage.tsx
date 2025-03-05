@@ -7,7 +7,6 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { getCategoryThumbnail } from "../utils/thumbnailUtils";
 
 const ResultsPage: React.FC = () => {
-	const [overflow, setOverflow] = useState(false);
 	const location = useLocation();
 	const navigate = useNavigate();
 

@@ -80,7 +80,7 @@ const UserListItem: React.FC<UserListItemProps> = ({ title, username, isLive, on
 	return (
 		<div className="p-4 pb-10">
 			<div
-				className={`group relative w-fit flex flex-col bg-purple-900 rounded-tl-xl rounded-xl min-h-[calc((20vw+20vh)/3)] max-w-[calc((27vw+27vh)/2)] justify-end items-center cursor-pointer mx-auto hover:bg-purple-600 hover:scale-105 z-50 transition-all ${extraClasses}`}
+				className={`group relative ${extraClasses} overflow-hidden flex-shrink-0 flex flex-col bg-purple-900 rounded-lg cursor-pointer mx-auto hover:bg-purple-600 hover:scale-105 transition-all`}
 				onClick={onItemClick}
 			>
 				<img
