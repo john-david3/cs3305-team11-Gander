@@ -1,5 +1,5 @@
 import React from "react";
-import { SunIcon, MoonIcon, DropletIcon, LeafIcon, FlameIcon } from "lucide-react";
+import { SunIcon, MoonIcon, DropletIcon, LeafIcon, FlameIcon, MoonStarIcon } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
 const themeConfig = {
@@ -16,6 +16,13 @@ const themeConfig = {
     background: "bg-gray-800",
     hoverBg: "hover:bg-gray-700",
     label: "Dark Theme",
+  },
+  midnight: {
+    icon: MoonStarIcon,
+    color: "text-white",
+    background: "bg-black",
+    hoverBg: "hover:bg-black/30",
+    label: "Midnight Theme",
   },
   blue: {
     icon: DropletIcon,
@@ -64,9 +71,8 @@ const ThemeSetting: React.FC = () => {
       <h3 className="text-xl flex-grow">Current Theme: </h3>
       <button
         onClick={handleNextTheme}
-        className={`
+        className={`flex-grow 
         group px-4 py-2 rounded-lg
-        w-[50%]
         flex items-center gap-3
         border border-gray-200
         ${currentTheme.background}
@@ -77,7 +83,7 @@ const ThemeSetting: React.FC = () => {
         aria-label={`Switch theme. Current theme: ${currentTheme.label}`}
       >
         <Icon
-          size={24}
+          size={25}
           className={`${currentTheme.color} transition-transform group-hover:scale-110`}
         />
         <span className="capitalize font-medium">{theme}</span>

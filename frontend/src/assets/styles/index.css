@@ -148,12 +148,73 @@ body[data-theme="dark"] {
   --slider-bg: #000000;
 }
 
+body[data-theme="midnight"] {
+  /*Global Background Colour*/
+  background: linear-gradient(to top right, #000000, #000000, #000000);
+  --scrollbar-color: rgb(255, 255, 255);
+  --scrollbar-hover: rgb(255, 255, 255);
+
+  --bg-color: rgb(46, 0, 0);
+  --text-color: white;
+
+  --sideBar-bg: black;
+  --sideBar-text: white;
+  --sideBar-profile-bg: rgba(92, 2, 176, 0.592);
+  --sideBar-profile-text: #ffffff;
+  --profile-border: #ffffff;
+
+  --follow-bg: #a50000c6;
+  --follow-text: rgb(255, 255, 255);
+  --follow-shadow: 0px 0px 15px rgba(255, 255, 255, 0.966);
+  --streamer-box: #8b1711;
+  --streamer-text: white;
+  --streamer-shadow: 0px 0px 25px rgb(255, 255, 255);
+
+  
+  --liveNow: rgba(77, 29, 29, 0.6);
+  --recommend: rgba(4, 63, 28, 0.6);
+
+  --quickBar-title: rgb(255, 255, 255);
+  --quickBar-title-bg: rgb(0, 0, 0);
+  --quickBar-bg: #000000d3;
+  --quickBar-text: #ffffff;
+  --quickBar-border: #ffffff;
+
+
+  /*User Page*/
+  --user-name: #ffffff;
+  --user-pfp-border: #ffffff;
+  --user-pfp-border-shadow: -10px 15px 25px rgba(0, 0, 0, 0.754);
+
+  --user-borderBg: rgb(57, 0, 123);
+  --user-box: rgb(75, 0, 150);
+  --user-box-strip: rgb(165, 0, 0);
+  --user-box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.754);
+  --user-sideBox: rgba(25, 25, 25, 0.938);
+  --user-contentBox: rgba(29, 0, 66, 0.75);
+  --user-follow-bg: #9a0000;
+
+  --user-bg: rgb(16, 16, 16);
+  --user-live-bg: rgb(127, 161, 5);
+
+  /* Screenshot */
+  --screenshot-bg: rgb(78, 78, 78);
+  --screenshot-bg-hover: rgb(231, 231, 231);
+  --screenshot-text: rgb(255, 255, 255);
+  --screenshot-text-hover: rgb(78, 78, 78);
+
+  /* Brightness */
+  --slider-header: rgb(255, 255, 255);
+  --slider-text: rgb(255, 255, 255);
+  --slider-bg: #000000;
+}
+
 body[data-theme="blue"] {
   --bg-color: #e0f7fa;
-  --text-color: #00539b;
+  --text-color: #00ff93;
 
   /*Global Background Colour*/
-  background: linear-gradient(to top right, #223b3b, #3e7bff, #170055);
+  background: linear-gradient(to top right, #266161, #09004d, #0047cc);
   --scrollbar-color: white;
   --scrollbar-hover: rgb(144, 144, 144);
 
