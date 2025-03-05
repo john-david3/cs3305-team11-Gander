@@ -271,9 +271,9 @@ def publish_stream():
     except KeyError as ex:
         print(f"Error: {ex}")
 
-    stream_key = data.get("stream_key")
+    stream_key = data.get("streamKey")
     stream_title = data.get("title")
-    stream_category = data.get("category_name")
+    stream_category = data.get("streamCategory")
     stream_thumbnail = data.get("thumbnail")
 
     user_id = None
