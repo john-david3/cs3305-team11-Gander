@@ -90,7 +90,7 @@ const UserListItem: React.FC<UserListItemProps> = ({ title, username, isLive, on
 						e.currentTarget.onerror = null;
 					}}
 					alt={`user ${username}`}
-					className="rounded-xl border-[0.15em] border-[var(--bg-color)] cursor-pointer"
+					className="rounded-xl border-[0.15em] border-[var(--bg-color)] aspect-video cursor-pointer"
 					style={{ backgroundColor: 'white' }}
 				/>
 				<button className="text-[calc((2vw+2vh)/2)] font-bold hover:underline w-full py-2">{title}</button>
@@ -134,7 +134,7 @@ const VodListItem: React.FC<VodListItemProps> = ({
 					<img src={thumbnail} alt={title} className="absolute top-0 left-0 w-full h-full object-cover" />
 
 					{/* Duration badge */}
-					<div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 text-xs rounded">{length}</div>
+					{length && <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 text-xs rounded">{length}</div>}
 				</div>
 
 				<div className="p-3">
@@ -142,8 +142,8 @@ const VodListItem: React.FC<VodListItemProps> = ({
 					{variant != "vodDashboard" && <p className="text-sm text-gray-300">{username}</p>}
 					<p className="text-sm text-gray-400">{category_name}</p>
 					<div className="flex justify-between items-center mt-2">
-						<p className="text-xs text-gray-500">{datetime}</p>
-						<p className="text-xs text-gray-500">{views} views</p>
+						{datetime && <p className="text-xs text-gray-500">{datetime}</p>}
+						{/* <p className="text-xs text-gray-500">{views} views</p> */}
 					</div>
 				</div>
 			</div>

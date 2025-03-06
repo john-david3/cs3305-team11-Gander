@@ -106,11 +106,10 @@ const ResultsPage: React.FC = () => {
 						variant="search"
 						type="vod"
 						items={searchState.searchResults.vods.map((vod: any) => ({
-							id: vod.vod_id,
+							vod_id: vod.vod_id,
 							type: "vod",
 							title: vod.title,
-							username: vod.username,
-							thumbnail: vod.thumbnail_url,
+							username: vod.username
 						}))}
 						title="VODs"
 						onItemClick={(username, vod_id) => navigate(`/vods/${username}/${vod_id}`)}
