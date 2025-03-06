@@ -100,6 +100,24 @@ const ResultsPage: React.FC = () => {
 						extraClasses="min-h-[calc((20vw+20vh)/4)] bg-[var(--liveNow)]"
 						itemExtraClasses="w-[calc(12vw+12vh/2)]"
 					/>
+
+					<ListRow
+						key={`vod-results-${searchState.query}`}
+						variant="search"
+						type="vod"
+						items={searchState.searchResults.vods.map((vod: any) => ({
+							id: vod.vod_id,
+							type: "vod",
+							title: vod.title,
+							username: vod.username,
+							thumbnail: vod.thumbnail_url,
+						}))}
+						title="VODs"
+						onItemClick={(username, vod_id) => navigate(`/vods/${username}/${vod_id}`)}
+						amountForScroll={4}
+						extraClasses="min-h-[calc((20vw+20vh)/4)] bg-[var(--liveNow)]"
+						itemExtraClasses="w-[calc(12vw+12vh/2)]"
+					/>
 				</div>
 			</div>
 		</DynamicPageContent>
