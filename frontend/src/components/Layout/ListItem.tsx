@@ -151,7 +151,7 @@ const VodListItem: React.FC<VodListItemProps> = ({
 				<div className="flex justify-evenly items-stretch rounded-b-lg">
 					<a
 						className="flex justify-around w-full h-full bg-black/50 hover:bg-black/80 p-2 mx-1 font-semibold rounded-full border border-transparent hover:border-white"
-						href={`/vods/${username}/${vod_id}.mp4`}
+						href={`/vod/${username}/${vod_id}.mp4`}
 						download={`${username}_vod_${vod_id}.mp4`}
 					>
 						<DownloadIcon />

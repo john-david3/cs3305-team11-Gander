@@ -10,18 +10,6 @@ interface VodsDashboardProps {
 const VodsDashboard: React.FC<VodsDashboardProps> = ({ vods }) => {
   const navigate = useNavigate();
 
-  const handleVodClick = (vodId: string) => {
-    if (vods.length > 0) {
-      navigate(`/stream/${vods[0].username}/vods/${vodId}`);
-    }
-  };
-
-  // Ensure each VOD has a hardcoded thumbnail path
-  const thumbnails = vods.map((vod) => ({
-    ...vod,
-    thumbnail: `/vods/${vod.username}/${vod.vod_id}.png`,
-  }));
-
   return (
     <div className="w-full">
       <h2 className="text-3xl font-bold text-white mb-6">Past Broadcasts</h2>
@@ -34,9 +22,9 @@ const VodsDashboard: React.FC<VodsDashboardProps> = ({ vods }) => {
         <ListRow
           type="vod"
           variant="vodDashboard"
-          items={thumbnails} // Use modified VODs with hardcoded thumbnail
+          items={vods}
           wrap={false}
-          onItemClick={handleVodClick}
+          onItemClick={(username, vodId) => navigate(`/vods/${username}/${vodId}`) }
           extraClasses="bg-black/50"
           itemExtraClasses="w-[20vw]"
         />

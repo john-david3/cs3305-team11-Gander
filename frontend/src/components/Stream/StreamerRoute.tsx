@@ -7,7 +7,7 @@ import { ChatProvider } from "../../context/ChatContext";
 const StreamerRoute: React.FC = () => {
   const { streamerName } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLive, setIsLive] = useState<boolean>(false);
+  const [streamerIsLive, setStreamerIsLive] = useState<boolean>(false);
   const [streamId, setStreamId] = useState<number>(0);
   const navigate = useNavigate();
 
@@ -16,11 +16,11 @@ const StreamerRoute: React.FC = () => {
       try {
         const response = await fetch(`/api/user/${streamerName}/status`);
         const data = await response.json();
-        setIsLive(Boolean(data.is_live));
+        setStreamerIsLive(Boolean(data.is_live));
         setStreamId(data.user_id);
       } catch (error) {
         console.error("Error checking stream status:", error);
-        setIsLive(false);
+        setStreamerIsLive(false);
       } finally {
         setIsLoading(false);
       }
@@ -36,7 +36,7 @@ const StreamerRoute: React.FC = () => {
 
   if (isLoading) return <LoadingScreen />;
 
-  if (isLive) {
+  if (streamerIsLive) {
     return (
       <ChatProvider>
         <VideoPage streamerId={streamId} />

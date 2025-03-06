@@ -6,7 +6,6 @@ import Button from "../components/Input/Button";
 import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import LoadingScreen from "../components/Layout/LoadingScreen";
 import Footer from "../components/Layout/Footer";
-import { useAuth } from "../context/AuthContext";
 
 const HomePage: React.FC = () => {
 	const { streams, isLoading: isLoadingStreams } = useStreams();
@@ -14,15 +13,7 @@ const HomePage: React.FC = () => {
 	const { vods, isLoading: isLoadingVods } = useVods();
 	const navigate = useNavigate();
 
-
-
 	if (isLoadingStreams || isLoadingCategories || isLoadingVods) return <LoadingScreen>Loading Content...</LoadingScreen>;
-
-	const thumbnails = vods.map((vod) => ({
-		...vod,
-		thumbnail: `/vods/${vod.username}/${vod.vod_id}.png`,
-		video: `/vods/${vod.username}/${vod.vod_id}.mp4`,
-	  }));
 
 	return (
 		<DynamicPageContent navbarVariant="home" className="relative min-h-screen animate-moving_bg" contentClassName="pb-[12vh]">
@@ -60,9 +51,9 @@ const HomePage: React.FC = () => {
 				type="vod"
 				title="Recent VODs"
 				description="Watch the latest recorded streams!"
-				items={thumbnails}
+				items={vods}
 				wrap={false}
-				onItemClick={() => null}
+				onItemClick={(username, vodId) => navigate(`/vods/${username}/${vodId}`) }
 				extraClasses="bg-black/50"
 				itemExtraClasses="w-[20vw]"
 			/>

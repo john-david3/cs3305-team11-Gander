@@ -36,13 +36,6 @@ const UserPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { streams } = useStreams(`/api/streams/${username}/data`);
 	const currentStream = streams[0];
-	console.log(vods)
-
-	const thumbnails = vods.map((vod) => ({
-		...vod,
-		thumbnail: `/vods/${vod.username}/${vod.vod_id}.png`,
-	  }));
-	
 
 	const fetchProfileData = useCallback(async () => {
 		try {
@@ -80,7 +73,7 @@ const UserPage: React.FC = () => {
 
 				if (response.ok) {
 					console.log("Success");
-					console.log(URL.createObjectURL(img))
+					console.log(URL.createObjectURL(img));
 					setProfilePicture(URL.createObjectURL(img));
 				}
 			} catch (error) {
@@ -130,7 +123,7 @@ const UserPage: React.FC = () => {
 			});
 
 			if (response.ok) {
-				setProfileData(prev => prev ? { ...prev, bio: editedBio } : undefined);
+				setProfileData((prev) => (prev ? { ...prev, bio: editedBio } : undefined));
 				setIsEditingBio(false);
 			}
 		} catch (error) {
@@ -166,7 +159,8 @@ const UserPage: React.FC = () => {
 						{/* Profile Picture */}
 						<div
 							className={`relative -top-[40px] sm:-top-[90px] w-[16vw] h-[16vw] sm:w-[20vw] sm:h-[20vw] max-w-[10em] max-h-[10em]
-               rounded-full flex-shrink-0 border-4 ${profileData.isLive ? "border-[#ff0000]" : "border-[var(--user-pfp-border)]"
+               rounded-full flex-shrink-0 border-4 ${
+									profileData.isLive ? "border-[#ff0000]" : "border-[var(--user-pfp-border)]"
 								} inset-0 z-20`}
 							style={{ boxShadow: "var(--user-pfp-border-shadow)" }}
 						>
@@ -189,7 +183,7 @@ const UserPage: React.FC = () => {
 									}}
 									alt={`${profileData.username}'s profile`}
 									className="sm:w-full h-full object-cover rounded-full group-hover:brightness-50 relative z-0 transition-all"
-									style={{ backgroundColor: 'white' }}
+									style={{ backgroundColor: "white" }}
 								/>
 
 								{/* If current user is the profile user then allow profile picture swap */}
@@ -283,10 +277,7 @@ const UserPage: React.FC = () => {
 					</div>
 
 					{/* Content Section */}
-					<div
-						id="content"
-						className="col-span-2 bg-[var(--user-contentBox)] rounded-lg p-6 flex flex-col items-center w-full"
-					>
+					<div id="content" className="col-span-2 bg-[var(--user-contentBox)] rounded-lg p-6 flex flex-col items-center w-full">
 						{/* Stream */}
 						{currentStream && (
 							<div className="mb-8 max-w-[500px] w-full">
@@ -295,7 +286,7 @@ const UserPage: React.FC = () => {
     									font-black mb-4 rounded-full text-center"
 								>
 									Currently Live!
-								</h2>								
+								</h2>
 								<StreamListItem
 									id={profileData.id}
 									title={currentStream.title || ""}
@@ -312,14 +303,11 @@ const UserPage: React.FC = () => {
 						{/* VODs */}
 						{vods.length > 0 && (
 							<div>
-								<h2 className="text-2xl font-bold mb-4"></h2>
 								<ListRow
 									type="vod"
 									title={`Past Broadcasts (${vods.length})`}
-									items={thumbnails}
-									onItemClick={(vod) => {
-										console.log("VOD Clicked:", vod);
-									}}
+									items={vods}
+									onItemClick={(user, vodId) => handleNavigation(`/vods/${user}/${vodId}`)}
 									extraClasses="w-fit max-w-[40vw] py-0 mt-0"
 									amountForScroll={2}
 									itemExtraClasses="w-[15vw]"
@@ -342,14 +330,12 @@ const UserPage: React.FC = () => {
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>
-							<button className="text-[var(--follow-text)] whitespace-pre-wrap pointer-events-none">
-								Following
-							</button>
+							<button className="text-[var(--follow-text)] whitespace-pre-wrap pointer-events-none">Following</button>
 						</div>
 						<div
 							className="bg-[var(--user-follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 
          flex items-center justify-center w-full p-4 content-start cursor-pointer"
-							onClick={() => handleNavigation(`/user/${username}/vods`)}
+							onClick={() => handleNavigation(`/vods/${username}`)}
 							onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
 							onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
 						>

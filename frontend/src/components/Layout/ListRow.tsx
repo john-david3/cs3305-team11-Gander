@@ -17,7 +17,7 @@ interface ListRowProps {
 	description?: string;
 	items: ItemType[];
 	wrap?: boolean;
-	onItemClick: (itemName: string) => void;
+	onItemClick: (itemName: string, username?: string) => void;
 	titleClickable?: boolean;
 	extraClasses?: string;
 	itemExtraClasses?: string;
@@ -185,8 +185,8 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
 											category_name={item.category_name}
 											length={item.length}
 											views={item.views}
-											thumbnail={item.thumbnail}
-											onItemClick={() => handleVodClick(item)}
+											thumbnail={`/vods/${item.username}/${item.vod_id}.png`}
+											onItemClick={() => onItemClick(item.username, item.vod_id.toString())}
 											extraClasses={itemExtraClasses}
 											variant={variant}
 										/>

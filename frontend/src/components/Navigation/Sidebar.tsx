@@ -120,7 +120,7 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
                     </div>
                     <div id="streamers-followed" className="flex flex-col flex-grow items-center">
                         <h2 className="border-b-2 border-t-2 w-[125%] text-2xl cursor-default mb-5">Streamers</h2>
-                        <div className="flex flex-col flex-grow justify-evenly w-full">
+                        <div className="flex flex-col flex-grow justify-start w-full">
                             {followedStreamers.map((streamer) => (
                                 <div
                                     key={`${sidebarId.current}-streamer-${streamer.username}`}
@@ -131,6 +131,10 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
                                 >
                                     <img
                                         src={`/user/${streamer.username}/profile_picture`}
+                                        onError={(e) => {
+                                            e.currentTarget.src = "/images/pfps/default.png";
+                                            e.currentTarget.onerror = null;
+                                        }}
                                         alt={`${streamer.username}'s Profile`}
                                         className="w-10 h-10 rounded-full object-cover"
                                     />
