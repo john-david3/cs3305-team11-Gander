@@ -46,9 +46,6 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 		};
 	}, [showCheckout]);
 
-	// Increment minutes of stream time every minute
-	useEffect;
-
 	useEffect(() => {
 		// Fetch stream data for this streamer
 		fetch(`/api/streams/${streamerId}/data`).then((res) => {
@@ -157,9 +154,9 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 									e.currentTarget.onerror = null;
 								}}
 								alt="streamer"
-								className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 cursor-pointer"
+								className="w-[3em] h-[3em] rounded-full border-[0.15em] border-purple-500 object-cover cursor-pointer"
 								onClick={() => navigate(`/user/${streamerName}`)}
-								style={{ backgroundColor: 'white' }}
+								style={{ backgroundColor: "white" }}
 							/>
 							<button className="text-white font-bold hover:underline mt-[0.5em]" onClick={() => navigate(`/user/${streamerName}`)}>
 								{streamerName}
@@ -178,26 +175,28 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 						</div>
 
 						{/* Streamer Info */}
-						<div className="flex items-center gap-[0.75em] flex-col lg:flex-row">
-							<div className="group flex flex-col items-center lg:items-start">
-								{!isFollowing && username === streamerName ? (
-									<button
-										className="bg-purple-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-purple-700 text-sm"
-										onClick={() => followUser(streamerId, setShowAuthModal)}
-									>
-										Follow
-									</button>
-								) : (
-									<button
-										className="bg-gray-700 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-600 text-sm transition-all"
-										onClick={() => unfollowUser(streamerId, setShowAuthModal)}
-									>
-										<span className="group-hover:hidden">Following</span>
-										<span className="hidden group-hover:block">Unfollow</span>
-									</button>
-								)}
+						{username != streamerName && (
+							<div className="flex items-center gap-[0.75em] flex-col lg:flex-row">
+								<div className="group flex flex-col items-center lg:items-start">
+									{!isFollowing ? (
+										<button
+											className="bg-purple-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-purple-700 text-sm"
+											onClick={() => followUser(streamerId, setShowAuthModal)}
+										>
+											Follow
+										</button>
+									) : (
+										<button
+											className="bg-gray-700 text-white font-bold px-[1.5em] py-[0.5em] rounded-md hover:bg-red-600 text-sm transition-all"
+											onClick={() => unfollowUser(streamerId, setShowAuthModal)}
+										>
+											<span className="group-hover:hidden">Following</span>
+											<span className="hidden group-hover:block">Unfollow</span>
+										</button>
+									)}
+								</div>
 							</div>
-						</div>
+						)}
 
 						{/* Stream Stats */}
 						<div className="flex flex-col items-center">
@@ -212,21 +211,23 @@ const VideoPage: React.FC<VideoPageProps> = ({ streamerId }) => {
 						</div>
 
 						{/* Subscribe Button */}
-						<div className="flex flex-col items-center">
-							<button
-								className={`bg-red-600 text-white font-bold px-[1.5em] py-[0.5em] rounded-md 
+						{username != streamerName && (
+							<div className="flex flex-col items-center">
+								<button
+									className={`bg-red-600 text-white text-sm font-bold px-[1.5em] py-[0.5em] rounded-md 
     ${isStripeReady ? "hover:bg-red-700" : "opacity-20 cursor-not-allowed"} transition-all`}
-								onClick={() => {
-									if (!isLoggedIn) {
-										setShowAuthModal(true);
-									} else if (isStripeReady) {
-										setShowCheckout(true);
-									}
-								}}
-							>
-								{isStripeReady ? "Subscribe" : "Loading..."}
-							</button>
-						</div>
+									onClick={() => {
+										if (!isLoggedIn) {
+											setShowAuthModal(true);
+										} else if (isStripeReady) {
+											setShowCheckout(true);
+										}
+									}}
+								>
+									{isStripeReady ? "Subscribe" : "Loading..."}
+								</button>
+							</div>
+						)}
 					</div>
 					{showCheckout && (
 						<Suspense fallback={<div>Loading checkout...</div>}>

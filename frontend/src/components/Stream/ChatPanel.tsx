@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Input from "../Input/Input";
-import Button, { ToggleButton } from "../Input/Button";
+import Button from "../Input/Button";
 import AuthModal from "../Auth/AuthModal";
 import { useAuthModal } from "../../hooks/useAuthModal";
 import { useAuth } from "../../context/AuthContext";
@@ -9,6 +9,7 @@ import { useChat } from "../../context/ChatContext";
 import { ArrowLeftFromLineIcon, ArrowRightFromLineIcon, CrownIcon } from "lucide-react";
 
 interface ChatMessage {
+	chatter_id: number;
 	chatter_username: string;
 	message: string;
 	time_sent: string;
@@ -189,7 +190,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 			{/* Message List */}
 			<div ref={chatContainerRef} id="chat-message-list" className="w-full h-full overflow-y-auto mb-4 space-y-2 rounded-md">
 				{messages.map((msg, index) => (
-					<div key={index} className="flex items-start space-x-2 bg-gray-800 rounded p-2 text-white relative">
+					<div
+						key={index}
+						className={`flex items-start space-x-2 rounded p-2 text-white relative ${
+							msg.chatter_id === streamId ? "bg-[#0000a0] font-black border-4 border-double border-red-500" : "bg-gray-800"
+						}`}
+					>
 						{/* User avatar with image */}
 						<div
 							className={`w-2em h-2em rounded-full overflow-hidden flex-shrink-0 ${
@@ -213,8 +219,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 							<div className="flex items-center space-x-0.5em">
 								{/* Username */}
 								<span
-									className={`flex items-center gap-2 font-bold text-[1em] ${
-										msg.chatter_username === username ? "text-purple-600" : "text-green-400 cursor-pointer"
+									className={`flex items-center gap-2 ${
+										msg.chatter_id === streamId
+											? "text-[#ff0000] font-black text-[1.2rem]"
+											: msg.chatter_username === username
+											? "text-purple-600 font-bold text-[1em]"
+											: "text-green-400 font-bold text-[1em] cursor-pointer"
 									}`}
 									onClick={() => (msg.chatter_username === username ? null : (window.location.href = `/user/${msg.chatter_username}`))}
 								>

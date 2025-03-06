@@ -100,7 +100,7 @@ def get_user_category_recommendations(user_id = 1, no_categories: int = 4) -> Op
     """
     with Database() as db:
         categories = db.fetchall("""
-            SELECT categories.category_id, categories.category_name
+            SELECT categories.category_id, categories.category_name, categories.num_viewers
             FROM categories 
             JOIN user_preferences ON categories.category_id = user_preferences.category_id
             WHERE user_preferences.user_id = ? 

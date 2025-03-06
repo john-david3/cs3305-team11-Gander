@@ -76,9 +76,10 @@ def get_past_chat(stream_id: int):
 
     # fetched in format: [(username, message, time_sent, is_subscribed)]
     all_chats = db.fetchall("""
-                            SELECT username, message, time_sent, is_subscribed
+                            SELECT user_id, username, message, time_sent, is_subscribed
                             FROM (
                                 SELECT 
+                                    u.user_id,
                                     u.username, 
                                     c.message, 
                                     c.time_sent,
@@ -95,11 +96,13 @@ def get_past_chat(stream_id: int):
                             ) subquery
                             ORDER BY time_sent ASC;
                             """, (stream_id, stream_id))
+    #! ASC - Oldest to Newest
 
     db.close_connection()
 
     # Create JSON output of chat_history to pass through NGINX proxy
-    chat_history = [{"chatter_username": chat["username"], 
+    chat_history = [{"chatter_id": chat["user_id"],
+                    "chatter_username": chat["username"], 
                     "message": chat["message"], 
                     "time_sent": chat["time_sent"],
                     "is_subscribed": bool(chat["is_subscribed"])} for chat in all_chats]
