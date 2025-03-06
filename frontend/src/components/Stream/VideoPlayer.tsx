@@ -32,12 +32,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ streamer, extraClasses = "", 
 				const videoElement = document.createElement("video");
 				videoElement.classList.add("video-js", "vjs-big-play-centered", "w-full", "h-full");
 				videoElement.setAttribute("playsinline", "true");
+				videoElement.setAttribute('preload', 'auto');
 				if (videoRef.current) {
 					videoRef.current.appendChild(videoElement);
 				}
 
 				playerRef.current = videojs(videoElement, {
-					controls: false,
+					controls: true,
 					autoplay: true,
 					muted: false,
 					fluid: true,

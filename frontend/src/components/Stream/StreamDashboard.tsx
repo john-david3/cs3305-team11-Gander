@@ -360,11 +360,9 @@ const StreamDashboard: React.FC<StreamDashboardProps> = ({ username, userId, isL
 					<h2 className="text-center text-2xl font-bold text-white mb-4">Stream Preview</h2>
 					<div className="flex flex-col gap-4 bg-gray-800 rounded-lg p-4 w-full h-fit flex-grow justify-around">
 						<div className="flex flex-col">
-							<p className="text-white text-center pb-4">Video</p>
 							<VideoPlayer streamer={username ?? undefined} extraClasses="border border-white" onStreamDetected={setStreamDetected} />
 						</div>
 						<div className="flex flex-col">
-							<p className="text-white text-center">List Item</p>
 							<StreamListItem
 								id={1}
 								title={streamData.title || "Stream Title"}

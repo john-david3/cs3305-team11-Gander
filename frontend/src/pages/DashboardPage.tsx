@@ -11,7 +11,7 @@ interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = ({ tab = "dashboard" }) => {
-	const { username, isLive, userId, setIsLive } = useAuth();
+	const { username, isLive, userId } = useAuth();
 	const { vods } = useVods(`/api/vods/${username}`);
 	const [selectedTab, setSelectedTab] = useState<"dashboard" | "stream" | "vod">(tab);
 
@@ -19,24 +19,6 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ tab = "dashboard" }) => {
 		stream: "red-500",
 		vod: "green-500",
 		dashboard: "white",
-	};
-
-	useEffect(() => {
-		if (username) {
-			checkUserStatus();
-		}
-	}, [username]);
-
-	const checkUserStatus = async () => {
-		if (!username) return;
-
-		try {
-			const response = await fetch(`/api/user/${username}/status`);
-			const data = await response.json();
-			setIsLive(data.is_live);
-		} catch (error) {
-			console.error("Error checking user status:", error);
-		}
 	};
 
 	return (

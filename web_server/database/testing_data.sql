@@ -129,14 +129,6 @@ INSERT INTO streams (user_id, title, start_time, category_id) VALUES
 (26, 'Max Level, Max Power!', '2025-03-09 21:00:00', 26),
 (27, 'Final Showdown!', '2025-03-10 17:00:00', 27);
 
--- Sample Data for vods
-INSERT INTO vods (user_id, title, datetime, category_id, length, views) VALUES 
-(1, 'Epic Gaming Session', '2025-01-23 18:00:00', 1, 120, 500),
-(2, 'Live Music Jam', '2025-01-21 20:00:00', 2, 180, 800),
-(3, 'Sketching Live', '2025-01-22 15:00:00', 3, 90, 300),
-(4, 'Math Made Easy', '2025-01-21 10:00:00', 4, 150, 600),
-(5, 'Sports Highlights', '2025-01-19 12:00:00', 5, 210, 700);
-
 -- Sample Data for tags
 INSERT INTO tags(tag_name) VALUES
 ('English'),

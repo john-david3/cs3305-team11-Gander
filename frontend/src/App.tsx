@@ -14,9 +14,9 @@ import { QuickSettingsProvider } from "./context/QuickSettingsContext";
 import DashboardPage from "./pages/DashboardPage";
 import { Brightness } from "./context/BrightnessContext";
 import LoadingScreen from "./components/Layout/LoadingScreen";
-import Following from "./pages/Following";
+import Following from "./pages/FollowingPage";
 import UnsubscribePage from "./pages/UnsubscribePage";
-import Vods from "./pages/Vods";
+import VodsPage from "./pages/VodsPage";
 import VodPlayer from "./pages/VodPlayer";
 
 function App() {
@@ -43,6 +43,24 @@ function App() {
 				setIsLoading(false);
 			});
 	}, []);
+
+	useEffect(() => {
+		if (isLoggedIn) {
+			checkUserStatus();
+		}
+	}, [username]);
+
+	const checkUserStatus = async () => {
+		if (!username) return;
+
+		try {
+			const response = await fetch(`/api/user/${username}/status`);
+			const data = await response.json();
+			setIsLive(data.is_live);
+		} catch (error) {
+			console.error("Error checking user status:", error);
+		}
+	};
 
 	if (isLoading) {
 		return <LoadingScreen />;
@@ -79,8 +97,8 @@ function App() {
 								<Route path="/results" element={<ResultsPage />}></Route>
 								<Route path="/404" element={<NotFoundPage />} />
 								<Route path="/user/:username/following" element={<Following />} />
-								<Route path="/user/:username/vods" element={<Vods />} />
-								<Route path="/stream/:username/vods/:vod_id" element={<VodPlayer />} />
+								<Route path="/vods/:username" element={<VodsPage />} />
+								<Route path="/vods/:username/:vod_id" element={<VodPlayer />} />
 								<Route path="*" element={<Navigate to="/404" replace />} />
 							</Routes>
 						</BrowserRouter>
