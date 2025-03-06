@@ -9,21 +9,19 @@ import Footer from "../components/Layout/Footer";
 import { useAuth } from "../context/AuthContext";
 
 const HomePage: React.FC = () => {
-	const { username } = useAuth();
 	const { streams, isLoading: isLoadingStreams } = useStreams();
 	const { categories, isLoading: isLoadingCategories } = useCategories();
 	const { vods, isLoading: isLoadingVods } = useVods();
 	const navigate = useNavigate();
 
-	const handleVodClick = (vodUrl: string) => {
-		window.open(vodUrl, "_blank");
-	};
+
 
 	if (isLoadingStreams || isLoadingCategories || isLoadingVods) return <LoadingScreen>Loading Content...</LoadingScreen>;
 
 	const thumbnails = vods.map((vod) => ({
 		...vod,
 		thumbnail: `/vods/${vod.username}/${vod.vod_id}.png`,
+		video: `/vods/${vod.username}/${vod.vod_id}.mp4`,
 	  }));
 
 	return (
@@ -64,7 +62,7 @@ const HomePage: React.FC = () => {
 				description="Watch the latest recorded streams!"
 				items={thumbnails}
 				wrap={false}
-				onItemClick={handleVodClick}
+				onItemClick={() => null}
 				extraClasses="bg-black/50"
 				itemExtraClasses="w-[20vw]"
 			/>

@@ -50,6 +50,12 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
 	const scrollAmount = window.innerWidth * 0.4;
 	const navigate = useNavigate();
 
+	const handleVodClick = (item: VodType) => {
+		if (type === "vod" && "username" in item && "vod_id" in item) {
+			navigate(`/stream/${item.username}/vods/${item.vod_id}`); // ✅ Directly navigate
+		}
+	};
+
 	const addMoreItems = (newItems: ItemType[]) => {
 		setCurrentItems((prevItems) => [...prevItems, ...newItems]);
 	};
@@ -180,7 +186,7 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
 											length={item.length}
 											views={item.views}
 											thumbnail={item.thumbnail}
-											onItemClick={() => onItemClick(item.vod_id.toString())}
+											onItemClick={() => handleVodClick(item)}
 											extraClasses={itemExtraClasses}
 											variant={variant}
 										/>
