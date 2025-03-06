@@ -56,7 +56,7 @@ def search_results():
     users = db.fetchall("SELECT user_id, username, is_live FROM users")
     for u in users:
         key = u.get("username")
-        score = rank_results(query, key)
+        score = rank_results(query.lower(), key.lower())
         u["score"] = score
         if score < 2:
             res_dict.append(u)
@@ -74,15 +74,29 @@ def search_results():
     
     for s in streams:
         key = s.get("username")
-        score = rank_results(query, key)
+        score = rank_results(query.lower(), key.lower())
         s["score"] = score
         if score < 2:
             res_dict.append(s)
     streams = sorted(res_dict, key=lambda d: d["score"])
     streams = streams[:4]
 
+    # 3 VODs
+    res_dict = []
+    vods = db.fetchall("""SELECT v.vod_id, v.title, u.user_id, u.username 
+                       FROM vods as v JOIN users as u
+                       ON v.user_id = u.user_id""")
+    for v in vods:
+        key = v.get("title")
+        score = rank_results(query.lower(), key.lower())
+        v["score"] = score
+        if score < 2:
+            res_dict.append(v)
+    vods = sorted(res_dict, key=lambda d: d["score"])
+    vods = vods[:4]
+
     db.close_connection()
 
-    print(query, streams, users, categories, flush=True)
+    print(query, streams, users, categories, vods, flush=True)
     
-    return jsonify({"streams": streams, "categories": categories, "users": users})
+    return jsonify({"streams": streams, "categories": categories, "users": users, "vods": vods})
