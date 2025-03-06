@@ -165,16 +165,14 @@ def newsletter_conf(email):
     """
 
     # Check if user is already in database
-    db = Database()
-    db.create_connection()
-
-    user_exists = db.fetchone("""
-                            SELECT *
-                            FROM newsletter
-                            WHERE email = ?;""", 
-                            (email,))
+    with Database() as db:
+        user_exists = db.fetchone("""
+                                SELECT *
+                                FROM newsletter
+                                WHERE email = ?;""", 
+                                (email,))
     print(user_exists, flush=True)
-    db.close_connection()
+
 
     if user_exists is None:
         add_to_newsletter(email)
@@ -186,30 +184,21 @@ def add_to_newsletter(email):
     Add a person to the newsletter database
     """
     # Create connection to the database
-    db = Database()
-    db.create_connection()
-
-    # Add the users email to the newsletter table
-    db.execute("""
-            INSERT INTO newsletter (email)
-            VALUES (?);
-            """, (email,))
+    with Database() as db:
+        # Add the users email to the newsletter table
+        db.execute("""
+                INSERT INTO newsletter (email)
+                VALUES (?);
+                """, (email,))
     
-    db.close_connection()
-
-
 def remove_from_newsletter(email):
     """
     Remove a person from the newsletter database
     """
     # Create connection to the database
-    db = Database()
-    db.create_connection()
-
-    # Remove the users email from the newsletter table
-    db.execute("""
-            DELETE FROM newsletter
-            WHERE email = ?;
-            """, (email,))
-
-    db.close_connection()
+    with Database() as db:
+        # Remove the users email from the newsletter table
+        db.execute("""
+                DELETE FROM newsletter
+                WHERE email = ?;
+                """, (email,))

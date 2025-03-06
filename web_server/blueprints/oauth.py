@@ -84,7 +84,6 @@ def google_auth():
             return jsonify({'error': 'Missing nonce in session'}), 400
 
         user = google.parse_id_token(token, nonce=nonce)
-        print(user, flush=True)
 
         # Check if email exists to login else create a database entry
         user_email = user.get("email")

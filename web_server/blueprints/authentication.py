@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 from database.database import Database
 from blueprints.middleware import login_required
-from utils.email import send_email
 from utils.user_utils import get_user_id
 from utils.utils import sanitize
 from secrets import token_hex
@@ -95,7 +94,6 @@ def signup():
 
         # Create user directories for stream data
         path_manager.create_user(username)
-        # send_email(username)
 
         return jsonify({
             "account_created": True,
@@ -112,7 +110,6 @@ def signup():
     finally:
         db.close_connection()
         
-
 
 @auth_bp.route("/login", methods=["POST"])
 @cross_origin(supports_credentials=True)

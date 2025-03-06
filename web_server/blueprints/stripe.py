@@ -16,7 +16,6 @@ def create_checkout_session():
     """
     Creates the stripe checkout session
     """
-    print("Creating checkout session", flush=True)
     try:
         # Checks to see who is subscribing to who
         user_id = s.get("user_id")
@@ -35,7 +34,6 @@ def create_checkout_session():
             client_reference_id = f"{user_id}-{streamer_id}"
         )
     except Exception as e:
-        print(e, flush=True)
         return str(e), 500
 
     return jsonify(clientSecret=session.client_secret)
@@ -74,7 +72,6 @@ def stripe_webhook():
         if product_id == subscription:
             client_reference_id = session.get("client_reference_id")
             user_id, streamer_id = map(int, client_reference_id.split("-"))
-            print(f"user_id: {user_id} is subscribing to streamer_id: {streamer_id}", flush=True)
             subscribe(user_id, streamer_id)
 
     return "Success", 200

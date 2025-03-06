@@ -8,7 +8,6 @@ from utils.path_manager import PathManager
 from celery_tasks.streaming import convert_image_to_png
 import redis
 
-from io import BytesIO
 from PIL import Image
 
 redis_url = "redis://redis:6379/1"
