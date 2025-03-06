@@ -111,11 +111,12 @@ const Sidebar: React.FC<SideBarProps> = ({ extraClasses = "" }) => {
 
                 <div id="following" className="flex flex-col flex-grow justify-evenly p-4 gap-4">
                     <div
-                        className="bg-[var(--follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300"
+                        className="bg-[var(--follow-bg)] rounded-[1em] hover:scale-105 transition-all ease-in-out duration-300 cursor-pointer"
                         onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--follow-shadow)")}
                         onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
+                        onClick={() => (window.location.href = `/user/${username}/following?tab=streamers`)}
                     >
-                        <h1 className="text-[2vw] font-bold text-2xl p-[0.75rem] cursor-default">Following</h1>
+                        <h1 className="text-[2vw] font-bold text-2xl p-[0.75rem]">Following</h1>
                     </div>
                     <div id="streamers-followed" className="flex flex-col flex-grow items-center">
                         <h2 className="border-b-2 border-t-2 w-[125%] text-2xl cursor-default mb-5">Streamers</h2>
