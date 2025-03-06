@@ -172,7 +172,7 @@ def get_user_vods(user_id: int):
         vods = db.fetchall("""SELECT vods.*, username, category_name FROM vods JOIN users ON vods.user_id = users.user_id JOIN categories ON vods.category_id = categories.category_id WHERE vods.user_id = ? ORDER BY vod_id DESC;""", (user_id,))
     return vods
 
-def generate_thumbnail(stream_file: str, thumbnail_file: str) -> None:
+def generate_thumbnail(stream_file: str, thumbnail_file: str, second_capture) -> None:
     """
     Generates the thumbnail of a stream
     """
@@ -180,6 +180,8 @@ def generate_thumbnail(stream_file: str, thumbnail_file: str) -> None:
     thumbnail_command = [
         "ffmpeg",
         "-y",
+        "-ss",
+        f"{second_capture}",
         "-i",
         f"{stream_file}",
         "-vframes",
@@ -202,6 +204,29 @@ def remove_hls_files(stream_path: str) -> None:
     for file in os.listdir(stream_path):
         if file.endswith(".ts") or file.endswith(".m3u8"):
             os.remove(os.path.join(stream_path, file))
+
+def get_video_duration(video_path: str) -> int:
+    """
+    Returns the length of a video in seconds
+    """
+    video_length_command = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        video_path
+    ]
+
+    try:
+        video_length = subprocess.check_output(video_length_command).decode("utf-8")
+        print(f"Video length: {video_length}")
+        return int(float(video_length))
+    except subprocess.CalledProcessError as e:
+        print(f"Error getting video length: {e}")
+        return 0
 
 def get_stream_tags(user_id: int) -> Optional[List[str]]:
     """
