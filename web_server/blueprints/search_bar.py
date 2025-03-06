@@ -4,6 +4,26 @@ from utils.utils import sanitize
 
 search_bp = Blueprint("search", __name__)
 
+def rank_results(query, result):
+    """
+    Function that ranks results of queries.
+
+    If word is an exact match, return 0 as score,
+    If character from search query are in something from the db, return score as 1,
+    Else return 2.
+
+    Lower score means better search result.
+    """
+    # Turn database result into iterative
+    charset = iter(result)
+
+    # Assign a score based on the level of the match
+    if query in result:
+        return 0
+    elif all(c in charset for c in query):
+        return 1
+    return 2
+
 @search_bp.route("/search", methods=["POST"])
 def search_results():
     """
@@ -20,119 +40,63 @@ def search_results():
 
     # Get the most accurate search results
     # 3 categories
-    categories = db.fetchall("""
-                    SELECT bm25(category_fts) AS score, c.category_id, c.category_name
-                    FROM categories AS c
-                    INNER JOIN category_fts AS f ON c.category_id = f.category_id
-                    WHERE f.category_name LIKE '%' || ? || '%'
-                    ORDER BY score ASC
-                    LIMIT 4;
-        """, (query,))
+    res_dict = []
+    categories = db.fetchall("SELECT category_id, category_name FROM categories")
+    for c in categories:
+        key = c.get("category_name")
+        score = rank_results(query.lower(), key.lower())
+        c["score"] = score
+        if score < 2:
+            res_dict.append(c)
+    categories = sorted(res_dict, key=lambda d: d["score"])
+    categories = categories[:4]
     
     # 3 users
-    users = db.fetchall("""
-                    SELECT bm25(user_fts) AS score, u.user_id, u.username, u.is_live
-                    FROM users AS u
-                    INNER JOIN user_fts AS f ON u.user_id = f.user_id
-                    WHERE f.username LIKE '%' || ? || '%'
-                    ORDER BY score ASC
-                    LIMIT 4;
-        """, (query,))
+    res_dict = []
+    users = db.fetchall("SELECT user_id, username, is_live FROM users")
+    for u in users:
+        key = u.get("username")
+        score = rank_results(query.lower(), key.lower())
+        u["score"] = score
+        if score < 2:
+            res_dict.append(u)
+    users = sorted(res_dict, key=lambda d: d["score"])
+    users = users[:4]
 
-    # 3 streams
-    streams = db.fetchall("""
-                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, c.category_name, u.username
+    # 3 streams    
+    res_dict = []
+    streams = db.fetchall("""SELECT s.user_id, s.title, s.num_viewers, c.category_name, u.username
                     FROM streams AS s
                     INNER JOIN stream_fts AS f ON s.user_id = f.user_id
                     INNER JOIN users AS u ON s.user_id = u.user_id
                     INNER JOIN categories AS c ON s.category_id = c.category_id
-                    WHERE f.title LIKE '%' || ? || '%'
-                    ORDER BY score ASC
-                    LIMIT 4;
-        """, (query,))
+                    """)
+    
+    for s in streams:
+        key = s.get("username")
+        score = rank_results(query.lower(), key.lower())
+        s["score"] = score
+        if score < 2:
+            res_dict.append(s)
+    streams = sorted(res_dict, key=lambda d: d["score"])
+    streams = streams[:4]
+
+    # 3 VODs
+    res_dict = []
+    vods = db.fetchall("""SELECT v.vod_id, v.title, u.user_id, u.username 
+                       FROM vods as v JOIN users as u
+                       ON v.user_id = u.user_id""")
+    for v in vods:
+        key = v.get("title")
+        score = rank_results(query.lower(), key.lower())
+        v["score"] = score
+        if score < 2:
+            res_dict.append(v)
+    vods = sorted(res_dict, key=lambda d: d["score"])
+    vods = vods[:4]
 
     db.close_connection()
 
-    print(query, streams, users, categories, flush=True)
+    print(query, streams, users, categories, vods, flush=True)
     
-    return jsonify({"streams": streams, "categories": categories, "users": users})
-
-@search_bp.route("/search/categories", methods=["GET", "POST"])
-def search_categories():
-    """
-    Display all the results for categories from the specified user query
-    """
-    # Receive the query data from the user
-    data = request.get_json()
-    query = sanitize(data["query"])
-
-	# Create the connection to the database
-    db = Database()
-    db.create_connection()
-
-    # Fetch the ranked data and send to JSON to be displayed
-    categories = db.fetchall("""
-                    SELECT bm25(category_fts) AS score, c.category_id, c.category_name
-                    FROM categories AS c
-                    INNER JOIN category_fts AS f ON c.category_id = f.category_id
-                    WHERE f.category_name LIKE '%' || ? || '%'
-                    ORDER BY score ASC;
-        """, (query,))
-    
-    db.close_connection()
-    
-    return jsonify({"categories": categories})
-
-@search_bp.route("/search/users", methods=["GET", "POST"])
-def search_users():
-    """
-    Display all the results for users from the specified user query
-    """
-    # Receive the query data from the user
-    data = request.get_json()
-    query = sanitize(data["query"])
-
-	# Create the connection to the database
-    db = Database()
-    db.create_connection()
-    
-    # Fetch the ranked data and send to JSON to be displayed
-    users = db.fetchall("""
-                    SELECT bm25(user_fts) AS score, u.user_id, u.username, u.is_live
-                    FROM users AS u
-                    INNER JOIN user_fts AS f ON u.user_id = f.user_id
-                    WHERE f.username LIKE '%' || ? || '%'
-                    ORDER BY score ASC;
-        """, (query,))
-    
-    db.close_connection()
-
-    return jsonify({"users": users})
-
-
-@search_bp.route("/search/streams", methods=["GET", "POST"])
-def search_streams():
-    """
-    Display all the results for streams from the specified user query
-    """
-    # Receive the query data from the user
-    data = request.get_json()
-    query = sanitize(data["query"])
-
-	# Create the connection to the database
-    db = Database()
-    db.create_connection()
-    
-    # Fetch the ranked data and send to JSON to be displayed
-    streams = db.fetchall("""
-                    SELECT bm25(stream_fts) AS score, s.user_id, s.title, s.num_viewers, s.category_id, u.username
-                    FROM streams AS s
-                    INNER JOIN stream_fts AS f ON s.user_id = f.user_id
-                    INNER JOIN users AS u ON s.user_id = u.user_id
-                    WHERE f.title LIKE '%' || ? || '%'
-                    ORDER BY score ASC;
-        """, (query,))
-
-    db.close_connection()
-
-    return jsonify({"streams": streams})
+    return jsonify({"streams": streams, "categories": categories, "users": users, "vods": vods})
