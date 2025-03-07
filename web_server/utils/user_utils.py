@@ -38,6 +38,18 @@ def update_bio(user_id: int, bio: str):
             WHERE user_id = ?
         """, (bio, user_id))
 
+def has_password(email: str):
+    """
+    Returns if account associated with this email has password, i.e is account from Google OAuth
+    """
+    with Database() as db:
+        data = db.fetchone("""
+                SELECT password
+                FROM users
+                WHERE email = ?           
+        """, (email,))
+    return False if data["password"] == None else True
+
 def get_session_info_email(email: str) -> dict:
     """
     Returns username and user_id given email

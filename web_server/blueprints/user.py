@@ -196,10 +196,12 @@ def user_forgot_password(email):
     Initializes the function to handle password reset
     """
     exists = email_exists(email)
-    if(exists):
+    password = has_password(email)
+    # Checks if password exists and is not a Google OAuth account
+    if(exists and password):
         send_email(email, lambda: forgot_password_body(email))
         return email
-    return jsonify({"error":"email not found"}), 404
+    return jsonify({"error":"Invalid email or not found"}), 404
 
 @user_bp.route("/send_newsletter/<string:email>", methods=["POST"])
 def send_newsletter(email):

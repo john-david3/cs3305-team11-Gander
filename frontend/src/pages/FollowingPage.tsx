@@ -5,7 +5,6 @@ import DynamicPageContent from "../components/Layout/DynamicPageContent";
 import { useFollow } from "../hooks/useFollow";
 import FollowUserButton from "../components/Input/FollowUserButton";
 import FollowButton from "../components/Input/FollowButton";
-import Footer from "../components/Layout/Footer";
 
 interface Streamer {
   user_id: number;
