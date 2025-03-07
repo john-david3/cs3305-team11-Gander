@@ -6,6 +6,7 @@ from database.database import Database
 from dotenv import load_dotenv
 from secrets import token_hex, token_urlsafe
 from random import randint
+from utils.path_manager import PathManager
 
 oauth_bp = Blueprint("oauth", __name__)
 google = None
@@ -13,6 +14,8 @@ google = None
 load_dotenv()
 url_api = getenv("VITE_API_URL")
 url = getenv("HOMEPAGE_URL")
+
+path_manager = PathManager()
 
 
 def init_oauth(app):
@@ -115,6 +118,7 @@ def google_auth():
                     )
                 )
             user_data = get_session_info_email(user_email)
+            path_manager.create_user(username)
 
         # Store origin, username and user_id before clearing session
         origin = session.get("origin", f"{url.replace('/api', '')}")
