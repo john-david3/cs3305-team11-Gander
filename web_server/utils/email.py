@@ -202,3 +202,14 @@ def remove_from_newsletter(email):
                 DELETE FROM newsletter
                 WHERE email = ?;
                 """, (email,))
+        
+def email_exists(email):
+    """
+    Returns whether email exists within database
+    """
+    with Database() as db:
+        data = db.fetchone("""
+                SELECT * FROM users
+                WHERE email = ?         
+        """, (email,))
+    return bool(data)

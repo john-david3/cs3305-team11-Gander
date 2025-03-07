@@ -3,7 +3,7 @@ from utils.user_utils import *
 from utils.auth import *
 from utils.utils import get_category_id
 from blueprints.middleware import login_required
-from utils.email import send_email, forgot_password_body, newsletter_conf, remove_from_newsletter
+from utils.email import send_email, forgot_password_body, newsletter_conf, remove_from_newsletter, email_exists
 from utils.path_manager import PathManager
 from celery_tasks.streaming import convert_image_to_png
 import redis
@@ -195,8 +195,11 @@ def user_forgot_password(email):
     """
     Initializes the function to handle password reset
     """
-    send_email(email, lambda: forgot_password_body(email))
-    return email
+    exists = email_exists(email)
+    if(exists):
+        send_email(email, lambda: forgot_password_body(email))
+        return email
+    return jsonify({"error":"email not found"}), 404
 
 @user_bp.route("/send_newsletter/<string:email>", methods=["POST"])
 def send_newsletter(email):

@@ -53,7 +53,7 @@ const ForgotPasswordForm: React.FC<SubmitProps> = ({ onSubmit }) => {
         if (!response.ok) {
           const data = await response.json();
           throw new Error(
-            data.message || "An error has occurred while resetting"
+            data.error || "An error has occurred while resetting"
           );
         } else {
           confirmPasswordReset();
