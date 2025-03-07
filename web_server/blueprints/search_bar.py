@@ -67,7 +67,7 @@ def search_results():
     res_dict = []
     streams = db.fetchall("""SELECT s.user_id, s.title, s.num_viewers, c.category_name, u.username
                     FROM streams AS s
-                    INNER JOIN stream_fts AS f ON s.user_id = f.user_id
+                    INNER JOIN streams AS f ON s.user_id = f.user_id
                     INNER JOIN users AS u ON s.user_id = u.user_id
                     INNER JOIN categories AS c ON s.category_id = c.category_id
                     """)
