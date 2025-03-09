@@ -73,7 +73,7 @@ def search_results():
                     """)
     
     for s in streams:
-        key = s.get("username")
+        key = s.get("title")
         score = rank_results(query.lower(), key.lower())
         s["score"] = score
         if score < 2:
