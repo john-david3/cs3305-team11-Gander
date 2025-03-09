@@ -14,7 +14,7 @@ import json
 stream_bp = Blueprint("stream", __name__)
 
 # Constants
-THUMBNAIL_GENERATION_INTERVAL = 10
+THUMBNAIL_GENERATION_INTERVAL = 180
 
 # Path Manager
 path_manager = PathManager()
