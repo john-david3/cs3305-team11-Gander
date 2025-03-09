@@ -100,10 +100,12 @@ def get_user_category_recommendations(user_id = 1, no_categories: int = 4) -> Op
     """
     with Database() as db:
         categories = db.fetchall("""
-            SELECT categories.category_id, categories.category_name, categories.num_viewers
+            SELECT categories.category_id, categories.category_name, COALESCE(SUM(streams.num_viewers), 0) AS num_viewers
             FROM categories 
             JOIN user_preferences ON categories.category_id = user_preferences.category_id
+            LEFT JOIN streams ON categories.category_id = streams.category_id
             WHERE user_preferences.user_id = ? 
+            GROUP BY categories.category_id, categories.category_name
             ORDER BY user_preferences.favourability DESC 
             LIMIT ?
         """, (user_id, no_categories))

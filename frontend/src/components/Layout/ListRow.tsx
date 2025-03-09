@@ -169,7 +169,6 @@ const ListRow = forwardRef<ListRowRef, ListRowProps>((props, ref) => {
 										/>
 									);
 								} else if (type === "vod" && isVodType(item)) {
-									console.log(item);
 									return (
 										<VodListItem
 											key={`vod-${item.vod_id}`}

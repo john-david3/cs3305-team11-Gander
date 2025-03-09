@@ -96,7 +96,6 @@ def get_past_chat(stream_id: int):
                             ) subquery
                             ORDER BY time_sent ASC;
                             """, (stream_id, stream_id))
-    #! ASC - Oldest to Newest
 
     db.close_connection()
 
@@ -119,6 +118,7 @@ def send_chat(data) -> None:
     """
 
     # Take the message information from frontend
+    chatter_id = data.get("user_id")
     chatter_name = data.get("username")
     stream_id = data.get("stream_id")
     message = data.get("message")
@@ -127,9 +127,10 @@ def send_chat(data) -> None:
     if not all([chatter_name, message, stream_id]):
         emit("error", {"error": f"Unable to send a chat. The following info was given: chatter_name={chatter_name}, message={message}, stream_id={stream_id}"}, broadcast=False)
         return
-    subscribed = is_subscribed(get_user_id(chatter_name), stream_id)
+    subscribed = is_subscribed(chatter_id, stream_id)
     # Send the chat message to the client so it can be displayed
     emit("new_message", {
+        "chatter_id": chatter_id,
         "chatter_username": chatter_name,
         "message": message,
         "time_sent": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -137,7 +138,7 @@ def send_chat(data) -> None:
     }, room=stream_id)
 
     # Asynchronously save the chat
-    save_chat(get_user_id(chatter_name), stream_id, message)
+    save_chat(chatter_id, stream_id, message)
 
 
 def save_chat(chatter_id, stream_id, message):

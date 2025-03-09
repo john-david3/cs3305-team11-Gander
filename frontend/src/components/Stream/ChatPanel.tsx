@@ -139,6 +139,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 		}
 
 		socket.emit("send_message", {
+			user_id: userId,
 			username: username,
 			stream_id: streamId,
 			message: inputMessage.trim(),
@@ -193,7 +194,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ streamId, onViewerCountChange }) 
 					<div
 						key={index}
 						className={`flex items-start space-x-2 rounded p-2 text-white relative ${
-							msg.chatter_id === streamId ? "bg-[#0000a0] font-black border-4 border-double border-red-500" : "bg-gray-800"
+							msg.chatter_id === streamId ? "bg-[#00005e] font-black border-4 border-double border-red-500" : "bg-gray-800"
 						}`}
 					>
 						{/* User avatar with image */}
