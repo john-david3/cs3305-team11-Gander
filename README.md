@@ -70,7 +70,7 @@ The current implementation can be run, in development mode, using the following 
   - Docker Compose
   - Node.js & npm
 
-1. Replace `.env.example` with `.env` and fill in the required environment variables
+1. Replace `.env.example` files with `.env` and fill in the required environment variables
 2. Launch Docker containers using either:
    - `docker-compose up --build` in terminal
    - Right click within the editor within `docker-compose.yml` and select `Compose Up`
