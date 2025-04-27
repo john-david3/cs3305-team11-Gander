@@ -62,4 +62,3 @@ project_structure.txt
 flask_session/
 server.crt
 server.key
-app.db
