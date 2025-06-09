@@ -26,5 +26,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-results-lint
-        path: /.github/artifacts/test-results-lint.log
+        path: /tmp/linter-logs/
         retention-days: 1
