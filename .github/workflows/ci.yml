@@ -26,5 +26,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-results-lint
-        path: /artifacts/
+        path: artifacts/test.log
         retention-days: 1
