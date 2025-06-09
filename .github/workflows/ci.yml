@@ -22,7 +22,9 @@ jobs:
       run: |
         pylint $(git ls-files '*.py')
     - name: Upload Artifact
+      if: success() || failure()
       uses: actions/upload-artifact@v4
       with:
         name: test-results-lint
-        path: artifacts/test-results-lint.txt
+        path: /artifacts/test-results-lint.txt
+        retention-days: 1
